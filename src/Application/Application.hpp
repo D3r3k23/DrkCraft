@@ -1,9 +1,9 @@
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
+#ifndef DRK_APPLICATION_HPP
+#define DRK_APPLICATION_HPP
 
-#include "Base.hpp"
+#include "Core/Base.hpp"
 #include "Window.hpp"
-#include "ImGuiLayer.hpp"
+// #include "ImGuiLayer.hpp"
 
 #include <deque>
 
@@ -21,13 +21,13 @@ namespace DrkCraft
         void stop(void);
 
     private:
-        Window* m_window;
-        ImGuiLayer m_imGuiLayer;
-        std::deque<Layer&> m_layerStack;
+        // Window* m_window;
+        // ImGuiLayer m_imGuiLayer;
+        // std::deque<Layer&> m_layerStack;
 
         bool m_running;
         bool m_minimized;
     };
 }
 
-#endif // APPLICATION_HPP
+#endif // DRK_APPLICATION_HPP
