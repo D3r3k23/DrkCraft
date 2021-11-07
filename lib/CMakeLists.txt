@@ -4,3 +4,5 @@ target_include_directories(DrkCraft
     imgui
     spdlog/include
 )
+
+add_subdirectory(glfw)
