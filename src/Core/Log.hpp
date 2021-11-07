@@ -22,6 +22,9 @@
 
         private:
             static std::string s_name;
+
+            // s_consoleLogger
+            // s_fileLogger
         };
     }
 
