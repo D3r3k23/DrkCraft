@@ -1,13 +1,13 @@
 target_sources(DrkCraft
   PUBLIC
-    Camera.cpp
+    # Camera.cpp
     # Context.cpp
-    IndexBuffer.cpp
+    # IndexBuffer.cpp
     Renderer.cpp
     # Shader.cpp
     # Texture.cpp
-    Transform.cpp
+    # Transform.cpp
     # UniformBuffer.cpp
-    VertexArray.cpp
-    VertexBuffer.cpp
+    # VertexArray.cpp
+    # VertexBuffer.cpp
 )

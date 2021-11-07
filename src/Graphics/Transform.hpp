@@ -1,8 +1,6 @@
 #ifndef TRANSFORM_HPP
 #define TRANSFORM_HPP
 
-#include "Core/Math.hpp"
-
 namespace DrkCraft
 {
     class Transform

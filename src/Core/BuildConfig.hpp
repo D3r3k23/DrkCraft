@@ -6,6 +6,7 @@
 
     #define DRK_EN_LOGGING
     #define DRK_EN_ASSERTS
+    #define DRK_EN_GL_DEBUG_OUTPUT
 #elif defined(DRK_RELEASE)
     #define DRK_CONFIG_NAME Release
 #else

@@ -1,7 +1,9 @@
 #include "Application.hpp"
 
+#include "Graphics/Renderer.hpp"
 // #include "Game/Game.hpp"
 // #include "Engine/Timestep.hpp"
+#include "Core/Util.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -56,24 +58,19 @@ namespace DrkCraft
 
         m_window = make_ptr<Window>("DrkCraft", 1280, 720);
 
+        Renderer::init();
+
         // m_layerStack.push_front(m_imGuiLayer);
-
-        //// Renderer ////
-        const auto* renderer = glGetString(GL_RENDERER);
-        const auto* version  = glGetString(GL_VERSION);
-        DRK_LOG_INFO("Renderer: {}", renderer);
-        DRK_LOG_INFO("OpenGL version: {}", version);
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
     }
+
+    struct vec3 { double r, g, b; };
 
     int Application::run(void)
     {
         // Window::Size viewPortSize = m_window->get_framebuffer_size();
         // glViewport(0, 0, viewPortSize.width, viewPortSize.height);
 
-        std::array<double, 9> vertexPositions = {
+        std::array<double, 9> vertexPositions{
              0.0,  0.5, 0.0,
              0.5, -0.5, 0.0,
             -0.5, -0.5, 0.0
@@ -89,7 +86,7 @@ namespace DrkCraft
         glBindVertexArray(vertexArrayObject);
         glEnableVertexAttribArray(0); // First attribute
         glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, NULL);
+        glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, nullptr);
 
         const char* vertexShaderText =
             "#version 400\n"
@@ -100,23 +97,34 @@ namespace DrkCraft
 
         const char* fragmentShaderText =
             "#version 400\n"
+            "uniform vec4 color;"
             "out vec4 fragColor;"
             "void main() {"
-            "  fragColor = vec4(0.5, 0.0, 0.5, 1.0);"
+            "  fragColor = color;"
             "}";
 
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderText, NULL);
+        glShaderSource(vertexShader, 1, &vertexShaderText, nullptr);
         glCompileShader(vertexShader);
 
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderText, NULL);
+        glShaderSource(fragmentShader, 1, &fragmentShaderText, nullptr);
         glCompileShader(fragmentShader);
 
         GLuint shaderProgram = glCreateProgram();
         glAttachShader(shaderProgram, fragmentShader);
         glAttachShader(shaderProgram, vertexShader);
         glLinkProgram(shaderProgram);
+
+        vec3 color{0.5, 0.0, 0.5};
+        RandomDoubleDist dist(0.0, 1.0);
+
+        bool space = false;
+        glfwSetWindowUserPointer(m_window->get_window(), &space);
+        glfwSetKeyCallback(m_window->get_window(), [](GLFWwindow* window, int key, int scanCode, int action, int mods){
+            if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+                *(bool*)glfwGetWindowUserPointer(window) = true;
+        });
 
         m_running = true;
         while (m_running)
@@ -128,15 +136,24 @@ namespace DrkCraft
                 // for (auto& layer : m_layerStack)
                     // layer.on_update(timestep);
 
-                glfwPollEvents();
-
                 // Render
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glUseProgram(shaderProgram);
-                glBindVertexArray(vertexArrayObject);
 
+                glUseProgram(shaderProgram);
+                GLint colorUniformLocation = glGetUniformLocation(shaderProgram, "color");
+                glUniform4f(colorUniformLocation, color.r, color.g, color.b, 1.0);
+
+                glBindVertexArray(vertexArrayObject);
                 glDrawArrays(GL_TRIANGLES, 0, 3);
+
                 glfwSwapBuffers(m_window->get_window());
+            }
+
+            glfwPollEvents();
+            if (space)
+            {
+                color = {dist(), dist(), dist()};
+                space = false;
             }
 
             if (m_window->should_close())

@@ -1,6 +1,8 @@
 #ifndef BUFFER_HPP
 #define BUFFER_HPP
 
+#include <glad/glad.h>
+
 #include <vector>
 
 namespace DrkCraft

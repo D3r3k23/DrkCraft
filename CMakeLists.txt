@@ -28,11 +28,6 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
-# target_compile_options(DrkCraft
-#   PUBLIC
-#     -Wall
-# )
-
 if(${PLATFORM} STREQUAL Windows)
     target_compile_definitions(DrkCraft PUBLIC DRK_PLATFORM_WINDOWS)
 elseif(${PLATFORM} STREQUAL Linux)
