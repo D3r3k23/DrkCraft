@@ -5,5 +5,5 @@ target_include_directories(DrkCraft
     spdlog/include
 )
 
-add_subdirectory(glad/output)
+add_subdirectory(glad)
 add_subdirectory(glfw)

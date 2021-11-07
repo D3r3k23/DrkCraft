@@ -33,9 +33,9 @@
             return size();
         }
 
-        void Window::on_update(void)
+        Window::~Window(void)
         {
-
+            glfwDestroyWindow(m_windowHandle);
         }
     }
 #endif
