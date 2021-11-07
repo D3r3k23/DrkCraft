@@ -16,6 +16,12 @@ add_executable(DrkCraft)
 add_subdirectory(src)
 add_subdirectory(lib)
 
+target_link_libraries(DrkCraft
+  PUBLIC
+    glad
+    glfw
+)
+
 target_link_libraries(DrkCraft glfw)
 
 set_target_properties(DrkCraft
