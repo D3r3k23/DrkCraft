@@ -3,21 +3,30 @@
 
 #include "Base.hpp"
 #include "Window.hpp"
+#include "ImGuiLayer.hpp"
+
+#include <deque>
 
 namespace DrkCraft
 {
-    class App
+    class Application
     {
     public:
-        App();
-        ~App();
-
-        static App* create() { return new App; }
-
+        Application();
         int run(void);
+        ~Application();
 
     private:
-        Ptr<Window> m_window;
+        void start(void);
+        void stop(void);
+
+    private:
+        Window* m_window;
+        ImGuiLayer m_imGuiLayer;
+        std::deque<Layer&> m_layerStack;
+
+        bool m_running;
+        bool m_minimized;
     };
 }
 

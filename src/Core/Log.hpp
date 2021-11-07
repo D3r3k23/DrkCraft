@@ -1,11 +1,13 @@
-namespace DrkCraft
-{
-#ifdef EN_LOG
+
+#if defined(EN_LOG)
     #define LOG()
 
-#elif
+#else
     #define LOG()
 #endif // EN_LOG
+
+namespace DrkCraft
+{
 
     class Log
     {
