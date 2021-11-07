@@ -8,7 +8,8 @@
         void Logger::init(std::string_view name)
         {
             s_name = name;
-            DRK_LOG_INFO("{} log init", name);
+            spdlog::set_level(spdlog::level::trace);
+            DRK_LOG_TRACE("{} log init", name);
         }
 
         void Logger::save(void)

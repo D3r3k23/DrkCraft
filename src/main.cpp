@@ -7,18 +7,10 @@ int main(int, char**)
 {
     DRK_LOGGER_INIT("DrkCraft");
 
-    DRK_LOG_INFO("Creating application");
-    auto app = new Application;
-
-    DRK_LOG_INFO("Running application");
-    int returnCode = app->run();
-
-    if (returnCode)
-        DRK_LOG_ERROR("Application stopped with error code {}", returnCode);
-
-    DRK_LOG_INFO("Shutting down application");
-    delete app;
+    Application::init();
+    Application::start();
+    int status = Application::shutdown();
 
     DRK_LOGGER_SAVE();
-    return returnCode;
+    return status;
 }

@@ -21,15 +21,20 @@ namespace DrkCraft
 
         Window(std::string_view name, uint width, uint height);
 
-        void on_update(void);
+        GLFWwindow* get_window(void) const;
 
-        Size size(void) const;
+        void on_update(void);
+        bool should_close(void) const;
+
+        Size get_size(void) const;
         Size resize(Size size);
+
+        Size get_framebuffer_size(void) const;
+
         ~Window(void);
 
-
     private:
-        GLFWwindow* m_windowHandle;
+        GLFWwindow* m_window;
 
         std::string m_name;
     };

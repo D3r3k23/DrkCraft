@@ -31,16 +31,21 @@
     #define DRK_LOGGER_INIT(name) DrkCraft::Logger::init(name)
     #define DRK_LOGGER_SAVE()     DrkCraft::Logger::save()
 
-    #define DRK_LOG_INFO(...)  spdlog::info(__VA_ARGS__)
-    #define DRK_LOG_WARN(...)  spdlog::warn(__VA_ARGS__)
-    #define DRK_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
+    #define DRK_LOG_TRACE(...)    spdlog::trace(__VA_ARGS__)
+    #define DRK_LOG_INFO(...)     spdlog::info(__VA_ARGS__)
+    #define DRK_LOG_WARN(...)     spdlog::warn(__VA_ARGS__)
+    #define DRK_LOG_ERROR(...)    spdlog::error(__VA_ARGS__)
+    #define DRK_LOG_CRITICAL(...) spdlog::critical(__VA_ARGS__)
 
 #else
     #define DRK_LOGGER_INIT(name)
     #define DRK_LOGGER_SAVE()
+
+    #define DRK_LOG_TRACE(...)
     #define DRK_LOG_INFO(...)
     #define DRK_LOG_WARN(...)
     #define DRK_LOG_ERROR(...)
+    #define DRK_LOG_CRITICAL(...)
 #endif
 
 #endif // DRK_LOG_HPP
