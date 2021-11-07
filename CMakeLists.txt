@@ -22,8 +22,6 @@ target_link_libraries(DrkCraft
     glfw
 )
 
-target_link_libraries(DrkCraft glfw)
-
 set_target_properties(DrkCraft
   PROPERTIES
     CXX_STANDARD 20

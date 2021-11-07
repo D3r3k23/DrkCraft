@@ -3,7 +3,7 @@
 
 // Don't include this directly, use Core/Base.hpp instead
 
-#include "Build.hpp"
+#include "BuildConfig.hpp"
 
 #if defined(DRK_EN_LOGGING)
 

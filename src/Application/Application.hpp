@@ -17,11 +17,7 @@ namespace DrkCraft
         ~Application();
 
     private:
-        void start(void);
-        void stop(void);
-
-    private:
-        // Window* m_window;
+        Ptr<Window> m_window;
         // ImGuiLayer m_imGuiLayer;
         // std::deque<Layer&> m_layerStack;
 

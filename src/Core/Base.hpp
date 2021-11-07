@@ -1,19 +1,12 @@
 #ifndef DRK_BASE_HPP
 #define DRK_BASE_HPP
 
-#include "Build.hpp"
+#include "BuildConfig.hpp"
 #include "Log.hpp"
+#include "Assert.hpp"
 
 #include <memory>
 #include <cstdint>
-
-#if defined(DRK_DEBUG)
-    #if defined(DRK_PLATFORM_WINDOWS)
-        #define DRK_DEBUG_BREAK NOT_IMPLEMENTED
-    #elif defined(DRK_PLATFORM_LINUX)
-        #define DRK_DEBUG_BREAK NOT_IMPLEMENTED
-    #endif
-#endif
 
 namespace DrkCraft
 {

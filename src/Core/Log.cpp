@@ -1,7 +1,6 @@
 #include "Log.hpp"
 
 #if defined(DRK_EN_LOGGING)
-
     namespace DrkCraft
     {
         std::string Logger::s_name;
@@ -17,5 +16,4 @@
 
         }
     }
-
 #endif

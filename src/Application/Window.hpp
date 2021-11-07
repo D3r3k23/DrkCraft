@@ -3,25 +3,35 @@
 
 #include "Core/Base.hpp"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <string>
 
 namespace DrkCraft
 {
     class Window
     {
-    // public:
-    //     Window(std::string_view name, uint width, uint height);
-    //     virtual ~Window() = default;
+    public:
+        struct Size
+        {
+            uint width;
+            uint height;
+        };
 
-    //     virtual void on_update(void) = 0;
+        Window(std::string_view name, uint width, uint height);
 
-    //     uint width(void)  const { return m_width;  }
-    //     uint height(void) const { return m_height; }
+        void on_update(void);
 
-    // private:
-    //     std::string m_name;
-    //     uint m_width;
-    //     uint m_height;
+        Size size(void) const;
+        Size resize(Size size);
+        ~Window(void);
+
+
+    private:
+        GLFWwindow* m_windowHandle;
+
+        std::string m_name;
     };
 }
 

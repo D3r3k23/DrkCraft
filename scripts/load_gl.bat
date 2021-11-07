@@ -1,4 +1,4 @@
-@echo ON
+@echo OFF
 
 pushd .
 cd lib\glad\glad

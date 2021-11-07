@@ -3,14 +3,20 @@
 // #include "Game/Game.hpp"
 // #include "Engine/Timestep.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace DrkCraft
 {
     Application::Application(void)
+      : m_running(false),
+        m_minimized(false)
     {
-        // m_layerStack.push_front(m_imGuiLayer);
+        auto status = glfwInit();
+        DRK_ASSERT(status == GLFW_TRUE, "Failed to initialize GLFW");
 
-        m_running = false;
-        m_minimized = false;
+        m_window = make_ptr<Window>("DrkCraft", 1280, 720);
+
+        // m_layerStack.push_front(m_imGuiLayer);
     }
 
     int Application::run(void)
@@ -29,13 +35,12 @@ namespace DrkCraft
             }
 
             // m_window.on_update();
-            break;
         }
         return 0;
     }
 
     Application::~Application(void)
     {
-
+        glfwTerminate();
     }
 }
