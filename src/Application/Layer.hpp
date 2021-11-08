@@ -1,9 +1,9 @@
-#ifndef LAYER_HPP
-#define LAYER_HPP
+#ifndef DRK_LAYER_HPP
+#define DRK_LAYER_HPP
 
 #include "Events.hpp"
 #include "Core/Base.hpp"
-#include "Core/Timestep.hpp"
+#include "Engine/Timestep.hpp"
 
 #include <string_view>
 
@@ -25,4 +25,4 @@ namespace DrkCraft
     };
 }
 
-#endif // LAYER_HPP
+#endif // DRK_LAYER_HPP

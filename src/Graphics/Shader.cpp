@@ -65,7 +65,7 @@ namespace DrkCraft
 
             m_id   = compiledShader.get_id();
             m_type = compiledShader.get_type();
-            DRK_LOG_INFO("Copied already-compiled shader {}", path.string());
+            DRK_LOG_INFO("Copied previously compiled shader {}", path.string());
         }
         else
         {

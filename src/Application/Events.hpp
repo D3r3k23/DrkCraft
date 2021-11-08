@@ -1,7 +1,7 @@
-#ifndef EVENTS_HPP
-#define EVENTS_HPP
+#ifndef DRK_EVENTS_HPP
+#define DRK_EVENTS_HPP
 
-namespace DrkCraft::Application
+namespace DrkCraft
 {
     class Event
     {
@@ -9,4 +9,4 @@ namespace DrkCraft::Application
     };
 }
 
-#endif // EVENTS_HPP
+#endif // DRK_EVENTS_HPP

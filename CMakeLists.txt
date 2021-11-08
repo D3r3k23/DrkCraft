@@ -22,17 +22,14 @@ endif()
 
 message("[${PLATFORM}] ${BUILD_CONFIG} build")
 
+string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
+string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
+
 project(DrkCraft)
 add_executable(DrkCraft)
 
 add_subdirectory(src)
 add_subdirectory(lib)
-
-target_link_libraries(DrkCraft
-  PUBLIC
-    glad
-    glfw
-)
 
 # C++ 20
 set_target_properties(DrkCraft
@@ -41,12 +38,10 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
-# Platform & build config defines
-string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
-string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
-
 target_compile_definitions(DrkCraft
   PUBLIC
     ${DRK_PLATFORM}
     ${DRK_BUILD_CONFIG}
+
+    GLFW_INCLUDE_NONE # Don't need GLFW to include OpenGL header
 )

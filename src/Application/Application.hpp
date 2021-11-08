@@ -3,10 +3,8 @@
 
 #include "Core/Base.hpp"
 #include "Window.hpp"
-// #include "Layer.hpp"
+#include "Layer.hpp"
 // #include "ImGuiLayer.hpp"
-
-#include <GLFW/glfw3.h>
 
 #include <deque>
 

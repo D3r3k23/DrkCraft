@@ -2,7 +2,7 @@
 
 #include "Graphics/Renderer.hpp"
 // #include "Game/Game.hpp"
-// #include "Engine/Timestep.hpp"
+#include "Engine/Timestep.hpp"
 #include "Core/Util.hpp"
 
 #include <GLFW/glfw3.h>
@@ -106,7 +106,7 @@ namespace DrkCraft
         m_running = true;
         while (m_running)
         {
-            // Timestep timestep;
+            Timestep timestep;
 
             if (!m_minimized)
             {
@@ -120,7 +120,7 @@ namespace DrkCraft
                 Renderer::end();
             }
 
-            glfwPollEvents();
+            m_window->on_update();
             if (space)
             {
                 color = { dist(), dist(), dist() };
@@ -130,8 +130,6 @@ namespace DrkCraft
 
             if (m_window->should_close())
                 m_running = false;
-
-            // m_window.on_update();
         }
         return 0;
     }

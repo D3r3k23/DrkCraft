@@ -5,7 +5,6 @@
 #include "Shader.hpp"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
 
 namespace DrkCraft

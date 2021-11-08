@@ -50,7 +50,7 @@ namespace DrkCraft
 
     void Renderer::end(void)
     {
-        glfwSwapBuffers(Application::get_window().get_native_window());
+
     }
 
     void Renderer::draw_triangle(glm::vec3 color, GLuint vao)

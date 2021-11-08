@@ -1,5 +1,7 @@
 #include "../Window.hpp"
 
+#include <glad/glad.h>
+
 #if defined(DRK_PLATFORM_WINDOWS)
     namespace DrkCraft
     {
@@ -23,7 +25,8 @@
 
         void Window::on_update(void)
         {
-
+            glfwPollEvents();
+            glfwSwapBuffers(m_window);
         }
 
         bool Window::should_close(void) const
