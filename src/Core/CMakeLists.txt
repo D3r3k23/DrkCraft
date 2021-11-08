@@ -3,5 +3,7 @@ target_sources(DrkCraft
     Assert.cpp
     Console.cpp
     Log.cpp
+    Timer.cpp
+    Timestep.cpp
     Util.cpp
 )

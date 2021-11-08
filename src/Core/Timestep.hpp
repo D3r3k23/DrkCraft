@@ -7,14 +7,15 @@ namespace DrkCraft
     {
     public:
         Timestep(void);
+        Timestep(const Timestep&) = default;
 
-        double get_seconds(void) const;
-        double get_milliseconds(void) const;
+        float get_seconds(void) const;
+        float get_milliseconds(void) const;
 
         operator double(void) const;
         operator float(void) const;
 
-        static double last_update_time(void);
+        static float last_update_time(void);
 
     private:
         double m_elapsed;

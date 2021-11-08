@@ -1,3 +1,4 @@
+# Header only libraries
 target_include_directories(DrkCraft
   PUBLIC
     entt/single_include/entt
@@ -6,8 +7,8 @@ target_include_directories(DrkCraft
     spdlog/include
 )
 
-add_subdirectory(glad)
-add_subdirectory(glfw)
+add_subdirectory(glad) # Custom CMakeLists.txt
+add_subdirectory(glfw) # Include official CMakeLists.txt
 
 target_link_libraries(DrkCraft
   PUBLIC

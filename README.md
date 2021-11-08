@@ -9,9 +9,9 @@ Minecraft clone created using an OpenGL renderer
 * CMake
 
 ### Libraries
-* EntT
-* GLAD
+* EnTT
+* Glad
 * GLFW
 * GLM
-* Dear mGUI
+* Dear ImGui
 * spdlog

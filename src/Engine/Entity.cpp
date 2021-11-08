@@ -9,4 +9,9 @@ namespace DrkCraft
     {
 
     }
+
+    entt::entity Entity::get_handle(void) const
+    {
+        return m_handle;
+    }
 }

@@ -18,6 +18,7 @@ namespace DrkCraft
     {
     public:
         static void init(void);
+        static void shutdown(void);
 
         static void add_shader_program(const ShaderProgram& program);
 

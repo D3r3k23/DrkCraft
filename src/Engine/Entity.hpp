@@ -14,6 +14,8 @@ namespace DrkCraft
         Entity(entt::entity handle, Scene& scene);
         Entity(const Entity& other) = default;
 
+        entt::entity get_handle(void) const;
+
     private:
         entt::entity m_handle;
         Scene& m_scene;

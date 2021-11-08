@@ -13,12 +13,12 @@ namespace DrkCraft
         s_lastUpdateTime = now;
     }
 
-    double Timestep::get_seconds(void) const
+    float Timestep::get_seconds(void) const
     {
         return m_elapsed;
     }
 
-    double Timestep::get_milliseconds(void) const
+    float Timestep::get_milliseconds(void) const
     {
         return m_elapsed * 1000.0;
     }
@@ -33,7 +33,7 @@ namespace DrkCraft
         return (float)get_seconds();
     }
 
-    double Timestep::last_update_time(void)
+    float Timestep::last_update_time(void)
     {
         return s_lastUpdateTime;
     }

@@ -26,6 +26,9 @@
     {
         // Should add formatting to msg?
         // Should assert errors be logged even if debug break is disabled?
+        // Idea:
+        //   DRK_CRIT_ASSERT - always enabled
+        //   DRK_DEBUG_ASSERT - enabled in debug
         void assert_failed(std::string_view cond, std::string_view msg, std::string_view file, int line);
     }
 

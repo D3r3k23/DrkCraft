@@ -3,6 +3,5 @@ target_sources(DrkCraft
     Chunk.cpp
     Entity.cpp
     Scene.cpp
-    Timestep.cpp
     WorldGenerator.cpp
 )

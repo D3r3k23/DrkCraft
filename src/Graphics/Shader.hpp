@@ -21,18 +21,17 @@ namespace DrkCraft
         None,
         Vertex,
         Fragment,
-        Geometry
+        Geometry,
+        TesselationControl,
+        TesselationEvaluation
     };
-
-    ShaderType get_shader_type_from_string(std::string_view str);
-    ShaderType find_shader_type_from_source(std::string_view source);
 
     GLenum get_gl_shader_type(ShaderType type);
 
     class Shader
     {
     public:
-        Shader(std::filesystem::path path, ShaderType type=ShaderType::None);
+        Shader(std::filesystem::path path, ShaderType type);
         Shader(const Shader&) = default;
         Shader(void) = default; // Required for std::unordered_map::operator[]
 

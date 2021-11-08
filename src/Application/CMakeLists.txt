@@ -1,7 +1,9 @@
 target_sources(DrkCraft
   PUBLIC
     Application.cpp
+    EventGenerator.cpp
+    Events.cpp
     ImGuiLayer.cpp
-    ${PLATFORM}/Window.cpp
-    ${PLATFORM}/Input.cpp
+    Window.cpp
+    Input.cpp
 )

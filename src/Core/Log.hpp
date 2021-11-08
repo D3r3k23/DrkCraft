@@ -25,6 +25,11 @@
 
             // s_consoleLogger
             // s_fileLogger
+
+            // s_coreLog
+            // s_eventLog
+            // s_rendererLog
+            // s_gameLog
         };
     }
 

@@ -2,49 +2,17 @@
 
 #include "Core/Util.hpp"
 
-#include <sstream>
-#include <algorithm>
-
 namespace DrkCraft
 {
-    ShaderType get_shader_type_from_string(std::string_view str)
-    {
-        if      (str == "vertex")   return ShaderType::Vertex;
-        else if (str == "fragment") return ShaderType::Fragment;
-        else if (str == "geometry") return ShaderType::Geometry;
-
-        DRK_LOG_WARN("Unknown shader type \"{}\"", str);
-        return ShaderType::None;
-    }
-
-    ShaderType find_shader_type_from_source(std::string_view source)
-    {
-        std::stringstream ss(source.data());
-        const std::string token = "#type";
-        std::string line;
-        while (std::getline(ss, line))
-        {
-            size_t tokenPos;
-            if ((tokenPos = line.find(token)) != std::string::npos)
-            {
-                size_t EOL = line.find_first_of("\r\n", tokenPos);
-                DRK_ASSERT(EOL != std::string::npos, "\"#type\" syntax error in shader");
-
-                size_t typePos = tokenPos + token.size() + 1;
-                std::string typeStr = line.substr(typePos, EOL - typePos);
-                return get_shader_type_from_string(typeStr);
-            }
-        }
-        return ShaderType::None;
-    }
-
     GLenum get_gl_shader_type(ShaderType type)
     {
         switch (type)
         {
-            case ShaderType::Vertex   : return GL_VERTEX_SHADER;
-            case ShaderType::Fragment : return GL_FRAGMENT_SHADER;
-            case ShaderType::Geometry : return GL_GEOMETRY_SHADER;
+            case ShaderType::Vertex               : return GL_VERTEX_SHADER;
+            case ShaderType::Fragment             : return GL_FRAGMENT_SHADER;
+            case ShaderType::Geometry             : return GL_GEOMETRY_SHADER;
+            case ShaderType::TesselationControl   : return GL_TESS_CONTROL_SHADER;
+            case ShaderType::TesselationEvaluation: return GL_TESS_EVALUATION_SHADER;
             default:
                 DRK_LOG_WARN("Unknown shader type");
                 return 0;
@@ -72,13 +40,7 @@ namespace DrkCraft
             const std::string source = read_file(path);
             DRK_ASSERT(source.size() > 0, "Could not load shader file");
 
-            if (type == ShaderType::None)
-            {
-                m_type = find_shader_type_from_source(source);
-                DRK_ASSERT(m_type != ShaderType::None, "Could not determine type of shader");
-            }
-            else
-                m_type = type;
+            m_type = type;
 
             m_id = glCreateShader(get_gl_shader_type(m_type));
             DRK_ASSERT(m_id, "glCreateShader failed");
