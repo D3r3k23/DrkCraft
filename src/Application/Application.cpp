@@ -124,6 +124,7 @@ namespace DrkCraft
             if (space)
             {
                 color = { dist(), dist(), dist() };
+                DRK_LOG_INFO("Changing triangle color to: ({}, {} {})", color.r, color.g, color.b);
                 space = false;
             }
 

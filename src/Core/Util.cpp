@@ -18,12 +18,14 @@ namespace DrkCraft
             return "";
     }
 
-    RandomDist::RandomDist(void)
-      : rng(dev())
-    { }
+    RandomEngine get_random_engine(void)
+    {
+        std::random_device rd;
+        return RandomEngine(rd());
+    }
 
     RandomIntDist::RandomIntDist(int min, int max)
-      : RandomDist(),
+      : rng(get_random_engine()),
         dist(min, max)
     { }
 
@@ -38,7 +40,7 @@ namespace DrkCraft
     }
 
     RandomFloatDist::RandomFloatDist(float min, float max)
-      : RandomDist(),
+      : rng(get_random_engine()),
         dist(min, max)
     { }
 

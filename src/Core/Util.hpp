@@ -8,16 +8,11 @@ namespace DrkCraft
 {
     std::string read_file(std::filesystem::path path);
 
-    class RandomDist
-    {
-    protected:
-        RandomDist(void);
+    using RandomEngine = std::mt19937;
 
-        std::random_device dev;
-        std::mt19937 rng;
-    };
+    RandomEngine get_random_engine(void);
 
-    class RandomIntDist : public RandomDist
+    class RandomIntDist
     {
     public:
         RandomIntDist(int min, int max);
@@ -25,10 +20,11 @@ namespace DrkCraft
         int operator() (void);
 
     private:
+        RandomEngine rng;
         std::uniform_int_distribution<int> dist;
     };
 
-    class RandomFloatDist : public RandomDist
+    class RandomFloatDist
     {
     public:
         RandomFloatDist(float min, float max);
@@ -36,6 +32,7 @@ namespace DrkCraft
         float operator() (void);
 
     private:
+        RandomEngine rng;
         std::uniform_real_distribution<float> dist;
     };
 }
