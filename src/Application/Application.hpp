@@ -6,6 +6,8 @@
 // #include "Layer.hpp"
 // #include "ImGuiLayer.hpp"
 
+#include <GLFW/glfw3.h>
+
 #include <deque>
 
 namespace DrkCraft
@@ -18,6 +20,7 @@ namespace DrkCraft
         static int  shutdown(void);
 
         static Application& get_instance(void);
+        static const Window& get_window(void);
 
         Application();
         int run(void);

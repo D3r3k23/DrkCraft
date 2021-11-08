@@ -29,7 +29,7 @@
     }
 
     #define DRK_LOGGER_INIT(name) DrkCraft::Logger::init(name)
-    #define DRK_LOGGER_SAVE()     DrkCraft::Logger::save()
+    #define DRK_LOGGER_SAVE()     DrkCraft::Logger::save() // What does this do
 
     #define DRK_LOG_TRACE(...)    spdlog::trace(__VA_ARGS__)
     #define DRK_LOG_INFO(...)     spdlog::info(__VA_ARGS__)

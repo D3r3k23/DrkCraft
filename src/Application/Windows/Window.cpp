@@ -11,11 +11,12 @@
 
             glfwMakeContextCurrent(m_window);
 
+            DRK_LOG_TRACE("Glad: Loading OpenGL functions using GLFW loader function");
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            DRK_ASSERT(status, "Failed to initialize Glad");
+            DRK_ASSERT(status, "Glad failed to initialize OpenGL context");
         }
 
-        GLFWwindow* Window::get_window(void) const
+        GLFWwindow* Window::get_native_window(void) const
         {
             return m_window;
         }

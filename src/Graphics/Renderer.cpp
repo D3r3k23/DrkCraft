@@ -1,11 +1,16 @@
 #include "Renderer.hpp"
 
+#include "Application/Application.hpp"
+
 #include <algorithm>
+#include <unordered_map>
 
 namespace DrkCraft
 {
     struct RendererData
     {
+        std::unordered_map<std::string, ShaderProgram> shaderPrograms;
+
         RendererStats stats;
     };
 
@@ -24,6 +29,37 @@ namespace DrkCraft
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
+
+        std::vector<Shader> shaders;
+        shaders.emplace_back("assets/shaders/flat_color_vertex_shader.glsl", ShaderType::Vertex);
+        shaders.emplace_back("assets/shaders/flat_color_fragment_shader.glsl", ShaderType::Fragment);
+        add_shader_program(ShaderProgram("FlatColor", shaders));
+    }
+
+    void Renderer::add_shader_program(const ShaderProgram& program)
+    {
+        s_rendererData.shaderPrograms[program.get_name()] = program;
+    }
+
+    void Renderer::begin(void)
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void Renderer::end(void)
+    {
+        glfwSwapBuffers(Application::get_window().get_native_window());
+    }
+
+    void Renderer::draw_triangle(glm::vec3 color, GLuint vao)
+    {
+        GLuint program = s_rendererData.shaderPrograms["FlatColor"].get_id();
+        glUseProgram(program);
+        GLint colorUniformLocation = glGetUniformLocation(program, "color");
+        glUniform4f(colorUniformLocation, color.r, color.g, color.b, 1.0);
+
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     const RendererStats& get_stats(void)
@@ -36,8 +72,6 @@ namespace DrkCraft
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(gl_message_handler, nullptr);
     }
-
-
 
     void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
     {
@@ -62,7 +96,6 @@ namespace DrkCraft
                 default                              : return "unknown";
             }
         }();
-
         const char* typeStr = [type]{
             switch (type)
             {
@@ -78,14 +111,13 @@ namespace DrkCraft
                 default                                : return "unknown";
             }
         }();
-
         switch (severity)
         {
             case GL_DEBUG_SEVERITY_HIGH         : DRK_LOG_ERROR("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_MEDIUM       : DRK_LOG_WARN( "[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_LOW          : DRK_LOG_INFO( "[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_NOTIFICATION : DRK_LOG_INFO( "[OpenGL message] source: {0} type: {1} msg: {2}", sourceStr, typeStr, msg); break;
-            default                             : DRK_LOG_WARN( "[OpenGL message] severity: {0} source: {1} type: {2} msg: {3}", severity, sourceStr, typeStr, msg);
+            case GL_DEBUG_SEVERITY_MEDIUM       : DRK_LOG_WARN ("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
+            case GL_DEBUG_SEVERITY_LOW          : DRK_LOG_INFO ("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
+            case GL_DEBUG_SEVERITY_NOTIFICATION : DRK_LOG_INFO ("[OpenGL message] source: {0} type: {1} msg: {2}", sourceStr, typeStr, msg); break;
+            default                             : DRK_LOG_WARN ("[OpenGL message] severity: {0} source: {1} type: {2} msg: {3}", severity, sourceStr, typeStr, msg);
         }
     }
 }

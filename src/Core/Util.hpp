@@ -1,10 +1,13 @@
 #ifndef DRK_UTIL_HPP
 #define DRK_UTIL_HPP
 
+#include <filesystem>
 #include <random>
 
 namespace DrkCraft
 {
+    std::string read_file(std::filesystem::path path);
+
     class RandomDist
     {
     protected:
@@ -25,15 +28,15 @@ namespace DrkCraft
         std::uniform_int_distribution<int> dist;
     };
 
-    class RandomDoubleDist : public RandomDist
+    class RandomFloatDist : public RandomDist
     {
     public:
-        RandomDoubleDist(double min, double max);
-        double get(void);
-        double operator() (void);
+        RandomFloatDist(float min, float max);
+        float get(void);
+        float operator() (void);
 
     private:
-        std::uniform_real_distribution<double> dist;
+        std::uniform_real_distribution<float> dist;
     };
 }
 

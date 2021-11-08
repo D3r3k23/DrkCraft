@@ -4,7 +4,7 @@ target_sources(DrkCraft
     # Context.cpp
     # IndexBuffer.cpp
     Renderer.cpp
-    # Shader.cpp
+    Shader.cpp
     # Texture.cpp
     # Transform.cpp
     # UniformBuffer.cpp

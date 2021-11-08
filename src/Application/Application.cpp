@@ -6,6 +6,7 @@
 #include "Core/Util.hpp"
 
 #include <GLFW/glfw3.h>
+#include <glm/vec3.hpp>
 
 #include <array>
 
@@ -27,7 +28,7 @@ namespace DrkCraft
         s_instance->run();
 
         if (int status = s_instance->m_exitCode)
-            DRK_LOG_CRITICAL("Application stopped with error code {}", status);
+            DRK_LOG_ERROR("Application stopped with error code {}", status);
     }
 
     int Application::shutdown(void)
@@ -48,11 +49,17 @@ namespace DrkCraft
         return *s_instance;
     }
 
+    const Window& Application::get_window(void)
+    {
+        return *(get_instance().m_window);
+    }
+
     Application::Application(void)
       : m_running(false),
         m_minimized(false),
         m_exitCode(0)
     {
+        DRK_LOG_TRACE("Initializing GLFW");
         auto status = glfwInit();
         DRK_ASSERT(status == GLFW_TRUE, "Failed to initialize GLFW");
 
@@ -63,14 +70,12 @@ namespace DrkCraft
         // m_layerStack.push_front(m_imGuiLayer);
     }
 
-    struct vec3 { double r, g, b; };
-
     int Application::run(void)
     {
         // Window::Size viewPortSize = m_window->get_framebuffer_size();
         // glViewport(0, 0, viewPortSize.width, viewPortSize.height);
 
-        std::array<double, 9> vertexPositions{
+        std::array<float, 9> vertexPositions{
              0.0,  0.5, 0.0,
              0.5, -0.5, 0.0,
             -0.5, -0.5, 0.0
@@ -86,42 +91,14 @@ namespace DrkCraft
         glBindVertexArray(vertexArrayObject);
         glEnableVertexAttribArray(0); // First attribute
         glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, nullptr);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-        const char* vertexShaderText =
-            "#version 400\n"
-            "in vec3 vp;"
-            "void main() {"
-            "  gl_Position = vec4(vp, 1.0);"
-            "}";
-
-        const char* fragmentShaderText =
-            "#version 400\n"
-            "uniform vec4 color;"
-            "out vec4 fragColor;"
-            "void main() {"
-            "  fragColor = color;"
-            "}";
-
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderText, nullptr);
-        glCompileShader(vertexShader);
-
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderText, nullptr);
-        glCompileShader(fragmentShader);
-
-        GLuint shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, fragmentShader);
-        glAttachShader(shaderProgram, vertexShader);
-        glLinkProgram(shaderProgram);
-
-        vec3 color{0.5, 0.0, 0.5};
-        RandomDoubleDist dist(0.0, 1.0);
+        glm::vec3 color{0.5f, 0.5f, 0.5f};
+        RandomFloatDist dist(0.0f, 1.0f);
 
         bool space = false;
-        glfwSetWindowUserPointer(m_window->get_window(), &space);
-        glfwSetKeyCallback(m_window->get_window(), [](GLFWwindow* window, int key, int scanCode, int action, int mods){
+        glfwSetWindowUserPointer(m_window->get_native_window(), &space);
+        glfwSetKeyCallback(m_window->get_native_window(), [](GLFWwindow* window, int key, int scanCode, int action, int mods){
             if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
                 *(bool*)glfwGetWindowUserPointer(window) = true;
         });
@@ -136,23 +113,17 @@ namespace DrkCraft
                 // for (auto& layer : m_layerStack)
                     // layer.on_update(timestep);
 
-                // Render
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                Renderer::begin();
 
-                glUseProgram(shaderProgram);
-                GLint colorUniformLocation = glGetUniformLocation(shaderProgram, "color");
-                glUniform4f(colorUniformLocation, color.r, color.g, color.b, 1.0);
+                Renderer::draw_triangle(color, vertexArrayObject);
 
-                glBindVertexArray(vertexArrayObject);
-                glDrawArrays(GL_TRIANGLES, 0, 3);
-
-                glfwSwapBuffers(m_window->get_window());
+                Renderer::end();
             }
 
             glfwPollEvents();
             if (space)
             {
-                color = {dist(), dist(), dist()};
+                color = { dist(), dist(), dist() };
                 space = false;
             }
 
@@ -166,6 +137,7 @@ namespace DrkCraft
 
     Application::~Application(void)
     {
+        DRK_LOG_TRACE("Terminating GLFW");
         glfwTerminate();
     }
 }

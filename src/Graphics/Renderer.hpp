@@ -2,21 +2,31 @@
 #define DRK_RENDERER_HPP
 
 #include "Core/Base.hpp"
+#include "Shader.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/vec3.hpp>
 
 namespace DrkCraft
 {
     struct RendererStats
     {
-
+        uint numQuads = 0;
     };
 
     class Renderer
     {
     public:
         static void init(void);
+
+        static void add_shader_program(const ShaderProgram& program);
+
+        static void begin(void);
+        static void end(void);
+
+        static void draw_triangle(glm::vec3 color, GLuint vao);
+
         static const RendererStats& get_stats(void);
 
     private:

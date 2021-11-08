@@ -1,7 +1,8 @@
 target_include_directories(DrkCraft
   PUBLIC
-    entt/src
-    imgui
+    entt/single_include/entt
+    glm
+    # imgui
     spdlog/include
 )
 

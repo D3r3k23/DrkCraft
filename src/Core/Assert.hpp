@@ -5,7 +5,7 @@
 
 #include "BuildConfig.hpp"
 
-#if defined(DRK_DEBUG)
+#if defined(DRK_CONFIG_DEBUG)
     #if defined(DRK_PLATFORM_WINDOWS)
         #define DRK_DEBUG_BREAK() __debugbreak()
     #elif defined(DRK_PLATFORM_LINUX)
@@ -33,8 +33,11 @@
                 assert_failed(#cond, msg, __FILE__, __LINE__); \
         } while (false)
 
+    #define DRK_ASSERT_FALSE(msg) assert_failed("false", msg, __FILE__, __LINE__)
+
 #else
     #define DRK_ASSERT(cond, msg)
+    #define DRK_ASSERT_FALSE(msg)
 #endif
 
 #endif // DRK_ASSERT_HPP

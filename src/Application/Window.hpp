@@ -1,5 +1,5 @@
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef DRK_WINDOW_HPP
+#define DRK_WINDOW_HPP
 
 #include "Core/Base.hpp"
 
@@ -21,7 +21,7 @@ namespace DrkCraft
 
         Window(std::string_view name, uint width, uint height);
 
-        GLFWwindow* get_window(void) const;
+        GLFWwindow* get_native_window(void) const;
 
         void on_update(void);
         bool should_close(void) const;
@@ -40,4 +40,4 @@ namespace DrkCraft
     };
 }
 
-#endif // WINDOW_HPP
+#endif // DRK_WINDOW_HPP

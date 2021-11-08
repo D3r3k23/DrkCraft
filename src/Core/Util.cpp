@@ -1,7 +1,23 @@
 #include "Util.hpp"
 
+#include <fstream>
+#include <sstream>
+
 namespace DrkCraft
 {
+    std::string read_file(std::filesystem::path path)
+    {
+        if (std::filesystem::is_regular_file(path))
+        {
+            std::ifstream file(path);
+            std::stringstream contents;
+            contents << file.rdbuf();
+            return contents.str();
+        }
+        else
+            return "";
+    }
+
     RandomDist::RandomDist(void)
       : rng(dev())
     { }
@@ -21,17 +37,17 @@ namespace DrkCraft
         return get();
     }
 
-    RandomDoubleDist::RandomDoubleDist(double min, double max)
+    RandomFloatDist::RandomFloatDist(float min, float max)
       : RandomDist(),
         dist(min, max)
     { }
 
-    double RandomDoubleDist::get(void)
+    float RandomFloatDist::get(void)
     {
         return dist(rng);
     }
 
-    double RandomDoubleDist::operator() (void)
+    float RandomFloatDist::operator() (void)
     {
         return get();
     }

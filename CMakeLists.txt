@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
+# Set PLATFORM
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
     set(PLATFORM Windows)
 elseif(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Linux)
@@ -9,10 +10,21 @@ else()
     exit(1)
 endif()
 
-message("[${PLATFORM}] ${CMAKE_BUILD_TYPE} build")
+# Set BUILD_CONFIG
+if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
+    set(BUILD_CONFIG Debug)
+elseif(${CMAKE_BUILD_TYPE} STREQUAL Release)
+    set(BUILD_CONFIG Release)
+else()
+    set(CMAKE_BUILD_TYPE Debug)
+    set(BUILD_CONFIG Debug)
+endif()
+
+message("[${PLATFORM}] ${BUILD_TYPE} build")
 
 project(DrkCraft)
 add_executable(DrkCraft)
+
 add_subdirectory(src)
 add_subdirectory(lib)
 
@@ -22,20 +34,19 @@ target_link_libraries(DrkCraft
     glfw
 )
 
+# C++ 20
 set_target_properties(DrkCraft
   PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
 
-if(${PLATFORM} STREQUAL Windows)
-    target_compile_definitions(DrkCraft PUBLIC DRK_PLATFORM_WINDOWS)
-elseif(${PLATFORM} STREQUAL Linux)
-    target_compile_definitions(DrkCraft PUBLIC DRK_PLATFORM_LINUX)
-endif()
+# Platform & build config defines
+string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
+string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    target_compile_definitions(DrkCraft PUBLIC DRK_DEBUG)
-elseif(${CMAKE_BUILD_TYPE} STREQUAL Release)
-    target_compile_definitions(DrkCraft PUBLIC DRK_RELEASE)
-endif()
+target_compile_definitions(DrkCraft
+  PUBLIC
+    ${DRK_PLATFORM}
+    ${DRK_BUILD_CONFIG}
+)
