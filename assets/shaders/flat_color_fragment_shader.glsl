@@ -1,5 +1,6 @@
+// FlatColor Fragment Shader
+
 #version 400
-// #type fragment
 
 uniform vec4 color;
 

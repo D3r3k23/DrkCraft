@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build:
+  Windows:
     runs-on: windows-latest
     defaults:
       run:
@@ -18,4 +18,4 @@ jobs:
           submodules: recursive
 
       - name: CMake build
-        run: scripts/build.bat --debug
+        run: scripts\build.bat --debug

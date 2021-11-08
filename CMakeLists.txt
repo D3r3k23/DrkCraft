@@ -20,7 +20,7 @@ else()
     set(BUILD_CONFIG Debug)
 endif()
 
-message("[${PLATFORM}] ${BUILD_TYPE} build")
+message("[${PLATFORM}] ${BUILD_CONFIG} build")
 
 project(DrkCraft)
 add_executable(DrkCraft)

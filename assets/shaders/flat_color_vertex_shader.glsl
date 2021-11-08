@@ -1,5 +1,6 @@
+// FlatColor Vertex Shader
+
 #version 400
-// #type vertex
 
 in vec3 vertexPosition;
 

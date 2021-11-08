@@ -3,6 +3,7 @@
 #include "Core/Util.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 namespace DrkCraft
 {
@@ -50,27 +51,46 @@ namespace DrkCraft
         }
     }
 
+    std::unordered_map<std::string, Shader> Shader::s_compiledShaders;
+
     Shader::Shader(std::filesystem::path path, ShaderType type)
     {
         DRK_LOG_TRACE("Creating Shader from {}", path.string());
 
-        const std::string source = read_file(path);
-        DRK_ASSERT(source.size() > 0, "Could not load shader file");
-
-        if (type == ShaderType::None)
+        if (s_compiledShaders.contains(path.string()))
         {
-            m_type = find_shader_type_from_source(source);
-            DRK_ASSERT(m_type != ShaderType::None, "Could not determine type of shader");
+            auto compiledShader = s_compiledShaders[path.string()];
+            DRK_LOG_INFO("Shader \"{}\" was already compiled", path.string());
+            DRK_ASSERT(compiledShader.get_type() == type, "Compiled shader type does not match");
+
+            m_id   = compiledShader.get_id();
+            m_type = compiledShader.get_type();
+            DRK_LOG_INFO("Copied already-compiled shader {}", path.string());
         }
         else
-            m_type = type;
+        {
+            const std::string source = read_file(path);
+            DRK_ASSERT(source.size() > 0, "Could not load shader file");
 
-        m_id = glCreateShader(get_gl_shader_type(m_type));
+            if (type == ShaderType::None)
+            {
+                m_type = find_shader_type_from_source(source);
+                DRK_ASSERT(m_type != ShaderType::None, "Could not determine type of shader");
+            }
+            else
+                m_type = type;
 
-        if (compile(source))
-            DRK_LOG_INFO("Shader {} compiled successfully", path.string());
-        else
-            DRK_ASSERT_FALSE("Shader compilation failed");
+            m_id = glCreateShader(get_gl_shader_type(m_type));
+            DRK_ASSERT(m_id, "glCreateShader failed");
+
+            if (compile(source))
+            {
+                DRK_LOG_INFO("Shader {} compiled successfully", path.string());
+                s_compiledShaders[path.string()] = *this;
+            }
+            else
+                DRK_ASSERT_FALSE("Shader compilation failed");
+        }
     }
 
     ShaderID Shader::get_id(void) const
@@ -78,7 +98,7 @@ namespace DrkCraft
         return m_id;
     }
 
-    ShaderType Shader::get_shader_type(void) const
+    ShaderType Shader::get_type(void) const
     {
         return m_type;
     }
@@ -95,6 +115,22 @@ namespace DrkCraft
         return success;
     }
 
+    ShaderProgram::ShaderProgram(std::string_view name, const std::vector<Shader>& shaders)
+      : m_name(name)
+    {
+        DRK_LOG_TRACE("Creating ShaderProgram {}", m_name);
+
+        m_id = glCreateProgram();
+        DRK_ASSERT(m_id, "glCreateProgram failed");
+
+        for (const auto shader : shaders)
+            glAttachShader(m_id, shader.get_id());
+
+        if (link())
+            DRK_LOG_INFO("Shader program {} linked successfully", m_name);
+        else
+            DRK_ASSERT_FALSE("Shader program linking failed");
+    }
 
     ShaderProgramID ShaderProgram::get_id(void) const
     {
@@ -104,21 +140,6 @@ namespace DrkCraft
     std::string ShaderProgram::get_name(void) const
     {
         return m_name;
-    }
-
-    ShaderProgram::ShaderProgram(std::string_view name, const std::vector<Shader>& shaders)
-      : m_name(name)
-    {
-        DRK_LOG_TRACE("Creating ShaderProgram {}", m_name);
-
-        m_id = glCreateProgram();
-        for (const auto shader : shaders)
-            glAttachShader(m_id, shader.get_id());
-
-        if (link())
-            DRK_LOG_INFO("Shader program {} linked successfully", m_name);
-        else
-            DRK_ASSERT_FALSE("Shader program linking failed");
     }
 
     bool ShaderProgram::link(void)

@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 
+#include <unordered_map>
+#include <vector>
 #include <filesystem>
 #include <string>
 #include <string_view>
@@ -31,23 +33,28 @@ namespace DrkCraft
     {
     public:
         Shader(std::filesystem::path path, ShaderType type=ShaderType::None);
+        Shader(const Shader&) = default;
+        Shader(void) = default; // Required for std::unordered_map::operator[]
 
         ShaderID get_id(void) const;
-        ShaderType get_shader_type(void) const;
+        ShaderType get_type(void) const;
 
     private:
         bool compile(std::string_view source);
 
     private:
-        ShaderID m_id;
-        ShaderType m_type;
+        ShaderID m_id = 0;
+        ShaderType m_type{ShaderType::None};
+
+        static std::unordered_map<std::string, Shader> s_compiledShaders;
     };
 
     class ShaderProgram
     {
     public:
-        ShaderProgram()=default;
         ShaderProgram(std::string_view name, const std::vector<Shader>& shaders);
+        ShaderProgram(const ShaderProgram&) = default;
+        ShaderProgram(void) = default; // Required for std::unordered_map::operator[]
 
         ShaderProgramID get_id(void) const;
         std::string get_name(void) const;
@@ -56,7 +63,7 @@ namespace DrkCraft
         bool link(void);
 
     private:
-        ShaderProgramID m_id;
+        ShaderProgramID m_id = 0;
         std::string m_name;
     };
 }

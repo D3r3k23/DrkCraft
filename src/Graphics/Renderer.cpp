@@ -30,15 +30,17 @@ namespace DrkCraft
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
-        std::vector<Shader> shaders;
-        shaders.emplace_back("assets/shaders/flat_color_vertex_shader.glsl", ShaderType::Vertex);
-        shaders.emplace_back("assets/shaders/flat_color_fragment_shader.glsl", ShaderType::Fragment);
-        add_shader_program(ShaderProgram("FlatColor", shaders));
+        add_shader_program(ShaderProgram("FlatColor", {
+            Shader("assets/shaders/flat_color_vertex_shader.glsl",   ShaderType::Vertex),
+            Shader("assets/shaders/flat_color_fragment_shader.glsl", ShaderType::Fragment)
+        }));
     }
 
     void Renderer::add_shader_program(const ShaderProgram& program)
     {
-        s_rendererData.shaderPrograms[program.get_name()] = program;
+        auto& shaderPrograms = s_rendererData.shaderPrograms;
+        DRK_ASSERT(!shaderPrograms.contains(program.get_name()), "This ShaderProgram already exists");
+        shaderPrograms[program.get_name()] = program;
     }
 
     void Renderer::begin(void)
