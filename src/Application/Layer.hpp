@@ -18,7 +18,7 @@ namespace DrkCraft
             m_layerActive(true),
             m_layerDeleted(false)
         {
-            DRK_LOG_TRACE("Creating Layer: ", m_layerName);
+            DRK_LOG_TRACE("Creating Layer: {}", m_layerName);
         }
 
         virtual ~Layer(void) = default;

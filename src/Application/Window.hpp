@@ -21,6 +21,9 @@ namespace DrkCraft
 
         void on_update(void);
 
+        void set_vsync(bool enable);
+        bool get_vsync(void) const;
+
         glm::uvec2 resize(uint width, uint height);
         glm::uvec2 resize(glm::uvec2 size);
 
@@ -37,6 +40,7 @@ namespace DrkCraft
     private:
         GLFWwindow* m_window;
         std::string m_title;
+        bool m_vSync;
 
         Ptr<EventGenerator> m_eventGenerator;
     };

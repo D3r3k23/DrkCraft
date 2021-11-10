@@ -16,6 +16,8 @@ namespace DrkCraft
 
         glfwMakeContextCurrent(m_window);
 
+        set_vsync(true);
+
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
         DRK_LOG_TRACE("Glad: Loading OpenGL functions using GLFW loader function");
@@ -38,6 +40,25 @@ namespace DrkCraft
     {
         glfwPollEvents();
         glfwSwapBuffers(m_window);
+    }
+
+    void Window::set_vsync(bool enable)
+    {
+        if (enable)
+        {
+            glfwSwapInterval(1);
+            m_vSync = true;
+        }
+        else
+        {
+            glfwSwapInterval(0);
+            m_vSync = false;
+        }
+    }
+
+    bool Window::get_vsync(void) const
+    {
+        return m_vSync;
     }
 
     glm::uvec2 Window::resize(uint width, uint height)
