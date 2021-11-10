@@ -43,17 +43,49 @@ namespace DrkCraft
         ScrollWheelMoved
     };
 
+    using EventCategoryFlags = uint;
+
+    enum class EventCategory : EventCategoryFlags
+    {
+        None = 0,
+
+        Window      = 0b000001,
+        Input       = 0b000010,
+        Key         = 0b000110,
+        Char        = 0b001010,
+        Mouse       = 0b010010,
+        MouseButton = 0b110010
+    };
+
+    EventCategoryFlags operator|(EventCategoryFlags flags, EventCategory cat);
+    EventCategoryFlags operator|(EventCategory cat, EventCategoryFlags flags);
+    EventCategoryFlags operator|(EventCategory cat1, EventCategory cat2);
+
+    bool operator==(EventCategory cat, EventCategoryFlags flags);
+    bool operator==(EventCategoryFlags flags, EventCategory cat);
+
+    bool operator!=(EventCategory cat, EventCategoryFlags flags);
+    bool operator!=(EventCategoryFlags flags, EventCategory cat);
+
     struct Event
     {
+        bool handled = false;
+
         ~Event(void) = default;
 
         virtual EventType   get_type(void) const = 0;
         virtual const char* get_name(void) const = 0;
 
-        virtual operator std::string(void) const;
+        virtual EventCategory get_category(void) const = 0;
 
-        bool handled = false;
+        virtual operator std::string(void) const;
     };
+
+    bool operator==(const Event& event, EventCategoryFlags flags);
+    bool operator==(EventCategoryFlags flags, const Event& event);
+
+    bool operator!=(const Event& event, EventCategoryFlags flags);
+    bool operator!=(EventCategoryFlags flags, const Event& event);
 
     void log_event(const Event& event);
 

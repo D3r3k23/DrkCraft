@@ -93,19 +93,19 @@ namespace DrkCraft
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressedEvent event(to_key_code(key), get_input_mod(mods));
+                    KeyPressedEvent event(to_key_code(key), get_input_mod_flags(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyHeldEvent event(to_key_code(key), get_input_mod(mods));
+                    KeyHeldEvent event(to_key_code(key), get_input_mod_flags(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleasedEvent event(to_key_code(key), get_input_mod(mods));
+                    KeyReleasedEvent event(to_key_code(key), get_input_mod_flags(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
@@ -134,13 +134,13 @@ namespace DrkCraft
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod(mods));
+                    MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod(mods));
+                    MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }

@@ -20,28 +20,32 @@ namespace DrkCraft
 
     ////////// Key Mods //////////
 
-    using InputMod = uint;
+    using InputModFlags = uint;
 
-    enum class KeyMod
+    enum class KeyMod : InputModFlags
     {
         None = 0,
 
-        Shift = 1,
-        Ctrl  = 2,
-        Alt   = 4,
-        Super = 8
+        Shift    = 0b000001,
+        Ctrl     = 0b000010,
+        Alt      = 0b000100,
+        Super    = 0b001000,
+        CapsLock = 0b010000,
+        NumLock  = 0b100000,
     };
 
-    bool is_mod_pressed(KeyMod mod);
+    InputModFlags get_input_mod_flags(int mods);
+    KeyMod to_key_mod(KeyCode key);
 
-    InputMod get_input_mod(int mods);
-    KeyMod get_key_mod(KeyCode key);
+    InputModFlags operator|(InputModFlags flags, KeyMod mod);
+    InputModFlags operator|(KeyMod mod, InputModFlags flags);
+    InputModFlags operator|(KeyMod mod1, KeyMod mod2);
 
-    // Determines if keyMod is part of mods
-    bool operator==(InputMod mods, KeyMod keyMod);
-    bool operator==(KeyMod keyMod, InputMod mods);
-    bool operator!=(InputMod mods, KeyMod keyMod);
-    bool operator!=(KeyMod keyMod, InputMod mods);
+    bool operator==(InputModFlags flags, KeyMod mod);
+    bool operator==(KeyMod mod, InputModFlags flags);
+
+    bool operator!=(InputModFlags flags, KeyMod mod);
+    bool operator!=(KeyMod mod, InputModFlags flags);
 }
 
 #endif // DRK_INPUT_HPP

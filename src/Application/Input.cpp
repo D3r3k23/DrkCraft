@@ -49,70 +49,51 @@ namespace DrkCraft
 
     ////////// Input Mods //////////
 
-    bool is_mod_pressed(KeyMod mod)
+    InputModFlags get_input_mod_flags(int mods)
     {
-        switch (mod)
-        {
-            case KeyMod::Shift:
-                return is_key_pressed(KeyCode::LeftShift) || is_key_pressed(KeyCode::RightShift);
-            case KeyMod::Ctrl:
-                return is_key_pressed(KeyCode::LeftCtrl) || is_key_pressed(KeyCode::RightCtrl);
-            case KeyMod::Alt:
-                return is_key_pressed(KeyCode::LeftAlt) || is_key_pressed(KeyCode::RightAlt);
-            case KeyMod::Super:
-                return is_key_pressed(KeyCode::LeftSuper) || is_key_pressed(KeyCode::RightSuper);
-            default: return false;
-        }
+        InputModFlags flags = 0;
+        if (mods | GLFW_MOD_SHIFT)     flags = flags | KeyMod::Shift;
+        if (mods | GLFW_MOD_CONTROL)   flags = flags | KeyMod::Ctrl;
+        if (mods | GLFW_MOD_ALT)       flags = flags | KeyMod::Alt;
+        if (mods | GLFW_MOD_SUPER)     flags = flags | KeyMod::Super;
+        if (mods | GLFW_MOD_CAPS_LOCK) flags = flags | KeyMod::CapsLock;
+        if (mods | GLFW_MOD_NUM_LOCK)  flags = flags | KeyMod::NumLock;
+        return flags;
     }
 
-    InputMod get_input_mod(int mods)
+    InputModFlags operator|(InputModFlags flags, KeyMod mod)
     {
-        return static_cast<InputMod>(mods);
+        return flags | static_cast<InputModFlags>(mod);
     }
 
-    KeyMod get_key_mod(KeyCode key)
+    InputModFlags operator|(KeyMod mod, InputModFlags flags)
     {
-        switch (key)
-        {
-            case KeyCode::LeftShift:
-            case KeyCode::RightShift:
-                return KeyMod::Shift;
-
-            case KeyCode::LeftCtrl:
-            case KeyCode::RightCtrl:
-                return KeyMod::Ctrl;
-
-            case KeyCode::LeftAlt:
-            case KeyCode::RightAlt:
-                return KeyMod::Alt;
-
-            case KeyCode::LeftSuper:
-            case KeyCode::RightSuper:
-                return KeyMod::Super;
-
-            default:
-                return KeyMod::None;
-        }
+        return flags | mod;
     }
 
-    bool operator==(InputMod mods, KeyMod keyMod)
+    InputModFlags operator|(KeyMod mod1, KeyMod mod2)
     {
-        return static_cast<int>(mods) | static_cast<int>(keyMod);
+        return static_cast<InputModFlags>(mod1) | mod2;
     }
 
-    bool operator==(KeyMod keyMod, InputMod mods)
+    bool operator==(InputModFlags flags, KeyMod mod)
     {
-        return static_cast<int>(mods) | static_cast<int>(keyMod);
+        return flags & static_cast<InputModFlags>(mod);
     }
 
-    bool operator!=(InputMod mods, KeyMod keyMod)
+    bool operator==(KeyMod mod, InputModFlags flags)
     {
-        return !(mods == keyMod);
+        return flags == mod;
     }
 
-    bool operator!=(KeyMod keyMod, InputMod mods)
+    bool operator!=(InputModFlags flags, KeyMod mod)
     {
-        return !(mods == keyMod);
+        return !(flags == mod);
+    }
+
+    bool operator!=(KeyMod mod, InputModFlags flags)
+    {
+        return !(flags == mod);
     }
 
     ////////// KeyCodes.hpp //////////
