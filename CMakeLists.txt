@@ -32,11 +32,11 @@ add_subdirectory(src)
 add_subdirectory(lib)
 
 # C++ 20
-set_target_properties(DrkCraft
-  PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-)
+# set_target_properties(DrkCraft
+#   PROPERTIES
+#     CXX_STANDARD 20
+#     CXX_STANDARD_REQUIRED ON
+# )
 
 target_compile_options(DrkCraft
   PUBLIC
