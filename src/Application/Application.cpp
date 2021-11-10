@@ -2,33 +2,29 @@
 
 #include "Events.hpp"
 #include "Graphics/Renderer.hpp"
-// #include "Game/Game.hpp"
-#include "Core/Util.hpp"
 
 #include <GLFW/glfw3.h>
-#include <glm/vec3.hpp>
 
-#include <array>
+#include <vector>
 
 namespace DrkCraft
 {
     Application* Application::s_instance = nullptr;
+    int Application::s_exitCode = 0;
 
     void Application::init(void)
     {
-        DRK_LOG_TRACE("Creating Application");
+        DRK_LOG_TRACE("Initializing Application");
         s_instance = new Application;
     }
 
     void Application::start(void)
     {
-        DRK_ASSERT(s_instance, "Application not initialized");
-
         DRK_LOG_TRACE("Starting application");
-        s_instance->run();
+        s_exitCode = get_instance().run();
 
-        if (int status = s_instance->m_exitCode)
-            DRK_LOG_ERROR("Application stopped with error code {}", status);
+        if (s_exitCode)
+            DRK_LOG_ERROR("Application stopped with error code {}", s_exitCode);
     }
 
     int Application::shutdown(void)
@@ -36,9 +32,8 @@ namespace DrkCraft
         if (s_instance)
         {
             DRK_LOG_TRACE("Shutting down Application");
-            int status = s_instance->m_exitCode;
             delete s_instance;
-            return status;
+            return s_exitCode;
         }
         else
             return 1;
@@ -46,24 +41,17 @@ namespace DrkCraft
 
     Application& Application::get_instance(void)
     {
-        DRK_ASSERT(s_instance, "Application instance not initialized");
+        DRK_ASSERT(s_instance, "Application not initialized");
         return *s_instance;
     }
-
-    Window& Application::get_window(void)
-    {
-        DRK_ASSERT(m_window, "Window not initialized");
-        return *m_window;
-    }
-
-    static GLuint vertexArrayObject;
-    static glm::vec3 color{0.5f, 0.5f, 0.5f};
-    static RandomFloatDist dist(0.0f, 1.0f);
 
     Application::Application(void)
       : m_running(false),
         m_minimized(false),
-        m_exitCode(0)
+        m_layerStackView(m_layerStack),
+        m_layerStackReverseView(m_layerStack),
+        m_menuLayer(nullptr),
+        m_gameLayer(nullptr)
     {
         DRK_LOG_TRACE("Initializing GLFW");
         init_glfw();
@@ -71,51 +59,16 @@ namespace DrkCraft
         DRK_LOG_TRACE("Creating Window");
         m_window = new Window("DrkCraft", 1280, 720);
 
-        m_window->register_event_handler(DRK_BIND_EVENT_FN(on_event));
+        m_window->register_event_handler(DRK_BIND_EVENT_HANDLER(on_event));
 
         DRK_LOG_TRACE("Initializing Renderer");
         Renderer::init();
 
-        // m_layerStack.push_front(m_imGuiLayer);
+        open_main_menu();
 
-
+        // ???
         // Window::Size viewPortSize = m_window->get_framebuffer_size();
         // glViewport(0, 0, viewPortSize.width, viewPortSize.height);
-
-        std::array<float, 9> vertexPositions{
-             0.0f,  0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f
-        };
-
-        GLuint vertexBufferObject;
-        glGenBuffers(1, &vertexBufferObject);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions.data(), GL_STATIC_DRAW);
-
-        glGenVertexArrays(1, &vertexArrayObject);
-        glBindVertexArray(vertexArrayObject);
-        glEnableVertexAttribArray(0); // First attribute
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-
-    int Application::run(void)
-    {
-        m_running = true;
-        while (m_running)
-        {
-            Timestep timestep;
-
-            if (!m_minimized)
-            {
-                on_update(timestep);
-                on_render(timestep);
-            }
-
-            m_window->on_update();
-        }
-        return 0;
     }
 
     Application::~Application(void)
@@ -135,46 +88,69 @@ namespace DrkCraft
         auto status = glfwInit();
         DRK_ASSERT(status == GLFW_TRUE, "Failed to initialize GLFW");
 
-        glfwSetErrorCallback(glfw_error_callback);
+        glfwSetErrorCallback([](int error, const char* description)
+        {
+            DRK_LOG_ERROR("GLFW Error [{}]: {}", error, description);
+        });
+    }
+
+    int Application::run(void)
+    {
+        m_running = true;
+        while (m_running)
+        {
+            Timestep timestep;
+
+            m_window->on_update();
+
+            if (!m_minimized)
+            {
+                on_update(timestep);
+                on_render(timestep);
+            }
+        }
+        return 0;
     }
 
     void Application::on_update(Timestep timestep)
     {
-        // for (auto& layer : m_layerStack)
-            // layer.on_update(timestep);
+        std::vector<Layer*> toRemove;
+        for (Layer* layer : m_layerStackReverseView)
+            if (layer->is_deleted())
+                toRemove.push_back(layer);
+
+        for (Layer* layer : toRemove)
+            m_layerStack.remove(layer);
+
+        for (Layer* layer : m_layerStackReverseView)
+            if (layer->is_active())
+                layer->on_update(timestep);
     }
 
     void Application::on_render(Timestep timestep)
     {
-        Renderer::begin();
+        Renderer::begin_frame();
 
-        // for (auto& layer : m_layerStack)
-            // layer.on_render();
+        for (Layer* layer : m_layerStackReverseView)
+            if (layer->is_active())
+                layer->on_render(timestep);
 
-        Renderer::draw_triangle(color, vertexArrayObject);
-
-        Renderer::end();
+        Renderer::end_frame();
     }
 
-    void Application::on_event(Event& event)
+    bool Application::on_event(Event& event)
     {
-        if (event.get_type() != EventType::MouseMoved
-         && event.get_type() != EventType::CharTyped
-         && event.get_type() != EventType::KeyHeld)
-            DRK_LOG_INFO("[Event] {}", std::string(event));
+        log_event(event);
 
-        EventDispatcher dispatcher(event);
-        dispatcher.dispatch<WindowCloseEvent> (DRK_BIND_EVENT_FN(on_window_close));
-        dispatcher.dispatch<WindowResizeEvent>(DRK_BIND_EVENT_FN(on_window_resize));
+        EventDispatcher ed(event);
+        ed.dispatch<WindowCloseEvent>(DRK_BIND_EVENT_HANDLER(on_window_close));
+        ed.dispatch<WindowResizeEvent>(DRK_BIND_EVENT_HANDLER(on_window_resize));
 
-        dispatcher.dispatch<KeyPressedEvent>(DRK_BIND_EVENT_FN(on_key_press));
+        for (Layer* layer : m_layerStackView)
+            if (layer->is_active())
+                layer->on_event(event);
 
-        // Or get rid of dispatcher and just check type?
-
-        // for (auto& layer : m_layerStack)
-            // if (event.handled)
-                // break;
-            // layer.on_event(event);
+        return true;
     }
 
     bool Application::on_window_close(WindowCloseEvent& event)
@@ -188,20 +164,40 @@ namespace DrkCraft
         return true;
     }
 
-    bool Application::on_key_press(KeyPressedEvent& event)
+    void Application::open_main_menu(void)
     {
-        if (event.key == KeyCode::Space)
-        {
-            color = { dist(), dist(), dist() };
-            DRK_LOG_INFO("Changing triangle color to: ({}, {} {})", color.r, color.g, color.b);
-            return true;
-        }
-        else
-            return false;
+        DRK_ASSERT(!m_menuLayer, "MainMenu is already open");
+        m_menuLayer = new MainMenu();
+        m_layerStack.push_front(m_menuLayer);
     }
 
-    void glfw_error_callback(int error, const char* description)
+    void Application::close_main_menu(void)
     {
-        DRK_LOG_ERROR("GLFW Error [{}]: {}", error, description);
+        bool removed = m_layerStack.remove(m_menuLayer);
+        DRK_ASSERT(removed, "MainMenu is already closed");
+    }
+
+    void Application::start_game(void)
+    {
+        DRK_ASSERT(!m_gameLayer, "Game is already running");
+        m_gameLayer = new Game();
+        m_layerStack.push_front(m_gameLayer);
+    }
+
+    void Application::stop_game(void)
+    {
+        bool removed = m_layerStack.remove(m_gameLayer);
+        DRK_ASSERT(removed, "Game is not running");
+    }
+
+    Window& Application::get_window(void)
+    {
+        DRK_ASSERT(m_window, "Window not initialized");
+        return *m_window;
+    }
+
+    LayerStack& Application::get_layer_stack(void)
+    {
+        return m_layerStack;
     }
 }

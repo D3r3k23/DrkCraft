@@ -2,10 +2,9 @@
 
 #if defined(DRK_EN_ASSERTS)
 
-    #include "Base.hpp"
+    #include "Log.hpp"
 
     #include <filesystem>
-    #include <format>
 
     namespace DrkCraft
     {
@@ -14,7 +13,6 @@
             const auto fileName = std::filesystem::path(file).filename().string();
             DRK_LOG_CRITICAL("[{0}:{1}] Assert ({2}) failed: {3}", fileName, line, cond, msg);
             DRK_LOGGER_SAVE();
-            DRK_DEBUG_BREAK();
         }
     }
 

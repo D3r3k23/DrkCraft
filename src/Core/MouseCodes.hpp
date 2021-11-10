@@ -1,13 +1,13 @@
-#ifndef DRK_MOUSE_CODE_HPP
-#define DRK_MOUSE_CODE_HPP
-
-#include "Core/Base.hpp"
+#ifndef DRK_MOUSE_CODES_HPP
+#define DRK_MOUSE_CODES_HPP
 
 namespace DrkCraft
 {
     // From glfw3.h
-    enum class MouseCode : uint16
+    enum class MouseCode
     {
+        None = -1,
+
         Button0 = 0,
         Button1 = 1,
         Button2 = 2,
@@ -21,6 +21,9 @@ namespace DrkCraft
         Right  = Button1,
         Middle = Button2
     };
+
+    MouseCode to_mouse_code(int button);
+    int from_mouse_code(MouseCode button);
 }
 
-#endif // DRK_MOUSE_CODE_HPP
+#endif // DRK_MOUSE_CODES_HPP

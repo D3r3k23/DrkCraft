@@ -2,12 +2,12 @@
 #define DRK_APPLICATION_HPP
 
 #include "Core/Base.hpp"
-#include "Core/Timestep.hpp"
 #include "Window.hpp"
 #include "Layer.hpp"
-// #include "ImGuiLayer.hpp"
-
-#include <deque>
+#include "LayerStack.hpp"
+#include "Timestep.hpp"
+#include "MainMenu.hpp"
+#include "Game/Game.hpp"
 
 namespace DrkCraft
 {
@@ -19,39 +19,47 @@ namespace DrkCraft
         static int  shutdown(void);
 
         static Application& get_instance(void);
-        Window& get_window(void);
 
         Application();
-        int run(void);
         ~Application();
 
         void init_glfw(void);
 
+        int run(void);
+
         void on_update(Timestep timestep);
         void on_render(Timestep timestep);
-        void on_event(Event& event);
+        bool on_event(Event& event);
 
         bool on_window_close(WindowCloseEvent& event);
         bool on_window_resize(WindowResizeEvent& event);
         bool on_key_press(KeyPressedEvent& event);
 
+        void open_main_menu(void);
+        void close_main_menu(void);
+
+        void start_game(void);
+        void stop_game(void);
+
+        Window& get_window(void);
+        LayerStack& get_layer_stack(void);
+
     private:
         static Application* s_instance;
+        static int s_exitCode;
 
         Window* m_window;
 
-        // ImGuiLayer m_imGuiLayer;
-        // std::deque<Layer&> m_layerStack;
+        LayerStack m_layerStack;
+        LayerStack::View m_layerStackView;
+        LayerStack::ReverseView m_layerStackReverseView;
 
-        // Layers: imGuiLayer -> debugLayer -> hudLayer -> (pauseMenuLayer) -> GameLayer
+        MainMenu* m_menuLayer;
+        Game* m_gameLayer;
 
         bool m_running;
         bool m_minimized;
-
-        int m_exitCode;
     };
-
-    void glfw_error_callback(int error, const char* description);
 }
 
 #endif // DRK_APPLICATION_HPP

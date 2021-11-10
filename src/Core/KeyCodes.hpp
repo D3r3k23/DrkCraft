@@ -1,13 +1,18 @@
-#ifndef DRK_KEY_CODE_HPP
-#define DRK_KEY_CODE_HPP
-
-#include "Core/Base.hpp"
+#ifndef DRK_KEY_CODES_HPP
+#define DRK_KEY_CODES_HPP
 
 namespace DrkCraft
 {
+    enum class KeyCode;
+
+    KeyCode to_key_code(int key);
+    int from_key_code(KeyCode key);
+
     // From glfw3.h
-    enum class KeyCode : uint16
+    enum class KeyCode
     {
+        None = -1,
+
         Space      = 32,
         Apostrophe = 39,
         Comma      = 44,
@@ -72,14 +77,14 @@ namespace DrkCraft
         Left         = 263,
         Down         = 264,
         Up           = 265,
-        Page_up      = 266,
-        Page_down    = 267,
+        PageUp       = 266,
+        PageDown     = 267,
         Home         = 268,
         End          = 269,
-        Caps_lock    = 280,
-        Scroll_lock  = 281,
-        Num_lock     = 282,
-        Print_screen = 283,
+        CapsLock     = 280,
+        ScrollLock   = 281,
+        NumLock      = 282,
+        PrintScreen  = 283,
         Pause        = 284,
 
         F1  = 290,
@@ -126,16 +131,16 @@ namespace DrkCraft
         KP_Enter     = 335,
         KP_Equal     = 336,
 
-        LeftShift    = 340,
-        LeftControl  = 341,
-        LeftAlt      = 342,
-        LeftSuper    = 343,
-        RightShift   = 344,
-        RightControl = 345,
-        RightAlt     = 346,
-        RightSuper   = 347,
-        Menu         = 348
+        LeftShift  = 340,
+        LeftCtrl   = 341,
+        LeftAlt    = 342,
+        LeftSuper  = 343,
+        RightShift = 344,
+        RightCtrl  = 345,
+        RightAlt   = 346,
+        RightSuper = 347,
+        Menu       = 348
     };
 }
 
-#endif // DRK_KEY_CODE_HPP
+#endif // DRK_KEY_CODES_HPP

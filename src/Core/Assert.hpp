@@ -3,7 +3,7 @@
 
 // Don't include this directly, use Core/Base.hpp instead
 
-#include "BuildConfig.hpp"
+#include "BuildSettings.hpp"
 
 #if defined(DRK_CONFIG_DEBUG)
     #if defined(DRK_PLATFORM_WINDOWS)
@@ -27,15 +27,17 @@
         // Should add formatting to msg?
         // Should assert errors be logged even if debug break is disabled?
         // Idea:
-        //   DRK_CRIT_ASSERT - always enabled
-        //   DRK_DEBUG_ASSERT - enabled in debug
+        //   DRK_ASSERT_CRIT - always enabled (in release, just aborts)
+        //   DRK_ASSERT_CORE - enabled in debug
         void assert_failed(std::string_view cond, std::string_view msg, std::string_view file, int line);
     }
 
     #define DRK_ASSERT(cond, msg)                              \
         do {                                                   \
-            if (!(cond))                                       \
+            if (!(cond)) {                                     \
                 assert_failed(#cond, msg, __FILE__, __LINE__); \
+                DRK_DEBUG_BREAK();                             \
+            }                                                  \
         } while (false)
 
     #define DRK_ASSERT_FALSE(msg) assert_failed("false", msg, __FILE__, __LINE__)

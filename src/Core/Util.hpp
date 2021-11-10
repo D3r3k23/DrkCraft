@@ -1,6 +1,8 @@
 #ifndef DRK_UTIL_HPP
 #define DRK_UTIL_HPP
 
+#include "Base.hpp"
+
 #include <filesystem>
 #include <random>
 
@@ -29,7 +31,7 @@ namespace DrkCraft
     public:
         RandomFloatDist(float min, float max);
         float get(void);
-        float operator() (void);
+        float operator()(void);
 
     private:
         RandomEngine rng;

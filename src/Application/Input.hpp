@@ -2,13 +2,15 @@
 #define DRK_INPUT_HPP
 
 #include "Core/Base.hpp"
-#include "KeyCodes.hpp"
-#include "MouseCodes.hpp"
+#include "Core/KeyCodes.hpp"
+#include "Core/MouseCodes.hpp"
 
 #include <glm/vec2.hpp>
 
 namespace DrkCraft
 {
+    ////////// Input Queries //////////
+
     bool is_key_pressed(KeyCode key);
     bool is_mouse_button_pressed(MouseCode button);
 
@@ -16,14 +18,30 @@ namespace DrkCraft
     float get_mouse_x(void);
     float get_mouse_y(void);
 
-    KeyCode key_code_from_glfw(int glfwKey);
-    MouseCode mouse_code_from_glfw(int glfwButton);
+    ////////// Key Mods //////////
 
-    int key_code_to_glfw(KeyCode key);
-    int mouse_code_to_glfw(MouseCode button);
+    using InputMod = uint;
 
-    uint16 get_code(KeyCode key);
-    uint16 get_code(MouseCode button);
+    enum class KeyMod
+    {
+        None = 0,
+
+        Shift = 1,
+        Ctrl  = 2,
+        Alt   = 4,
+        Super = 8
+    };
+
+    bool is_mod_pressed(KeyMod mod);
+
+    InputMod get_input_mod(int mods);
+    KeyMod get_key_mod(KeyCode key);
+
+    // Determines if keyMod is part of mods
+    bool operator==(InputMod mods, KeyMod keyMod);
+    bool operator==(KeyMod keyMod, InputMod mods);
+    bool operator!=(InputMod mods, KeyMod keyMod);
+    bool operator!=(KeyMod keyMod, InputMod mods);
 }
 
 #endif // DRK_INPUT_HPP

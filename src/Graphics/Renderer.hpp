@@ -2,7 +2,7 @@
 #define DRK_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Shader.hpp"
+#include "Shaders.hpp"
 
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
@@ -20,12 +20,10 @@ namespace DrkCraft
         static void init(void);
         static void shutdown(void);
 
-        static void add_shader_program(const ShaderProgram& program);
+        static void begin_frame(void);
+        static void end_frame(void);
 
-        static void begin(void);
-        static void end(void);
-
-        static void draw_triangle(glm::vec3 color, GLuint vao);
+        static void draw_triangle(GLuint vao);
 
         static const RendererStats& get_stats(void);
 

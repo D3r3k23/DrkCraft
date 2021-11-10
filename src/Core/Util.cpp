@@ -34,7 +34,7 @@ namespace DrkCraft
         return dist(rng);
     }
 
-    int RandomIntDist::operator() (void)
+    int RandomIntDist::operator()(void)
     {
         return get();
     }

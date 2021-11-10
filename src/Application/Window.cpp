@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 
+// Add fullscreen mode
+
 namespace DrkCraft
 {
     Window::Window(std::string_view title, uint width, uint height)
@@ -13,6 +15,8 @@ namespace DrkCraft
         DRK_ASSERT(m_window, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
+
+        m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
         DRK_LOG_TRACE("Glad: Loading OpenGL functions using GLFW loader function");
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -24,26 +28,21 @@ namespace DrkCraft
         glfwDestroyWindow(m_window);
     }
 
+    void Window::register_event_handler(const EventHandlerFn<Event>& handler)
+    {
+        m_eventGenerator->register_event_handler(handler);
+        m_eventGenerator->register_event_callbacks();
+    }
+
     void Window::on_update(void)
     {
         glfwPollEvents();
         glfwSwapBuffers(m_window);
     }
 
-    void Window::register_event_handler(const EventHandlerFn& handler)
-    {
-        eventGenerator.register_event_handler(m_window, handler);
-        eventGenerator.register_event_callbacks();
-    }
-
-    GLFWwindow* Window::get_native_window(void) const
-    {
-        return m_window;
-    }
-
     glm::uvec2 Window::resize(uint width, uint height)
     {
-        glfwSetWindowSize(m_window, width, height);
+        glfwSetWindowSize(m_window, width, height); // Also resize framebuffer?
         return get_size();
     }
 
@@ -65,5 +64,30 @@ namespace DrkCraft
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
         return { (uint)width, (uint)height };
+    }
+
+    bool Window::is_focused(void) const
+    {
+        return glfwGetWindowAttrib(m_window, GLFW_FOCUSED);
+    }
+
+    bool Window::is_hovered(void) const
+    {
+        return glfwGetWindowAttrib(m_window, GLFW_HOVERED);
+    }
+
+    bool Window::is_minimized(void) const
+    {
+        return glfwGetWindowAttrib(m_window, GLFW_ICONIFIED);
+    }
+
+    bool Window::is_maximized(void) const
+    {
+        return glfwGetWindowAttrib(m_window, GLFW_MAXIMIZED);
+    }
+
+    GLFWwindow* Window::get_native_window(void) const
+    {
+        return m_window;
     }
 }

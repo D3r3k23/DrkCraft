@@ -17,11 +17,9 @@ namespace DrkCraft
         Window(std::string_view name, uint width, uint height);
         ~Window(void);
 
-        void register_event_handler(const EventHandlerFn& handler);
+        void register_event_handler(const EventHandlerFn<Event>& handler);
 
         void on_update(void);
-
-        GLFWwindow* get_native_window(void) const;
 
         glm::uvec2 resize(uint width, uint height);
         glm::uvec2 resize(glm::uvec2 size);
@@ -29,11 +27,18 @@ namespace DrkCraft
         glm::uvec2 get_size(void) const;
         glm::uvec2 get_framebuffer_size(void) const; // ???
 
+        bool is_focused(void) const;
+        bool is_hovered(void) const;
+        bool is_minimized(void) const;
+        bool is_maximized(void) const;
+
+        GLFWwindow* get_native_window(void) const;
+
     private:
         GLFWwindow* m_window;
         std::string m_title;
 
-        EventGenerator eventGenerator;
+        Ptr<EventGenerator> m_eventGenerator;
     };
 }
 

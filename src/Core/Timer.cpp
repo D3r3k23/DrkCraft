@@ -14,12 +14,12 @@ namespace DrkCraft
         m_start = glfwGetTime();
     }
 
-    float Timer::elapsed_seconds(void)
+    float Timer::elapsed_seconds(void) const
     {
         return glfwGetTime() - m_start;
     }
 
-    float Timer::elapsedMilliseconds(void)
+    float Timer::elapsedMilliseconds(void) const
     {
         return elapsed_seconds() * 1000.0f;
     }

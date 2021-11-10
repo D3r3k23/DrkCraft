@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+project(DrkCraft VERSION 0.0.1)
+
 # Set PLATFORM
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
     set(PLATFORM Windows)
@@ -25,9 +27,7 @@ message("[${PLATFORM}] ${BUILD_CONFIG} build")
 string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
 string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
 
-project(DrkCraft)
 add_executable(DrkCraft)
-
 add_subdirectory(src)
 add_subdirectory(lib)
 

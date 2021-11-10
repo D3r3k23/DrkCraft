@@ -2,11 +2,15 @@
 #define DRK_SCENE_HPP
 
 #include "Entity.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Shaders.hpp"
 
 #include <entt.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <string>
 #include <string_view>
+#include <unordered_map>
 
 namespace DrkCraft
 {
@@ -22,6 +26,8 @@ namespace DrkCraft
         entt::registry m_registry;
 
         glm::mat4 viewProjection;
+
+        // std::unordered_map<std::string, ShaderProgram> m_shaderPrograms;
     };
 }
 

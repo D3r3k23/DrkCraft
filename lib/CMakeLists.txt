@@ -8,7 +8,7 @@ target_include_directories(DrkCraft
 )
 
 add_subdirectory(glad) # Custom CMakeLists.txt
-add_subdirectory(glfw) # Include official CMakeLists.txt
+add_subdirectory(glfw) # Repo CMakeLists.txt
 
 target_link_libraries(DrkCraft
   PUBLIC

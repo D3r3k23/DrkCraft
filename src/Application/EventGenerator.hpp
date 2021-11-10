@@ -1,6 +1,7 @@
 #ifndef DRK_EVENT_GENERATOR_HPP
 #define DRK_EVENT_GENERATOR_HPP
 
+#include "Core/Base.hpp"
 #include "Events.hpp"
 
 #include <GLFW/glfw3.h>
@@ -10,13 +11,13 @@ namespace DrkCraft
     class EventGenerator
     {
     public:
-        EventGenerator(void) = default;
-        void register_event_handler(GLFWwindow* window, const EventHandlerFn& handler);
+        EventGenerator(GLFWwindow* window);
+        void register_event_handler(const EventHandlerFn<Event>& handler);
         void register_event_callbacks(void);
 
     private:
         GLFWwindow* m_window;
-        EventHandlerFn m_handler;
+        EventHandlerFn<Event> m_handler;
     };
 
     namespace GLFWEventCallbackFunctions
@@ -30,8 +31,8 @@ namespace DrkCraft
         void key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods);
         void char_callback(GLFWwindow* window, uint codePoint);
 
-        void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
         void cursor_pos_callback(GLFWwindow* window, double xPos, double yPos);
+        void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
         void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
     }
 }

@@ -1,5 +1,5 @@
-#ifndef DRK_BUILD_HPP
-#define DRK_BUILD_HPP
+#ifndef DRK_BUILD_SETTINGS_HPP
+#define DRK_BUILD_SETTINGS_HPP
 
 #if defined(DRK_PLATFORM_WINDOWS)
     #define DRK_PLATFORM_NAME "Windows"
@@ -23,4 +23,4 @@
     #error "Unknown config detected"
 #endif
 
-#endif // DRK_BUILD_HPP
+#endif // DRK_BUILD_SETTINGS_HPP

@@ -1,7 +1,8 @@
 /.vscode/**
 /.VSCodeCounter/**
 
+/.venv/**
 /build/**
-/venv/**
 
-/log/**
+/data/saves/**
+/data/log/**

@@ -1,12 +1,16 @@
 #include "EventGenerator.hpp"
 
+#include "Input.hpp"
+
 namespace DrkCraft
 {
-    void EventGenerator::register_event_handler(GLFWwindow* window, const EventHandlerFn& handler)
-    {
-        m_window = window;
-        m_handler = handler;
+    EventGenerator::EventGenerator(GLFWwindow* window)
+      : m_window(window)
+    { }
 
+    void EventGenerator::register_event_handler(const EventHandlerFn<Event>& handler)
+    {
+        m_handler = handler;
         glfwSetWindowUserPointer(m_window, static_cast<void*>(&m_handler));
     }
 
@@ -23,13 +27,13 @@ namespace DrkCraft
         glfwSetKeyCallback(m_window, key_callback);
         glfwSetCharCallback(m_window, char_callback);
 
-        glfwSetMouseButtonCallback(m_window, mouse_button_callback);
         glfwSetCursorPosCallback(m_window, cursor_pos_callback);
+        glfwSetMouseButtonCallback(m_window, mouse_button_callback);
         glfwSetScrollCallback(m_window, scroll_callback);
     }
 
     // Calls m_eventHandler through GLFW user pointer
-    #define DRK_CALL_EVENT_HANDLER_FN(event) (*static_cast<EventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
+    #define DRK_CALL_EVENT_HANDLER_FN(event) (*static_cast<EventHandlerFn<Event>*>(glfwGetWindowUserPointer(window)))(event)
 
     namespace GLFWEventCallbackFunctions
     {
@@ -89,19 +93,19 @@ namespace DrkCraft
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressedEvent event(key);
+                    KeyPressedEvent event(to_key_code(key), get_input_mod(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyHeldEvent event(key);
+                    KeyHeldEvent event(to_key_code(key), get_input_mod(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleasedEvent event(key);
+                    KeyReleasedEvent event(to_key_code(key), get_input_mod(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
@@ -112,11 +116,17 @@ namespace DrkCraft
 
         void char_callback(GLFWwindow* window, uint codePoint)
         {
-            CharTypedEvent event(codePoint);
+            CharTypedEvent event(static_cast<char>(codePoint));
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
 
         ////////// Mouse Events //////////
+
+        void cursor_pos_callback(GLFWwindow* window, double xPos, double yPos)
+        {
+            MouseMovedEvent event((float)xPos, (float)yPos);
+            DRK_CALL_EVENT_HANDLER_FN(event);
+        }
 
         void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         {
@@ -124,13 +134,13 @@ namespace DrkCraft
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event(button);
+                    MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseButtonReleasedEvent event(button);
+                    MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod(mods));
                     DRK_CALL_EVENT_HANDLER_FN(event);
                     break;
                 }
@@ -139,15 +149,9 @@ namespace DrkCraft
             }
         }
 
-        void cursor_pos_callback(GLFWwindow* window, double xPos, double yPos)
-        {
-            MouseMovedEvent event(xPos, yPos);
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
-
         void scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
         {
-            MouseScrolledEvent event(xOffset, yOffset);
+            ScrollWheelMovedEvent event((float)xOffset, (float)yOffset);
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
     }

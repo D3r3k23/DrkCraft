@@ -1,6 +1,8 @@
 #ifndef DRK_TIMER_HPP
 #define DRK_TIMER_HPP
 
+#include "Base.hpp"
+
 namespace DrkCraft
 {
     class Timer
@@ -9,8 +11,8 @@ namespace DrkCraft
         Timer(void);
         void reset(void);
 
-        float elapsed_seconds(void);
-        float elapsedMilliseconds(void);
+        float elapsed_seconds(void) const;
+        float elapsedMilliseconds(void) const;
 
     private:
         double m_start;

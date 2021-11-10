@@ -1,16 +1,18 @@
 #ifndef DRK_EVENT_HPP
 #define DRK_EVENT_HPP
 
+// Probably should not include directly, use Application/Events.hpp instead
+
 #include "Core/Base.hpp"
-#include "Input.hpp"
 
 #include <string>
 #include <functional>
 #include <utility>
+#include <concepts>
 
-#define DRK_BIND_EVENT_FN(fn) [this](auto&& ... args) -> decltype(auto) \
-{                                                                       \
-    return this->fn(std::forward<decltype(args)>(args)...);             \
+#define DRK_BIND_EVENT_HANDLER(fn) [this](auto&& ... args) -> bool \
+{                                                                  \
+    return this->fn(std::forward<decltype(args)>(args)...);        \
 }
 
 namespace DrkCraft
@@ -18,21 +20,27 @@ namespace DrkCraft
     enum class EventType
     {
         None = 0,
+
+        // Window Events
         WindowClose,
-        WindowResize,
+        WindowResize, // Framebuffer size
         WindowMoved,
         WindowFocused,
         WindowFocusLost,
         WindowMinimized, // Maximized
-        WindowRestored,
+        WindowRestored,  // Restored from maximized/minimzed?
+
+        // Key Events
         KeyPressed,
         KeyHeld,
         KeyReleased,
         CharTyped,
+
+        // Mouse Events
         MouseButtonPressed,
         MouseButtonReleased,
         MouseMoved,
-        MouseScrolled
+        ScrollWheelMoved
     };
 
     struct Event
@@ -47,23 +55,28 @@ namespace DrkCraft
         bool handled = false;
     };
 
-    using EventHandlerFn = std::function<void(Event&)>;
+    void log_event(const Event& event);
+
+    template <typename E>
+    concept EventConcept = std::derived_from<E, Event>;
+
+    template <EventConcept E>
+    using EventHandlerFn = std::function<bool(E&)>;
 
     class EventDispatcher
     {
     public:
-        EventDispatcher(Event& event) : event(event) { }
+        EventDispatcher(Event& event)
+          : event(event)
+        { }
 
-        template <typename E>
-        bool dispatch(const auto handler) // Event handler functions return true if handled
+        // Calls event handler function for events of type E
+        // Handler returns true if event handled
+        template <EventConcept E>
+        void dispatch(const EventHandlerFn<E>& handler)
         {
-            if (event.get_type() == E::static_type())
-            {
+            if (!event.handled && event.get_type() == E::static_type())
                 event.handled = handler(static_cast<E&>(event));
-                return true;
-            }
-            else
-                return false;
         }
 
     private:

@@ -2,15 +2,12 @@
 
 #include "Application/Application.hpp"
 
-#include <algorithm>
 #include <unordered_map>
 
 namespace DrkCraft
 {
     struct RendererData
     {
-        std::unordered_map<std::string, ShaderProgram> shaderPrograms;
-
         RendererStats stats;
     };
 
@@ -29,11 +26,6 @@ namespace DrkCraft
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
-
-        add_shader_program(ShaderProgram("FlatColor", {
-            Shader("assets/shaders/flat_color_vertex_shader.glsl",   ShaderType::Vertex),
-            Shader("assets/shaders/flat_color_fragment_shader.glsl", ShaderType::Fragment)
-        }));
     }
 
     void Renderer::shutdown(void)
@@ -41,30 +33,18 @@ namespace DrkCraft
 
     }
 
-    void Renderer::add_shader_program(const ShaderProgram& program)
-    {
-        auto& shaderPrograms = s_rendererData.shaderPrograms;
-        DRK_ASSERT(!shaderPrograms.contains(program.get_name()), "This ShaderProgram already exists");
-        shaderPrograms[program.get_name()] = program;
-    }
-
-    void Renderer::begin(void)
+    void Renderer::begin_frame(void)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::end(void)
+    void Renderer::end_frame(void)
     {
 
     }
 
-    void Renderer::draw_triangle(glm::vec3 color, GLuint vao)
+    void Renderer::draw_triangle(GLuint vao)
     {
-        GLuint program = s_rendererData.shaderPrograms["FlatColor"].get_id();
-        glUseProgram(program);
-        GLint colorUniformLocation = glGetUniformLocation(program, "color");
-        glUniform4f(colorUniformLocation, color.r, color.g, color.b, 1.0);
-
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
@@ -80,16 +60,9 @@ namespace DrkCraft
         glDebugMessageCallback(gl_message_handler, nullptr);
     }
 
-    // Move to EventGenerator?
     void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
     {
-        static const std::vector<GLuint> ignoreIDs{
-            131169,
-            131185,
-            131218,
-            131204
-        };
-        if (std::any_of(ignoreIDs.begin(), ignoreIDs.end(), [id](GLuint iID){ return iID == id; }))
+        if (id == 131169 || id == 131185 || id == 131218 || 131204)
             return;
 
         const char* sourceStr = [source]{

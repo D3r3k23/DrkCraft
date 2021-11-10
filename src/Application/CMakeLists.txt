@@ -3,7 +3,9 @@ target_sources(DrkCraft
     Application.cpp
     EventGenerator.cpp
     Events.cpp
-    ImGuiLayer.cpp
-    Window.cpp
     Input.cpp
+    LayerStack.cpp
+    MainMenu.cpp
+    Timestep.cpp
+    Window.cpp
 )
