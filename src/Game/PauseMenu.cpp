@@ -63,7 +63,6 @@ namespace DrkCraft
             case KeyCode::Enter:
             {
                 m_onSaveGame();
-                detach_layer();
                 return true;
             }
             case KeyCode::Space:

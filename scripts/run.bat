@@ -1,11 +1,5 @@
 @echo OFF
 
-if "%1" == ""          set "build_config=Debug"
-if "%1" == "--debug"   set "build_config=Debug"
-if "%1" == "-D"        set "build_config=Debug"
-if "%1" == "--release" set "build_config=Release"
-if "%1" == "-R"        set "build_config=Release"
+call scripts\get_build_config.bat %1
 
-set "build_dir=build"
-
-%build_dir%\%build_config%\DrkCraft.exe
+%exe%
