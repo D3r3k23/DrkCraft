@@ -30,7 +30,7 @@ namespace DrkCraft
         glfwDestroyWindow(m_window);
     }
 
-    void Window::register_event_handler(const EventHandlerFn<Event>& handler)
+    void Window::register_event_handler(const AbstractEventHandlerFn& handler)
     {
         m_eventGenerator->register_event_handler(handler);
         m_eventGenerator->register_event_callbacks();

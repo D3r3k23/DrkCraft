@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 
+#include "Core/BuildSettings.hpp"
 #include "Application/Application.hpp"
 
 #include <unordered_map>

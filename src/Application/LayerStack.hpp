@@ -9,25 +9,27 @@
 
 namespace DrkCraft
 {
-    using LayerDeque = std::deque<Layer*>;
-
-    template <typename I>
-    concept LayerDequeIteratorConcept = std::convertible_to<I, LayerDeque::const_iterator>
-                                     || std::convertible_to<I, LayerDeque::const_reverse_iterator>;;
+    using LayerDeque = std::deque<Ref<Layer>>;
 
     class LayerStack
     {
     public:
         LayerStack(void) = default;
+        LayerStack(const LayerStack& other);
         ~LayerStack(void);
 
-        void push_front(Layer* layer);
-        void push_back(Layer* layer);
+        void clear(void);
 
+        void push_front(const Ref<Layer>& layer);
+        void push_back(const Ref<Layer>& layer);
+
+        // Do we need these?
         void pop_front(void);
         void pop_back(void);
 
-        bool remove(Layer* layer);
+        bool remove(const Ref<Layer>& layer);
+
+        void refresh(void); // Removes detached Layers
 
         bool is_empty(void) const;
 
@@ -35,22 +37,17 @@ namespace DrkCraft
         LayerDeque m_layers;
 
     public:
-        class View
+        // Note: Modifying a LayerStack will invalidate any of its Views
+        //   In Application, we first copy the LayerStack and create the Views
+        //   using the copy. Since the layers are stored in refence-counted
+        //   pointers, the will remain until the LayerStack copy is destroyed.
+
+        class ForwardView
         {
         public:
-            View(LayerStack& layerStack)
+            ForwardView(const LayerStack& layerStack)
               : m_layerStack(layerStack)
             { }
-
-            LayerDeque::iterator begin(void)
-            {
-                return m_layerStack.m_layers.begin();
-            }
-
-            LayerDeque::iterator end(void)
-            {
-                return m_layerStack.m_layers.end();
-            }
 
             LayerDeque::const_iterator begin(void) const
             {
@@ -63,25 +60,15 @@ namespace DrkCraft
             }
 
         private:
-            LayerStack& m_layerStack;
+            const LayerStack& m_layerStack;
         };
 
         class ReverseView
         {
         public:
-            ReverseView(LayerStack& layerStack)
+            ReverseView(const LayerStack& layerStack)
               : m_layerStack(layerStack)
             { }
-
-            LayerDeque::reverse_iterator begin(void)
-            {
-                return m_layerStack.m_layers.rbegin();
-            }
-
-            LayerDeque::reverse_iterator end(void)
-            {
-                return m_layerStack.m_layers.rend();
-            }
 
             LayerDeque::const_reverse_iterator begin(void) const
             {
@@ -94,7 +81,7 @@ namespace DrkCraft
             }
 
         private:
-            LayerStack& m_layerStack;
+            const LayerStack& m_layerStack;
         };
     };
 }

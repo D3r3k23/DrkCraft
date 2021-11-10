@@ -5,6 +5,8 @@
 #include "Application/Layer.hpp"
 #include "Application/Timestep.hpp"
 #include "Application/Events.hpp"
+#include "HudLayer.hpp"
+#include "DebugLayer.hpp"
 #include "Engine/Scene.hpp"
 #include "World.hpp"
 
@@ -19,18 +21,30 @@ namespace DrkCraft
     {
     public:
         Game(void);
+        ~Game(void);
+
+        void on_attach(void) override;
+        void on_detach(void) override;
 
         void on_update(Timestep timestep) override;
         void on_render(Timestep timestep) override;
         void on_event(Event& event) override;
 
+    private:
         bool on_key_pressed(KeyPressedEvent& event);
 
         void pause(void);
+        void unpause(void);
+        bool is_paused(void) const;
+
+        void save(void);
 
     private:
         Scene scene;
         World world;
+
+        Ref<HudLayer> m_hudLayer;
+        Ref<DebugLayer> m_debugLayer;
 
         bool m_running;
         bool m_paused;

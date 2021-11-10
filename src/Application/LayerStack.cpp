@@ -2,51 +2,73 @@
 
 namespace DrkCraft
 {
+    LayerStack::LayerStack(const LayerStack& other)
+      : m_layers(other.m_layers)
+    { }
+
     LayerStack::~LayerStack(void)
     {
-        for (Layer* layer : m_layers)
-            delete layer;
+        clear();
     }
 
-    void LayerStack::push_front(Layer* layer)
+    void LayerStack::clear(void)
     {
-        DRK_LOG_TRACE("Pushing Layer (front): {}", layer->get_name());
+        m_layers.clear();
+    }
+
+    void LayerStack::push_front(const Ref<Layer>& layer)
+    {
+        DRK_LOG_TRACE("Pushing Layer (front): {}", layer->get_layer_name());
         m_layers.push_front(layer);
     }
 
-    void LayerStack::push_back(Layer* layer)
+    void LayerStack::push_back(const Ref<Layer>& layer)
     {
-        DRK_LOG_TRACE("Pushing Layer (back): {}", layer->get_name());
+        DRK_LOG_TRACE("Pushing Layer (back): {}", layer->get_layer_name());
         m_layers.push_back(layer);
     }
 
     void LayerStack::pop_front(void)
     {
-        Layer* layer = m_layers.front();
-        DRK_LOG_TRACE("Popping Layer (front): {}", layer->get_name());
-        m_layers.pop_front();
-        delete layer;
+        if (!is_empty())
+        {
+            const auto& layer = m_layers.front();
+            DRK_LOG_TRACE("Popping Layer (front): {}", layer->get_layer_name());
+            m_layers.pop_front();
+        }
     }
 
     void LayerStack::pop_back(void)
     {
-        Layer* layer = m_layers.back();
-        DRK_LOG_TRACE("Popping Layer (back): {}", layer->get_name());
-        m_layers.pop_back();
-        delete layer;
+        if (!is_empty())
+        {
+            const auto& layer = m_layers.back();
+            DRK_LOG_TRACE("Popping Layer (back): {}", layer->get_layer_name());
+            m_layers.pop_back();
+        }
     }
 
-    bool LayerStack::remove(Layer* layer)
+    bool LayerStack::remove(const Ref<Layer>& layer)
     {
         if (auto it = std::find(m_layers.begin(), m_layers.end(), layer); it != m_layers.end())
         {
-            DRK_LOG_TRACE("Removing Layer: {}", layer->get_name());
+            DRK_LOG_TRACE("Removing Layer: {}", layer->get_layer_name());
             m_layers.erase(it);
-            delete layer;
             return true;
         }
         else
             return false;
+    }
+
+    void LayerStack::refresh(void)
+    {
+        std::vector<Ref<Layer>> toRemove;
+        for (const auto& layer : m_layers)
+            if (layer->is_layer_detached())
+                toRemove.push_back(layer);
+
+        for (const auto& layer : toRemove)
+            remove(layer);
     }
 
     bool LayerStack::is_empty(void) const

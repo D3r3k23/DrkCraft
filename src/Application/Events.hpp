@@ -60,11 +60,11 @@ namespace DrkCraft
         const uint yPos;
     };
 
-    struct WindowFocusedEvent : WindowEvent
+    struct WindowFocusGainedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowFocused);
+        DRK_EVENT_TYPE_INFO(WindowFocusGained);
 
-        WindowFocusedEvent(void) = default;
+        WindowFocusGainedEvent(void) = default;
     };
 
     struct WindowFocusLostEvent : WindowEvent

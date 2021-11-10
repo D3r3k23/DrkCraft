@@ -52,12 +52,12 @@ namespace DrkCraft
     InputModFlags get_input_mod_flags(int mods)
     {
         InputModFlags flags = 0;
-        if (mods | GLFW_MOD_SHIFT)     flags = flags | KeyMod::Shift;
-        if (mods | GLFW_MOD_CONTROL)   flags = flags | KeyMod::Ctrl;
-        if (mods | GLFW_MOD_ALT)       flags = flags | KeyMod::Alt;
-        if (mods | GLFW_MOD_SUPER)     flags = flags | KeyMod::Super;
-        if (mods | GLFW_MOD_CAPS_LOCK) flags = flags | KeyMod::CapsLock;
-        if (mods | GLFW_MOD_NUM_LOCK)  flags = flags | KeyMod::NumLock;
+        if (mods & GLFW_MOD_SHIFT)     flags = flags | KeyMod::Shift;
+        if (mods & GLFW_MOD_CONTROL)   flags = flags | KeyMod::Ctrl;
+        if (mods & GLFW_MOD_ALT)       flags = flags | KeyMod::Alt;
+        if (mods & GLFW_MOD_SUPER)     flags = flags | KeyMod::Super;
+        if (mods & GLFW_MOD_CAPS_LOCK) flags = flags | KeyMod::CapsLock;
+        if (mods & GLFW_MOD_NUM_LOCK)  flags = flags | KeyMod::NumLock;
         return flags;
     }
 

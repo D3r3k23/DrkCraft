@@ -18,6 +18,12 @@ namespace DrkCraft
     using int32  = int32_t;
     using uint32 = uint32_t;
 
+    // Bind member function to lambda
+    #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto     \
+    {                                                           \
+        return this->fn(std::forward<decltype(args)>(args)...); \
+    }
+
     // Alias for lifetime-managed pointer
     template <typename T>
     using Ptr = std::unique_ptr<T>;

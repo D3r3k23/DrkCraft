@@ -6,11 +6,17 @@
 namespace DrkCraft
 {
     Game::Game(void)
-      : Layer("GameLayer"),
+      : Layer("GameLayer", true),
         flatColorShaderProgram("FlatColorShaderProgram"),
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
     {
+        m_hudLayer = Layer::create<HudLayer>();
+        Application::get_instance().add_overlay(m_hudLayer);
+
+        m_debugLayer = Layer::create<DebugLayer>();
+        Application::get_instance().add_overlay(m_debugLayer);
+
         std::array<float, 9> vertexPositions{
              0.0f,  0.5f, 0.0f,
              0.5f, -0.5f, 0.0f,
@@ -33,6 +39,21 @@ namespace DrkCraft
         flatColorShaderProgram.link();
     }
 
+    Game::~Game(void)
+    {
+
+    }
+
+    void Game::on_attach(void)
+    {
+
+    }
+
+    void Game::on_detach(void)
+    {
+
+    }
+
     void Game::on_update(Timestep timestep)
     {
 
@@ -49,7 +70,7 @@ namespace DrkCraft
     void Game::on_event(Event& event)
     {
         EventDispatcher ed(event);
-        ed.dispatch<KeyPressedEvent>(DRK_BIND_EVENT_HANDLER(on_key_pressed));
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
 
     bool Game::on_key_pressed(KeyPressedEvent& event)
@@ -62,11 +83,10 @@ namespace DrkCraft
                 DRK_LOG_INFO("Changing triangle color to: ({}, {} {})", color.r, color.g, color.b);
                 return true;
             }
-            case KeyCode::Escape: // Or pause button
+            case KeyCode::Escape:
             {
-                // pause();
-                // return true;
-                return false;
+                pause();
+                return true;
             }
             default:
                 return false;
@@ -75,7 +95,37 @@ namespace DrkCraft
 
     void Game::pause(void)
     {
+        DRK_LOG_INFO("Game paused");
         m_paused = true;
-        Application::get_instance().get_layer_stack().push_front(new PauseMenu());
+        deactivate_layer();
+
+        auto pauseMenu = Layer::create<PauseMenu>();
+        pauseMenu->set_save_game_callback_fn([&]
+        {
+            save();
+        });
+        pauseMenu->set_unpause_callback_fn([&](bool unpaused)
+        {
+            if (unpaused)
+                unpause();
+        });
+        Application::get_instance().add_overlay(pauseMenu);
+    }
+
+    void Game::unpause(void)
+    {
+        DRK_LOG_INFO("Game unpaused");
+        m_paused = false;
+        activate_layer();
+    }
+
+    bool Game::is_paused(void) const
+    {
+        return m_paused;
+    }
+
+    void Game::save(void)
+    {
+        DRK_LOG_INFO("Saving Game");
     }
 }

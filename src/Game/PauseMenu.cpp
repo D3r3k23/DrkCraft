@@ -3,7 +3,32 @@
 namespace DrkCraft
 {
     PauseMenu::PauseMenu(void)
-      : Layer("PauseMenuLayer")
+      : Layer("PauseMenuLayer", true)
+    {
+
+    }
+
+    PauseMenu::~PauseMenu(void)
+    {
+
+    }
+
+    void PauseMenu::set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn)
+    {
+        m_onSaveGame = fn;
+    }
+
+    void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
+    {
+        m_onUnpause = fn;
+    }
+
+    void PauseMenu::on_attach(void)
+    {
+
+    }
+
+    void PauseMenu::on_detach(void)
     {
 
     }
@@ -21,7 +46,34 @@ namespace DrkCraft
     void PauseMenu::on_event(Event& event)
     {
         EventDispatcher ed(event);
-        ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_EVENT_HANDLER(on_mouse_button_pressed));
+        ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+    }
+
+    bool PauseMenu::on_key_pressed(KeyPressedEvent& event)
+    {
+        switch (event.key)
+        {
+            case KeyCode::Escape:
+            {
+                m_onUnpause(true);
+                detach_layer();
+                return true;
+            }
+            case KeyCode::Enter:
+            {
+                m_onSaveGame();
+                detach_layer();
+                return true;
+            }
+            case KeyCode::Space:
+            {
+                detach_layer();
+                return true;
+            }
+            default:
+                return false;
+        }
     }
 
     bool PauseMenu::on_mouse_button_pressed(MouseButtonPressedEvent& event)

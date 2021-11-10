@@ -7,50 +7,51 @@
 
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace DrkCraft
 {
+    class Layer;
+
+    template <typename L>
+    concept ConcreteLayerConcept = std::derived_from<L, Layer> && !std::same_as<L, Layer>;
+
     class Layer
     {
     public:
-        Layer(std::string_view name="Layer")
-          : m_layerName(name),
-            m_layerActive(true),
-            m_layerDeleted(false)
+        template<ConcreteLayerConcept L, typename ... Args>
+        constexpr static Ref<L> create(Args&& ... args)
         {
-            DRK_LOG_TRACE("Creating Layer: {}", m_layerName);
+            return make_ptr<L>(std::forward<Args>(args)...);
         }
 
-        virtual ~Layer(void) = default;
+        Layer(std::string_view name, bool active=true);
+        virtual ~Layer(void);
 
         virtual void on_update(Timestep timestep) = 0;
         virtual void on_render(Timestep timestep) = 0;
         virtual void on_event(Event& e) = 0;
 
-        void close_layer(void)
-        {
-            m_layerDeleted = true;
-        }
+        virtual void on_attach(void) { }
+        virtual void on_detach(void) { }
 
-        std::string get_name(void) const
-        {
-            return m_layerName;
-        }
+        void attach_layer(void);
+        void detach_layer(void);
 
-        bool is_active(void) const
-        {
-            return m_layerActive && !m_layerDeleted;
-        }
+        void activate_layer(void);
+        void deactivate_layer(void);
 
-        bool is_deleted(void) const
-        {
-            return m_layerDeleted;
-        }
+        bool is_layer_active(void) const;
+        bool is_layer_attached(void) const;
+        bool is_layer_detached(void) const;
 
-    protected:
+        std::string get_layer_name(void) const;
+
+    private:
         const std::string m_layerName;
+
         bool m_layerActive;
-        bool m_layerDeleted;
+        bool m_layerAttached;
     };
 }
 

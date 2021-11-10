@@ -17,7 +17,7 @@ namespace DrkCraft
         Window(std::string_view name, uint width, uint height);
         ~Window(void);
 
-        void register_event_handler(const EventHandlerFn<Event>& handler);
+        void register_event_handler(const AbstractEventHandlerFn& handler);
 
         void on_update(void);
 

@@ -30,6 +30,9 @@
             // s_eventLog
             // s_rendererLog
             // s_gameLog
+
+            // get log_event() function
+            // conversion for glm types
         };
     }
 

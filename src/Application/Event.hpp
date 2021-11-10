@@ -4,73 +4,19 @@
 // Probably should not include directly, use Application/Events.hpp instead
 
 #include "Core/Base.hpp"
+#include "EventInfo.hpp"
 
 #include <string>
 #include <functional>
 #include <utility>
 #include <concepts>
 
-#define DRK_BIND_EVENT_HANDLER(fn) [this](auto&& ... args) -> bool \
-{                                                                  \
-    return this->fn(std::forward<decltype(args)>(args)...);        \
-}
-
 namespace DrkCraft
 {
-    enum class EventType
-    {
-        None = 0,
-
-        // Window Events
-        WindowClose,
-        WindowResize, // Framebuffer size
-        WindowMoved,
-        WindowFocused,
-        WindowFocusLost,
-        WindowMinimized, // Maximized
-        WindowRestored,  // Restored from maximized/minimzed?
-
-        // Key Events
-        KeyPressed,
-        KeyHeld,
-        KeyReleased,
-        CharTyped,
-
-        // Mouse Events
-        MouseButtonPressed,
-        MouseButtonReleased,
-        MouseMoved,
-        ScrollWheelMoved
-    };
-
-    using EventCategoryFlags = uint;
-
-    enum class EventCategory : EventCategoryFlags
-    {
-        None = 0,
-
-        Window      = 0b000001,
-        Input       = 0b000010,
-        Key         = 0b000110,
-        Char        = 0b001010,
-        Mouse       = 0b010010,
-        MouseButton = 0b110010
-    };
-
-    EventCategoryFlags operator|(EventCategoryFlags flags, EventCategory cat);
-    EventCategoryFlags operator|(EventCategory cat, EventCategoryFlags flags);
-    EventCategoryFlags operator|(EventCategory cat1, EventCategory cat2);
-
-    bool operator==(EventCategory cat, EventCategoryFlags flags);
-    bool operator==(EventCategoryFlags flags, EventCategory cat);
-
-    bool operator!=(EventCategory cat, EventCategoryFlags flags);
-    bool operator!=(EventCategoryFlags flags, EventCategory cat);
-
     struct Event
     {
-        bool handled = false;
-
+    public:
+        Event(void);
         ~Event(void) = default;
 
         virtual EventType   get_type(void) const = 0;
@@ -79,21 +25,27 @@ namespace DrkCraft
         virtual EventCategory get_category(void) const = 0;
 
         virtual operator std::string(void) const;
+
+        bool handled(void) const;
+
+    private:
+        friend class EventDispatcher;
+        void set_handled(void);
+        bool m_handled;
     };
 
-    bool operator==(const Event& event, EventCategoryFlags flags);
-    bool operator==(EventCategoryFlags flags, const Event& event);
-
-    bool operator!=(const Event& event, EventCategoryFlags flags);
-    bool operator!=(EventCategoryFlags flags, const Event& event);
-
-    void log_event(const Event& event);
+    void log_event(const Event& event); // Move this to logger
 
     template <typename E>
     concept EventConcept = std::derived_from<E, Event>;
 
-    template <EventConcept E>
-    using EventHandlerFn = std::function<bool(E&)>;
+    template <typename E>
+    concept ConcreteEventConcept = std::derived_from<E, Event> && !std::same_as<E, Event>;
+
+    using AbstractEventHandlerFn = std::function<void(Event&)>;
+
+    template <ConcreteEventConcept E>
+    using ConcreteEventHandlerFn = std::function<bool(E&)>;
 
     class EventDispatcher
     {
@@ -104,11 +56,15 @@ namespace DrkCraft
 
         // Calls event handler function for events of type E
         // Handler returns true if event handled
-        template <EventConcept E>
-        void dispatch(const EventHandlerFn<E>& handler)
+        template <ConcreteEventConcept E>
+        void dispatch(const ConcreteEventHandlerFn<E>& handler)
         {
-            if (!event.handled && event.get_type() == E::static_type())
-                event.handled = handler(static_cast<E&>(event));
+            if (!event.handled() && event.get_type() == E::static_type())
+            {
+                bool handled = handler(static_cast<E&>(event));
+                if (handled)
+                    event.set_handled();
+            }
         }
 
     private:

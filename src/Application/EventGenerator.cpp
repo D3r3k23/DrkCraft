@@ -8,7 +8,7 @@ namespace DrkCraft
       : m_window(window)
     { }
 
-    void EventGenerator::register_event_handler(const EventHandlerFn<Event>& handler)
+    void EventGenerator::register_event_handler(const AbstractEventHandlerFn& handler)
     {
         m_handler = handler;
         glfwSetWindowUserPointer(m_window, static_cast<void*>(&m_handler));
@@ -33,7 +33,7 @@ namespace DrkCraft
     }
 
     // Calls m_eventHandler through GLFW user pointer
-    #define DRK_CALL_EVENT_HANDLER_FN(event) (*static_cast<EventHandlerFn<Event>*>(glfwGetWindowUserPointer(window)))(event)
+    #define DRK_CALL_EVENT_HANDLER_FN(event) (*static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
 
     namespace GLFWEventCallbackFunctions
     {
@@ -61,7 +61,7 @@ namespace DrkCraft
         {
             if (focused)
             {
-                WindowFocusedEvent event;
+                WindowFocusGainedEvent event;
                 DRK_CALL_EVENT_HANDLER_FN(event);
             }
             else

@@ -1,18 +1,21 @@
-#ifndef DRK_MAIN_MENU_HPP
-#define DRK_MAIN_MENU_HPP
+#ifndef DRK_HUD_LAYER_HPP
+#define DRK_HUD_LAYER_HPP
 
 #include "Core/Base.hpp"
-#include "Layer.hpp"
-#include "Timestep.hpp"
-#include "Events.hpp"
+#include "Application/Layer.hpp"
+#include "Application/Timestep.hpp"
+#include "Application/Events.hpp"
+
+#include <functional>
+#include <concepts>
 
 namespace DrkCraft
 {
-    class MainMenu : public Layer
+    class HudLayer : public Layer
     {
     public:
-        MainMenu(void);
-        ~MainMenu(void);
+        HudLayer(void);
+        ~HudLayer(void);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -22,10 +25,10 @@ namespace DrkCraft
         void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(KeyPressedEvent& event);
 
     private:
+
     };
 }
 
-#endif // DRK_MAIN_MENU_HPP
+#endif // DRK_HUD_LAYER_HPP

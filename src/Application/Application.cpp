@@ -1,7 +1,7 @@
 #include "Application.hpp"
 
-#include "Events.hpp"
 #include "Graphics/Renderer.hpp"
+#include "MainMenu.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -47,11 +47,7 @@ namespace DrkCraft
 
     Application::Application(void)
       : m_running(false),
-        m_minimized(false),
-        m_layerStackView(m_layerStack),
-        m_layerStackReverseView(m_layerStack),
-        m_menuLayer(nullptr),
-        m_gameLayer(nullptr)
+        m_minimized(false)
     {
         DRK_LOG_TRACE("Initializing GLFW");
         init_glfw();
@@ -59,12 +55,12 @@ namespace DrkCraft
         DRK_LOG_TRACE("Creating Window");
         m_window = new Window("DrkCraft", 1280, 720);
 
-        m_window->register_event_handler(DRK_BIND_EVENT_HANDLER(on_event));
+        m_window->register_event_handler(DRK_BIND_FN(on_event));
 
         DRK_LOG_TRACE("Initializing Renderer");
         Renderer::init();
 
-        open_main_menu();
+        add_layer(Layer::create<MainMenu>());
 
         // ???
         // Window::Size viewPortSize = m_window->get_framebuffer_size();
@@ -73,6 +69,9 @@ namespace DrkCraft
 
     Application::~Application(void)
     {
+        DRK_LOG_TRACE("Clearing Layer Stack");
+        m_layerStack.clear();
+
         DRK_LOG_TRACE("Shutting down Renderer");
         Renderer::shutdown();
 
@@ -94,12 +93,28 @@ namespace DrkCraft
         });
     }
 
+    void Application::add_overlay(const Ref<Layer>& layer)
+    {
+        layer->attach_layer();
+        m_layerStack.push_front(layer);
+    }
+
+    void Application::add_layer(const Ref<Layer>& layer)
+    {
+        layer->attach_layer();
+        m_layerStack.push_back(layer);
+    }
+
     int Application::run(void)
     {
         m_running = true;
         while (m_running)
         {
             Timestep timestep;
+
+            LayerStack frameLayerStack = m_layerStack;
+            m_layerStackForwardView = make_ptr<LayerStack::ForwardView>(frameLayerStack);
+            m_layerStackReverseView = make_ptr<LayerStack::ReverseView>(frameLayerStack);
 
             m_window->on_update();
 
@@ -108,22 +123,27 @@ namespace DrkCraft
                 on_update(timestep);
                 on_render(timestep);
             }
+
+            m_layerStackForwardView.reset();
+            m_layerStackReverseView.reset();
+
+            m_layerStack.refresh();
+
+            if (m_layerStack.is_empty())
+                m_running = false;
         }
+        return on_exit();
+    }
+
+    int Application::on_exit(void)
+    {
         return 0;
     }
 
     void Application::on_update(Timestep timestep)
     {
-        std::vector<Layer*> toRemove;
-        for (Layer* layer : m_layerStackReverseView)
-            if (layer->is_deleted())
-                toRemove.push_back(layer);
-
-        for (Layer* layer : toRemove)
-            m_layerStack.remove(layer);
-
-        for (Layer* layer : m_layerStackReverseView)
-            if (layer->is_active())
+        for (auto& layer : *m_layerStackReverseView)
+            if (layer->is_layer_active())
                 layer->on_update(timestep);
     }
 
@@ -131,26 +151,33 @@ namespace DrkCraft
     {
         Renderer::begin_frame();
 
-        for (Layer* layer : m_layerStackReverseView)
-            if (layer->is_active())
+        for (auto& layer : *m_layerStackReverseView)
+            if (layer->is_layer_active())
                 layer->on_render(timestep);
 
         Renderer::end_frame();
     }
 
-    bool Application::on_event(Event& event)
+    void Application::on_event(Event& event)
     {
         log_event(event);
 
         EventDispatcher ed(event);
-        ed.dispatch<WindowCloseEvent>(DRK_BIND_EVENT_HANDLER(on_window_close));
-        ed.dispatch<WindowResizeEvent>(DRK_BIND_EVENT_HANDLER(on_window_resize));
+        ed.dispatch<WindowCloseEvent>(DRK_BIND_FN(on_window_close));
+        ed.dispatch<WindowResizeEvent>(DRK_BIND_FN(on_window_resize));
 
-        for (Layer* layer : m_layerStackView)
-            if (layer->is_active())
+        for (auto& layer : *m_layerStackForwardView)
+            if (layer->is_layer_active())
                 layer->on_event(event);
 
-        return true;
+        // if (event.handled())
+        //     return true;
+        // else
+        // {
+        //     Or just log here and specify if handled?
+        //     DRK_LOG_WARN("Event: {} not handled", std::string(event));
+        //     return false;
+        // }
     }
 
     bool Application::on_window_close(WindowCloseEvent& event)
@@ -164,40 +191,9 @@ namespace DrkCraft
         return true;
     }
 
-    void Application::open_main_menu(void)
-    {
-        DRK_ASSERT(!m_menuLayer, "MainMenu is already open");
-        m_menuLayer = new MainMenu();
-        m_layerStack.push_front(m_menuLayer);
-    }
-
-    void Application::close_main_menu(void)
-    {
-        bool removed = m_layerStack.remove(m_menuLayer);
-        DRK_ASSERT(removed, "MainMenu is already closed");
-    }
-
-    void Application::start_game(void)
-    {
-        DRK_ASSERT(!m_gameLayer, "Game is already running");
-        m_gameLayer = new Game();
-        m_layerStack.push_front(m_gameLayer);
-    }
-
-    void Application::stop_game(void)
-    {
-        bool removed = m_layerStack.remove(m_gameLayer);
-        DRK_ASSERT(removed, "Game is not running");
-    }
-
     Window& Application::get_window(void)
     {
         DRK_ASSERT(m_window, "Window not initialized");
         return *m_window;
-    }
-
-    LayerStack& Application::get_layer_stack(void)
-    {
-        return m_layerStack;
     }
 }
