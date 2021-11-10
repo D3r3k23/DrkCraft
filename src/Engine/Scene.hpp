@@ -3,7 +3,7 @@
 
 #include "Entity.hpp"
 #include "Graphics/Renderer.hpp"
-#include "Graphics/Shaders.hpp"
+#include "Graphics/Shader.hpp"
 
 #include <entt.hpp>
 #include <glm/mat4x4.hpp>

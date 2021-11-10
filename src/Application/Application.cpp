@@ -60,8 +60,6 @@ namespace DrkCraft
         DRK_LOG_TRACE("Initializing Renderer");
         Renderer::init();
 
-        add_layer(Layer::create<MainMenu>());
-
         // ???
         // Window::Size viewPortSize = m_window->get_framebuffer_size();
         // glViewport(0, 0, viewPortSize.width, viewPortSize.height);
@@ -107,6 +105,8 @@ namespace DrkCraft
 
     int Application::run(void)
     {
+        add_layer(Layer::create<MainMenu>());
+
         m_running = true;
         while (m_running)
         {
@@ -118,7 +118,7 @@ namespace DrkCraft
 
             m_window->on_update();
 
-            if (!m_minimized)
+            if (m_running && !m_minimized)
             {
                 on_update(timestep);
                 on_render(timestep);
@@ -128,6 +128,13 @@ namespace DrkCraft
             m_layerStackReverseView.reset();
 
             m_layerStack.refresh();
+
+            if (!m_layerStack.has_active_layer())
+            {
+                DRK_LOG_ERROR("There are still layers in the stack but none are active");
+                DRK_LOG_INFO("Reactivating front layer");
+                m_layerStack.activate_front();
+            }
 
             if (m_layerStack.is_empty())
                 m_running = false;

@@ -38,8 +38,8 @@ namespace DrkCraft
 
     void Window::on_update(void)
     {
-        glfwPollEvents();
         glfwSwapBuffers(m_window);
+        glfwPollEvents();
     }
 
     void Window::set_vsync(bool enable)

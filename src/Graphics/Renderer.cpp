@@ -95,11 +95,20 @@ namespace DrkCraft
         }();
         switch (severity)
         {
-            case GL_DEBUG_SEVERITY_HIGH         : DRK_LOG_ERROR("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_MEDIUM       : DRK_LOG_WARN ("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_LOW          : DRK_LOG_INFO ("[OpenGL error] source: {0} type: {1} msg: {2}",   sourceStr, typeStr, msg); break;
-            case GL_DEBUG_SEVERITY_NOTIFICATION : DRK_LOG_INFO ("[OpenGL message] source: {0} type: {1} msg: {2}", sourceStr, typeStr, msg); break;
-            default                             : DRK_LOG_WARN ("[OpenGL message] severity: {0} source: {1} type: {2} msg: {3}", severity, sourceStr, typeStr, msg);
+            case GL_DEBUG_SEVERITY_HIGH:
+                DRK_LOG_ERROR("[OpenGL error] source: {0} | type: {1} | msg: {2}", sourceStr, typeStr, msg);
+                break;
+            case GL_DEBUG_SEVERITY_MEDIUM:
+                DRK_LOG_WARN("[OpenGL error] source: {0} | type: {1} | msg: {2}", sourceStr, typeStr, msg);
+                break;
+            case GL_DEBUG_SEVERITY_LOW:
+                DRK_LOG_INFO("[OpenGL error] source: {0} | type: {1} | msg: {2}", sourceStr, typeStr, msg);
+                break;
+            case GL_DEBUG_SEVERITY_NOTIFICATION:
+                DRK_LOG_INFO("[OpenGL message] source: {0} | type: {1} | msg: {2}", sourceStr, typeStr, msg);
+                break;
+            default:
+                DRK_LOG_WARN("[OpenGL message] severity: {0} | source: {1} | type: {2} | msg: {3}", severity, sourceStr, typeStr, msg);
         }
     }
 }

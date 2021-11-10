@@ -3,7 +3,7 @@ target_sources(DrkCraft
     Camera.cpp
     IndexBuffer.cpp
     Renderer.cpp
-    Shaders.cpp
+    Shader.cpp
     Texture.cpp
     Transform.cpp
     VertexArray.cpp

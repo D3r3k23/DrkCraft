@@ -1,5 +1,5 @@
-#ifndef DRK_SHADERS_HPP
-#define DRK_SHADERS_HPP
+#ifndef DRK_SHADER_HPP
+#define DRK_SHADER_HPP
 
 #include "Core/Base.hpp"
 
@@ -35,11 +35,11 @@ namespace DrkCraft
     public:
         static Ref<Shader> create(std::filesystem::path, ShaderType type);
         ~Shader(void);
-        Shader(void) = default;
+        Shader(void) = default; // Required for make_ptr, should not use directly
 
         Shader(const Shader&) = delete;
-        Shader& operator=(const Shader&) = delete;
         Shader(Shader&&) = delete;
+        Shader& operator=(const Shader&) = delete;
         Shader& operator=(Shader&&) = delete;
 
         ShaderID get_id(void) const;
@@ -109,4 +109,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SHADERS_HPP
+#endif // DRK_SHADER_HPP

@@ -38,6 +38,12 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
+target_compile_options(DrkCraft
+  PUBLIC
+    # -Wall
+    -std:c++latest # Required because <format> is not included with std:c++20
+)
+
 target_compile_definitions(DrkCraft
   PUBLIC
     ${DRK_PLATFORM}

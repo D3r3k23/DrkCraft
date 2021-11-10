@@ -2,7 +2,7 @@
 #define DRK_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Shaders.hpp"
+#include "Shader.hpp"
 
 #include <glad/glad.h>
 #include <glm/vec3.hpp>

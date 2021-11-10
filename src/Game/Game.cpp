@@ -17,7 +17,8 @@ namespace DrkCraft
         m_debugLayer = Layer::create<DebugLayer>();
         Application::get_instance().add_overlay(m_debugLayer);
 
-        std::array<float, 9> vertexPositions{
+        std::array<float, 9> vertexPositions
+        {
              0.0f,  0.5f, 0.0f,
              0.5f, -0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f

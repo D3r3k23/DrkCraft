@@ -5,7 +5,6 @@
 #include "Layer.hpp"
 
 #include <deque>
-#include <concepts>
 
 namespace DrkCraft
 {
@@ -24,14 +23,19 @@ namespace DrkCraft
         void push_back(const Ref<Layer>& layer);
 
         // Do we need these?
-        void pop_front(void);
-        void pop_back(void);
+        Ref<Layer> pop_front(void);
+        Ref<Layer> pop_back(void);
 
         bool remove(const Ref<Layer>& layer);
 
         void refresh(void); // Removes detached Layers
 
+        // Activates the front layer
+        // Should only be used if all layers are inactive
+        void activate_front(void);
+
         bool is_empty(void) const;
+        bool has_active_layer(void) const;
 
     private:
         LayerDeque m_layers;
@@ -40,7 +44,8 @@ namespace DrkCraft
         // Note: Modifying a LayerStack will invalidate any of its Views
         //   In Application, we first copy the LayerStack and create the Views
         //   using the copy. Since the layers are stored in refence-counted
-        //   pointers, the will remain until the LayerStack copy is destroyed.
+        //   pointers, they will remain in existance until the LayerStack copy
+        //   is destroyed.
 
         class ForwardView
         {

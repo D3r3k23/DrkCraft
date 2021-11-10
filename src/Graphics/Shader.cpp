@@ -1,4 +1,4 @@
-#include "Shaders.hpp"
+#include "Shader.hpp"
 
 #include "Core/Util.hpp"
 
@@ -65,7 +65,7 @@ namespace DrkCraft
         glCompileShader(m_id);
         GLint success;
         glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
-        DRK_ASSERT(success, "Shader program linking failed");
+        DRK_ASSERT(success, "Shader compilation failed");
     }
 
     ShaderProgram::ShaderProgram(std::string_view name)
