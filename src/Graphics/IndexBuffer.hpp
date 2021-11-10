@@ -1,14 +1,17 @@
-#ifndef INDEX_BUFFER_HPP
-#define INDEX_BUFFER_HPP
+#ifndef DRK_INDEX_BUFFER_HPP
+#define DRK_INDEX_BUFFER_HPP
 
+#include "Core/Base.hpp"
 #include "Buffer.hpp"
 
 namespace DrkCraft
 {
     class IndexBuffer : public BufferObject
     {
+    public:
+
     private:
     };
 }
 
-#endif // INDEX_BUFFER_HPP
+#endif // DRK_INDEX_BUFFER_HPP

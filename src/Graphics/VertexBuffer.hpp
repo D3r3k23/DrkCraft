@@ -1,7 +1,7 @@
-#ifndef VERTEX_BUFFER_HPP
-#define VERTEX_BUFFER_HPP
+#ifndef DRK_VERTEX_BUFFER_HPP
+#define DRK_VERTEX_BUFFER_HPP
 
-#include "BufferObject.hpp"
+#include "Buffer.hpp"
 
 namespace DrkCraft
 {
@@ -11,4 +11,4 @@ namespace DrkCraft
     };
 }
 
-#endif // VERTEX_BUFFER_HPP
+#endif // DRK_VERTEX_BUFFER_HPP

@@ -1,5 +1,5 @@
-#ifndef VERTEX_ARRAY_HPP
-#define VERTEX_ARRAY_HPP
+#ifndef DRK_VERTEX_ARRAY_HPP
+#define DRK_VERTEX_ARRAY_HPP
 
 #include "Buffer.hpp"
 
@@ -11,4 +11,4 @@ namespace DrkCraft
     };
 }
 
-#endif // VERTEX_ARRAY_HPP
+#endif // DRK_VERTEX_ARRAY_HPP

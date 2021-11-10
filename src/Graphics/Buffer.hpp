@@ -1,5 +1,7 @@
-#ifndef BUFFER_HPP
-#define BUFFER_HPP
+#ifndef DRK_BUFFER_HPP
+#define DRK_BUFFER_HPP
+
+#include "Core/Base.hpp"
 
 #include <glad/glad.h>
 
@@ -12,6 +14,8 @@ namespace DrkCraft
 
     };
 
+    using BufferObjectID = GLuint;
+
     class BufferObject
     {
     public:
@@ -23,10 +27,10 @@ namespace DrkCraft
         virtual void bind(void) = 0;
 
     protected:
-        GLuint m_id;
+        BufferObjectID m_id;
 
         std::vector<BufferElement> m_elements;
     };
 }
 
-#endif // BUFFER_HPP
+#endif // DRK_BUFFER_HPP

@@ -234,6 +234,7 @@ namespace DrkCraft
         else
         {
             GLint location = glGetUniformLocation(m_id, name.c_str());
+            DRK_ASSERT(location != -1, "Uniform does not exist");
             m_uniformLocationCache[name] = location;
             return location;
         }
