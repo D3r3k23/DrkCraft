@@ -4,7 +4,7 @@ call scripts\get_build_config.bat --release
 
 set /p version=<VERSION.txt
 
-set "package_name=DrkCraft-%version%-win"
+set "package_name=DrkCraft-v%version%-win"
 set "package_dir=packages\%package_name%"
 
 echo Building package: %package_name%

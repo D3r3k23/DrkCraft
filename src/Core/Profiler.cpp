@@ -1,6 +1,7 @@
 #include "Profiler.hpp"
 
 #include <chrono>
+#include <iomanip>
 
 namespace DrkCraft
 {

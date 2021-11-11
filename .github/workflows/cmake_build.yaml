@@ -21,4 +21,4 @@ jobs:
         run: scripts\gen_glad.bat
 
       - name: CMake build
-        run: scripts\build.bat --debug
+        run: scripts\build.bat --debug --profile
