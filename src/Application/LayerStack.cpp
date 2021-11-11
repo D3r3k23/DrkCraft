@@ -70,12 +70,12 @@ namespace DrkCraft
 
     void LayerStack::refresh(void)
     {
-        std::vector<Ref<Layer>> toRemove;
+        std::vector<Ref<Layer>> detachedLayers;
         for (const auto& layer : m_layers)
             if (layer->is_layer_detached())
-                toRemove.push_back(layer);
+                detachedLayers.push_back(layer);
 
-        for (const auto& layer : toRemove)
+        for (const auto& layer : detachedLayers)
             remove(layer);
     }
 

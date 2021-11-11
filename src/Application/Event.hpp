@@ -37,10 +37,10 @@ namespace DrkCraft
     void log_event(const Event& event); // Move this to logger
 
     template <typename E>
-    concept EventConcept = std::derived_from<E, Event>;
+    concept AbstractEventConcept = std::derived_from<E, Event>;
 
     template <typename E>
-    concept ConcreteEventConcept = std::derived_from<E, Event> && !std::same_as<E, Event>;
+    concept ConcreteEventConcept = AbstractEventConcept<E> && !std::same_as<E, Event>;
 
     using AbstractEventHandlerFn = std::function<void(Event&)>;
 

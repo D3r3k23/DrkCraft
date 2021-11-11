@@ -10,8 +10,9 @@
 
 namespace DrkCraft
 {
+    using PauseMenuUnpauseCallbackFn  = std::function<void(void)>;
+    using PauseMenuExitGameCallbackFn = std::function<void(void)>;
     using PauseMenuSaveGameCallbackFn = std::function<void(void)>;
-    using PauseMenuUnpauseCallbackFn  = std::function<void(bool)>; // bool unpaused
 
     class PauseMenu : public Layer
     {
@@ -19,8 +20,9 @@ namespace DrkCraft
         PauseMenu(void);
         ~PauseMenu(void);
 
-        void set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn);
         void set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn);
+        void set_exit_game_callback_fn(const PauseMenuUnpauseCallbackFn& fn);
+        void set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -34,8 +36,9 @@ namespace DrkCraft
         bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
 
     private:
-        PauseMenuSaveGameCallbackFn m_onSaveGame;
         PauseMenuUnpauseCallbackFn  m_onUnpause;
+        PauseMenuExitGameCallbackFn m_onExitGame;
+        PauseMenuSaveGameCallbackFn m_onSaveGame;
     };
 }
 

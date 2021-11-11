@@ -13,14 +13,19 @@ namespace DrkCraft
 
     }
 
-    void PauseMenu::set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn)
-    {
-        m_onSaveGame = fn;
-    }
-
     void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
     {
         m_onUnpause = fn;
+    }
+
+    void PauseMenu::set_exit_game_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
+    {
+        m_onUnpause = fn;
+    }
+
+    void PauseMenu::set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn)
+    {
+        m_onSaveGame = fn;
     }
 
     void PauseMenu::on_attach(void)
@@ -56,18 +61,19 @@ namespace DrkCraft
         {
             case KeyCode::Escape:
             {
-                m_onUnpause(true);
+                m_onUnpause();
+                detach_layer();
+                return true;
+            }
+            case KeyCode::Delete:
+            {
+                m_onExitGame();
                 detach_layer();
                 return true;
             }
             case KeyCode::Enter:
             {
                 m_onSaveGame();
-                return true;
-            }
-            case KeyCode::Space:
-            {
-                detach_layer();
                 return true;
             }
             default:

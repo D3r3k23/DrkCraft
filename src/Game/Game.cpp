@@ -101,15 +101,12 @@ namespace DrkCraft
         deactivate_layer();
 
         auto pauseMenu = Layer::create<PauseMenu>();
-        pauseMenu->set_save_game_callback_fn([&]
+        pauseMenu->set_unpause_callback_fn(DRK_BIND_FN(unpause));
+        pauseMenu->set_exit_game_callback_fn([&]
         {
-            save();
+            detach_layer();
         });
-        pauseMenu->set_unpause_callback_fn([&](bool unpaused)
-        {
-            if (unpaused)
-                unpause();
-        });
+        pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
         Application::get_instance().add_overlay(pauseMenu);
     }
 

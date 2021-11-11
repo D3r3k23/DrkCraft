@@ -157,11 +157,13 @@ namespace DrkCraft
     void Application::on_render(Timestep timestep)
     {
         Renderer::begin_frame();
+        // imgui::begin() ???
 
         for (auto& layer : *m_layerStackReverseView)
             if (layer->is_layer_active())
                 layer->on_render(timestep);
 
+        // imgui::end() ???
         Renderer::end_frame();
     }
 
