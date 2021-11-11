@@ -17,7 +17,7 @@ namespace DrkCraft
     class PauseMenu : public Layer
     {
     public:
-        PauseMenu(void);
+        PauseMenu(bool activate=true);
         ~PauseMenu(void);
 
         void set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn);

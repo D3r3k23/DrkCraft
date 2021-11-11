@@ -4,7 +4,8 @@
 /.venv/**
 /build/**
 
-/data/saves/**
-/data/log/**
+/saves/**
+/logs/**
 
-/package/**
+/packages/**
+/profile/*.json

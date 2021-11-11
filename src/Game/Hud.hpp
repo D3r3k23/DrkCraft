@@ -1,5 +1,5 @@
-#ifndef DRK_HUD_LAYER_HPP
-#define DRK_HUD_LAYER_HPP
+#ifndef DRK_HUD_HPP
+#define DRK_HUD_HPP
 
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
@@ -11,11 +11,11 @@
 
 namespace DrkCraft
 {
-    class HudLayer : public Layer
+    class Hud : public Layer
     {
     public:
-        HudLayer(void);
-        ~HudLayer(void);
+        Hud(bool activate);
+        ~Hud(void);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -31,4 +31,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_HUD_LAYER_HPP
+#endif // DRK_HUD_HPP

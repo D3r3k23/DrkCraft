@@ -1,26 +1,54 @@
 #include "Timer.hpp"
 
-#include <GLFW/glfw3.h>
-
 namespace DrkCraft
 {
+    std::chrono::time_point<TimerClock> Timer::s_globalStart = TimerClock::now();
+
+    TimerDuration Timer::get_global_time(void)
+    {
+        return TimerClock::now() - s_globalStart;
+    }
+
     Timer::Timer(void)
     {
         reset();
     }
 
+    Timer::Timer(double init)
+    {
+        m_start = TimerDuration(init);
+    }
+
     void Timer::reset(void)
     {
-        m_start = glfwGetTime();
+        m_start = get_global_time();
     }
 
-    float Timer::elapsed_seconds(void) const
+    TimerDuration Timer::get_elapsed(void) const
     {
-        return glfwGetTime() - m_start;
+        return get_global_time() - m_start;
     }
 
-    float Timer::elapsedMilliseconds(void) const
+    TimerDuration Timer::get_start(void) const
     {
-        return elapsed_seconds() * 1000.0f;
+        return m_start;
+    }
+
+    double Timer::elapsed_seconds(void) const
+    {
+        TimerDuration elapsed = get_elapsed();
+        return elapsed.count();
+    }
+
+    double Timer::elapsed_milliseconds(void) const
+    {
+        TimerDuration elapsed = get_elapsed();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    }
+
+    double Timer::elapsed_microseconds(void) const
+    {
+        TimerDuration elapsed = get_elapsed();
+        return std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
     }
 }

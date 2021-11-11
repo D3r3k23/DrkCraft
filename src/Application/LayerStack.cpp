@@ -1,5 +1,7 @@
 #include "LayerStack.hpp"
 
+#include "Core/Profiler.hpp"
+
 #include <algorithm>
 
 namespace DrkCraft
@@ -30,37 +32,11 @@ namespace DrkCraft
         m_layers.push_back(layer);
     }
 
-    Ref<Layer> LayerStack::pop_front(void)
-    {
-        if (!is_empty())
-        {
-            const auto& layer = m_layers.front();
-            DRK_LOG_TRACE("Popping Layer (front): {}", layer->get_layer_name());
-            m_layers.pop_front();
-            return layer;
-        }
-        else
-            return {};
-    }
-
-    Ref<Layer> LayerStack::pop_back(void)
-    {
-        if (!is_empty())
-        {
-            const auto& layer = m_layers.back();
-            DRK_LOG_TRACE("Popping Layer (back): {}", layer->get_layer_name());
-            m_layers.pop_back();
-            return layer;
-        }
-        else
-            return {};
-    }
-
-    bool LayerStack::remove(const Ref<Layer>& layer)
+    bool LayerStack::pop(const Ref<Layer>& layer)
     {
         if (auto it = std::find(m_layers.begin(), m_layers.end(), layer); it != m_layers.end())
         {
-            DRK_LOG_TRACE("Removing Layer: {}", layer->get_layer_name());
+            DRK_LOG_TRACE("Popping Layer: {}", layer->get_layer_name());
             m_layers.erase(it);
             return true;
         }
@@ -70,20 +46,22 @@ namespace DrkCraft
 
     void LayerStack::refresh(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         std::vector<Ref<Layer>> detachedLayers;
         for (const auto& layer : m_layers)
-            if (layer->is_layer_detached())
+            if (layer->is_layer_detached() && !layer->is_layer_active())
                 detachedLayers.push_back(layer);
 
         for (const auto& layer : detachedLayers)
-            remove(layer);
+            pop(layer);
     }
 
     void LayerStack::activate_front(void)
     {
         DRK_ASSERT(!is_empty(), "LayerStack is empty");
         auto& layer = m_layers.front();
-        DRK_ASSERT(!(layer->is_layer_active()), "Front layer already active");
+        DRK_ASSERT(!layer->is_layer_active(), "Front layer already active");
         layer->activate_layer();
     }
 

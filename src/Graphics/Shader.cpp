@@ -1,6 +1,7 @@
 #include "Shader.hpp"
 
 #include "Core/Util.hpp"
+#include "Core/Profiler.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -23,6 +24,8 @@ namespace DrkCraft
 
     Ref<Shader> Shader::create(std::filesystem::path path, ShaderType type)
     {
+        DRK_PROFILE_FUNCTION();
+
         DRK_LOG_TRACE("Creating Shader from file {}", path.string());
 
         DRK_ASSERT(std::filesystem::is_regular_file(path), "Shader file does not exist");
@@ -58,6 +61,8 @@ namespace DrkCraft
 
     void Shader::compile(std::string_view source)
     {
+        DRK_PROFILE_FUNCTION();
+
         const char* raw_source = source.data();
         const int length = source.size();
         glShaderSource(m_id, 1, &raw_source, &length);
@@ -71,6 +76,8 @@ namespace DrkCraft
     ShaderProgram::ShaderProgram(std::string_view name)
       : m_name(name)
     {
+        DRK_PROFILE_FUNCTION();
+
         DRK_LOG_TRACE("Creating ShaderProgram {}", m_name);
 
         m_id = glCreateProgram();
@@ -80,6 +87,8 @@ namespace DrkCraft
     ShaderProgram::ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders)
       : ShaderProgram(name)
     {
+        DRK_PROFILE_FUNCTION();
+
         for (const auto& shader : shaders)
             add_shader(shader);
         link();
@@ -98,6 +107,8 @@ namespace DrkCraft
 
     void ShaderProgram::link(void) const
     {
+        DRK_PROFILE_FUNCTION();
+
         glLinkProgram(m_id);
         GLint success;
         glGetProgramiv(m_id, GL_LINK_STATUS, &success);

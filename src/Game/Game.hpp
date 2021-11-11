@@ -5,8 +5,9 @@
 #include "Application/Layer.hpp"
 #include "Application/Timestep.hpp"
 #include "Application/Events.hpp"
-#include "HudLayer.hpp"
-#include "DebugLayer.hpp"
+#include "Hud.hpp"
+#include "Console.hpp"
+#include "DebugOverlay.hpp"
 #include "Engine/Scene.hpp"
 #include "World.hpp"
 
@@ -37,14 +38,17 @@ namespace DrkCraft
         void unpause(void);
         bool is_paused(void) const;
 
+        void open_pause_menu(void);
+
         void save(void);
 
     private:
         Scene scene;
         World world;
 
-        Ref<HudLayer> m_hudLayer;
-        Ref<DebugLayer> m_debugLayer;
+        Ref<Hud> m_hudLayer;
+        Ref<Console> m_consoleLayer;
+        Ref<DebugOverlay> m_debugLayer;
 
         bool m_running;
         bool m_paused;

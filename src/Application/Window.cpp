@@ -1,6 +1,7 @@
 #include "Window.hpp"
 
 #include "Input.hpp"
+#include "Core/Profiler.hpp"
 
 #include <glad/glad.h>
 
@@ -8,38 +9,54 @@
 
 namespace DrkCraft
 {
-    Window::Window(std::string_view title, uint width, uint height)
+    Window::Window(std::string_view title, uint width, uint height, bool enableVsync)
       : m_title(title)
     {
-        m_window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
-        DRK_ASSERT(m_window, "Failed to create GLFW window");
-
+        DRK_PROFILE_FUNCTION();
+        {
+            DRK_PROFILE_SCOPE("glfwCreateWindow");
+            m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+            DRK_ASSERT(m_window, "Failed to create GLFW window");
+        }
         glfwMakeContextCurrent(m_window);
 
-        set_vsync(true);
+        set_vsync(enableVsync);
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
         DRK_LOG_TRACE("Glad: Loading OpenGL functions using GLFW loader function");
-        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        DRK_ASSERT(status, "Glad failed to initialize OpenGL context");
+        {
+            DRK_PROFILE_SCOPE("gladLoadGLLoader");
+            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            DRK_ASSERT(status, "Glad failed to initialize OpenGL context");
+        }
     }
 
     Window::~Window(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         glfwDestroyWindow(m_window);
     }
 
     void Window::register_event_handler(const AbstractEventHandlerFn& handler)
     {
+        DRK_PROFILE_FUNCTION();
+
         m_eventGenerator->register_event_handler(handler);
         m_eventGenerator->register_event_callbacks();
     }
 
     void Window::on_update(void)
     {
-        glfwSwapBuffers(m_window);
-        glfwPollEvents();
+        DRK_PROFILE_FUNCTION();
+        {
+            DRK_PROFILE_SCOPE("glfwSwapBuffers");
+            glfwSwapBuffers(m_window);
+        }{
+            DRK_PROFILE_SCOPE("glfwPollEvets");
+            glfwPollEvents();
+        }
     }
 
     void Window::set_vsync(bool enable)

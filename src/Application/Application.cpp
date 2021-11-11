@@ -2,10 +2,10 @@
 
 #include "Graphics/Renderer.hpp"
 #include "MainMenu.hpp"
+#include "Core/Profiler.hpp"
 
 #include <GLFW/glfw3.h>
-
-#include <vector>
+// #include <imgui.hpp>
 
 namespace DrkCraft
 {
@@ -49,11 +49,13 @@ namespace DrkCraft
       : m_running(false),
         m_minimized(false)
     {
+        DRK_PROFILE_FUNCTION();
+
         DRK_LOG_TRACE("Initializing GLFW");
         init_glfw();
 
         DRK_LOG_TRACE("Creating Window");
-        m_window = new Window("DrkCraft", 1280, 720);
+        m_window = new Window("DrkCraft", 1280, 720, true);
 
         m_window->register_event_handler(DRK_BIND_FN(on_event));
 
@@ -67,6 +69,8 @@ namespace DrkCraft
 
     Application::~Application(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         DRK_LOG_TRACE("Clearing Layer Stack");
         m_layerStack.clear();
 
@@ -105,6 +109,8 @@ namespace DrkCraft
 
     int Application::run(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         add_layer(Layer::create<MainMenu>());
 
         m_running = true;
@@ -129,15 +135,18 @@ namespace DrkCraft
 
             m_layerStack.refresh();
 
-            if (!m_layerStack.has_active_layer())
+            if (m_layerStack.is_empty())
             {
-                DRK_LOG_ERROR("There are still layers in the stack but none are active");
+                DRK_LOG_INFO("LayerStack is empty; exiting Application");
+                m_running = false;
+            }
+            else if (!m_layerStack.has_active_layer())
+            {
+                DRK_LOG_ERROR("LayerStack is not empty, but there are none active");
                 DRK_LOG_INFO("Reactivating front layer");
                 m_layerStack.activate_front();
             }
 
-            if (m_layerStack.is_empty())
-                m_running = false;
         }
         return on_exit();
     }
@@ -149,6 +158,8 @@ namespace DrkCraft
 
     void Application::on_update(Timestep timestep)
     {
+        DRK_PROFILE_FUNCTION();
+
         for (auto& layer : *m_layerStackReverseView)
             if (layer->is_layer_active())
                 layer->on_update(timestep);
@@ -156,6 +167,8 @@ namespace DrkCraft
 
     void Application::on_render(Timestep timestep)
     {
+        DRK_PROFILE_FUNCTION();
+
         Renderer::begin_frame();
         // imgui::begin() ???
 
@@ -169,6 +182,8 @@ namespace DrkCraft
 
     void Application::on_event(Event& event)
     {
+        DRK_PROFILE_FUNCTION();
+
         log_event(event);
 
         EventDispatcher ed(event);

@@ -2,6 +2,7 @@
 
 #include "Application/Application.hpp"
 #include "PauseMenu.hpp"
+#include "Core/Profiler.hpp"
 
 namespace DrkCraft
 {
@@ -11,11 +12,13 @@ namespace DrkCraft
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
     {
-        m_hudLayer = Layer::create<HudLayer>();
-        Application::get_instance().add_overlay(m_hudLayer);
+        DRK_PROFILE_FUNCTION();
 
-        m_debugLayer = Layer::create<DebugLayer>();
-        Application::get_instance().add_overlay(m_debugLayer);
+        bool showHud = false;
+
+        m_hudLayer     = Layer::create<Hud>(showHud);
+        m_consoleLayer = Layer::create<Console>();
+        m_debugLayer   = Layer::create<DebugOverlay>();
 
         std::array<float, 9> vertexPositions
         {
@@ -47,12 +50,16 @@ namespace DrkCraft
 
     void Game::on_attach(void)
     {
-
+        Application::get_instance().add_overlay(m_hudLayer);
+        Application::get_instance().add_overlay(m_consoleLayer);
+        Application::get_instance().add_overlay(m_debugLayer);
     }
 
     void Game::on_detach(void)
     {
-
+        m_debugLayer->detach_layer();
+        m_consoleLayer->detach_layer();
+        m_hudLayer->detach_layer();
     }
 
     void Game::on_update(Timestep timestep)
@@ -62,6 +69,8 @@ namespace DrkCraft
 
     void Game::on_render(Timestep timestep)
     {
+        DRK_PROFILE_FUNCTION();
+
         flatColorShaderProgram.bind();
         flatColorShaderProgram.upload_uniform_float4("u_color", glm::vec4(color, 1.0f));
         Renderer::draw_triangle(vertexArrayObject);
@@ -70,6 +79,8 @@ namespace DrkCraft
 
     void Game::on_event(Event& event)
     {
+        DRK_PROFILE_FUNCTION();
+
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
@@ -99,15 +110,7 @@ namespace DrkCraft
         DRK_LOG_INFO("Game paused");
         m_paused = true;
         deactivate_layer();
-
-        auto pauseMenu = Layer::create<PauseMenu>();
-        pauseMenu->set_unpause_callback_fn(DRK_BIND_FN(unpause));
-        pauseMenu->set_exit_game_callback_fn([&]
-        {
-            detach_layer();
-        });
-        pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
-        Application::get_instance().add_overlay(pauseMenu);
+        open_pause_menu();
     }
 
     void Game::unpause(void)
@@ -120,6 +123,18 @@ namespace DrkCraft
     bool Game::is_paused(void) const
     {
         return m_paused;
+    }
+
+    void Game::open_pause_menu(void)
+    {
+        auto pauseMenu = Layer::create<PauseMenu>();
+        pauseMenu->set_unpause_callback_fn(DRK_BIND_FN(unpause));
+        pauseMenu->set_exit_game_callback_fn([&]
+        {
+            detach_layer();
+        });
+        pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
+        Application::get_instance().add_overlay(pauseMenu);
     }
 
     void Game::save(void)

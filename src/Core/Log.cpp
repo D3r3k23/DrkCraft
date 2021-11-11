@@ -4,13 +4,9 @@
 
     namespace DrkCraft
     {
-        std::string Logger::s_name;
-
-        void Logger::init(std::string_view name)
+        void Logger::init(void)
         {
-            s_name = name;
             spdlog::set_level(spdlog::level::trace);
-            DRK_LOG_TRACE("Initializing {} log", name);
         }
 
         void Logger::save(void)

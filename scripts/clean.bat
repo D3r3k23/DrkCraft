@@ -1,3 +1,6 @@
 @echo OFF
 
-rmdir /s /q build
+if exist build (
+    echo Removing build files
+    rmdir /s /q build
+)

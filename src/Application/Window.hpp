@@ -14,7 +14,7 @@ namespace DrkCraft
     class Window
     {
     public:
-        Window(std::string_view name, uint width, uint height);
+        Window(std::string_view name, uint width, uint height, bool enableVsync=true);
         ~Window(void);
 
         void register_event_handler(const AbstractEventHandlerFn& handler);
@@ -40,7 +40,8 @@ namespace DrkCraft
     private:
         GLFWwindow* m_window;
         std::string m_title;
-        bool m_vSync;
+
+        bool m_vSync; // Limits frame rate to monitor's refresh rate (?)
 
         Ptr<EventGenerator> m_eventGenerator;
     };

@@ -1,5 +1,5 @@
-#ifndef DRK_DEBUG_LAYER_HPP
-#define DRK_DEBUG_LAYER_HPP
+#ifndef DRK_DEBUG_OVERLAY_HPP
+#define DRK_DEBUG_OVERLAY_HPP
 
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
@@ -8,11 +8,11 @@
 
 namespace DrkCraft
 {
-    class DebugLayer : public Layer
+    class DebugOverlay : public Layer
     {
     public:
-        DebugLayer(void);
-        ~DebugLayer(void);
+        DebugOverlay(bool activate=false);
+        ~DebugOverlay(void);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -28,4 +28,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_DEBUG_LAYER_HPP
+#endif // DRK_DEBUG_OVERLAY_HPP

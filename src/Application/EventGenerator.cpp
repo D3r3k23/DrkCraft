@@ -1,6 +1,7 @@
 #include "EventGenerator.hpp"
 
 #include "Input.hpp"
+#include "Core/Profiler.hpp"
 
 namespace DrkCraft
 {
@@ -16,6 +17,8 @@ namespace DrkCraft
 
     void EventGenerator::register_event_callbacks(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         using namespace GLFWEventCallbackFunctions;
 
         glfwSetWindowCloseCallback(m_window, window_close_callback);

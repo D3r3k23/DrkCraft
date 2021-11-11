@@ -1,8 +1,9 @@
 target_sources(DrkCraft
   PUBLIC
-    DebugLayer.cpp
+    Console.cpp
+    DebugOverlay.cpp
     Game.cpp
-    HudLayer.cpp
+    Hud.cpp
     PauseMenu.cpp
     World.cpp
 )

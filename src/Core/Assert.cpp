@@ -4,15 +4,16 @@
 
     #include "Log.hpp"
 
-    #include <filesystem>
+    #include "Profiler.hpp"
 
     namespace DrkCraft
     {
-        void assert_failed(std::string_view cond, std::string_view msg, std::string_view file, int line)
+        void assert_failed(const char* cond, const char* msg, const std::source_location& src)
         {
-            const auto fileName = std::filesystem::path(file).filename().string();
-            DRK_LOG_CRITICAL("[{0}:{1}] Assert ({2}) failed: {3}", fileName, line, cond, msg);
-            DRK_LOGGER_SAVE();
+            DRK_LOG_CRITICAL("[{0}:{1}] Assert ({2}) failed: {3}",
+                src.file_name(), src.line(), cond, msg);
+            DRK_PROFILER_END();
+            DRK_LOGGER_CLOSE();
         }
     }
 

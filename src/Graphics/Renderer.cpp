@@ -2,6 +2,7 @@
 
 #include "Core/BuildSettings.hpp"
 #include "Application/Application.hpp"
+#include "Core/Profiler.hpp"
 
 #include <unordered_map>
 
@@ -16,9 +17,11 @@ namespace DrkCraft
 
     void Renderer::init(void)
     {
-        #if defined (DRK_EN_GL_DEBUG_OUTPUT)
-            register_gl_message_handler();
-        #endif
+        DRK_PROFILE_FUNCTION();
+
+    #if defined (DRK_EN_GL_DEBUG_OUTPUT)
+        register_gl_message_handler();
+    #endif
 
         const auto* renderer = glGetString(GL_RENDERER);
         const auto* version  = glGetString(GL_VERSION);
@@ -31,7 +34,7 @@ namespace DrkCraft
 
     void Renderer::shutdown(void)
     {
-
+        DRK_PROFILE_FUNCTION();
     }
 
     void Renderer::begin_frame(void)
@@ -46,6 +49,8 @@ namespace DrkCraft
 
     void Renderer::draw_triangle(GLuint vao)
     {
+        DRK_PROFILE_FUNCTION();
+
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }

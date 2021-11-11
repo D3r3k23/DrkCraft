@@ -25,7 +25,7 @@ namespace DrkCraft
             return make_ptr<L>(std::forward<Args>(args)...);
         }
 
-        Layer(std::string_view name, bool active=true);
+        Layer(std::string_view name, bool activate=true);
         virtual ~Layer(void);
 
         virtual void on_update(Timestep timestep) = 0;

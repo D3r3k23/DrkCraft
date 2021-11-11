@@ -2,13 +2,13 @@
 
 namespace DrkCraft
 {
-    Layer::Layer(std::string_view name, bool active)
+    Layer::Layer(std::string_view name, bool activate)
       : m_layerName(name),
         m_layerActive(false),
         m_layerAttached(false)
     {
         DRK_LOG_TRACE("Creating Layer: {}", get_layer_name());
-        if (active)
+        if (activate)
             activate_layer();
     }
 

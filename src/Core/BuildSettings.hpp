@@ -2,9 +2,13 @@
 #define DRK_BUILD_SETTINGS_HPP
 
 #if defined(DRK_PLATFORM_WINDOWS)
+
     #define DRK_PLATFORM_NAME "Windows"
+
 #elif defined(DRK_PLATFORM_LINUX)
+
     #define DRK_PLATFORM_NAME "Linux"
+
 #else
     #error "Unknown platform detected"
 #endif

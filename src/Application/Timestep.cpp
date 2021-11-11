@@ -1,40 +1,22 @@
 #include "Timestep.hpp"
 
-#include <GLFW/glfw3.h>
-
 namespace DrkCraft
 {
-    double Timestep::s_lastUpdateTime = 0;
+    Timer Timestep::s_frameTimer(0.0);
 
     Timestep::Timestep(void)
+      : m_elapsed(s_frameTimer.elapsed_seconds())
     {
-        double now = glfwGetTime();
-        m_elapsed = now - s_lastUpdateTime;
-        s_lastUpdateTime = now;
-    }
-
-    float Timestep::get_seconds(void) const
-    {
-        return m_elapsed;
-    }
-
-    float Timestep::get_milliseconds(void) const
-    {
-        return m_elapsed * 1000.0;
+        s_frameTimer.reset();
     }
 
     Timestep::operator double(void) const
     {
-        return get_seconds();
+        return m_elapsed;
     }
 
     Timestep::operator float(void) const
     {
-        return (float)get_seconds();
-    }
-
-    float Timestep::last_update_time(void)
-    {
-        return s_lastUpdateTime;
+        return (float)m_elapsed;
     }
 }

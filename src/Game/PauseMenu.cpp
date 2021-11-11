@@ -1,9 +1,11 @@
 #include "PauseMenu.hpp"
 
+#include "Core/Profiler.hpp"
+
 namespace DrkCraft
 {
-    PauseMenu::PauseMenu(void)
-      : Layer("PauseMenuLayer", true)
+    PauseMenu::PauseMenu(bool activate)
+      : Layer("PauseMenuLayer", activate)
     {
 
     }
@@ -18,9 +20,9 @@ namespace DrkCraft
         m_onUnpause = fn;
     }
 
-    void PauseMenu::set_exit_game_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
+    void PauseMenu::set_exit_game_callback_fn(const PauseMenuExitGameCallbackFn& fn)
     {
-        m_onUnpause = fn;
+        m_onExitGame = fn;
     }
 
     void PauseMenu::set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn)
@@ -40,16 +42,18 @@ namespace DrkCraft
 
     void PauseMenu::on_update(Timestep timestep)
     {
-
+        DRK_PROFILE_FUNCTION();
     }
 
     void PauseMenu::on_render(Timestep timestep)
     {
-
+        DRK_PROFILE_FUNCTION();
     }
 
     void PauseMenu::on_event(Event& event)
     {
+        DRK_PROFILE_FUNCTION();
+
         EventDispatcher ed(event);
         ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));

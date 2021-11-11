@@ -22,13 +22,9 @@ namespace DrkCraft
         void push_front(const Ref<Layer>& layer);
         void push_back(const Ref<Layer>& layer);
 
-        // Do we need these?
-        Ref<Layer> pop_front(void);
-        Ref<Layer> pop_back(void);
+        bool pop(const Ref<Layer>& layer);
 
-        bool remove(const Ref<Layer>& layer);
-
-        void refresh(void); // Removes detached Layers
+        void refresh(void); // Pops detached Layers
 
         // Activates the front layer
         // Should only be used if all layers are inactive

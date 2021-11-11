@@ -20,7 +20,7 @@
 
 #if defined(DRK_EN_ASSERTS)
 
-    #include <string_view>
+    #include <source_location>
 
     namespace DrkCraft
     {
@@ -29,18 +29,19 @@
         // Idea:
         //   DRK_ASSERT_CRIT - always enabled (in release, just aborts)
         //   DRK_ASSERT_CORE - enabled in debug
-        void assert_failed(std::string_view cond, std::string_view msg, std::string_view file, int line);
+        void assert_failed(const char* cond, const char* msg, const std::source_location& src);
     }
 
-    #define DRK_ASSERT(cond, msg)                              \
+    #define DRK_ASSERT(cond, msg)                             \
         do {                                                   \
-            if (!(cond)) {                                     \
-                assert_failed(#cond, msg, __FILE__, __LINE__); \
-                DRK_DEBUG_BREAK();                             \
-            }                                                  \
+            if (!(cond)) {                                      \
+                auto location = std::source_location::current(); \
+                assert_failed(#cond, msg, location);              \
+                DRK_DEBUG_BREAK();                                 \
+            }                                                       \
         } while (false)
 
-    #define DRK_ASSERT_FALSE(msg) assert_failed("false", msg, __FILE__, __LINE__)
+    #define DRK_ASSERT_FALSE(msg) DRK_ASSERT(false, msg) // Remove???
 
 #else
     #define DRK_ASSERT(cond, msg)

@@ -9,9 +9,11 @@ namespace DrkCraft
     {
         switch (event.get_type())
         {
-            case EventType::MouseMoved : break;
-            case EventType::CharTyped  : break;
-            case EventType::KeyHeld    : break;
+            case EventType::WindowResize : break;
+            case EventType::WindowMoved  : break;
+            case EventType::MouseMoved   : break;
+            case EventType::CharTyped    : break;
+            case EventType::KeyHeld      : break;
             default: DRK_LOG_INFO("[Event] {}", std::string(event));
         }
     }

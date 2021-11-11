@@ -2,6 +2,7 @@
 
 #include "Application.hpp"
 #include "Game/Game.hpp"
+#include "Core/Profiler.hpp"
 
 namespace DrkCraft
 {
@@ -28,16 +29,18 @@ namespace DrkCraft
 
     void MainMenu::on_update(Timestep timestep)
     {
-
+        DRK_PROFILE_FUNCTION();
     }
 
     void MainMenu::on_render(Timestep timestep)
     {
-
+        DRK_PROFILE_FUNCTION();
     }
 
     void MainMenu::on_event(Event& event)
     {
+        DRK_PROFILE_FUNCTION();
+
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
