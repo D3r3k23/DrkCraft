@@ -28,14 +28,14 @@ namespace DrkCraft
 
         DRK_LOG_TRACE("Creating Shader from file {}", path.string());
 
-        DRK_ASSERT(std::filesystem::is_regular_file(path), "Shader file does not exist");
-        DRK_ASSERT(type != ShaderType::None, "Unknown shader type");
+        DRK_ASSERT_DEBUG(std::filesystem::is_regular_file(path), "Shader file does not exist");
+        DRK_ASSERT_DEBUG(type != ShaderType::None, "Unknown shader type");
 
         const std::string source = read_file(path);
-        DRK_ASSERT(source.size() > 0, "Could not load shader file");
+        DRK_ASSERT_DEBUG(source.size() > 0, "Could not load shader file");
 
         ShaderID id = glCreateShader(get_gl_shader_type(type));
-        DRK_ASSERT(id, "glCreateShader failed");
+        DRK_ASSERT_DEBUG(id, "glCreateShader failed");
 
         auto shader = make_ref<Shader>();
         shader->m_id = id;
@@ -70,7 +70,7 @@ namespace DrkCraft
         glCompileShader(m_id);
         GLint success;
         glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
-        DRK_ASSERT(success, "Shader compilation failed");
+        DRK_ASSERT_DEBUG(success, "Shader compilation failed");
     }
 
     ShaderProgram::ShaderProgram(std::string_view name)
@@ -81,7 +81,7 @@ namespace DrkCraft
         DRK_LOG_TRACE("Creating ShaderProgram {}", m_name);
 
         m_id = glCreateProgram();
-        DRK_ASSERT(m_id, "glCreateProgram failed");
+        DRK_ASSERT_DEBUG(m_id, "glCreateProgram failed");
     }
 
     ShaderProgram::ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders)
@@ -112,7 +112,7 @@ namespace DrkCraft
         glLinkProgram(m_id);
         GLint success;
         glGetProgramiv(m_id, GL_LINK_STATUS, &success);
-        DRK_ASSERT(success, "Shader program linkage failed");
+        DRK_ASSERT_DEBUG(success, "Shader program linkage failed");
     }
 
     std::string ShaderProgram::get_name(void) const
@@ -245,7 +245,7 @@ namespace DrkCraft
         else
         {
             GLint location = glGetUniformLocation(m_id, name.c_str());
-            DRK_ASSERT(location != -1, "Uniform does not exist");
+            DRK_ASSERT_DEBUG(location != -1, "Uniform does not exist");
             m_uniformLocationCache[name] = location;
             return location;
         }

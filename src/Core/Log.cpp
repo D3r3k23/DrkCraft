@@ -10,14 +10,14 @@
         {
             s_name = name;
 
-            spdlog::set_level(spdlog::level::trace);
+            spdlog::set_level(spdlog::level::STATIC_LOG_LEVEL);
 
-            DRK_LOG_INFO("Log inintialized: {}", s_name);
+            DRK_LOG_INFO("Logger inintialized: {}", s_name);
         }
 
         void Logger::close(void)
         {
-            DRK_LOG_INFO("Closing log: {}", s_name);
+            DRK_LOG_INFO("Closing Logger: {}", s_name);
         }
     }
 

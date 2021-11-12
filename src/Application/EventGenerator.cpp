@@ -38,7 +38,8 @@ namespace DrkCraft
     }
 
     // Calls m_eventHandler through GLFW user pointer
-    #define DRK_CALL_EVENT_HANDLER_FN(event) (*static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
+    #define DRK_CALL_EVENT_HANDLER_FN(event) \
+        (*static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
 
     namespace GLFWEventCallbackFunctions
     {
@@ -121,7 +122,7 @@ namespace DrkCraft
                     break;
                 }
                 default:
-                    DRK_ASSERT_FALSE("Unknown key action in callback");
+                    DRK_ASSERT_DEBUG(false, "Unknown key action in callback");
             }
         }
 
@@ -156,7 +157,7 @@ namespace DrkCraft
                     break;
                 }
                 default:
-                    DRK_ASSERT_FALSE("Unknown mouse button action in callback");
+                    DRK_ASSERT_DEBUG(false, "Unknown mouse button action in callback");
             }
         }
 

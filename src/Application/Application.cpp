@@ -33,7 +33,7 @@ namespace DrkCraft
 
     Application& Application::get_instance(void)
     {
-        DRK_ASSERT(s_instance, "Application not initialized");
+        DRK_ASSERT_DEBUG(s_instance, "Application not initialized");
         return *s_instance;
     }
 
@@ -83,7 +83,7 @@ namespace DrkCraft
     void Application::init_glfw(void)
     {
         auto status = glfwInit();
-        DRK_ASSERT(status == GLFW_TRUE, "Failed to initialize GLFW");
+        DRK_ASSERT_CORE(status == GLFW_TRUE, "Failed to initialize GLFW");
 
     #if defined(DRK_EN_LOGGING)
         glfwSetErrorCallback([](int error, const char* description)
@@ -223,7 +223,7 @@ namespace DrkCraft
 
     Window& Application::get_window(void)
     {
-        DRK_ASSERT(m_window, "Window not initialized");
+        DRK_ASSERT_DEBUG(m_window, "Window not initialized");
         return *m_window;
     }
 }

@@ -23,7 +23,7 @@ namespace DrkCraft
         {
             DRK_PROFILE_SCOPE("gladLoadGLLoader");
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            DRK_ASSERT(status, "Glad failed to initialize OpenGL context");
+            DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
         }
     }
 
@@ -37,7 +37,7 @@ namespace DrkCraft
     void Window::init_native_window(std::string_view title, int width, int height)
     {
         m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
-        DRK_ASSERT(m_window, "Failed to create GLFW window");
+        DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
     }

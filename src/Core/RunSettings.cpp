@@ -6,7 +6,6 @@
 
 #include <string>
 #include <filesystem>
-#include <cstdlib>
 
 namespace DrkCraft
 {
@@ -41,9 +40,7 @@ namespace DrkCraft
                         s_commandLineOptions.mode = GameMode::Dev;
                         s_commandLineOptions.mode_str = "Developer";
                     #else
-                        DRK_LOG_CRITICAL("Error: This build does not support Dev mode");
-                        DRK_LOG_CRITICAL("Aborting");
-                        exit(EXIT_FAILURE);
+                        DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
                     #endif
                     }
                     break;
@@ -58,7 +55,7 @@ namespace DrkCraft
 
     std::string_view RunSettings::get_arg(int i)
     {
-        DRK_ASSERT(i < s_argc, "arg[i] does not exist");
+        DRK_ASSERT_DEBUG(i < s_argc, "arg[i] does not exist");
         return {s_argv[i]};
     }
 

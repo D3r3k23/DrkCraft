@@ -1,6 +1,5 @@
 #include "Renderer.hpp"
 
-#include "Core/BuildSettings.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft

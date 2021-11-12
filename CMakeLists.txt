@@ -84,6 +84,9 @@ target_compile_definitions(DrkCraft
 
     ${DRK_PLATFORM}
     ${DRK_BUILD_CONFIG}
+
+    DRK_EN_LOGGING
+    DRK_EN_ASSERTS
 )
 
 # Enable profiling

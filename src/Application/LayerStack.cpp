@@ -59,9 +59,9 @@ namespace DrkCraft
 
     void LayerStack::activate_back(void)
     {
-        DRK_ASSERT(!is_empty(), "LayerStack is empty");
+        DRK_ASSERT_DEBUG(!is_empty(), "LayerStack is empty");
         auto& layer = m_layers.back();
-        DRK_ASSERT(!layer->is_layer_active(), "Back layer already active");
+        DRK_ASSERT_DEBUG(!layer->is_layer_active(), "Back layer already active");
         layer->activate_layer();
     }
 

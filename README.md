@@ -2,7 +2,7 @@
 
 [![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml)
 
-Minecraft clone created using an OpenGL renderer
+Minecraft clone in C++ created using an OpenGL renderer
 
 * Currently only built for Windows
 

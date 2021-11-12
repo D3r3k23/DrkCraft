@@ -23,6 +23,7 @@ namespace DrkCraft
     #define DRK_EXPAND_MACRO(x) x
     #define DRK_STRINGIFY(x) #x
     #define DRK_CONCAT(a, b) a ## b
+    #define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
     // Bind member function to lambda
     #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto \

@@ -17,19 +17,27 @@ namespace DrkCraft
         return funcSig + 10; // Trim "DrkCraft::"
     }
 
+    Profiler::Profiler(void)
+      : m_active(false)
+    { }
+
     void Profiler::begin(const char* file)
     {
         DRK_LOG_INFO("Beginning Profiler session");
         m_outStream.open(file);
         m_outStream << std::setprecision(3) << std::fixed;
         write_header();
+        m_active = true;
     }
 
     void Profiler::end(void)
     {
-        DRK_LOG_INFO("Ending Profiler session");
-        write_footer();
-        m_outStream.close();
+        if (m_active)
+        {
+            DRK_LOG_INFO("Ending Profiler session");
+            write_footer();
+            m_outStream.close();
+        }
     }
 
     void Profiler::write_profile(const char* cat, const char* name, float start, float duration)

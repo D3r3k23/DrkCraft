@@ -11,7 +11,7 @@ namespace DrkCraft
     class Profiler
     {
     public:
-        Profiler(void) = default;
+        Profiler(void);
         static Profiler& get_instance(void);
 
         static const char* func_name(const char* funcSig);
@@ -29,6 +29,7 @@ namespace DrkCraft
         static Profiler s_instance;
 
         std::ofstream m_outStream;
+        bool m_active;
     };
 
     class ProfileTimer

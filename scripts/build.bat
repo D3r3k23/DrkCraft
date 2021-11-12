@@ -1,6 +1,6 @@
 @echo OFF
 
-call scripts\get_build_config.bat %1 %2 %2
+call scripts\get_build_config.bat %1 %2 %3
 
 echo ====== Configuring CMake ======
 cmake -S . -B %build_dir%              ^

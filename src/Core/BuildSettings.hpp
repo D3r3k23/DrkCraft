@@ -17,17 +17,32 @@
 
     #define DRK_CONFIG_NAME "Debug"
 
-    #define DRK_EN_LOGGING
-    #define DRK_EN_ASSERTS
+    #if defined(DRK_EN_LOGGING)
+        #define STATIC_LOG_LEVEL trace
+    #endif
 
 #elif defined(DRK_CONFIG_RELEASE)
 
     #define DRK_CONFIG_NAME "Release"
 
-    #define DRK_EN_ASSERTS
+    #if defined(DRK_EN_LOGGING)
+        #define STATIC_LOG_LEVEL warn
+    #endif
 
 #else
     #error "Unknown config detected"
+#endif
+
+#if defined(DRK_EN_LOGGING)
+    // Logging enabled
+#else
+    // Logging disabled
+#endif
+
+#if defined(DRK_EN_ASSERTS)
+    // Asserts enabled
+#else
+    // Asserts disabled
 #endif
 
 #if defined(DRK_EN_PROFILE)

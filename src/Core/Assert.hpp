@@ -5,47 +5,53 @@
 
 #include "BuildSettings.hpp"
 
-#if defined(DRK_CONFIG_DEBUG)
-    #if defined(DRK_PLATFORM_WINDOWS)
-        #define DRK_DEBUG_BREAK() __debugbreak()
-    #elif defined(DRK_PLATFORM_LINUX)
-        #include <signal.h>
-        #define DRK_DEBUG_BREAK() raise(SIGTRAP)
-    #else
-        #error "Unknown platform detected"
-    #endif
+#if defined(DRK_PLATFORM_WINDOWS)
+    #define DRK_DEBUG_BREAK() __debugbreak()
+#elif defined(DRK_PLATFORM_LINUX)
+    #include <signal.h>
+    #define DRK_DEBUG_BREAK() raise(SIGTRAP)
 #else
-    #define DRK_DEBUG_BREAK()
+    #error "Unsupported platform"
 #endif
 
 #if defined(DRK_EN_ASSERTS)
 
+    #include <string_view>
+    #include <format>
     #include <source_location>
 
     namespace DrkCraft
     {
-        // Should add formatting to msg?
-        // Should assert errors be logged even if debug break is disabled?
-        // Idea:
-        //   DRK_ASSERT_CRIT - always enabled (in release, just aborts)
-        //   DRK_ASSERT_CORE - enabled in debug
-        void assert_failed(const char* cond, const char* msg, const std::source_location& src);
+        void assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg);
+        void assert_failure(std::string_view cond, const std::source_location& src);
     }
 
-    #define DRK_ASSERT(cond, msg)                             \
-        do {                                                   \
-            if (!(cond)) {                                      \
-                auto location = std::source_location::current(); \
-                assert_failed(#cond, msg, location);              \
-                DRK_DEBUG_BREAK();                                 \
-            }                                                       \
+    #define DRK_ASSERT_IMPL(cond, ...)                              \
+        do {                                                         \
+            if (!(cond))                                              \
+                assert_failure(#cond, std::source_location::current(), \
+                    std::format(__VA_ARGS__));                          \
         } while (false)
 
-    #define DRK_ASSERT_FALSE(msg) DRK_ASSERT(false, msg) // Remove???
+    #define DRK_ASSERT_IMPL_NO_MSG(cond)                             \
+        do {                                                          \
+            if (!(cond))                                               \
+                assert_failure(#cond, std::source_location::current()); \
+        } while (false)
 
-#else
-    #define DRK_ASSERT(cond, msg)
-    #define DRK_ASSERT_FALSE(msg)
+    #define DRK_ASSERT_CORE(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
+    #define ARK_ASSERT_CORE_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
+
+    #if defined(DRK_CONFIG_DEBUG)
+
+        #define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
+        #define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
+
+    #else
+        #define DRK_ASSERT_DEBUG(cond, msg)
+        #define DRK_ASSERT_DEBUG_NO_MSG(cond)
+    #endif
+
 #endif
 
 #endif // DRK_ASSERT_HPP
