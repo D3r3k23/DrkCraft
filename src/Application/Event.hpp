@@ -27,10 +27,9 @@ namespace DrkCraft
         virtual operator std::string(void) const;
 
         bool handled(void) const;
+        void set_handled(void);
 
     private:
-        friend class EventDispatcher;
-        void set_handled(void);
         bool m_handled;
     };
 

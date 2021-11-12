@@ -15,7 +15,8 @@ namespace DrkCraft
 
         // Window Events
         WindowClose,
-        WindowResize, // Framebuffer size
+        WindowResize,
+        FramebufferResize,
         WindowMoved,
         WindowFocusGained,
         WindowFocusLost,
@@ -41,12 +42,11 @@ namespace DrkCraft
     {
         None = 0,
 
-        Window      = 0b000001,
-        Input       = 0b000010,
-        Key         = 0b000110,
-        Char        = 0b001010,
-        Mouse       = 0b010010,
-        MouseButton = 0b110010
+        Window      = 0b00001,
+        Input       = 0b00010,
+        Keyboard    = 0b00110,
+        Mouse       = 0b01010,
+        MouseButton = 0b11010
     };
 
     EventCategoryFlags operator|(EventCategoryFlags flags, EventCategory cat);
@@ -64,6 +64,12 @@ namespace DrkCraft
 
     bool operator!=(const Event& event, EventCategoryFlags flags);
     bool operator!=(EventCategoryFlags flags, const Event& event);
+
+    bool operator==(const Event& event, EventCategory cat);
+    bool operator==(EventCategory cat, const Event& event);
+
+    bool operator!=(const Event& event, EventCategory cat);
+    bool operator!=(EventCategory cat, const Event& event);
 }
 
 #endif // DRK_EVENT_INFO_HPP

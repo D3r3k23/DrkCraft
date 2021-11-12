@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Set DRK_PROFILE
-option(DRK_PROFILE "Enable profiling" OFF)
+# Set DRK_EN_PROFILE
+option(DRK_EN_PROFILE "Enable profiling" OFF)
+
+# Set DRK_EN_DEV_MODE
+option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
 
 # Set DRK_VERSION
 file(READ VERSION.txt VERSION_txt)
@@ -32,11 +35,16 @@ endif()
 message("=======================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
 message("- ${PLATFORM} ${BUILD_CONFIG} build")
-message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
-message("- Compiler: ${CMAKE_CXX_COMPILER}")
-if(${DRK_PROFILE})
+
+if(${DRK_EN_PROFILE})
     message("- Profiling enabled")
 endif()
+if(${DRK_EN_PROFILE})
+    message("- Dev mode enabled")
+endif()
+
+message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+message("- Compiler: ${CMAKE_CXX_COMPILER}")
 message("=======================================")
 
 add_executable(DrkCraft)
@@ -79,6 +87,11 @@ target_compile_definitions(DrkCraft
 )
 
 # Enable profiling
-if(${DRK_PROFILE})
+if(${DRK_EN_PROFILE})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_PROFILE)
+endif()
+
+# Enable Dev mode
+if(${DRK_EN_DEV_MODE})
+    target_compile_definitions(DrkCraft PUBLIC DRK_EN_DEV_MODE)
 endif()

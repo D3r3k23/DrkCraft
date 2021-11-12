@@ -2,7 +2,7 @@
 #define DRK_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Shader.hpp"
+#include "Core/BuildSettings.hpp"
 
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
@@ -25,13 +25,18 @@ namespace DrkCraft
 
         static void draw_triangle(GLuint vao);
 
+        static void set_viewport(int x, int y, int width, int height);
+
         static const RendererStats& get_stats(void);
 
     private:
-        static void register_gl_message_handler(void);
+
     };
 
+#if defined(DRK_EN_LOGGING)
+    void register_gl_message_handler(void);
     void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam);
+#endif
 }
 
 #endif // DRK_RENDERER_HPP

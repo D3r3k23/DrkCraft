@@ -13,13 +13,8 @@ namespace DrkCraft
       : m_title(title)
     {
         DRK_PROFILE_FUNCTION();
-        {
-            DRK_PROFILE_SCOPE("glfwCreateWindow");
-            m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
-            DRK_ASSERT(m_window, "Failed to create GLFW window");
-        }
-        glfwMakeContextCurrent(m_window);
 
+        init_native_window(title, (int)width, (int)height);
         set_vsync(enableVsync);
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
@@ -37,6 +32,19 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         glfwDestroyWindow(m_window);
+    }
+
+    void Window::init_native_window(std::string_view title, int width, int height)
+    {
+        m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+        DRK_ASSERT(m_window, "Failed to create GLFW window");
+
+        glfwMakeContextCurrent(m_window);
+    }
+
+    GLFWwindow* Window::get_native_window(void) const
+    {
+        return m_window;
     }
 
     void Window::register_event_handler(const AbstractEventHandlerFn& handler)
@@ -80,7 +88,7 @@ namespace DrkCraft
 
     glm::uvec2 Window::resize(uint width, uint height)
     {
-        glfwSetWindowSize(m_window, width, height); // Also resize framebuffer?
+        glfwSetWindowSize(m_window, width, height);
         return get_size();
     }
 
@@ -122,10 +130,5 @@ namespace DrkCraft
     bool Window::is_maximized(void) const
     {
         return glfwGetWindowAttrib(m_window, GLFW_MAXIMIZED);
-    }
-
-    GLFWwindow* Window::get_native_window(void) const
-    {
-        return m_window;
     }
 }

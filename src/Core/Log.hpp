@@ -9,15 +9,20 @@
 
     #include <spdlog/spdlog.h>
 
+    #include <string>
+    #include <string_view>
+
     namespace DrkCraft
     {
         class Logger
         {
         public:
-            static void init(void);
-            static void save(void);
+            static void init(std::string_view name);
+            static void close(void);
 
         private:
+            static std::string s_name;
+
             // s_consoleLogger
             // s_fileLogger
 
@@ -31,8 +36,8 @@
         };
     }
 
-    #define DRK_LOGGER_INIT() Logger::init()
-    #define DRK_LOGGER_CLOSE() Logger::save() // What does this do
+    #define DRK_LOGGER_INIT(name) Logger::init(name)
+    #define DRK_LOGGER_CLOSE()    Logger::close()
 
     #define DRK_LOG_TRACE(...)    spdlog::trace(__VA_ARGS__)
     #define DRK_LOG_INFO(...)     spdlog::info(__VA_ARGS__)

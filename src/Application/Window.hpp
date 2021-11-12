@@ -14,8 +14,11 @@ namespace DrkCraft
     class Window
     {
     public:
-        Window(std::string_view name, uint width, uint height, bool enableVsync=true);
+        Window(std::string_view title, uint width, uint height, bool enableVsync=true);
         ~Window(void);
+
+        void init_native_window(std::string_view title, int width, int height);
+        GLFWwindow* get_native_window(void) const;
 
         void register_event_handler(const AbstractEventHandlerFn& handler);
 
@@ -34,8 +37,6 @@ namespace DrkCraft
         bool is_hovered(void) const;
         bool is_minimized(void) const;
         bool is_maximized(void) const;
-
-        GLFWwindow* get_native_window(void) const;
 
     private:
         GLFWwindow* m_window;

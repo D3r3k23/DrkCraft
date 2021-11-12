@@ -45,6 +45,21 @@ namespace DrkCraft
         const uint height;
     };
 
+    struct FramebufferResizeEvent : WindowEvent
+    {
+        DRK_EVENT_TYPE_INFO(FramebufferResize);
+
+        FramebufferResizeEvent(uint width, uint height)
+          : width(width),
+            height(height)
+        { }
+
+        operator std::string(void) const override;
+
+        const uint width;
+        const uint height;
+    };
+
     struct WindowMovedEvent : WindowEvent
     {
         DRK_EVENT_TYPE_INFO(WindowMoved);
@@ -92,7 +107,7 @@ namespace DrkCraft
 
     struct KeyEvent : Event
     {
-        DRK_EVENT_CATEGORY_INFO(Key);
+        DRK_EVENT_CATEGORY_INFO(Keyboard);
 
         KeyEvent(KeyCode key, InputModFlags mods)
           : key(key),
@@ -135,7 +150,7 @@ namespace DrkCraft
     struct CharTypedEvent : Event
     {
         DRK_EVENT_TYPE_INFO(CharTyped);
-        DRK_EVENT_CATEGORY_INFO(Char);
+        DRK_EVENT_CATEGORY_INFO(Keyboard);
 
         CharTypedEvent(char ch)
           : ch(ch)

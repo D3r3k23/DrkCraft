@@ -19,16 +19,27 @@
 
     #define DRK_EN_LOGGING
     #define DRK_EN_ASSERTS
-    #define DRK_EN_GL_DEBUG_OUTPUT
 
 #elif defined(DRK_CONFIG_RELEASE)
 
     #define DRK_CONFIG_NAME "Release"
 
-    #define DRK_EN_ASSERTS // Still enable asserts, but not DRK_DEBUG_BREAK
+    #define DRK_EN_ASSERTS
 
 #else
     #error "Unknown config detected"
+#endif
+
+#if defined(DRK_EN_PROFILE)
+    // Profiling enabled
+#else
+    // Profiling disabled
+#endif
+
+#if defined(DRK_EN_DEV_MODE)
+    // Dev mode enabled
+#else
+    // Dev mode disabled
 #endif
 
 #endif // DRK_BUILD_SETTINGS_HPP

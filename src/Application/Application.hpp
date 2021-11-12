@@ -4,6 +4,7 @@
 #include "Core/Base.hpp"
 #include "Window.hpp"
 #include "Events.hpp"
+#include "ImGuiManager.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Timestep.hpp"
@@ -14,8 +15,7 @@ namespace DrkCraft
     {
     public:
         static void init(void);
-        static void start(void);
-        static int  shutdown(void);
+        static int shutdown(void);
 
         static Application& get_instance(void);
 
@@ -24,11 +24,11 @@ namespace DrkCraft
 
         void init_glfw(void);
 
-        void add_overlay(const Ref<Layer>& layer);
-        void add_layer(const Ref<Layer>& layer);
+        void add_overlay(const Ref<Layer>& layer); // Pushes layer to front
+        void add_layer(const Ref<Layer>& layer);   // Pushes layer to back
 
-        int run(void);
-        int on_exit(void);
+        void run(void);
+        void exit(int status=0);
 
         void on_update(Timestep timestep);
         void on_render(Timestep timestep);
@@ -36,20 +36,22 @@ namespace DrkCraft
 
         bool on_window_close(WindowCloseEvent& event);
         bool on_window_resize(WindowResizeEvent& event);
-        bool on_key_press(KeyPressedEvent& event);
+        bool on_framebuffer_resize(FramebufferResizeEvent& event);
 
         Window& get_window(void);
 
     private:
         static Application* s_instance;
-        static int s_exitCode;
 
         Window* m_window;
+
+        ImGuiManager* m_imGuiManager;
 
         LayerStack m_layerStack;
         Ptr<LayerStack::ForwardView> m_layerStackForwardView;
         Ptr<LayerStack::ReverseView> m_layerStackReverseView;
 
+        int  m_exitCode;
         bool m_running;
         bool m_minimized;
     };

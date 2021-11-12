@@ -1,10 +1,7 @@
 #include "Renderer.hpp"
 
 #include "Core/BuildSettings.hpp"
-#include "Application/Application.hpp"
 #include "Core/Profiler.hpp"
-
-#include <unordered_map>
 
 namespace DrkCraft
 {
@@ -19,7 +16,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-    #if defined (DRK_EN_GL_DEBUG_OUTPUT)
+    #if defined (DRK_EN_LOGGING)
         register_gl_message_handler();
     #endif
 
@@ -55,12 +52,18 @@ namespace DrkCraft
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
+    void Renderer::set_viewport(int x, int y, int width, int height)
+    {
+        glViewport(x, y, width, height);
+    }
+
     const RendererStats& get_stats(void)
     {
         return s_rendererData.stats;
     }
 
-    void Renderer::register_gl_message_handler(void)
+#if defined(DRK_EN_LOGGING)
+    void register_gl_message_handler(void)
     {
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(gl_message_handler, nullptr);
@@ -116,4 +119,5 @@ namespace DrkCraft
                 DRK_LOG_WARN("[OpenGL message] severity: {0} | source: {1} | type: {2} | msg: {3}", severity, sourceStr, typeStr, msg);
         }
     }
+#endif
 }

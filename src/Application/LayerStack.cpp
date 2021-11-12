@@ -57,11 +57,11 @@ namespace DrkCraft
             pop(layer);
     }
 
-    void LayerStack::activate_front(void)
+    void LayerStack::activate_back(void)
     {
         DRK_ASSERT(!is_empty(), "LayerStack is empty");
-        auto& layer = m_layers.front();
-        DRK_ASSERT(!layer->is_layer_active(), "Front layer already active");
+        auto& layer = m_layers.back();
+        DRK_ASSERT(!layer->is_layer_active(), "Back layer already active");
         layer->activate_layer();
     }
 
@@ -70,11 +70,11 @@ namespace DrkCraft
         return m_layers.empty();
     }
 
-    bool LayerStack::has_active_layer(void) const
+    bool LayerStack::all_layers_inactive(void) const
     {
-        return std::any_of(m_layers.begin(), m_layers.end(), [](const auto& layer)
+        return std::all_of(m_layers.begin(), m_layers.end(), [](const auto& layer)
         {
-            return layer->is_layer_active();
+            return !layer->is_layer_active();
         });
     }
 }

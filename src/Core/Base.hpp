@@ -2,6 +2,7 @@
 #define DRK_BASE_HPP
 
 #include "BuildSettings.hpp"
+#include "RunSettings.hpp"
 #include "Log.hpp"
 #include "Assert.hpp"
 
@@ -18,13 +19,14 @@ namespace DrkCraft
     using int32  = int32_t;
     using uint32 = uint32_t;
 
+    // Common macros
     #define DRK_EXPAND_MACRO(x) x
     #define DRK_STRINGIFY(x) #x
     #define DRK_CONCAT(a, b) a ## b
 
     // Bind member function to lambda
-    #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto     \
-    {                                                           \
+    #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto \
+    {                                                         \
         return this->fn(std::forward<decltype(args)>(args)...); \
     }
 

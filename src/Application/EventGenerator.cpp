@@ -18,11 +18,13 @@ namespace DrkCraft
     void EventGenerator::register_event_callbacks(void)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_TRACE("Registering event callbacks with GLFW");
 
         using namespace GLFWEventCallbackFunctions;
 
         glfwSetWindowCloseCallback(m_window, window_close_callback);
         glfwSetWindowSizeCallback(m_window, window_size_callback);
+        glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
         glfwSetWindowPosCallback(m_window, window_pos_callback);
         glfwSetWindowFocusCallback(m_window, window_focus_callback);
         glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
@@ -51,6 +53,12 @@ namespace DrkCraft
         void window_size_callback(GLFWwindow* window, int width, int height)
         {
             WindowResizeEvent event(width, height);
+            DRK_CALL_EVENT_HANDLER_FN(event);
+        }
+
+        void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+        {
+            FramebufferResizeEvent event(width, height);
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
 

@@ -7,26 +7,26 @@ namespace DrkCraft
         m_layerActive(false),
         m_layerAttached(false)
     {
-        DRK_LOG_TRACE("Creating Layer: {}", get_layer_name());
+        DRK_LOG_INFO("Creating Layer: {}", get_layer_name());
         if (activate)
             activate_layer();
     }
 
     Layer::~Layer(void)
     {
-        DRK_LOG_TRACE("Deleted Layer: {}", get_layer_name());
+        DRK_LOG_INFO("Deleted Layer: {}", get_layer_name());
     }
 
     void Layer::attach_layer(void)
     {
-        DRK_LOG_INFO("Attaching Layer: {}", get_layer_name());
+        DRK_LOG_TRACE("Attaching Layer: {}", get_layer_name());
         m_layerAttached = true;
         on_attach();
     }
 
     void Layer::detach_layer(void)
     {
-        DRK_LOG_INFO("Detaching Layer: {}", get_layer_name());
+        DRK_LOG_TRACE("Detaching Layer: {}", get_layer_name());
         m_layerAttached = false;
         m_layerActive = false;
         on_detach();
@@ -34,13 +34,13 @@ namespace DrkCraft
 
     void Layer::activate_layer(void)
     {
-        DRK_LOG_INFO("Activating Layer: {}", get_layer_name());
+        DRK_LOG_TRACE("Activating Layer: {}", get_layer_name());
         m_layerActive = true;
     }
 
     void Layer::deactivate_layer(void)
     {
-        DRK_LOG_INFO("Deactivating Layer: {}", get_layer_name());
+        DRK_LOG_TRACE("Deactivating Layer: {}", get_layer_name());
         m_layerActive = false;
     }
 

@@ -44,6 +44,11 @@ namespace DrkCraft
         return std::format("{}: width={} height={}", get_name(), width, height);
     }
 
+    FramebufferResizeEvent::operator std::string(void) const
+    {
+        return std::format("{}: width={} height={}", get_name(), width, height);
+    }
+
     WindowMovedEvent::operator std::string(void) const
     {
         return std::format("{}: xPos={} yPos{}", get_name(), xPos, yPos);
@@ -129,5 +134,25 @@ namespace DrkCraft
     bool operator!=(EventCategoryFlags flags, const Event& event)
     {
         return !(event == flags);
+    }
+
+    bool operator==(const Event& event, EventCategory cat)
+    {
+        return event.get_category() == cat;
+    }
+
+    bool operator==(EventCategory cat, const Event& event)
+    {
+        return event == cat;
+    }
+
+    bool operator!=(const Event& event, EventCategory cat)
+    {
+        return !(event == cat);
+    }
+
+    bool operator!=(EventCategory cat, const Event& event)
+    {
+        return !(event == cat);
     }
 }

@@ -28,10 +28,10 @@ namespace DrkCraft
 
         // Activates the front layer
         // Should only be used if all layers are inactive
-        void activate_front(void);
+        void activate_back(void);
 
         bool is_empty(void) const;
-        bool has_active_layer(void) const;
+        bool all_layers_inactive(void) const;
 
     private:
         LayerDeque m_layers;
