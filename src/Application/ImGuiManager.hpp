@@ -4,12 +4,14 @@
 #include "Core/Base.hpp"
 #include "Events.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace DrkCraft
 {
     class ImGuiManager
     {
     public:
-        ImGuiManager(void);
+        ImGuiManager(GLFWwindow* window);
         ~ImGuiManager(void);
 
         void begin_frame(void);

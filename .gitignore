@@ -2,10 +2,11 @@
 /.VSCodeCounter/**
 
 /.venv/**
+
 /build/**
 
-/saves/**
-/logs/**
+/data/logs/**
+/data/profile/*.json
+/data/saves/**
 
 /packages/**
-/profile/*.json

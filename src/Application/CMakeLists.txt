@@ -1,5 +1,5 @@
 target_sources(DrkCraft
-  PUBLIC
+  PRIVATE
     Application.cpp
     EventGenerator.cpp
     Events.cpp

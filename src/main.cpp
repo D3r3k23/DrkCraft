@@ -11,17 +11,18 @@ int main(int argc, char* argv[])
 {
     DRK_LOGGER_INIT("DrkCraft");
 
+    DRK_LOG_INFO("Loading runtime settings");
     RunSettings::parse_args(argc, argv);
 
     DRK_LOG_INFO("Version: {}", DRK_VERSION_STRING);
-    DRK_LOG_INFO("Build config: {}", DRK_CONFIG_NAME);
     DRK_LOG_INFO("Platform: {}", DRK_PLATFORM_NAME);
+    DRK_LOG_INFO("Build config: {}", DRK_CONFIG_NAME);
 #if defined(DRK_EN_PROFILE)
     DRK_LOG_INFO("Profiling enabled");
 #endif
     DRK_LOG_INFO("Game mode: {}", RunSettings::get_game_mode_str());
 
-    DRK_PROFILER_BEGIN("profile/results.json");
+    DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
 
     DRK_LOG_TRACE("Initializing Application");
     Application::init();

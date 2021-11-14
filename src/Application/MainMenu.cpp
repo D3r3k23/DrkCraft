@@ -4,6 +4,8 @@
 #include "Game/Game.hpp"
 #include "Core/Profiler.hpp"
 
+#include <imgui/imgui.h>
+
 namespace DrkCraft
 {
     MainMenu::MainMenu(void)
@@ -35,11 +37,12 @@ namespace DrkCraft
     void MainMenu::on_render(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
+
+        ImGui::ShowDemoWindow();
     }
 
     void MainMenu::on_event(Event& event)
     {
-        DRK_LOG_INFO("MainMenu received event");
         DRK_PROFILE_FUNCTION();
 
         EventDispatcher ed(event);
@@ -48,7 +51,6 @@ namespace DrkCraft
 
     bool MainMenu::on_key_pressed(KeyPressedEvent& event)
     {
-        DRK_LOG_INFO("MainMenu received KeyPressEvent");
         switch (event.key)
         {
             case KeyCode::Enter:

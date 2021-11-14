@@ -4,8 +4,10 @@
 #include "Core/Base.hpp"
 #include "Core/BuildSettings.hpp"
 
-#include <glad/glad.h>
 #include <glm/vec3.hpp>
+
+// Temp?
+#include <glad/glad.h>
 
 namespace DrkCraft
 {
@@ -25,6 +27,8 @@ namespace DrkCraft
 
         static void draw_triangle(GLuint vao);
 
+        static void draw_cube();
+
         static void set_viewport(int x, int y, int width, int height);
 
         static const RendererStats& get_stats(void);
@@ -35,7 +39,6 @@ namespace DrkCraft
 
 #if defined(DRK_EN_LOGGING)
     void register_gl_message_handler(void);
-    void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam);
 #endif
 }
 

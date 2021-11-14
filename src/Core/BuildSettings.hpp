@@ -10,7 +10,7 @@
     #define DRK_PLATFORM_NAME "Linux"
 
 #else
-    #error "Unknown platform detected"
+    #error "Unknown platform"
 #endif
 
 #if defined(DRK_CONFIG_DEBUG)
@@ -18,7 +18,7 @@
     #define DRK_CONFIG_NAME "Debug"
 
     #if defined(DRK_EN_LOGGING)
-        #define STATIC_LOG_LEVEL trace
+        #define DRK_STATIC_LOG_LEVEL trace
     #endif
 
 #elif defined(DRK_CONFIG_RELEASE)
@@ -26,11 +26,11 @@
     #define DRK_CONFIG_NAME "Release"
 
     #if defined(DRK_EN_LOGGING)
-        #define STATIC_LOG_LEVEL warn
+        #define DRK_STATIC_LOG_LEVEL warn
     #endif
 
 #else
-    #error "Unknown config detected"
+    #error "Unknown config"
 #endif
 
 #if defined(DRK_EN_LOGGING)

@@ -5,6 +5,7 @@
 
 #include "Core/Base.hpp"
 #include "EventInfo.hpp"
+#include "Core/Profiler.hpp"
 
 #include <string>
 #include <functional>
@@ -32,8 +33,6 @@ namespace DrkCraft
     private:
         bool m_handled;
     };
-
-    void log_event(const Event& event); // Move this to logger
 
     template <typename E>
     concept AbstractEventConcept = std::derived_from<E, Event>;

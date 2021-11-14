@@ -1,5 +1,5 @@
 target_sources(DrkCraft
-  PUBLIC
+  PRIVATE
     Chunk.cpp
     Entity.cpp
     Scene.cpp

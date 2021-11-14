@@ -5,10 +5,11 @@
 #include "Event.hpp"
 #include "Input.hpp"
 
-#define DRK_EVENT_TYPE_INFO(type)                                            \
+#define DRK_EVENT_TYPE_INFO(type)                                             \
     static constexpr EventType static_type(void) { return EventType::type; } \
-    EventType   get_type(void) const override { return static_type(); }      \
-    const char* get_name(void) const override { return #type"Event";  }
+    EventType   get_type(void) const override { return static_type(); }     \
+    const char* get_name(void) const override { return #type##"Event";  }  \
+    DRK_PROFILE_OBJECT(#type##"Event");
 
 #define DRK_EVENT_CATEGORY_INFO(cat)                \
     EventCategory get_category(void) const override \
@@ -20,12 +21,12 @@ namespace DrkCraft
 
     struct WindowEvent : Event
     {
-        DRK_EVENT_CATEGORY_INFO(Window);
+        DRK_EVENT_CATEGORY_INFO(Window)
     };
 
     struct WindowCloseEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowClose);
+        DRK_EVENT_TYPE_INFO(WindowClose)
 
         WindowCloseEvent(void) = default;
     };
@@ -103,7 +104,7 @@ namespace DrkCraft
         WindowRestoredEvent(void) = default;
     };
 
-    ////////// Key Events //////////
+    ////////// Keyboard Events //////////
 
     struct KeyEvent : Event
     {

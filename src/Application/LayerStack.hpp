@@ -14,10 +14,15 @@ namespace DrkCraft
     {
     public:
         LayerStack(void) = default;
-        LayerStack(const LayerStack& other);
-        ~LayerStack(void);
+        ~LayerStack(void) = default;
 
-        void clear(void);
+        static LayerStack copy_active(const LayerStack& src);
+
+        // Should only move LayerStacks, copying only needs to preserve active layers
+        LayerStack(LayerStack&&) = default;
+        LayerStack(const LayerStack&) = delete;
+        LayerStack& operator=(LayerStack&&) = default;
+        LayerStack& operator=(const LayerStack&) = delete;
 
         void push_front(const Ref<Layer>& layer);
         void push_back(const Ref<Layer>& layer);
@@ -25,12 +30,13 @@ namespace DrkCraft
         bool pop(const Ref<Layer>& layer);
 
         void refresh(void); // Pops detached Layers
+        void clear(void);
 
-        // Activates the front layer
-        // Should only be used if all layers are inactive
+        // Activates the back layer
+        // Should only need to be used if all layers are inactive
         void activate_back(void);
 
-        bool is_empty(void) const;
+        bool empty(void) const;
         bool all_layers_inactive(void) const;
 
     private:
@@ -38,10 +44,10 @@ namespace DrkCraft
 
     public:
         // Note: Modifying a LayerStack will invalidate any of its Views
-        //   In Application, we first copy the LayerStack and create the Views
-        //   using the copy. Since the layers are stored in refence-counted
-        //   pointers, they will remain in existance until the LayerStack copy
-        //   is destroyed.
+        //   In Application, we first copy the LayerStack using LayerStack::copy_active
+        //   and create the Views using the copy. Since the layers are stored in
+        //   refence-counted pointers, they will remain in existance until the LayerStack
+        //   copy is destroyed.
 
         class ForwardView
         {

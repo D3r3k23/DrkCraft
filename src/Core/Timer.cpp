@@ -2,13 +2,6 @@
 
 namespace DrkCraft
 {
-    std::chrono::time_point<TimerClock> Timer::s_globalStart = TimerClock::now();
-
-    TimerDuration Timer::get_global_time(void)
-    {
-        return TimerClock::now() - s_globalStart;
-    }
-
     Timer::Timer(void)
     {
         reset();
@@ -16,39 +9,39 @@ namespace DrkCraft
 
     Timer::Timer(double init)
     {
-        m_start = TimerDuration(init);
+        m_start = Time::Time(Time::Duration(init * 1000));
     }
 
     void Timer::reset(void)
     {
-        m_start = get_global_time();
+        m_start = Time::get_global_time();
     }
 
-    TimerDuration Timer::get_elapsed(void) const
+    Time::Duration Timer::get_elapsed(void) const
     {
-        return get_global_time() - m_start;
+        return Time::duration_cast<Time::Duration>(Time::get_global_time() - m_start);
     }
 
-    TimerDuration Timer::get_start(void) const
+    Time::Time Timer::get_start(void) const
     {
         return m_start;
     }
 
     double Timer::elapsed_seconds(void) const
     {
-        TimerDuration elapsed = get_elapsed();
-        return elapsed.count();
+        Time::Duration elapsed = get_elapsed();
+        return duration_cast<Time::Seconds<double>>(elapsed).count();
     }
 
     double Timer::elapsed_milliseconds(void) const
     {
-        TimerDuration elapsed = get_elapsed();
-        return std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+        Time::Duration elapsed = get_elapsed();
+        return Time::duration_cast<Time::Milli<double>>(elapsed).count();
     }
 
     double Timer::elapsed_microseconds(void) const
     {
-        TimerDuration elapsed = get_elapsed();
-        return std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+        Time::Duration elapsed = get_elapsed();
+        return Time::duration_cast<Time::Micro<double>>(elapsed).count();
     }
 }

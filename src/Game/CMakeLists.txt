@@ -1,5 +1,5 @@
 target_sources(DrkCraft
-  PUBLIC
+  PRIVATE
     Console.cpp
     DebugOverlay.cpp
     Game.cpp

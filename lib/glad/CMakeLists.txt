@@ -1,4 +1,7 @@
-add_library(glad
+add_library(glad)
+
+target_sources(glad
+  PRIVATE
     src/glad.c
 )
 

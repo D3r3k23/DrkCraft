@@ -5,8 +5,6 @@
 
 #include <glad/glad.h>
 
-// Add fullscreen mode
-
 namespace DrkCraft
 {
     Window::Window(std::string_view title, uint width, uint height, bool enableVsync)
@@ -19,9 +17,9 @@ namespace DrkCraft
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
-        DRK_LOG_TRACE("Glad: Loading OpenGL functions using GLFW loader function");
+        DRK_LOG_TRACE("Glad: Loading OpenGL using GLFW loader function");
         {
-            DRK_PROFILE_SCOPE("gladLoadGLLoader");
+            DRK_PROFILE_SCOPE("Load OpenGL");
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
             DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
         }
@@ -36,6 +34,8 @@ namespace DrkCraft
 
     void Window::init_native_window(std::string_view title, int width, int height)
     {
+        DRK_PROFILE_FUNCTION();
+
         m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
         DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
 
@@ -62,13 +62,15 @@ namespace DrkCraft
             DRK_PROFILE_SCOPE("glfwSwapBuffers");
             glfwSwapBuffers(m_window);
         }{
-            DRK_PROFILE_SCOPE("glfwPollEvets");
+            DRK_PROFILE_SCOPE("glfwPollEvents");
             glfwPollEvents();
         }
     }
 
     void Window::set_vsync(bool enable)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (enable)
         {
             glfwSwapInterval(1);

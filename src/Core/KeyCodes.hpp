@@ -8,7 +8,7 @@ namespace DrkCraft
     KeyCode to_key_code(int key);
     int from_key_code(KeyCode key);
 
-    // From glfw3.h
+    // From glfw3.h, same codes as in imgui_impl_glfw.cpp
     enum class KeyCode
     {
         None = -1,

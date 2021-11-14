@@ -23,7 +23,7 @@ namespace DrkCraft
         WindowMinimized, // Maximized
         WindowRestored,  // Restored from maximized/minimzed?
 
-        // Key Events
+        // Keyboard Events
         KeyPressed,
         KeyHeld,
         KeyReleased,

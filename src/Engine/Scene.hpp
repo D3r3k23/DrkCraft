@@ -5,7 +5,7 @@
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
 
-#include <entt.hpp>
+#include <entt/entt.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <string>

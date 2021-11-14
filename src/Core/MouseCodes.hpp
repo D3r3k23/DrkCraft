@@ -3,7 +3,7 @@
 
 namespace DrkCraft
 {
-    // From glfw3.h
+    // From glfw3.h, same codes as in imgui_impl_glfw.cpp
     enum class MouseCode
     {
         None = -1,

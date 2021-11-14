@@ -48,7 +48,7 @@ namespace DrkCraft
         init_glfw();
 
         DRK_LOG_TRACE("Creating Window");
-        m_window = new Window("DrkCraft", 1280, 720, true);
+        m_window = new Window("DrkCraft", 1280, 720, false);
 
         DRK_LOG_TRACE("Registering event handler");
         m_window->register_event_handler(DRK_BIND_FN(on_event));
@@ -57,7 +57,7 @@ namespace DrkCraft
         Renderer::init();
 
         DRK_LOG_TRACE("Creating ImGuiManager");
-        m_imGuiManager = new ImGuiManager;
+        m_imGuiManager = new ImGuiManager(m_window->get_native_window());
     }
 
     Application::~Application(void)
@@ -113,26 +113,28 @@ namespace DrkCraft
         while (m_running)
         {
             Timestep timestep;
+            LayerStack frameLayerStack;
             {
-                DRK_PROFILE_SCOPE("LayerStackView-creation");
-                LayerStack frameLayerStack = m_layerStack;
+                DRK_PROFILE_SCOPE("LayerStackView creation");
+                frameLayerStack = LayerStack::copy_active(m_layerStack);
                 m_layerStackForwardView = make_ptr<LayerStack::ForwardView>(frameLayerStack);
                 m_layerStackReverseView = make_ptr<LayerStack::ReverseView>(frameLayerStack);
-            }
-            m_window->on_update();
+            }{
+                DRK_PROFILE_SCOPE("Application core loop");
+                m_window->on_update();
 
-            if (m_running && !m_minimized)
-            {
-                on_update(timestep);
-                on_render(timestep);
+                if (m_running && !m_minimized)
+                {
+                    on_update(timestep);
+                    on_render(timestep);
+                }
             }
-
             m_layerStackForwardView.reset();
             m_layerStackReverseView.reset();
 
             m_layerStack.refresh();
 
-            if (m_layerStack.is_empty())
+            if (m_layerStack.empty())
             {
                 DRK_LOG_INFO("LayerStack is empty; exiting Application");
                 exit();
@@ -157,8 +159,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         for (auto& layer : *m_layerStackReverseView)
-            if (layer->is_layer_active())
-                layer->on_update(timestep);
+            layer->on_update(timestep);
     }
 
     void Application::on_render(Timestep timestep)
@@ -167,11 +168,11 @@ namespace DrkCraft
 
         Renderer::begin_frame();
         m_imGuiManager->begin_frame();
-
-        for (auto& layer : *m_layerStackReverseView)
-            if (layer->is_layer_active())
+        {
+            DRK_PROFILE_SCOPE("Render Layers");
+            for (auto& layer : *m_layerStackReverseView)
                 layer->on_render(timestep);
-
+        }
         m_imGuiManager->end_frame();
         Renderer::end_frame();
     }
@@ -179,8 +180,6 @@ namespace DrkCraft
     void Application::on_event(Event& event)
     {
         DRK_PROFILE_FUNCTION();
-
-        log_event(event);
 
         EventDispatcher ed(event);
         ed.dispatch<WindowCloseEvent>(DRK_BIND_FN(on_window_close));
@@ -190,17 +189,9 @@ namespace DrkCraft
         m_imGuiManager->on_event(event);
 
         for (auto& layer : *m_layerStackForwardView)
-            if (layer->is_layer_active())
-                layer->on_event(event);
+            layer->on_event(event);
 
-        // if (event.handled())
-        //     return true;
-        // else
-        // {
-        //     Or just log here and specify if handled?
-        //     DRK_LOG_WARN("Event: {} not handled", std::string(event));
-        //     return false;
-        // }
+        DRK_LOG_EVENT(event);
     }
 
     bool Application::on_window_close(WindowCloseEvent& event)

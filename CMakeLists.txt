@@ -34,7 +34,8 @@ endif()
 
 message("=======================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
-message("- ${PLATFORM} ${BUILD_CONFIG} build")
+message("- Platform: ${PLATFORM}")
+message("- Build config: ${BUILD_CONFIG}")
 
 if(${DRK_EN_PROFILE})
     message("- Profiling enabled")

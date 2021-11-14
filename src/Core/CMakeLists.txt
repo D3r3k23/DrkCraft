@@ -1,10 +1,11 @@
 target_sources(DrkCraft
-  PUBLIC
+  PRIVATE
     Assert.cpp
     # Debug.cpp
     Log.cpp
     Profiler.cpp
     RunSettings.cpp
+    Time.cpp
     Timer.cpp
     Util.cpp
 )

@@ -2,6 +2,7 @@
 
 #include "Application/Application.hpp"
 #include "PauseMenu.hpp"
+#include "Core/Assets.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft
@@ -38,8 +39,8 @@ namespace DrkCraft
         glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-        flatColorShaderProgram.add_shader(Shader::create("data/shaders/flat_color_vertex_shader.glsl", ShaderType::Vertex));
-        flatColorShaderProgram.add_shader(Shader::create("data/shaders/flat_color_fragment_shader.glsl", ShaderType::Fragment));
+        flatColorShaderProgram.add_shader(Shader::create(DRK_SHADER_ASSET_PATH("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
+        flatColorShaderProgram.add_shader(Shader::create(DRK_SHADER_ASSET_PATH("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
         flatColorShaderProgram.link();
     }
 

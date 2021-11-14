@@ -70,7 +70,7 @@ namespace DrkCraft
         glCompileShader(m_id);
         GLint success;
         glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
-        DRK_ASSERT_DEBUG(success, "Shader compilation failed");
+        DRK_ASSERT_CORE(success, "Shader compilation failed");
     }
 
     ShaderProgram::ShaderProgram(std::string_view name)
@@ -112,7 +112,7 @@ namespace DrkCraft
         glLinkProgram(m_id);
         GLint success;
         glGetProgramiv(m_id, GL_LINK_STATUS, &success);
-        DRK_ASSERT_DEBUG(success, "Shader program linkage failed");
+        DRK_ASSERT_CORE(success, "Shader program \"{}\" linkage failed", m_name);
     }
 
     std::string ShaderProgram::get_name(void) const
@@ -245,7 +245,7 @@ namespace DrkCraft
         else
         {
             GLint location = glGetUniformLocation(m_id, name.c_str());
-            DRK_ASSERT_DEBUG(location != -1, "Uniform does not exist");
+            DRK_ASSERT_DEBUG(location != -1, "Uniform \"{}\" does not exist", name);
             m_uniformLocationCache[name] = location;
             return location;
         }

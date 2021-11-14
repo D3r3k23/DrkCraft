@@ -13,7 +13,7 @@ namespace DrkCraft
     {
         std::string name = "DrkCraft";
 
-        GameMode mode = GameMode::Player;
+        GameMode mode = GameMode::Player; // Or maybe this should be enabled with a hotkey
         std::string mode_str = "Player";
     };
 
@@ -35,14 +35,7 @@ namespace DrkCraft
 
                 case 1:
                     if (arg == "--dev")
-                    {
-                    #if defined(DRK_EN_DEV_MODE)
-                        s_commandLineOptions.mode = GameMode::Dev;
-                        s_commandLineOptions.mode_str = "Developer";
-                    #else
-                        DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
-                    #endif
-                    }
+                        set_mode(GameMode::Dev);
                     break;
 
                 default:
@@ -55,7 +48,7 @@ namespace DrkCraft
 
     std::string_view RunSettings::get_arg(int i)
     {
-        DRK_ASSERT_DEBUG(i < s_argc, "arg[i] does not exist");
+        DRK_ASSERT_DEBUG(i < s_argc, "arg[{}] does not exist", i);
         return {s_argv[i]};
     }
 
@@ -72,5 +65,28 @@ namespace DrkCraft
     std::string RunSettings::get_game_mode_str(void)
     {
         return s_commandLineOptions.mode_str;
+    }
+
+    void RunSettings::set_mode(GameMode mode)
+    {
+        switch (mode)
+        {
+            case GameMode::Dev:
+            #if defined(DRK_EN_DEV_MODE)
+                s_commandLineOptions.mode = GameMode::Dev;
+                s_commandLineOptions.mode_str = "Developer";
+            #else
+                DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
+            #endif
+                break;
+
+            case GameMode::Player:
+                s_commandLineOptions.mode = GameMode::Player;
+                s_commandLineOptions.mode_str = "Player";
+                break;
+
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown GameMode");
+        }
     }
 }

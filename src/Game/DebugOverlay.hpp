@@ -8,6 +8,11 @@
 
 namespace DrkCraft
 {
+    class FpsCounter
+    {
+
+    };
+
     class DebugOverlay : public Layer
     {
     public:

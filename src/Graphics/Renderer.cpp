@@ -2,6 +2,8 @@
 
 #include "Core/Profiler.hpp"
 
+#include <glad/glad.h>
+
 namespace DrkCraft
 {
     struct RendererData
@@ -51,6 +53,11 @@ namespace DrkCraft
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
+    void Renderer::draw_cube()
+    {
+
+    }
+
     void Renderer::set_viewport(int x, int y, int width, int height)
     {
         glViewport(x, y, width, height);
@@ -62,12 +69,6 @@ namespace DrkCraft
     }
 
 #if defined(DRK_EN_LOGGING)
-    void register_gl_message_handler(void)
-    {
-        glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(gl_message_handler, nullptr);
-    }
-
     void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
     {
         if (id == 131169 || id == 131185 || id == 131218 || 131204)
@@ -117,6 +118,12 @@ namespace DrkCraft
             default:
                 DRK_LOG_WARN("[OpenGL message] severity: {0} | source: {1} | type: {2} | msg: {3}", severity, sourceStr, typeStr, msg);
         }
+    }
+
+    void register_gl_message_handler(void)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glDebugMessageCallback(gl_message_handler, nullptr);
     }
 #endif
 }

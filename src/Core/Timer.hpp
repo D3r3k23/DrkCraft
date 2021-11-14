@@ -2,35 +2,27 @@
 #define DRK_TIMER_HPP
 
 #include "Base.hpp"
-
-#include <chrono>
+#include "Time.hpp"
 
 namespace DrkCraft
 {
-    using TimerClock    = std::chrono::steady_clock;
-    using TimerDuration = std::chrono::duration<double>;
-
     class Timer
     {
     public:
-        static TimerDuration get_global_time(void);
-
         Timer(void);
-        Timer(double init);
+        Timer(double init); // Seconds
 
         void reset(void);
 
-        TimerDuration get_elapsed(void) const;
-        TimerDuration get_start(void) const;
+        Time::Duration get_elapsed(void) const;
+        Time::Time get_start(void) const;
 
         double elapsed_seconds(void) const;
         double elapsed_milliseconds(void) const;
         double elapsed_microseconds(void) const;
 
     private:
-        static std::chrono::time_point<TimerClock> s_globalStart;
-
-        TimerDuration m_start;
+        Time::Time m_start;
     };
 }
 

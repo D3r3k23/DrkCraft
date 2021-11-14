@@ -16,7 +16,7 @@ namespace DrkCraft
         operator float(void) const;
 
     private:
-        const double m_elapsed;
+        const double m_elapsed; // Seconds
 
         static Timer s_frameTimer;
     };

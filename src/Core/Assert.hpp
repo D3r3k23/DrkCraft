@@ -5,15 +5,6 @@
 
 #include "BuildSettings.hpp"
 
-#if defined(DRK_PLATFORM_WINDOWS)
-    #define DRK_DEBUG_BREAK() __debugbreak()
-#elif defined(DRK_PLATFORM_LINUX)
-    #include <signal.h>
-    #define DRK_DEBUG_BREAK() raise(SIGTRAP)
-#else
-    #error "Unsupported platform"
-#endif
-
 #if defined(DRK_EN_ASSERTS)
 
     #include <string_view>
@@ -48,7 +39,7 @@
         #define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
 
     #else
-        #define DRK_ASSERT_DEBUG(cond, msg)
+        #define DRK_ASSERT_DEBUG(cond, ...)
         #define DRK_ASSERT_DEBUG_NO_MSG(cond)
     #endif
 

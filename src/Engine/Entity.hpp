@@ -1,7 +1,7 @@
 #ifndef DRK_ENTITY_HPP
 #define DRK_ENTITY_HPP
 
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 namespace DrkCraft
 {

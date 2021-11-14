@@ -6,18 +6,15 @@
 
 namespace DrkCraft
 {
-    LayerStack::LayerStack(const LayerStack& other)
-      : m_layers(other.m_layers)
-    { }
-
-    LayerStack::~LayerStack(void)
+    LayerStack LayerStack::copy_active(const LayerStack& src)
     {
-        clear();
-    }
-
-    void LayerStack::clear(void)
-    {
-        m_layers.clear();
+        LayerStack copy;
+        std::copy_if(src.m_layers.begin(), src.m_layers.end(), std::back_inserter(copy.m_layers),
+        [](const auto& layer)
+        {
+            return layer->is_layer_active();
+        });
+        return copy;
     }
 
     void LayerStack::push_front(const Ref<Layer>& layer)
@@ -57,15 +54,20 @@ namespace DrkCraft
             pop(layer);
     }
 
+    void LayerStack::clear(void)
+    {
+        m_layers.clear();
+    }
+
     void LayerStack::activate_back(void)
     {
-        DRK_ASSERT_DEBUG(!is_empty(), "LayerStack is empty");
+        DRK_ASSERT_DEBUG(!empty(), "LayerStack is empty");
         auto& layer = m_layers.back();
         DRK_ASSERT_DEBUG(!layer->is_layer_active(), "Back layer already active");
         layer->activate_layer();
     }
 
-    bool LayerStack::is_empty(void) const
+    bool LayerStack::empty(void) const
     {
         return m_layers.empty();
     }

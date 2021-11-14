@@ -97,7 +97,7 @@ namespace DrkCraft
             }
         }
 
-        ////////// Key Events //////////
+        ////////// Keyboard Events //////////
 
         void key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods)
         {
@@ -167,6 +167,4 @@ namespace DrkCraft
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
     }
-
-    #undef DRK_CALL_EVENT_CALLBACK_FN
 }
