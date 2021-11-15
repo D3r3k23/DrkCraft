@@ -1,7 +1,5 @@
 set(BUILD_SHARED_LIBS OFF)
 
-# Header only libraries
-
 add_library(entt INTERFACE)
 target_include_directories(entt INTERFACE entt/single_include)
 
@@ -11,16 +9,16 @@ target_include_directories(glm INTERFACE glm)
 add_library(spdlog INTERFACE)
 target_include_directories(spdlog INTERFACE spdlog/include)
 
-# Other
-
 message("Configuring Glad")
-add_subdirectory(glad) # Custom CMakeLists.txt
+add_subdirectory(glad)
 
 message("Configuring GLFW")
-add_subdirectory(glfw) # Repo CMakeLists.txt
+set(GLFW_BUILD_DOCS OFF)
+add_subdirectory(glfw)
+target_compile_definitions(glfw INTERFACE GLFW_INCLUDE_NONE) # Don't need GLFW to include OpenGL header
 
 message("Configuring ImGui")
-add_subdirectory(imgui) # Custom CMakeLists.txt
+add_subdirectory(imgui)
 
 target_link_libraries(DrkCraft
   PRIVATE

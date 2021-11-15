@@ -22,6 +22,9 @@ namespace DrkCraft
         void block_events(bool block);
 
     private:
+        void setup_style(void);
+
+    private:
         bool m_blockEvents;
     };
 }

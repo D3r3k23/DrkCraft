@@ -2,6 +2,7 @@
 
 #include "Application.hpp"
 #include "Game/Game.hpp"
+#include "SettingsMenu.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -39,6 +40,16 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         ImGui::ShowDemoWindow();
+
+        #if 0
+
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize;
+        ImGui::Begin("MainMenu", nullptr, windowFlags);
+
+
+        ImGui::End();
+
+        #endif
     }
 
     void MainMenu::on_event(Event& event)
@@ -61,7 +72,7 @@ namespace DrkCraft
             }
             case KeyCode::Escape:
             {
-                DRK_LOG_INFO("MainMenu: Exit application");
+                DRK_LOG_CORE_INFO("MainMenu: Exit application");
                 detach_layer();
                 return true;
             }

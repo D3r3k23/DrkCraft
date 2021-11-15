@@ -93,7 +93,7 @@ namespace DrkCraft
             case KeyCode::Space:
             {
                 color = { randomDist(), randomDist(), randomDist() };
-                DRK_LOG_INFO("Changing triangle color to: ({}, {} {})", color.r, color.g, color.b);
+                DRK_LOG_GAME_INFO("Changing triangle color to: ({}, {} {})", color.r, color.g, color.b);
                 return true;
             }
             case KeyCode::Escape:
@@ -108,7 +108,7 @@ namespace DrkCraft
 
     void Game::pause(void)
     {
-        DRK_LOG_INFO("Game paused");
+        DRK_LOG_GAME_INFO("Paused");
         m_paused = true;
         deactivate_layer();
         open_pause_menu();
@@ -116,7 +116,7 @@ namespace DrkCraft
 
     void Game::unpause(void)
     {
-        DRK_LOG_INFO("Game unpaused");
+        DRK_LOG_GAME_INFO("Unpaused");
         m_paused = false;
         activate_layer();
     }
@@ -140,6 +140,6 @@ namespace DrkCraft
 
     void Game::save(void)
     {
-        DRK_LOG_INFO("Saving Game");
+        DRK_LOG_GAME_INFO("Saving Game");
     }
 }

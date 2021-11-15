@@ -1,6 +1,9 @@
 #include "PauseMenu.hpp"
 
+#include "Application/SettingsMenu.hpp"
 #include "Core/Profiler.hpp"
+
+#include <imgui/imgui.h>
 
 namespace DrkCraft
 {

@@ -16,6 +16,11 @@ namespace DrkCraft
     template <typename L>
     concept ConcreteLayerConcept = std::derived_from<L, Layer> && !std::same_as<L, Layer>;
 
+    // Layer/~Layer: Actual construction/destruction of the Layer, use to init/clean up resources
+    // on_attach/on_detach (optional): Called when Layer is pushed/popped from the LayerStack
+    // on_update/on_render/on_event: Core logic
+    // activate/deactivate: Inactive Layers are ignored when copying LayerStack
+
     class Layer
     {
     public:
@@ -28,12 +33,12 @@ namespace DrkCraft
         Layer(std::string_view name, bool activate=true);
         virtual ~Layer(void);
 
+        virtual void on_attach(void) { }
+        virtual void on_detach(void) { }
+
         virtual void on_update(Timestep timestep) = 0;
         virtual void on_render(Timestep timestep) = 0;
         virtual void on_event(Event& e) = 0;
-
-        virtual void on_attach(void) { }
-        virtual void on_detach(void) { }
 
         void attach_layer(void);
         void detach_layer(void);

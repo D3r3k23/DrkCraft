@@ -20,12 +20,18 @@ namespace DrkCraft
         Event(void);
         ~Event(void) = default;
 
-        virtual EventType   get_type(void) const = 0;
-        virtual const char* get_name(void) const = 0;
+        Event(const Event&) = delete;
+        Event(Event&&) = delete;
+        Event& operator=(const Event&) = delete;
+        Event& operator=(Event&&) = delete;
 
+        virtual EventType     get_type(void)     const = 0;
+        virtual const char*   get_name(void)     const = 0;
         virtual EventCategory get_category(void) const = 0;
 
-        virtual operator std::string(void) const;
+        virtual std::string get_details(void) const;
+
+        std::string get_string(void) const;
 
         bool handled(void) const;
         void set_handled(void);
@@ -53,7 +59,7 @@ namespace DrkCraft
         { }
 
         // Calls event handler function for events of type E
-        // Handler returns true if event handled
+        // Handlers return true if event handled
         template <ConcreteEventConcept E>
         void dispatch(const ConcreteEventHandlerFn<E>& handler)
         {

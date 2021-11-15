@@ -27,7 +27,10 @@ namespace DrkCraft
         void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         void window_pos_callback(GLFWwindow* window, int xPos, int yPos);
         void window_focus_callback(GLFWwindow* window, int focused);
+        void window_maximize_callback(GLFWwindow* window, int maximized);
         void window_iconify_callback(GLFWwindow* window, int iconified);
+        void window_content_scale_callback(GLFWwindow* window, float xScale, float yScale);
+        void window_refresh_callback(GLFWwindow* window);
 
         void key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods);
         void char_callback(GLFWwindow* window, uint codePoint);

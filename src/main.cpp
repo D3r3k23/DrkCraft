@@ -9,31 +9,31 @@ using namespace DrkCraft;
 
 int main(int argc, char* argv[])
 {
-    DRK_LOGGER_INIT("DrkCraft");
+    DRK_LOGGER_INIT("data/logs");
 
-    DRK_LOG_INFO("Loading runtime settings");
+    DRK_LOG_CORE_INFO("Loading runtime settings");
     RunSettings::parse_args(argc, argv);
 
-    DRK_LOG_INFO("Version: {}", DRK_VERSION_STRING);
-    DRK_LOG_INFO("Platform: {}", DRK_PLATFORM_NAME);
-    DRK_LOG_INFO("Build config: {}", DRK_CONFIG_NAME);
+    DRK_LOG_CORE_INFO("Version: {}", DRK_VERSION_STRING);
+    DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
+    DRK_LOG_CORE_INFO("Build config: {}", DRK_CONFIG_NAME);
 #if defined(DRK_EN_PROFILE)
-    DRK_LOG_INFO("Profiling enabled");
+    DRK_LOG_CORE_INFO("Profiling enabled");
 #endif
-    DRK_LOG_INFO("Game mode: {}", RunSettings::get_game_mode_str());
+    DRK_LOG_CORE_INFO("Game mode: {}", RunSettings::get_game_mode_str());
 
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
 
-    DRK_LOG_TRACE("Initializing Application");
+    DRK_LOG_CORE_TRACE("Initializing Application");
     Application::init();
 
-    DRK_LOG_TRACE("Opening Main Menu");
+    DRK_LOG_CORE_TRACE("Opening Main Menu");
     Application::get_instance().add_layer(Layer::create<MainMenu>());
 
-    DRK_LOG_TRACE("Running Application");
+    DRK_LOG_CORE_TRACE("Running Application");
     Application::get_instance().run();
 
-    DRK_LOG_TRACE("Shutting down Application");
+    DRK_LOG_CORE_TRACE("Shutting down Application");
     int status = Application::shutdown();
 
     DRK_PROFILER_END();

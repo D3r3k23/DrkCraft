@@ -14,14 +14,17 @@ namespace DrkCraft
         None = 0,
 
         // Window Events
-        WindowClose,
-        WindowResize,
-        FramebufferResize,
+        WindowClosed,
+        WindowResized,
+        FramebufferResized,
         WindowMoved,
         WindowFocusGained,
         WindowFocusLost,
-        WindowMinimized, // Maximized
-        WindowRestored,  // Restored from maximized/minimzed?
+        WindowMaximized,
+        WindowMinimized,
+        WindowRestored,
+        WindowScaled,
+        WindowRefreshed,
 
         // Keyboard Events
         KeyPressed,
@@ -33,7 +36,11 @@ namespace DrkCraft
         MouseButtonPressed,
         MouseButtonReleased,
         MouseMoved,
-        ScrollWheelMoved
+        ScrollWheelMoved,
+
+        // Monitor Events
+        MonitorConnected,
+        MonitorDisconnected
     };
 
     using EventCategoryFlags = uint;
@@ -42,11 +49,12 @@ namespace DrkCraft
     {
         None = 0,
 
-        Window      = 0b00001,
-        Input       = 0b00010,
-        Keyboard    = 0b00110,
-        Mouse       = 0b01010,
-        MouseButton = 0b11010
+        Window      = 0b000001,
+        Input       = 0b000010,
+        Keyboard    = 0b000110,
+        Mouse       = 0b001010,
+        MouseButton = 0b011010,
+        Monitor     = 0b100000
     };
 
     EventCategoryFlags operator|(EventCategoryFlags flags, EventCategory cat);

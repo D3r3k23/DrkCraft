@@ -18,7 +18,7 @@ namespace DrkCraft
     void EventGenerator::register_event_callbacks(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_TRACE("Registering event callbacks with GLFW");
+        DRK_LOG_CORE_TRACE("Registering event callbacks with GLFW");
 
         using namespace GLFWEventCallbackFunctions;
 
@@ -27,7 +27,10 @@ namespace DrkCraft
         glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
         glfwSetWindowPosCallback(m_window, window_pos_callback);
         glfwSetWindowFocusCallback(m_window, window_focus_callback);
+        glfwSetWindowMaximizeCallback(m_window, window_maximize_callback);
         glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
+        glfwSetWindowContentScaleCallback(m_window, window_content_scale_callback);
+        glfwSetWindowRefreshCallback(m_window, window_refresh_callback);
 
         glfwSetKeyCallback(m_window, key_callback);
         glfwSetCharCallback(m_window, char_callback);
@@ -47,19 +50,19 @@ namespace DrkCraft
 
         void window_close_callback(GLFWwindow* window)
         {
-            WindowCloseEvent event;
+            WindowClosedEvent event;
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
 
         void window_size_callback(GLFWwindow* window, int width, int height)
         {
-            WindowResizeEvent event(width, height);
+            WindowResizedEvent event((uint)width, (uint)height);
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
 
         void framebuffer_size_callback(GLFWwindow* window, int width, int height)
         {
-            FramebufferResizeEvent event(width, height);
+            FramebufferResizedEvent event((uint)width, (uint)height);
             DRK_CALL_EVENT_HANDLER_FN(event);
         }
 
@@ -71,7 +74,7 @@ namespace DrkCraft
 
         void window_focus_callback(GLFWwindow* window, int focused)
         {
-            if (focused)
+            if (focused == GLFW_TRUE)
             {
                 WindowFocusGainedEvent event;
                 DRK_CALL_EVENT_HANDLER_FN(event);
@@ -83,9 +86,23 @@ namespace DrkCraft
             }
         }
 
+        void window_maximize_callback(GLFWwindow* window, int maximized)
+        {
+            if (maximized == GLFW_TRUE)
+            {
+                WindowMaximizedEvent event;
+                DRK_CALL_EVENT_HANDLER_FN(event);
+            }
+            else
+            {
+                WindowRestoredEvent event;
+                DRK_CALL_EVENT_HANDLER_FN(event);
+            }
+        }
+
         void window_iconify_callback(GLFWwindow* window, int iconified)
         {
-            if (iconified)
+            if (iconified == GLFW_TRUE)
             {
                 WindowMinimizedEvent event;
                 DRK_CALL_EVENT_HANDLER_FN(event);
@@ -95,6 +112,18 @@ namespace DrkCraft
                 WindowRestoredEvent event;
                 DRK_CALL_EVENT_HANDLER_FN(event);
             }
+        }
+
+        void window_content_scale_callback(GLFWwindow* window, float xScale, float yScale)
+        {
+            WindowScaledEvent event(xScale, yScale);
+            DRK_CALL_EVENT_HANDLER_FN(event);
+        }
+
+        void window_refresh_callback(GLFWwindow* window)
+        {
+            WindowRefreshedEvent event;
+            DRK_CALL_EVENT_HANDLER_FN(event);
         }
 
         ////////// Keyboard Events //////////

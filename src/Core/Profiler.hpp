@@ -79,7 +79,7 @@
         ProfileTimer object_profile_timer{name, "object"}
 
 #else
-    #define DRK_PROFILER_BEGIN(file)
+    #define DRK_PROFILER_BEGIN(name, file)
     #define DRK_PROFILER_END()
 
     #define DRK_PROFILE_FUNCTION()

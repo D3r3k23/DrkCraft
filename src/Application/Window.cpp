@@ -17,7 +17,7 @@ namespace DrkCraft
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
-        DRK_LOG_TRACE("Glad: Loading OpenGL using GLFW loader function");
+        DRK_LOG_CORE_TRACE("Glad: Loading OpenGL using GLFW loader function");
         {
             DRK_PROFILE_SCOPE("Load OpenGL");
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -36,10 +36,20 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+        glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
+        glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
+
         m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
         DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
+
+        glfwSetWindowAspectRatio(m_window, 16, 9);
+        glfwSetWindowSizeLimits(m_window, 720, 405, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
+        // Ptr<GLFWimage> icon = load_image("assets/icons/DrkCraft.jpg");
+        // glfwSetWindowIcon(m_window, icon.get());
     }
 
     GLFWwindow* Window::get_native_window(void) const
@@ -114,6 +124,28 @@ namespace DrkCraft
         return { (uint)width, (uint)height };
     }
 
+    std::vector<GLFWmonitor*> Window::get_monitors(void) const
+    {
+        int count;
+        GLFWmonitor** monitors = glfwGetMonitors(&count);
+        return std::vector<GLFWmonitor*>(monitors, monitors + count);
+    }
+
+    GLFWmonitor* Window::get_primary_monitor(void) const
+    {
+        return glfwGetPrimaryMonitor();
+    }
+
+    void Window::set_fullscreen(void)
+    {
+        // set_monitor(current);
+    }
+
+    void Window::set_monitor(GLFWmonitor* monitor)
+    {
+        // glfwSetWindowMonitor(m_window, monitor);
+    }
+
     bool Window::is_focused(void) const
     {
         return glfwGetWindowAttrib(m_window, GLFW_FOCUSED);
@@ -124,13 +156,18 @@ namespace DrkCraft
         return glfwGetWindowAttrib(m_window, GLFW_HOVERED);
     }
 
+    bool Window::is_maximized(void) const
+    {
+        return glfwGetWindowAttrib(m_window, GLFW_MAXIMIZED);
+    }
+
     bool Window::is_minimized(void) const
     {
         return glfwGetWindowAttrib(m_window, GLFW_ICONIFIED);
     }
 
-    bool Window::is_maximized(void) const
+    bool Window::is_fullscreen(void) const
     {
-        return glfwGetWindowAttrib(m_window, GLFW_MAXIMIZED);
+        return glfwGetWindowMonitor(m_window) != nullptr;
     }
 }

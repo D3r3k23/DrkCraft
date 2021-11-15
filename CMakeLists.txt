@@ -79,8 +79,6 @@ string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
 
 target_compile_definitions(DrkCraft
   PUBLIC
-    GLFW_INCLUDE_NONE # Don't need GLFW to include OpenGL header
-
     DRK_VERSION_STRING="${DRK_VERSION}"
 
     ${DRK_PLATFORM}

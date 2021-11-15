@@ -21,7 +21,7 @@ namespace DrkCraft
         io.IniFilename = "data/imgui.ini";
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-        ImGui::StyleColorsDark();
+        setup_style();
 
         const char* fontPath = DRK_FONT_ASSET_PATH("Kanit-Medium.ttf");
         auto defaultFont = io.Fonts->AddFontFromFileTTF(fontPath, 16.0f);
@@ -59,10 +59,9 @@ namespace DrkCraft
     void ImGuiManager::end_frame(void)
     {
         DRK_PROFILE_FUNCTION();
+
+        ImGui::Render();
         {
-            DRK_PROFILE_SCOPE("imgui render");
-            ImGui::Render();
-        }{
             DRK_PROFILE_SCOPE("imgui_impl render");
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -81,5 +80,10 @@ namespace DrkCraft
     void ImGuiManager::block_events(bool block)
     {
         m_blockEvents = block;
+    }
+
+    void ImGuiManager::setup_style(void)
+    {
+        ImGui::StyleColorsDark();
     }
 }

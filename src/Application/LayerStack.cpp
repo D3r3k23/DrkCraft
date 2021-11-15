@@ -19,13 +19,13 @@ namespace DrkCraft
 
     void LayerStack::push_front(const Ref<Layer>& layer)
     {
-        DRK_LOG_TRACE("Pushing Layer (front): {}", layer->get_layer_name());
+        DRK_LOG_CORE_TRACE("Pushing Layer (front): {}", layer->get_layer_name());
         m_layers.push_front(layer);
     }
 
     void LayerStack::push_back(const Ref<Layer>& layer)
     {
-        DRK_LOG_TRACE("Pushing Layer (back): {}", layer->get_layer_name());
+        DRK_LOG_CORE_TRACE("Pushing Layer (back): {}", layer->get_layer_name());
         m_layers.push_back(layer);
     }
 
@@ -33,7 +33,7 @@ namespace DrkCraft
     {
         if (auto it = std::find(m_layers.begin(), m_layers.end(), layer); it != m_layers.end())
         {
-            DRK_LOG_TRACE("Popping Layer: {}", layer->get_layer_name());
+            DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());
             m_layers.erase(it);
             return true;
         }

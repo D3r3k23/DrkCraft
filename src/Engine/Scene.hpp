@@ -1,9 +1,11 @@
 #ifndef DRK_SCENE_HPP
 #define DRK_SCENE_HPP
 
+#include "Core/Base.hpp"
 #include "Entity.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
+#include "Graphics/Camera.hpp"
 
 #include <entt/entt.hpp>
 #include <glm/mat4x4.hpp>
@@ -25,7 +27,7 @@ namespace DrkCraft
     private:
         entt::registry m_registry;
 
-        glm::mat4 viewProjection;
+        Camera m_camera;
 
         // std::unordered_map<std::string, ShaderProgram> m_shaderPrograms;
     };

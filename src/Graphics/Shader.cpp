@@ -17,7 +17,7 @@ namespace DrkCraft
             case ShaderType::TesselationControl   : return GL_TESS_CONTROL_SHADER;
             case ShaderType::TesselationEvaluation: return GL_TESS_EVALUATION_SHADER;
             default:
-                DRK_LOG_WARN("Unknown shader type");
+                DRK_LOG_CORE_WARN("Unknown shader type");
                 return 0;
         }
     }
@@ -26,7 +26,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_TRACE("Creating Shader from file {}", path.string());
+        DRK_LOG_CORE_TRACE("Creating Shader from file {}", path.string());
 
         DRK_ASSERT_DEBUG(std::filesystem::is_regular_file(path), "Shader file does not exist");
         DRK_ASSERT_DEBUG(type != ShaderType::None, "Unknown shader type");
@@ -78,7 +78,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_TRACE("Creating ShaderProgram {}", m_name);
+        DRK_LOG_CORE_TRACE("Creating ShaderProgram {}", m_name);
 
         m_id = glCreateProgram();
         DRK_ASSERT_DEBUG(m_id, "glCreateProgram failed");

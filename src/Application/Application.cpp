@@ -21,12 +21,12 @@ namespace DrkCraft
             int exitCode = s_instance->m_exitCode;
             delete s_instance;
             if (exitCode)
-                DRK_LOG_ERROR("Application stopped with error code {}", exitCode);
+                DRK_LOG_CORE_ERROR("Application stopped with error code {}", exitCode);
             return exitCode;
         }
         else
         {
-            DRK_LOG_WARN("Application is already shutdown");
+            DRK_LOG_CORE_WARN("Application is already shutdown");
             return 1;
         }
     }
@@ -44,19 +44,19 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_TRACE("Initializing GLFW");
+        DRK_LOG_CORE_TRACE("Initializing GLFW");
         init_glfw();
 
-        DRK_LOG_TRACE("Creating Window");
-        m_window = new Window("DrkCraft", 1280, 720, false);
+        DRK_LOG_CORE_TRACE("Creating Window");
+        m_window = new Window("DrkCraft", 1280, 720, true);
 
-        DRK_LOG_TRACE("Registering event handler");
+        DRK_LOG_CORE_TRACE("Registering event handler");
         m_window->register_event_handler(DRK_BIND_FN(on_event));
 
-        DRK_LOG_TRACE("Initializing Renderer");
+        DRK_LOG_CORE_TRACE("Initializing Renderer");
         Renderer::init();
 
-        DRK_LOG_TRACE("Creating ImGuiManager");
+        DRK_LOG_CORE_TRACE("Creating ImGuiManager");
         m_imGuiManager = new ImGuiManager(m_window->get_native_window());
     }
 
@@ -64,19 +64,19 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_TRACE("Clearing Layer Stack");
+        DRK_LOG_CORE_TRACE("Clearing Layer Stack");
         m_layerStack.clear();
 
-        DRK_LOG_TRACE("Deleting ImGuiManger");
+        DRK_LOG_CORE_TRACE("Deleting ImGuiManger");
         delete m_imGuiManager;
 
-        DRK_LOG_TRACE("Shutting down Renderer");
+        DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
 
-        DRK_LOG_TRACE("Deleting Window");
+        DRK_LOG_CORE_TRACE("Deleting Window");
         delete m_window;
 
-        DRK_LOG_TRACE("Terminating GLFW");
+        DRK_LOG_CORE_TRACE("Terminating GLFW");
         glfwTerminate();
     }
 
@@ -88,7 +88,7 @@ namespace DrkCraft
     #if defined(DRK_EN_LOGGING)
         glfwSetErrorCallback([](int error, const char* description)
         {
-            DRK_LOG_ERROR("GLFW Error [{}]: {}", error, description);
+            DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
         });
     #endif
     }
@@ -136,13 +136,13 @@ namespace DrkCraft
 
             if (m_layerStack.empty())
             {
-                DRK_LOG_INFO("LayerStack is empty; exiting Application");
+                DRK_LOG_CORE_INFO("LayerStack is empty; exiting Application");
                 exit();
             }
             else if (m_layerStack.all_layers_inactive())
             {
-                DRK_LOG_WARN("LayerStack is not empty, but there are no active layers");
-                DRK_LOG_WARN("Reactivating back layer");
+                DRK_LOG_CORE_WARN("LayerStack is not empty, but there are no active layers");
+                DRK_LOG_CORE_WARN("Reactivating back layer");
                 m_layerStack.activate_back();
             }
         }
@@ -182,9 +182,9 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         EventDispatcher ed(event);
-        ed.dispatch<WindowCloseEvent>(DRK_BIND_FN(on_window_close));
-        ed.dispatch<WindowResizeEvent>(DRK_BIND_FN(on_window_resize));
-        ed.dispatch<FramebufferResizeEvent>(DRK_BIND_FN(on_framebuffer_resize));
+        ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_close));
+        ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
+        ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resize));
 
         m_imGuiManager->on_event(event);
 
@@ -194,19 +194,19 @@ namespace DrkCraft
         DRK_LOG_EVENT(event);
     }
 
-    bool Application::on_window_close(WindowCloseEvent& event)
+    bool Application::on_window_close(WindowClosedEvent& event)
     {
         exit();
         return true;
     }
 
-    bool Application::on_window_resize(WindowResizeEvent& event)
+    bool Application::on_window_resize(WindowResizedEvent& event)
     {
         m_window->resize(event.width, event.height);
         return true;
     }
 
-    bool Application::on_framebuffer_resize(FramebufferResizeEvent& event)
+    bool Application::on_framebuffer_resize(FramebufferResizedEvent& event)
     {
         Renderer::set_viewport(0, 0, event.width, event.height);
         return true;

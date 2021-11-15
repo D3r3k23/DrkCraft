@@ -26,8 +26,8 @@ namespace DrkCraft
     #define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
     // Bind member function to lambda
-    #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto \
-    {                                                         \
+    #define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto   \
+    {                                                          \
         return this->fn(std::forward<decltype(args)>(args)...); \
     }
 

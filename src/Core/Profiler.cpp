@@ -48,7 +48,7 @@
             m_active = true;
             m_name = name;
 
-            DRK_LOG_INFO("Beginning Profiler session: {}", m_name);
+            DRK_LOG_CORE_INFO("Beginning Profiler session: {}", m_name);
             m_outStream.open(file);
 
             auto time = Time::get_local_time();
@@ -61,7 +61,7 @@
             DRK_ASSERT_DEBUG(m_active, "Profiler is already inactive");
             m_active = false;
 
-            DRK_LOG_INFO("Ending Profiler session: {}", m_name);
+            DRK_LOG_CORE_INFO("Ending Profiler session: {}", m_name);
             write_footer();
             m_outStream.close();
         }
@@ -73,7 +73,7 @@
             DRK_ASSERT_DEBUG(m_active, "Profiler is inactive");
 
             std::stringstream profile;
-            profile << std::fixed << std::setprecision(3);
+            profile << std::fixed << std::setprecision(2);
             profile << ",\n";
             profile << "    {";
             profile << "\"cat\":\""  << cat           << "\",";
@@ -93,7 +93,7 @@
         void Profiler::write_header(const char* title, const char* version, const char* time, double timestamp)
         {
             std::stringstream header;
-            header << std::fixed << std::setprecision(3);
+            header << std::fixed << std::setprecision(2);
             header << "{\n";
             header << "  ";
             header << "\"title\":\""         << title     << "\",";

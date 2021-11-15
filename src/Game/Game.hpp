@@ -43,8 +43,8 @@ namespace DrkCraft
         void save(void);
 
     private:
-        Scene scene;
-        World world;
+        Scene m_scene;
+        World m_world;
 
         Ref<Hud> m_hudLayer;
         Ref<Console> m_consoleLayer;
