@@ -1,6 +1,6 @@
 #include "PauseMenu.hpp"
 
-#include "Application/SettingsMenu.hpp"
+#include "Application/Application.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -8,7 +8,8 @@
 namespace DrkCraft
 {
     PauseMenu::PauseMenu(bool activate)
-      : Layer("PauseMenuLayer", activate)
+      : Layer("PauseMenuLayer", activate),
+        m_settingsMenu(Layer::create<SettingsMenu>(false))
     {
 
     }
@@ -35,12 +36,16 @@ namespace DrkCraft
 
     void PauseMenu::on_attach(void)
     {
-
+        m_settingsMenu->set_close_callback_fn([&]
+        {
+            activate_layer();
+        });
+        Application::get_instance().add_overlay(m_settingsMenu);
     }
 
     void PauseMenu::on_detach(void)
     {
-
+        m_settingsMenu->detach_layer();
     }
 
     void PauseMenu::on_update(Timestep timestep)
@@ -90,17 +95,21 @@ namespace DrkCraft
 
     bool PauseMenu::on_mouse_button_pressed(MouseButtonPressedEvent& event)
     {
-        switch (event.button)
+        if (event.button == MouseCode::Left)
         {
-            case MouseCode::Left:
+            if (1)
             {
-                // If Save & Exit button pressed:
-                // Application::get_instance().stop_game();
-                // Application::get_instance().get_layer_stack().remove(this);
+                m_settingsMenu->activate_layer();
+                deactivate_layer();
                 return true;
             }
-            default:
-                return false;
+
+            // If Save & Exit button pressed:
+            // Application::get_instance().stop_game();
+            // Application::get_instance().get_layer_stack().remove(this);
+            return true;
         }
+        else
+            return false;
     }
 }

@@ -5,6 +5,7 @@
 #include "Layer.hpp"
 #include "Timestep.hpp"
 #include "Events.hpp"
+#include "SettingsMenu.hpp"
 
 namespace DrkCraft
 {
@@ -23,8 +24,10 @@ namespace DrkCraft
 
     private:
         bool on_key_pressed(KeyPressedEvent& event);
+        bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
 
     private:
+        Ref<SettingsMenu> m_settingsMenu;
     };
 }
 

@@ -20,6 +20,10 @@ target_compile_definitions(glfw INTERFACE GLFW_INCLUDE_NONE) # Don't need GLFW t
 message("Configuring ImGui")
 add_subdirectory(imgui)
 
+message("Configuring yaml-cpp")
+set(YAML_CPP_BUILD_TOOLS OFF)
+add_subdirectory(yaml-cpp)
+
 target_link_libraries(DrkCraft
   PRIVATE
     entt
@@ -28,4 +32,5 @@ target_link_libraries(DrkCraft
     glm
     imgui
     spdlog
+    yaml-cpp
 )

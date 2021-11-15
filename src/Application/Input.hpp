@@ -34,6 +34,8 @@ namespace DrkCraft
         NumLock  = 0b100000,
     };
 
+    // Should probably simplify this
+
     InputModFlags get_input_mod_flags(int mods);
     KeyMod to_key_mod(KeyCode key);
 

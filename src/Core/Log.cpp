@@ -17,7 +17,6 @@
     namespace DrkCraft
     {
         std::shared_ptr<spdlog::logger> Logger::s_coreLogger;
-        std::shared_ptr<spdlog::logger> Logger::s_eventLogger;
         std::shared_ptr<spdlog::logger> Logger::s_gameLogger;
 
         using std::filesystem::path;
@@ -47,10 +46,6 @@
             s_gameLogger->flush_on(spdlog::level::err);
             s_gameLogger->set_level(spdlog::level::trace);
 
-            s_eventLogger = std::make_shared<spdlog::logger>("Event", sink);
-            s_eventLogger->flush_on(spdlog::level::err);
-            s_eventLogger->set_level(spdlog::level::info);
-
             DRK_LOG_CORE_INFO("DrkCraft Logger initialized");
         }
 
@@ -58,7 +53,6 @@
         {
             DRK_LOG_CORE_INFO("Closing DrkCraft Logger");
             s_coreLogger->flush();
-            s_eventLogger->flush();
             s_gameLogger->flush();
         }
 
@@ -72,24 +66,19 @@
             return s_gameLogger;
         }
 
-        std::shared_ptr<spdlog::logger>& Logger::get_event_logger(void)
-        {
-            return s_eventLogger;
-        }
-
         void Logger::log_event(const Event& event)
         {
             switch (event.get_type())
             {
-                // case EventType::WindowResized      : break;
-                // case EventType::FramebufferResized : break;
-                // case EventType::WindowMoved        : break;
+                case EventType::WindowResized      : break;
+                case EventType::FramebufferResized : break;
+                case EventType::WindowMoved        : break;
                 case EventType::MouseMoved         : break;
                 case EventType::CharTyped          : break;
                 case EventType::KeyHeld            : break;
                 default:
-                    s_eventLogger->info("[{}] ({}handled) {}",
-                        event.get_name(), !event.handled() ? "un" : "", event.get_details());
+                    DRK_LOG_CORE_INFO("[{0}:{1}handled] {2}", event.get_name(),
+                        !event.handled() ? "un" : "", event.get_details());
             }
         }
     }

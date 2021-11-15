@@ -5,6 +5,7 @@
 #include "Application/Layer.hpp"
 #include "Application/Timestep.hpp"
 #include "Application/Events.hpp"
+#include "Application/SettingsMenu.hpp"
 
 #include <functional>
 
@@ -36,6 +37,8 @@ namespace DrkCraft
         bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
 
     private:
+        Ref<SettingsMenu> m_settingsMenu;
+
         PauseMenuUnpauseCallbackFn  m_onUnpause;
         PauseMenuExitGameCallbackFn m_onExitGame;
         PauseMenuSaveGameCallbackFn m_onSaveGame;

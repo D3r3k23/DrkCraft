@@ -4,25 +4,19 @@
 #include "Log.hpp"
 #include "Assert.hpp"
 
-#include <string>
-#include <filesystem>
+#include <yaml-cpp/yaml.h>
+
+#include <fstream>
 
 namespace DrkCraft
 {
-    struct CommandLineOptions
+    CommandLineOptions& CommandLineOptions::get_instance(void)
     {
-        std::string name = "DrkCraft";
+        static CommandLineOptions s_commandLineOptions;
+        return s_commandLineOptions;
+    }
 
-        GameMode mode = GameMode::Player; // Or maybe this should be enabled with a hotkey
-        std::string mode_str = "Player";
-    };
-
-    static CommandLineOptions s_commandLineOptions;
-
-    static int s_argc = 0;
-    static char** s_argv = nullptr;
-
-    void RunSettings::parse_args(int argc, char* argv[])
+    void CommandLineOptions::parse_args(int argc, char* argv[])
     {
         for (int i = 0; i < argc; i++)
         {
@@ -30,63 +24,95 @@ namespace DrkCraft
             switch (i)
             {
                 case 0:
-                    s_commandLineOptions.name = std::filesystem::path(arg).filename().string();
+                    get_instance().name = std::filesystem::path(arg).filename().string();
                     break;
 
                 case 1:
                     if (arg == "--dev")
-                        set_mode(GameMode::Dev);
+                        get_instance().set_mode(GameMode::Dev);
                     break;
 
                 default:
                     break;
             }
         }
-        s_argc = argc;
-        s_argv = argv;
+        get_instance().argc = argc;
+        get_instance().argv = argv;
     }
 
-    std::string_view RunSettings::get_arg(int i)
+    std::string_view CommandLineOptions::get_arg(int i)
     {
-        DRK_ASSERT_DEBUG(i < s_argc, "arg[{}] does not exist", i);
-        return {s_argv[i]};
+        DRK_ASSERT_DEBUG(i < get_instance().argc, "arg[{}] does not exist", i);
+        return {get_instance().argv[i]};
     }
 
-    std::string_view RunSettings::get_program_name(void)
+    std::string_view CommandLineOptions::get_program_name(void)
     {
-        return s_commandLineOptions.name;
+        return get_instance().name;
     }
 
-    GameMode RunSettings::get_game_mode(void)
+    GameMode CommandLineOptions::get_game_mode(void)
     {
-        return s_commandLineOptions.mode;
+        return get_instance().mode;
     }
 
-    std::string RunSettings::get_game_mode_str(void)
+    std::string_view CommandLineOptions::get_game_mode_str(void)
     {
-        return s_commandLineOptions.mode_str;
+        return get_instance().mode_str;
     }
 
-    void RunSettings::set_mode(GameMode mode)
+    void CommandLineOptions::set_mode(GameMode mode)
     {
         switch (mode)
         {
             case GameMode::Dev:
             #if defined(DRK_EN_DEV_MODE)
-                s_commandLineOptions.mode = GameMode::Dev;
-                s_commandLineOptions.mode_str = "Developer";
+                get_instance().mode = GameMode::Dev;
+                get_instance().mode_str = "Developer";
             #else
                 DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
             #endif
                 break;
 
             case GameMode::Player:
-                s_commandLineOptions.mode = GameMode::Player;
-                s_commandLineOptions.mode_str = "Player";
+                get_instance().mode = GameMode::Player;
+                get_instance().mode_str = "Player";
                 break;
 
             default:
                 DRK_ASSERT_DEBUG(false, "Unknown GameMode");
         }
+    }
+
+    std::string RuntimeSettings::s_filename;
+    SettingsData RuntimeSettings::s_settings;
+
+    void RuntimeSettings::load_from_file(std::string_view filename)
+    {
+        s_filename = filename;
+        YAML::Node settings = YAML::LoadFile(s_filename);
+
+        if (settings["fullscreen"]) s_settings.fullscreen = settings["fullscreen"].as<bool>();
+    }
+
+    void RuntimeSettings::save_to_file(void)
+    {
+        YAML::Emitter settings;
+        settings << YAML::BeginMap;
+        settings << YAML::Key << "fullscreen" << YAML::Value << s_settings.fullscreen;
+        settings << YAML::EndMap;
+
+        std::ofstream outfile(s_filename);
+        outfile << settings.c_str();
+    }
+
+    SettingsData& RuntimeSettings::get(void)
+    {
+        return s_settings;
+    }
+
+    void RuntimeSettings::set(const SettingsData& settings)
+    {
+        s_settings = settings;
     }
 }

@@ -109,6 +109,7 @@ namespace DrkCraft
     void Game::pause(void)
     {
         DRK_LOG_GAME_INFO("Paused");
+
         m_paused = true;
         deactivate_layer();
         open_pause_menu();
@@ -117,6 +118,7 @@ namespace DrkCraft
     void Game::unpause(void)
     {
         DRK_LOG_GAME_INFO("Unpaused");
+
         m_paused = false;
         activate_layer();
     }

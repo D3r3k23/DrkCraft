@@ -21,6 +21,9 @@ namespace DrkCraft
     // on_update/on_render/on_event: Core logic
     // activate/deactivate: Inactive Layers are ignored when copying LayerStack
 
+    // Weird things may happen if we detach/reattach or deactivate/activate a Layer
+    // in the same frame
+
     class Layer
     {
     public:

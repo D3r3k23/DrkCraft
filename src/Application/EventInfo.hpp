@@ -7,8 +7,6 @@
 
 namespace DrkCraft
 {
-    class Event;
-
     enum class EventType
     {
         None = 0,
@@ -57,6 +55,8 @@ namespace DrkCraft
         Monitor     = 0b100000
     };
 
+    // Should probably simplify this
+
     EventCategoryFlags operator|(EventCategoryFlags flags, EventCategory cat);
     EventCategoryFlags operator|(EventCategory cat, EventCategoryFlags flags);
     EventCategoryFlags operator|(EventCategory cat1, EventCategory cat2);
@@ -66,6 +66,8 @@ namespace DrkCraft
 
     bool operator!=(EventCategory cat, EventCategoryFlags flags);
     bool operator!=(EventCategoryFlags flags, EventCategory cat);
+
+    class Event;
 
     bool operator==(const Event& event, EventCategoryFlags flags);
     bool operator==(EventCategoryFlags flags, const Event& event);

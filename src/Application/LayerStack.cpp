@@ -9,8 +9,7 @@ namespace DrkCraft
     LayerStack LayerStack::copy_active(const LayerStack& src)
     {
         LayerStack copy;
-        std::copy_if(src.m_layers.begin(), src.m_layers.end(), std::back_inserter(copy.m_layers),
-        [](const auto& layer)
+        std::copy_if(src.m_layers.begin(), src.m_layers.end(), std::back_inserter(copy.m_layers), [](const auto& layer)
         {
             return layer->is_layer_active();
         });

@@ -8,5 +8,6 @@
 /data/logs/**
 /data/profile/*.json
 /data/saves/**
+/data/imgui.ini
 
 /packages/**

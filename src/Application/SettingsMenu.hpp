@@ -5,14 +5,21 @@
 #include "Layer.hpp"
 #include "Timestep.hpp"
 #include "Events.hpp"
+#include "Core/RunSettings.hpp"
+
+#include <functional>
 
 namespace DrkCraft
 {
+    using SettingsMenuCloseCallbackFn = std::function<void(void)>;
+
     class SettingsMenu : public Layer
     {
     public:
-        SettingsMenu(void);
+        SettingsMenu(bool activate=true);
         ~SettingsMenu(void);
+
+        void set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -22,7 +29,12 @@ namespace DrkCraft
         void on_event(Event& event) override;
 
     private:
+        bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
 
+    private:
+        Ptr<SettingsData> m_settings;
+
+        SettingsMenuCloseCallbackFn m_onClose;
     };
 }
 

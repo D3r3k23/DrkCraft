@@ -2,7 +2,6 @@
 
 #include "Application.hpp"
 #include "Game/Game.hpp"
-#include "SettingsMenu.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -10,7 +9,8 @@
 namespace DrkCraft
 {
     MainMenu::MainMenu(void)
-      : Layer("MainMenuLayer", true)
+      : Layer("MainMenuLayer", true),
+        m_settingsMenu(Layer::create<SettingsMenu>(false))
     {
 
     }
@@ -22,12 +22,16 @@ namespace DrkCraft
 
     void MainMenu::on_attach(void)
     {
-
+        m_settingsMenu->set_close_callback_fn([&]
+        {
+            activate_layer();
+        });
+        Application::get_instance().add_overlay(m_settingsMenu);
     }
 
     void MainMenu::on_detach(void)
     {
-
+        m_settingsMenu->detach_layer();
     }
 
     void MainMenu::on_update(Timestep timestep)
@@ -39,17 +43,16 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGui::ShowDemoWindow();
+        static bool showDemoWindow = true;
+        if (showDemoWindow)
+            ImGui::ShowDemoWindow(&showDemoWindow);
 
-        #if 0
 
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize;
         ImGui::Begin("MainMenu", nullptr, windowFlags);
 
 
         ImGui::End();
-
-        #endif
     }
 
     void MainMenu::on_event(Event& event)
@@ -58,6 +61,7 @@ namespace DrkCraft
 
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+        ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
     }
 
     bool MainMenu::on_key_pressed(KeyPressedEvent& event)
@@ -79,5 +83,17 @@ namespace DrkCraft
             default:
                 return false;
         }
+    }
+
+    bool MainMenu::on_mouse_button_pressed(MouseButtonPressedEvent& event)
+    {
+        if (event.button == MouseCode::Right)
+        {
+            m_settingsMenu->activate_layer();
+            deactivate_layer();
+            return true;
+        }
+        else
+            return false;
     }
 }

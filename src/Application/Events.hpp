@@ -11,9 +11,9 @@
     const char* get_name(void) const override { return #type##"Event";  }  \
     DRK_PROFILE_OBJECT(#type##"Event");
 
-#define DRK_EVENT_CATEGORY_INFO(cat)                \
-    EventCategory get_category(void) const override \
-        { return EventCategory::cat; }
+#define DRK_EVENT_CATEGORY_INFO(cat)                     \
+    EventCategoryFlags get_category(void) const override  \
+        { return static_cast<EventCategoryFlags>(EventCategory::cat); }
 
 namespace DrkCraft
 {

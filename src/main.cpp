@@ -11,8 +11,9 @@ int main(int argc, char* argv[])
 {
     DRK_LOGGER_INIT("data/logs");
 
-    DRK_LOG_CORE_INFO("Loading runtime settings");
-    RunSettings::parse_args(argc, argv);
+    DRK_LOG_CORE_INFO("Loading settings");
+    CommandLineOptions::parse_args(argc, argv);
+    RuntimeSettings::load_from_file("config/settings.yaml");
 
     DRK_LOG_CORE_INFO("Version: {}", DRK_VERSION_STRING);
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
@@ -20,7 +21,7 @@ int main(int argc, char* argv[])
 #if defined(DRK_EN_PROFILE)
     DRK_LOG_CORE_INFO("Profiling enabled");
 #endif
-    DRK_LOG_CORE_INFO("Game mode: {}", RunSettings::get_game_mode_str());
+    DRK_LOG_CORE_INFO("Game mode: {}", CommandLineOptions::get_game_mode_str());
 
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
 

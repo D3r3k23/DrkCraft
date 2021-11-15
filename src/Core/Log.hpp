@@ -24,14 +24,12 @@
 
             static std::shared_ptr<spdlog::logger>& get_core_logger(void);
             static std::shared_ptr<spdlog::logger>& get_game_logger(void);
-            static std::shared_ptr<spdlog::logger>& get_event_logger(void);
 
             static void log_event(const Event& event);
 
         private:
             static std::shared_ptr<spdlog::logger> s_coreLogger;
             static std::shared_ptr<spdlog::logger> s_gameLogger;
-            static std::shared_ptr<spdlog::logger> s_eventLogger;
         };
     }
 
