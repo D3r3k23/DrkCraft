@@ -19,7 +19,6 @@ namespace DrkCraft
     {
     public:
         PauseMenu(bool activate=true);
-        ~PauseMenu(void);
 
         void set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn);
         void set_exit_game_callback_fn(const PauseMenuUnpauseCallbackFn& fn);

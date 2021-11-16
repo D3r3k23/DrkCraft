@@ -13,7 +13,9 @@ namespace DrkCraft
     {
     public:
         MainMenu(void);
-        ~MainMenu(void);
+
+        void show(void);
+        void hide(void);
 
         void on_attach(void) override;
         void on_detach(void) override;
@@ -24,10 +26,14 @@ namespace DrkCraft
 
     private:
         bool on_key_pressed(KeyPressedEvent& event);
-        bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
+
+        void start_game(void);
+        void open_settings(void);
+        void exit(void);
 
     private:
         Ref<SettingsMenu> m_settingsMenu;
+        bool m_show;
     };
 }
 

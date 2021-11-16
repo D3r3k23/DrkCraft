@@ -72,6 +72,7 @@
             {
                 case EventType::WindowResized      : break;
                 case EventType::FramebufferResized : break;
+                case EventType::WindowRefreshed    : break;
                 case EventType::WindowMoved        : break;
                 case EventType::MouseMoved         : break;
                 case EventType::CharTyped          : break;

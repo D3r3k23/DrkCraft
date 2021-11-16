@@ -3,7 +3,7 @@ target_sources(DrkCraft
     Application.cpp
     EventGenerator.cpp
     Events.cpp
-    ImGuiManager.cpp
+    ImGuiTools.cpp
     Input.cpp
     Layer.cpp
     LayerStack.cpp

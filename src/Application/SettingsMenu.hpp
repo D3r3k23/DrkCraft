@@ -17,22 +17,24 @@ namespace DrkCraft
     {
     public:
         SettingsMenu(bool activate=true);
-        ~SettingsMenu(void);
 
         void set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn);
 
         void on_attach(void) override;
-        void on_detach(void) override;
 
         void on_update(Timestep timestep) override;
         void on_render(Timestep timestep) override;
         void on_event(Event& event) override;
 
     private:
-        bool on_mouse_button_pressed(MouseButtonPressedEvent& event);
+        bool on_key_pressed(KeyPressedEvent& event);
+
+        void save(void);
+        void close(void);
 
     private:
         Ptr<SettingsData> m_settings;
+        bool m_dirty;
 
         SettingsMenuCloseCallbackFn m_onClose;
     };

@@ -183,7 +183,7 @@ namespace DrkCraft
 
         EventDispatcher ed(event);
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_close));
-        ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
+        // ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resize));
 
         m_imGuiManager->on_event(event);
@@ -202,7 +202,8 @@ namespace DrkCraft
 
     bool Application::on_window_resize(WindowResizedEvent& event)
     {
-        m_window->resize(event.width, event.height);
+        // Do we need this?
+        // m_window->resize(event.width, event.height);
         return true;
     }
 

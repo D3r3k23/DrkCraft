@@ -97,6 +97,8 @@ namespace DrkCraft
 
     void RuntimeSettings::save_to_file(void)
     {
+        DRK_LOG_CORE_TRACE("Saving settings to file");
+
         YAML::Emitter settings;
         settings << YAML::BeginMap;
         settings << YAML::Key << "fullscreen" << YAML::Value << s_settings.fullscreen;

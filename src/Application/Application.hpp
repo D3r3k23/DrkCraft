@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Window.hpp"
 #include "Events.hpp"
-#include "ImGuiManager.hpp"
+#include "ImGuiTools.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Timestep.hpp"

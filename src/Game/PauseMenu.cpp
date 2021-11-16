@@ -14,11 +14,6 @@ namespace DrkCraft
 
     }
 
-    PauseMenu::~PauseMenu(void)
-    {
-
-    }
-
     void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
     {
         m_onUnpause = fn;
