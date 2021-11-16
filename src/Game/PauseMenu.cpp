@@ -11,7 +11,7 @@ namespace DrkCraft
       : Layer("PauseMenuLayer", activate),
         m_settingsMenu(Layer::create<SettingsMenu>(false))
     {
-
+        m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(activate_layer));
     }
 
     void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
@@ -31,10 +31,6 @@ namespace DrkCraft
 
     void PauseMenu::on_attach(void)
     {
-        m_settingsMenu->set_close_callback_fn([&]
-        {
-            activate_layer();
-        });
         Application::get_instance().add_overlay(m_settingsMenu);
     }
 
@@ -62,7 +58,7 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
 
-    bool PauseMenu::on_key_pressed(KeyPressedEvent& event)
+    bool PauseMenu::on_key_pressed(const KeyPressedEvent& event)
     {
         switch (event.key)
         {
@@ -88,7 +84,7 @@ namespace DrkCraft
         }
     }
 
-    bool PauseMenu::on_mouse_button_pressed(MouseButtonPressedEvent& event)
+    bool PauseMenu::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
     {
         if (event.button == MouseCode::Left)
         {

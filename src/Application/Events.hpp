@@ -104,6 +104,7 @@ namespace DrkCraft
         WindowMinimizedEvent(void) = default;
     };
 
+    // Could add param to say if it was restored from maximized of minimized
     struct WindowRestoredEvent : WindowEvent
     {
         DRK_EVENT_TYPE_INFO(WindowRestored)
@@ -266,9 +267,8 @@ namespace DrkCraft
         const float yOffset;
     };
 
-    // Monitor Events
+    ////////// Monitor Events //////////
 
-    // Callbacks for these are not yet implemented
     struct MonitorEvent : Event
     {
         DRK_EVENT_CATEGORY_INFO(Monitor)

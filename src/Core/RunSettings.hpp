@@ -3,6 +3,7 @@
 
 #include <string>
 #include <string_view>
+#include <filesystem>
 
 namespace DrkCraft
 {
@@ -11,6 +12,8 @@ namespace DrkCraft
         Dev,
         Player
     };
+
+    std::string_view game_mode_to_string(GameMode mode);
 
     class CommandLineOptions
     {
@@ -23,8 +26,7 @@ namespace DrkCraft
         static std::string_view get_arg(int i);
 
         static std::string_view get_program_name(void);
-        static GameMode         get_game_mode(void);
-        static std::string_view get_game_mode_str(void);
+        static GameMode get_game_mode(void);
 
     private:
         void set_mode(GameMode mode);
@@ -34,28 +36,45 @@ namespace DrkCraft
         char** argv = nullptr;
 
         std::string name = "DrkCraft";
-
         GameMode mode = GameMode::Player; // Or maybe this should be runtime-enabled with a hotkey
-        std::string mode_str = "Player";
     };
 
     struct SettingsData
     {
         bool fullscreen = false;
+        int fullscreen_monitor = 0;
+        bool vsync = true;
+    };
+
+    struct ConfigData
+    {
+        int init_window_width = 1280;
+        int init_window_height = 720;
+
+        std::string saves_directory = "data/saves";
     };
 
     class RuntimeSettings
     {
     public:
-        static void load_from_file(std::string_view filename);
-        static void save_to_file(void);
+        static void load(const std::filesystem::path& location);
+        static void save_settings(void);
+
+        static const ConfigData& config(void);
 
         static SettingsData& get(void);
         static void set(const SettingsData& settings);
 
     private:
-        static std::string  s_filename;
-        static SettingsData s_settings;
+        static void load_config(void);
+        static void load_settings(void);
+
+    private:
+        static std::string s_configFile;
+        static std::string s_settingsFile;
+
+        static ConfigData s_configData;
+        static SettingsData s_settingsData;
     };
 }
 

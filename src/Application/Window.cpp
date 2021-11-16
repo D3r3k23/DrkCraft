@@ -1,19 +1,27 @@
 #include "Window.hpp"
 
 #include "Input.hpp"
+#include "Core/RunSettings.hpp"
 #include "Core/Profiler.hpp"
 
 #include <glad/glad.h>
 
 namespace DrkCraft
 {
-    Window::Window(std::string_view title, uint width, uint height, bool enableVsync)
-      : m_title(title)
+    Window::Window(std::string_view title)
+      : m_title(title),
+        m_fullscreen(false)
     {
         DRK_PROFILE_FUNCTION();
 
-        init_native_window(title, (int)width, (int)height);
-        set_vsync(enableVsync);
+        const auto& config   = RuntimeSettings::config();
+        const auto& settings = RuntimeSettings::get();
+
+        m_windowedSize     = { config.init_window_width, config.init_window_height };
+        m_windowedPosition = { config.init_window_width * 0.5f, config.init_window_height * 0.5f };
+
+        init_raw_window(settings.fullscreen);
+        set_vsync(settings.vsync);
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
 
@@ -32,15 +40,38 @@ namespace DrkCraft
         glfwDestroyWindow(m_window);
     }
 
-    void Window::init_native_window(std::string_view title, int width, int height)
+    void Window::init_raw_window(bool fullscreen)
     {
         DRK_PROFILE_FUNCTION();
 
+        Monitor::register_event_handler(DRK_BIND_FN(on_monitor_event));
+
+        int width, height;
+        GLFWmonitor* monitor;
+
+        if (fullscreen)
+        {
+            m_fullscreen = true;
+            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
+            const auto& vidMode = m_fullscreenMonitor->get_best_vid_mode();
+
+            width   = vidMode.width;
+            height  = vidMode.height;
+            monitor = m_fullscreenMonitor->get_raw_monitor();
+        }
+        else
+        {
+            m_fullscreen = false;
+            width   = m_windowedSize.x;
+            height  = m_windowedSize.y;
+            monitor = nullptr;
+        }
+
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
-        glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
+        glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_TRUE);
 
-        m_window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+        m_window = glfwCreateWindow(width, height, m_title.c_str(), monitor, nullptr);
         DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
 
         glfwMakeContextCurrent(m_window);
@@ -52,7 +83,7 @@ namespace DrkCraft
         // glfwSetWindowIcon(m_window, icon.get());
     }
 
-    GLFWwindow* Window::get_native_window(void) const
+    GLFWwindow* Window::get_raw_window(void) const
     {
         return m_window;
     }
@@ -61,11 +92,10 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_eventGenerator->register_event_handler(handler);
-        m_eventGenerator->register_event_callbacks();
+        m_eventGenerator->register_window_event_handler(handler);
     }
 
-    void Window::on_update(void)
+    void Window::update(void)
     {
         DRK_PROFILE_FUNCTION();
         {
@@ -77,6 +107,45 @@ namespace DrkCraft
         }
     }
 
+    void Window::on_monitor_event(Event& event)
+    {
+        if (event.get_type() == EventType::MonitorDisconnected)
+        {
+            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
+        }
+    }
+
+    void Window::set_fullscreen(void)
+    {
+        if (!is_fullscreen())
+        {
+            m_windowedPosition = get_pos();
+            m_windowedSize = get_size();
+
+            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
+
+            const auto& vidMode = m_fullscreenMonitor->get_best_vid_mode();
+            auto monitor = m_fullscreenMonitor->get_raw_monitor();
+
+            glfwSetWindowMonitor(m_window, monitor, 0, 0, vidMode.width, vidMode.height, vidMode.refreshRate);
+        }
+    }
+
+    void Window::set_windowed(void)
+    {
+        if (is_fullscreen())
+        {
+            uint width  = m_windowedSize.x;
+            uint height = m_windowedSize.y;
+
+            int x = m_windowedPosition.x;
+            int y = m_windowedPosition.y;
+
+            glfwSetWindowMonitor(m_window, nullptr, x, y, width, height, 0);
+            m_fullscreenMonitor.reset();
+        }
+    }
+
     void Window::set_vsync(bool enable)
     {
         DRK_PROFILE_FUNCTION();
@@ -84,30 +153,37 @@ namespace DrkCraft
         if (enable)
         {
             glfwSwapInterval(1);
-            m_vSync = true;
+            m_vsync = true;
         }
         else
         {
             glfwSwapInterval(0);
-            m_vSync = false;
+            m_vsync = false;
         }
     }
 
     bool Window::get_vsync(void) const
     {
-        return m_vSync;
+        return m_vsync;
+    }
+
+    glm::ivec2 Window::get_pos(void) const
+    {
+        int x, y;
+        glfwGetWindowPos(m_window, &x, &y);
+        return {x, y};
     }
 
     glm::uvec2 Window::resize(uint width, uint height)
     {
-        glfwSetWindowSize(m_window, width, height);
-        return get_size();
+        return resize({width, height});
     }
 
     glm::uvec2 Window::resize(glm::uvec2 size)
     {
+        m_windowedSize = size;
         glfwSetWindowSize(m_window, size.x, size.y);
-        return get_size();
+        return size;
     }
 
     glm::uvec2 Window::get_size(void) const
@@ -124,26 +200,19 @@ namespace DrkCraft
         return { (uint)width, (uint)height };
     }
 
-    std::vector<GLFWmonitor*> Window::get_monitors(void) const
+    void Window::maximize(void)
     {
-        int count;
-        GLFWmonitor** monitors = glfwGetMonitors(&count);
-        return std::vector<GLFWmonitor*>(monitors, monitors + count);
+        glfwMaximizeWindow(m_window);
     }
 
-    GLFWmonitor* Window::get_primary_monitor(void) const
+    void Window::minimize(void)
     {
-        return glfwGetPrimaryMonitor();
+        glfwIconifyWindow(m_window);
     }
 
-    void Window::set_fullscreen(void)
+    void Window::restore(void)
     {
-        // set_monitor(current);
-    }
-
-    void Window::set_monitor(GLFWmonitor* monitor)
-    {
-        // glfwSetWindowMonitor(m_window, monitor);
+        glfwRestoreWindow(m_window);
     }
 
     bool Window::is_focused(void) const

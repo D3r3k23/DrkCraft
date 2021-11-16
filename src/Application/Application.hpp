@@ -34,9 +34,10 @@ namespace DrkCraft
         void on_render(Timestep timestep);
         void on_event(Event& event);
 
-        bool on_window_close(WindowClosedEvent& event);
-        bool on_window_resize(WindowResizedEvent& event);
-        bool on_framebuffer_resize(FramebufferResizedEvent& event);
+        bool on_window_close(const WindowClosedEvent& event);
+        bool on_window_resize(const WindowResizedEvent& event);
+        bool on_framebuffer_resize(const FramebufferResizedEvent& event);
+        bool on_window_refreshed(const WindowRefreshedEvent& event);
 
         Window& get_window(void);
 

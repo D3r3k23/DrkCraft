@@ -48,7 +48,7 @@ namespace DrkCraft
         init_glfw();
 
         DRK_LOG_CORE_TRACE("Creating Window");
-        m_window = new Window("DrkCraft", 1280, 720, true);
+        m_window = new Window("DrkCraft");
 
         DRK_LOG_CORE_TRACE("Registering event handler");
         m_window->register_event_handler(DRK_BIND_FN(on_event));
@@ -57,7 +57,7 @@ namespace DrkCraft
         Renderer::init();
 
         DRK_LOG_CORE_TRACE("Creating ImGuiManager");
-        m_imGuiManager = new ImGuiManager(m_window->get_native_window());
+        m_imGuiManager = new ImGuiManager(m_window->get_raw_window());
     }
 
     Application::~Application(void)
@@ -121,7 +121,8 @@ namespace DrkCraft
                 m_layerStackReverseView = make_ptr<LayerStack::ReverseView>(frameLayerStack);
             }{
                 DRK_PROFILE_SCOPE("Application core loop");
-                m_window->on_update();
+
+                m_window->update(); // This is where events are polled
 
                 if (m_running && !m_minimized)
                 {
@@ -183,8 +184,9 @@ namespace DrkCraft
 
         EventDispatcher ed(event);
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_close));
-        // ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
+        ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resize));
+        ed.dispatch<WindowRefreshedEvent>(DRK_BIND_FN(on_window_refreshed));
 
         m_imGuiManager->on_event(event);
 
@@ -194,22 +196,30 @@ namespace DrkCraft
         DRK_LOG_EVENT(event);
     }
 
-    bool Application::on_window_close(WindowClosedEvent& event)
+    bool Application::on_window_close(const WindowClosedEvent& event)
     {
         exit();
         return true;
     }
 
-    bool Application::on_window_resize(WindowResizedEvent& event)
+    bool Application::on_window_resize(const WindowResizedEvent& event)
     {
         // Do we need this?
         // m_window->resize(event.width, event.height);
         return true;
     }
 
-    bool Application::on_framebuffer_resize(FramebufferResizedEvent& event)
+    bool Application::on_framebuffer_resize(const FramebufferResizedEvent& event)
     {
         Renderer::set_viewport(0, 0, event.width, event.height);
+        return true;
+    }
+
+    bool Application::on_window_refreshed(const WindowRefreshedEvent& event)
+    {
+        // Or when resized?
+        // on_render(); // This could be slow
+        // Need to swap buffers
         return true;
     }
 

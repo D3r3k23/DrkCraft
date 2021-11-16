@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <locale>
 
 namespace DrkCraft
 {
@@ -16,6 +18,37 @@ namespace DrkCraft
         }
         else
             return "";
+    }
+
+    static std::locale currentLocale;
+
+    std::string_view capitalize(std::string& str)
+    {
+        if (str.size() > 0)
+            str[0] = std::toupper(str[0], currentLocale);
+        return str;
+    }
+
+    std::string to_lower(std::string_view str)
+    {
+        std::locale loc;
+        std::string lower;
+        std::transform(str.begin(), str.end(), lower.begin(), [](char c)
+        {
+            return std::tolower(c, currentLocale);
+        });
+        return lower;
+    }
+
+    std::string to_upper(std::string_view str)
+    {
+        std::locale loc;
+        std::string upper;
+        std::transform(str.begin(), str.end(), upper.begin(), [](char c)
+        {
+            return std::toupper(c, currentLocale);
+        });
+        return upper;
     }
 
     RandomEngine get_random_engine(void)

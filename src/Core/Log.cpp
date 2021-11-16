@@ -21,16 +21,16 @@
 
         using std::filesystem::path;
 
-        void Logger::init(path dir)
+        void Logger::init(const path& dir)
         {
             auto time = Time::get_local_time();
             auto logName = std::format("DrkCraft_{:%F_%H.%M.%S}.log", time);
-            auto fileName = (dir / path(logName)).string();
+            auto file = dir / path(logName);
 
             auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_st>();
             consoleSink->set_level(spdlog::level::debug);
 
-            auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(fileName);
+            auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(file.string());
             fileSink->set_level(spdlog::level::trace);
 
             auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();

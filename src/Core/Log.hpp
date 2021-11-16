@@ -19,7 +19,7 @@
         class Logger
         {
         public:
-            static void init(std::filesystem::path dir);
+            static void init(const std::filesystem::path& dir);
             static void close(void);
 
             static std::shared_ptr<spdlog::logger>& get_core_logger(void);

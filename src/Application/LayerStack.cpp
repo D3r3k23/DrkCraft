@@ -78,4 +78,32 @@ namespace DrkCraft
             return !layer->is_layer_active();
         });
     }
+
+    LayerStack::ForwardView::ForwardView(const LayerStack& layerStack)
+      : m_layerStack(layerStack)
+    { }
+
+    LayerDeque::const_iterator LayerStack::ForwardView::begin(void) const
+    {
+        return m_layerStack.m_layers.begin();
+    }
+
+    LayerDeque::const_iterator LayerStack::ForwardView::end(void) const
+    {
+        return m_layerStack.m_layers.end();
+    }
+
+    LayerStack::ReverseView::ReverseView(const LayerStack& layerStack)
+      : m_layerStack(layerStack)
+    { }
+
+    LayerDeque::const_reverse_iterator LayerStack::ReverseView::begin(void) const
+    {
+        return m_layerStack.m_layers.rbegin();
+    }
+
+    LayerDeque::const_reverse_iterator LayerStack::ReverseView::end(void) const
+    {
+        return m_layerStack.m_layers.rend();
+    }
 }

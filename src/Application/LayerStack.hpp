@@ -52,19 +52,10 @@ namespace DrkCraft
         class ForwardView
         {
         public:
-            ForwardView(const LayerStack& layerStack)
-              : m_layerStack(layerStack)
-            { }
+            ForwardView(const LayerStack& layerStack);
 
-            LayerDeque::const_iterator begin(void) const
-            {
-                return m_layerStack.m_layers.begin();
-            }
-
-            LayerDeque::const_iterator end(void) const
-            {
-                return m_layerStack.m_layers.end();
-            }
+            LayerDeque::const_iterator begin(void) const;
+            LayerDeque::const_iterator end(void) const;
 
         private:
             const LayerStack& m_layerStack;
@@ -73,19 +64,10 @@ namespace DrkCraft
         class ReverseView
         {
         public:
-            ReverseView(const LayerStack& layerStack)
-              : m_layerStack(layerStack)
-            { }
+            ReverseView(const LayerStack& layerStack);
 
-            LayerDeque::const_reverse_iterator begin(void) const
-            {
-                return m_layerStack.m_layers.rbegin();
-            }
-
-            LayerDeque::const_reverse_iterator end(void) const
-            {
-                return m_layerStack.m_layers.rend();
-            }
+            LayerDeque::const_reverse_iterator begin(void) const;
+            LayerDeque::const_reverse_iterator end(void) const;
 
         private:
             const LayerStack& m_layerStack;

@@ -49,7 +49,7 @@ namespace DrkCraft
     using AbstractEventHandlerFn = std::function<void(Event&)>;
 
     template <ConcreteEventConcept E>
-    using ConcreteEventHandlerFn = std::function<bool(E&)>;
+    using ConcreteEventHandlerFn = std::function<bool(const E&)>;
 
     class EventDispatcher
     {

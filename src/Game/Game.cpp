@@ -84,9 +84,10 @@ namespace DrkCraft
 
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+        ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));
     }
 
-    bool Game::on_key_pressed(KeyPressedEvent& event)
+    bool Game::on_key_pressed(const KeyPressedEvent& event)
     {
         switch (event.key)
         {
@@ -104,6 +105,12 @@ namespace DrkCraft
             default:
                 return false;
         }
+    }
+
+    bool Game::on_window_focus_lost(const WindowFocusLostEvent& event)
+    {
+        pause();
+        return true;
     }
 
     void Game::pause(void)

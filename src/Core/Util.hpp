@@ -10,6 +10,11 @@ namespace DrkCraft
 {
     std::string read_file(std::filesystem::path path);
 
+    std::string_view capitalize(std::string& str); // Modifies str
+
+    std::string to_lower(std::string_view str);
+    std::string to_upper(std::string_view str);
+
     using RandomEngine = std::mt19937;
 
     RandomEngine get_random_engine(void);

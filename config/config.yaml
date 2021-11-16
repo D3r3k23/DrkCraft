@@ -1,0 +1,4 @@
+init_window_size:
+  width: 1280
+  height: 720
+saves_directory: data/saves

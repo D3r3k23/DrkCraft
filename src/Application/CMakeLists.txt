@@ -8,6 +8,7 @@ target_sources(DrkCraft
     Layer.cpp
     LayerStack.cpp
     MainMenu.cpp
+    Monitor.cpp
     SettingsMenu.cpp
     Timestep.cpp
     Window.cpp

@@ -14,7 +14,7 @@ namespace DrkCraft
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_show(true)
     {
-
+        m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show));
     }
 
     void MainMenu::show(void)
@@ -29,7 +29,6 @@ namespace DrkCraft
 
     void MainMenu::on_attach(void)
     {
-        m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show));
         Application::get_instance().add_overlay(m_settingsMenu);
     }
 
@@ -57,8 +56,9 @@ namespace DrkCraft
             ImGui::SetNextWindowPos(viewport->Pos);
             ImGui::SetNextWindowSize(viewport->Size);
 
-            ImGui::Begin("MainMenu", nullptr, windowFlags);
             ImGui::PushFont(ImGuiManager::get_font(Font::Title));
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            ImGui::Begin("MainMenu", nullptr, windowFlags);
 
             ImGuiTools::TextCentered("DrkCraft");
 
@@ -81,8 +81,9 @@ namespace DrkCraft
 
             ImGui::EndGroup();
 
-            ImGui::PopFont();
             ImGui::End();
+            ImGui::PopFont();
+            ImGui::PopStyleVar();
         }
     }
 
@@ -94,7 +95,7 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
 
-    bool MainMenu::on_key_pressed(KeyPressedEvent& event)
+    bool MainMenu::on_key_pressed(const KeyPressedEvent& event)
     {
         switch (event.key)
         {

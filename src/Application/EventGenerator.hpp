@@ -12,15 +12,17 @@ namespace DrkCraft
     {
     public:
         EventGenerator(GLFWwindow* window);
-        void register_event_handler(const AbstractEventHandlerFn& handler);
-        void register_event_callbacks(void);
+        void register_window_event_handler(const AbstractEventHandlerFn& handler);
+
+    private:
+        void set_window_callbacks(void);
 
     private:
         GLFWwindow* m_window;
         AbstractEventHandlerFn m_handler;
     };
 
-    namespace GLFWEventCallbackFunctions
+    namespace WindowEventCallbackFunctions
     {
         void window_close_callback(GLFWwindow* window);
         void window_size_callback(GLFWwindow* window, int width, int height);

@@ -21,14 +21,16 @@ namespace DrkCraft
         void set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn);
 
         void on_attach(void) override;
+        void on_detach(void) override;
 
         void on_update(Timestep timestep) override;
         void on_render(Timestep timestep) override;
         void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(KeyPressedEvent& event);
+        bool on_key_pressed(const KeyPressedEvent& event);
 
+        void apply(void);
         void save(void);
         void close(void);
 

@@ -12,7 +12,7 @@ namespace DrkCraft
 
     static GLFWwindow* local_get_window(void)
     {
-        return Application::get_instance().get_window().get_native_window();
+        return Application::get_instance().get_window().get_raw_window();
     }
 
     bool is_key_pressed(KeyCode key)

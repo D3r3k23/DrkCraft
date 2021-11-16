@@ -9,18 +9,19 @@ namespace DrkCraft
       : m_window(window)
     { }
 
-    void EventGenerator::register_event_handler(const AbstractEventHandlerFn& handler)
+    void EventGenerator::register_window_event_handler(const AbstractEventHandlerFn& handler)
     {
         m_handler = handler;
         glfwSetWindowUserPointer(m_window, static_cast<void*>(&m_handler));
+        set_window_callbacks();
     }
 
-    void EventGenerator::register_event_callbacks(void)
+    void EventGenerator::set_window_callbacks(void)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Registering event callbacks with GLFW");
 
-        using namespace GLFWEventCallbackFunctions;
+        using namespace WindowEventCallbackFunctions;
 
         glfwSetWindowCloseCallback(m_window, window_close_callback);
         glfwSetWindowSizeCallback(m_window, window_size_callback);
@@ -44,7 +45,7 @@ namespace DrkCraft
     #define DRK_CALL_EVENT_HANDLER_FN(event) \
         (*static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
 
-    namespace GLFWEventCallbackFunctions
+    namespace WindowEventCallbackFunctions
     {
         ////////// Window Events //////////
 
