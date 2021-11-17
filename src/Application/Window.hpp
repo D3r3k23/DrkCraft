@@ -20,12 +20,13 @@ namespace DrkCraft
         Window(std::string_view title);
         ~Window(void);
 
-        void init_raw_window(bool fullscreen);
+        void init_raw_window(void);
         GLFWwindow* get_raw_window(void) const;
 
         void register_event_handler(const AbstractEventHandlerFn& handler);
 
-        void update(void);
+        void poll_events(void);
+        void swap_buffers(void);
 
         void on_monitor_event(Event& event);
 
@@ -60,14 +61,9 @@ namespace DrkCraft
         GLFWwindow* m_window;
         std::string m_title;
 
-        glm::uvec2 m_windowedSize;
-        glm::ivec2 m_windowedPosition;
+        std::optional<FullscreenMonitor> m_fullscreenMonitor;
 
-        std::optional<Monitor> m_fullscreenMonitor;
-        AbstractEventHandlerFn m_monitorEventHandler;
-
-        bool m_fullscreen;
-        bool m_vsync; // Limits frame rate to monitor's refresh rate (?)
+        bool m_vsync;
 
         Ptr<EventGenerator> m_eventGenerator;
     };

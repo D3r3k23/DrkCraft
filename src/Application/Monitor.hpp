@@ -16,8 +16,6 @@
 
 namespace DrkCraft
 {
-    // Could add FullscreenMonitor to track events
-
     class Monitor
     {
     public:
@@ -29,8 +27,8 @@ namespace DrkCraft
         static void register_event_handler(const AbstractEventHandlerFn& eventHandler);
 
         Monitor(GLFWmonitor* monitor, uint number);
+        ~Monitor(void);
 
-    public:
         GLFWmonitor* get_raw_monitor(void) const;
 
         uint get_number(void) const;
@@ -47,6 +45,23 @@ namespace DrkCraft
         uint m_number;
 
         static AbstractEventHandlerFn s_eventHandler;
+    };
+
+    class FullscreenMonitor
+    {
+    public:
+        FullscreenMonitor(const Monitor& monitor, const glm::uvec2 currentSize, const glm::ivec2& currentPos);
+
+        void set_monitor(const Monitor& monitor);
+        const Monitor& get_monitor(void) const;
+
+        glm::uvec2 get_saved_size(void) const;
+        glm::ivec2 get_saved_position(void) const;
+
+    private:
+        Monitor m_monitor;
+        glm::uvec2 m_savedSize;
+        glm::ivec2 m_savedPosition;
     };
 }
 

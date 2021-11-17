@@ -6,6 +6,21 @@ option(DRK_EN_PROFILE "Enable profiling" OFF)
 # Set DRK_EN_DEV_MODE
 option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
 
+# Set DRK_DIST
+option(DRK_DIST "Dist config" OFF)
+
+# Dist Config
+if(${DRK_DIST})
+    set(CMAKE_BUILD_TYPE Release)
+    set(DRK_EN_PROFILE OFF)
+    set(DRK_EN_DEV_MODE OFF)
+    set(DRK_EN_LOGGING OFF)
+    set(DRK_EN_ASSERTS OFF)
+else()
+    set(DRK_EN_LOGGING ON)
+    set(DRK_EN_ASSERTS ON)
+endif()
+
 # Set DRK_VERSION
 file(READ VERSION.txt VERSION_txt)
 string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
@@ -42,6 +57,9 @@ if(${DRK_EN_PROFILE})
 endif()
 if(${DRK_EN_PROFILE})
     message("- Dev mode enabled")
+endif()
+if(${DRK_DIST})
+    message("- Dist build")
 endif()
 
 message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
@@ -80,20 +98,22 @@ string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
 target_compile_definitions(DrkCraft
   PUBLIC
     DRK_VERSION_STRING="${DRK_VERSION}"
-
     ${DRK_PLATFORM}
     ${DRK_BUILD_CONFIG}
-
-    DRK_EN_LOGGING
-    DRK_EN_ASSERTS
 )
 
-# Enable profiling
+if(${DRK_EN_LOGGING})
+    target_compile_definitions(DrkCraft PUBLIC DRK_EN_LOGGING)
+endif()
+
+if(${DRK_EN_ASSERTS})
+    target_compile_definitions(DrkCraft PUBLIC DRK_EN_ASSERTS)
+endif()
+
 if(${DRK_EN_PROFILE})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_PROFILE)
 endif()
 
-# Enable Dev mode
 if(${DRK_EN_DEV_MODE})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_DEV_MODE)
 endif()

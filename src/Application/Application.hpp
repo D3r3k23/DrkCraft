@@ -24,22 +24,20 @@ namespace DrkCraft
 
         void init_glfw(void);
 
+        Window& get_window(void);
+
         void add_overlay(const Ref<Layer>& layer); // Pushes layer to front
         void add_layer(const Ref<Layer>& layer);   // Pushes layer to back
 
         void run(void);
         void exit(int status=0);
 
-        void on_update(Timestep timestep);
-        void on_render(Timestep timestep);
+        void update(Timestep timestep);
+        void render(void);
         void on_event(Event& event);
 
-        bool on_window_close(const WindowClosedEvent& event);
-        bool on_window_resize(const WindowResizedEvent& event);
-        bool on_framebuffer_resize(const FramebufferResizedEvent& event);
-        bool on_window_refreshed(const WindowRefreshedEvent& event);
-
-        Window& get_window(void);
+        bool on_window_closed(const WindowClosedEvent& event);
+        bool on_framebuffer_resized(const FramebufferResizedEvent& event);
 
     private:
         static Application* s_instance;

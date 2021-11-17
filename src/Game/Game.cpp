@@ -68,7 +68,7 @@ namespace DrkCraft
 
     }
 
-    void Game::on_render(Timestep timestep)
+    void Game::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -80,8 +80,6 @@ namespace DrkCraft
 
     void Game::on_event(Event& event)
     {
-        DRK_PROFILE_FUNCTION();
-
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));

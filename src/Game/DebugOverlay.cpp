@@ -28,7 +28,7 @@ namespace DrkCraft
 
     }
 
-    void DebugOverlay::on_render(Timestep timestep)
+    void DebugOverlay::on_render(void)
     {
 
     }

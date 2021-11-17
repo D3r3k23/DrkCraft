@@ -74,13 +74,16 @@
         {
             switch (event.get_type())
             {
-                case EventType::WindowResized      : break;
-                case EventType::FramebufferResized : break;
-                case EventType::WindowRefreshed    : break;
-                case EventType::WindowMoved        : break;
-                case EventType::MouseMoved         : break;
-                case EventType::CharTyped          : break;
-                case EventType::KeyHeld            : break;
+                case EventType::WindowResized:
+                case EventType::FramebufferResized:
+                case EventType::WindowRefreshed:
+                case EventType::WindowMoved:
+                case EventType::MouseMoved:
+                case EventType::CharTyped:
+                case EventType::KeyHeld:
+                    DRK_LOG_CORE_TRACE("[{0}:{1}handled] {2}", event.get_name(),
+                        !event.handled() ? "un" : "", event.get_details());
+                    break;
                 default:
                     DRK_LOG_CORE_INFO("[{0}:{1}handled] {2}", event.get_name(),
                         !event.handled() ? "un" : "", event.get_details());

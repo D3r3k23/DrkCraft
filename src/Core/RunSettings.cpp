@@ -107,16 +107,13 @@ namespace DrkCraft
         s_configFile   = (location / path("config.yaml")).string();
         s_settingsFile = (location / path("settings.yaml")).string();
 
-        if (std::filesystem::is_directory(location))
-        {
-            if (std::filesystem::is_regular_file(s_configFile))
-                load_config();
+        DRK_ASSERT_DEBUG(std::filesystem::is_directory(location), "Invalid config directory");
 
-            if (std::filesystem::is_regular_file(s_settingsFile))
-                load_settings();
-        }
-        else
-            std::filesystem::create_directory(location);
+        if (std::filesystem::is_regular_file(s_configFile))
+            load_config();
+
+        if (std::filesystem::is_regular_file(s_settingsFile))
+            load_settings();
     }
 
     void RuntimeSettings::save_settings(void)

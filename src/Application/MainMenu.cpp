@@ -42,7 +42,7 @@ namespace DrkCraft
         // Animate background?
     }
 
-    void MainMenu::on_render(Timestep timestep)
+    void MainMenu::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -89,8 +89,6 @@ namespace DrkCraft
 
     void MainMenu::on_event(Event& event)
     {
-        DRK_PROFILE_FUNCTION();
-
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }

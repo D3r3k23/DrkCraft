@@ -28,7 +28,7 @@ namespace DrkCraft
 
     }
 
-    void Console::on_render(Timestep timestep)
+    void Console::on_render(void)
     {
 
     }

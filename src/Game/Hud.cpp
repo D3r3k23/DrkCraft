@@ -28,7 +28,7 @@ namespace DrkCraft
 
     }
 
-    void Hud::on_render(Timestep timestep)
+    void Hud::on_render(void)
     {
 
     }

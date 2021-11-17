@@ -24,11 +24,11 @@ namespace DrkCraft
         void on_detach(void) override;
 
         void on_update(Timestep timestep) override;
-        void on_render(Timestep timestep) override;
+        void on_render(void) override;
         void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(const KeyPressedEvent& event);
+        bool on_key_pressed(const KeyPressedEvent& event) override;
 
         void apply(void);
         void save(void);

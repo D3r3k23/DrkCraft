@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 
 LOG_DIR = 'data/logs'
-MAX_AGE = 3 # days
+MAX_AGE = 2 # days
 
 def get_date_from_log_name(log):
     pattern = re.compile('_\d\d\d\d-\d\d-\d\d_')
