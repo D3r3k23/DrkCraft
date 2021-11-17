@@ -25,7 +25,7 @@ set(YAML_CPP_BUILD_TOOLS OFF)
 add_subdirectory(yaml-cpp)
 
 target_link_libraries(DrkCraft
-  PRIVATE
+  PUBLIC
     entt
     glad
     glfw

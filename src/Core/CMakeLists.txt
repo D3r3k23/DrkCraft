@@ -1,6 +1,7 @@
 target_sources(DrkCraft
   PRIVATE
     Assert.cpp
+    AssetManager.cpp
     # Debug.cpp
     Log.cpp
     Profiler.cpp

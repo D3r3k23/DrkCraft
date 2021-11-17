@@ -1,6 +1,6 @@
 #include "ImGuiTools.hpp"
 
-#include "Core/Assets.hpp"
+#include "Core/AssetManager.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -25,19 +25,19 @@ namespace DrkCraft
         io.IniFilename = "data/imgui.ini";
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-        setup_style();
+        auto fontPath = font_asset_path("Kanit-Medium.ttf");
+        ImFont* font;
 
-        const char* fontPath = DRK_FONT_ASSET_PATH("Kanit-Medium.ttf");
-        ImFont* font = nullptr;
-
-        font = io.Fonts->AddFontFromFileTTF(fontPath, 16.0f);
+        font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 16.0f);
         DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
         s_fonts[Font::Regular] = font;
         io.FontDefault = font;
 
-        font = io.Fonts->AddFontFromFileTTF(fontPath, 40.0f);
+        font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 40.0f);
         DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
         s_fonts[Font::Title] = font;
+
+        setup_style();
 
         {
             DRK_PROFILE_SCOPE("imgui_impl init");

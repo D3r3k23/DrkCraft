@@ -19,6 +19,7 @@ namespace DrkCraft
 
         m_windowedSize     = { config.init_window_width, config.init_window_height };
         m_windowedPosition = { config.init_window_width * 0.5f, config.init_window_height * 0.5f };
+        /////////////////////////////////
 
         init_raw_window(settings.fullscreen);
         set_vsync(settings.vsync);

@@ -107,8 +107,16 @@ namespace DrkCraft
         s_configFile   = (location / path("config.yaml")).string();
         s_settingsFile = (location / path("settings.yaml")).string();
 
-        load_config();
-        load_settings();
+        if (std::filesystem::is_directory(location))
+        {
+            if (std::filesystem::is_regular_file(s_configFile))
+                load_config();
+
+            if (std::filesystem::is_regular_file(s_settingsFile))
+                load_settings();
+        }
+        else
+            std::filesystem::create_directory(location);
     }
 
     void RuntimeSettings::save_settings(void)
@@ -146,6 +154,7 @@ namespace DrkCraft
 
     void RuntimeSettings::load_config(void)
     {
+        DRK_ASSERT_DEBUG(std::filesystem::is_regular_file(s_configFile), "Settings file not found");
         YAML::Node config = YAML::LoadFile(s_configFile);
 
         if (!config.IsMap())
@@ -172,6 +181,7 @@ namespace DrkCraft
 
     void RuntimeSettings::load_settings(void)
     {
+        DRK_ASSERT_DEBUG(std::filesystem::is_regular_file(s_settingsFile), "Settings file not found");
         YAML::Node settings = YAML::LoadFile(s_settingsFile);
 
         if (!settings.IsMap())

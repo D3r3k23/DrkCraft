@@ -9,8 +9,8 @@ target_sources(imgui
     imgui/imgui_demo.cpp
     imgui/misc/cpp/imgui_stdlib.cpp
 
-    imgui_impl/imgui_impl_opengl3.cpp
     imgui_impl/imgui_impl_glfw.cpp
+    imgui_impl/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(imgui

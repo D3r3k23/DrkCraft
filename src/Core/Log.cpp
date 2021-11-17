@@ -27,16 +27,19 @@
             auto logName = std::format("DrkCraft_{:%F_%H.%M.%S}.log", time);
             auto file = dir / path(logName);
 
-            auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_st>();
-            consoleSink->set_level(spdlog::level::debug);
+            auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
+            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
+            sink->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
 
             auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(file.string());
             fileSink->set_level(spdlog::level::trace);
+            sink->add_sink(fileSink);
 
-            auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
-            sink->set_sinks({ consoleSink, fileSink });
-            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
-            sink->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
+        #if defined(DRK_CONFIG_DEBUG)
+            auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_st>();
+            consoleSink->set_level(spdlog::level::debug);
+            sink->add_sink(consoleSink);
+        #endif
 
             s_coreLogger = std::make_shared<spdlog::logger>("Core", sink);
             s_coreLogger->flush_on(spdlog::level::err);

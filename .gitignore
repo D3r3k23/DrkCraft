@@ -10,4 +10,6 @@
 /data/saves/**
 /data/imgui.ini
 
+/config/settings.yaml
+
 /packages/**

@@ -66,6 +66,11 @@
             m_outStream.close();
         }
 
+        bool Profiler::active(void) const
+        {
+            return m_active;
+        }
+
         // Could potentially switch to writing Duration Events (ph = B, E) to  get
         // more information about what happened before a crash
         void Profiler::write_profile(const char* cat, const char* name, double start, double duration)
