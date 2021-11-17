@@ -18,6 +18,7 @@ Minecraft clone in C++ created using an OpenGL renderer
 * GLM
 * Dear ImGui
 * spdlog
+* yaml-cpp
 
 ### Build Instructions
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
