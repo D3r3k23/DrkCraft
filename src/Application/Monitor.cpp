@@ -75,6 +75,11 @@ namespace DrkCraft
         glfwSetMonitorUserPointer(m_monitor, static_cast<void*>(&s_eventHandler));
     }
 
+    Monitor::~Monitor(void)
+    {
+        glfwSetMonitorUserPointer(m_monitor, nullptr);
+    }
+
     GLFWmonitor* Monitor::get_raw_monitor(void) const
     {
         return m_monitor;
@@ -134,5 +139,30 @@ namespace DrkCraft
                 vidModes[i].refreshRate);
 
         return vidModesPtr[count - 1];
+    }
+
+    FullscreenMonitor::FullscreenMonitor(const Monitor& monitor, const glm::uvec2 currentSize, const glm::ivec2& currentPos)
+      : m_monitor(monitor),
+        m_savedSize(currentSize),
+        m_savedPosition(currentPos)
+    { }
+
+    void FullscreenMonitor::set_monitor(const Monitor& monitor)
+    {
+        m_monitor = monitor;
+    }
+
+    const Monitor& FullscreenMonitor::get_monitor(void) const
+    {
+        return m_monitor;
+    }
+    glm::uvec2 FullscreenMonitor::get_saved_size(void) const
+    {
+        return m_savedSize;
+    }
+
+    glm::ivec2 FullscreenMonitor::get_saved_position(void) const
+    {
+        return m_savedPosition;
     }
 }

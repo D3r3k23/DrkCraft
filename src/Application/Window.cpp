@@ -9,19 +9,17 @@
 namespace DrkCraft
 {
     Window::Window(std::string_view title)
-      : m_title(title),
-        m_fullscreen(false)
+      : m_title(title)
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto& config   = RuntimeSettings::config();
+        init_raw_window();
+
         const auto& settings = RuntimeSettings::get();
 
-        m_windowedSize     = { config.init_window_width, config.init_window_height };
-        m_windowedPosition = { config.init_window_width * 0.5f, config.init_window_height * 0.5f };
-        /////////////////////////////////
+        if (settings.fullscreen)
+            set_fullscreen();
 
-        init_raw_window(settings.fullscreen);
         set_vsync(settings.vsync);
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
@@ -41,44 +39,29 @@ namespace DrkCraft
         glfwDestroyWindow(m_window);
     }
 
-    void Window::init_raw_window(bool fullscreen)
+    void Window::init_raw_window(void)
     {
         DRK_PROFILE_FUNCTION();
 
+        const auto& config = RuntimeSettings::config();
+        int width  = config.init_window_width;
+        int height = config.init_window_height;
+
         Monitor::register_event_handler(DRK_BIND_FN(on_monitor_event));
-
-        int width, height;
-        GLFWmonitor* monitor;
-
-        if (fullscreen)
-        {
-            m_fullscreen = true;
-            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
-            const auto& vidMode = m_fullscreenMonitor->get_best_vid_mode();
-
-            width   = vidMode.width;
-            height  = vidMode.height;
-            monitor = m_fullscreenMonitor->get_raw_monitor();
-        }
-        else
-        {
-            m_fullscreen = false;
-            width   = m_windowedSize.x;
-            height  = m_windowedSize.y;
-            monitor = nullptr;
-        }
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
         glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_TRUE);
-
-        m_window = glfwCreateWindow(width, height, m_title.c_str(), monitor, nullptr);
-        DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
-
-        glfwMakeContextCurrent(m_window);
-
+        {
+            DRK_PROFILE_SCOPE("glfwCreateWindow");
+            m_window = glfwCreateWindow(width, height, m_title.c_str(), nullptr, nullptr);
+            DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
+        }{
+            DRK_PROFILE_SCOPE("glfwMakeContextCurrent");
+            glfwMakeContextCurrent(m_window);
+        }
         glfwSetWindowAspectRatio(m_window, 16, 9);
-        glfwSetWindowSizeLimits(m_window, 720, 405, GLFW_DONT_CARE, GLFW_DONT_CARE);
+        glfwSetWindowSizeLimits(m_window, width, height, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
         // Ptr<GLFWimage> icon = load_image("assets/icons/DrkCraft.jpg");
         // glfwSetWindowIcon(m_window, icon.get());
@@ -112,21 +95,20 @@ namespace DrkCraft
     {
         if (event.get_type() == EventType::MonitorDisconnected)
         {
-            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
+            m_fullscreenMonitor->set_monitor(Monitor::get_fullscreen_monitor());
         }
     }
 
     void Window::set_fullscreen(void)
     {
-        if (!is_fullscreen())
+        if (is_fullscreen())
+            DRK_LOG_CORE_WARN("Window is already fullscreen");
+        else
         {
-            m_windowedPosition = get_pos();
-            m_windowedSize = get_size();
+            m_fullscreenMonitor = { Monitor::get_fullscreen_monitor(), get_size(), get_pos() };
 
-            m_fullscreenMonitor = Monitor::get_fullscreen_monitor();
-
-            const auto& vidMode = m_fullscreenMonitor->get_best_vid_mode();
-            auto monitor = m_fullscreenMonitor->get_raw_monitor();
+            const GLFWvidmode& vidMode = m_fullscreenMonitor->get_monitor().get_best_vid_mode();
+            GLFWmonitor*       monitor = m_fullscreenMonitor->get_monitor().get_raw_monitor();
 
             glfwSetWindowMonitor(m_window, monitor, 0, 0, vidMode.width, vidMode.height, vidMode.refreshRate);
         }
@@ -134,15 +116,15 @@ namespace DrkCraft
 
     void Window::set_windowed(void)
     {
-        if (is_fullscreen())
+        if (!is_fullscreen())
+            DRK_LOG_CORE_WARN("Window is already windowed");
+        else
         {
-            uint width  = m_windowedSize.x;
-            uint height = m_windowedSize.y;
+            const auto position = m_fullscreenMonitor->get_saved_position();
+            const auto size     = m_fullscreenMonitor->get_saved_size();
 
-            int x = m_windowedPosition.x;
-            int y = m_windowedPosition.y;
+            glfwSetWindowMonitor(m_window, nullptr, position.x, position.y, size.x, size.y, 0);
 
-            glfwSetWindowMonitor(m_window, nullptr, x, y, width, height, 0);
             m_fullscreenMonitor.reset();
         }
     }
@@ -182,7 +164,6 @@ namespace DrkCraft
 
     glm::uvec2 Window::resize(glm::uvec2 size)
     {
-        m_windowedSize = size;
         glfwSetWindowSize(m_window, size.x, size.y);
         return size;
     }
@@ -238,6 +219,7 @@ namespace DrkCraft
 
     bool Window::is_fullscreen(void) const
     {
-        return glfwGetWindowMonitor(m_window) != nullptr;
+        // return glfwGetWindowMonitor(m_window) != nullptr;
+        return (bool)m_fullscreenMonitor;
     }
 }
