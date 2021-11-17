@@ -28,8 +28,6 @@
             auto file = dir / path(logName);
 
             auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
-            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
-            sink->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
 
             auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(file.string());
             fileSink->set_level(spdlog::level::trace);
@@ -40,6 +38,9 @@
             consoleSink->set_level(spdlog::level::debug);
             sink->add_sink(consoleSink);
         #endif
+
+            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
+            sink->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
 
             s_coreLogger = std::make_shared<spdlog::logger>("Core", sink);
             s_coreLogger->flush_on(spdlog::level::err);
