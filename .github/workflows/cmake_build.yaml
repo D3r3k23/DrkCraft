@@ -20,7 +20,7 @@ jobs:
       - name: Setup MSVC SDK
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          sdk: 10.0
+          sdk: 10.0.19041.0
           toolset: 14.29
 
       - name: Gen Glad
