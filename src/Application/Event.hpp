@@ -5,7 +5,6 @@
 
 #include "Core/Base.hpp"
 #include "EventInfo.hpp"
-#include "Core/Profiler.hpp"
 
 #include <string>
 #include <functional>
