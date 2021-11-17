@@ -45,32 +45,35 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize;
-        // ImGui::SetNextWindowSize(WINDOW_SIZE);
-        float x = (ImGui::GetWindowContentRegionMax().x - WINDOW_SIZE.x) * 0.5f;
-        float y = (ImGui::GetCursorPos().y + WINDOW_SIZE.y) * 0.5;
-        ImGui::SetNextWindowPos({x, y});
-
-        ImGui::Begin("SettingsMenu", nullptr, windowFlags);
-        ImGuiTools::TextCentered("Settings");
-
+        ImGuiTools::BeginCentered("Settings", WINDOW_SIZE, ImGuiWindowFlags_NoCollapse);
         ImGui::BeginGroup();
 
         if (ImGui::Checkbox("Fullscreen", &m_settings->fullscreen))
             m_dirty = true;
 
-        static int selectedMonitorIndex = 0;
         auto monitors = Monitor::get_monitors();
-        if (ImGui::BeginCombo("Fullscreen Monitor", "example"))
+        std::vector<std::string> monitorStrings;
+        for (int i = 0; const auto& monitor : monitors)
+        {
+            const auto& res = monitor.get_resolution();
+            const auto& rRate = monitor.get_refresh_rate();
+            const auto& name = monitor.get_name();
+            monitorStrings.push_back(std::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name));
+            i++;
+        }
+        if (ImGui::BeginCombo("Fullscreen Monitor", monitorStrings[m_settings->fullscreen_monitor].c_str()))
         {
             for (int i = 0; const auto& monitor : monitors)
             {
-                const auto& res = monitor.get_resolution();
-                const auto& rRate = monitor.get_refresh_rate();
-                const auto& name = monitor.get_name();
-                auto monitorStr = std::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name);
-                if (ImGui::Selectable(monitorStr.c_str(), i == selectedMonitorIndex));
-                    selectedMonitorIndex = i;
+                // Is this right??
+                bool selected = (i == m_settings->fullscreen_monitor);
+                if (ImGui::Selectable(monitorStrings[i].c_str(), &selected));
+                if (selected)
+                {
+                    m_settings->fullscreen_monitor = i;
+                    m_dirty = true;
+                    ImGui::SetItemDefaultFocus();
+                }
                 i++;
             }
             ImGui::EndCombo();
@@ -79,20 +82,19 @@ namespace DrkCraft
             m_dirty = true;
 
         ImGui::EndGroup();
-
         ImGui::BeginGroup();
 
-        if (ImGui::Button("Close", {60, 30}))
+        if (ImGui::Button("Close", {80, 40}))
             close();
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Save", {60, 30}))
+        if (ImGui::Button("Save", {80, 40}))
             save();
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Save & Close", {60, 30}))
+        if (ImGui::Button("Save & Close", {80, 40}))
         {
             save();
             close();
@@ -134,6 +136,9 @@ namespace DrkCraft
                 window.set_fullscreen();
             else
                 window.set_windowed();
+
+            if (window.is_fullscreen())
+                window.change_fullscreen_monitor(m_settings->fullscreen_monitor);
 
             if (m_settings->vsync)
                 window.set_vsync(true);

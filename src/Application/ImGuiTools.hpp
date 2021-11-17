@@ -47,8 +47,10 @@ namespace DrkCraft
 
     namespace ImGuiTools
     {
+        void BeginFullscreen(std::string_view name, ImGuiWindowFlags flags=0);
+        void BeginCentered(std::string_view name, const ImVec2& size, ImGuiWindowFlags flags=0);
         void TextCentered(std::string_view text);
-        bool ButtonCentered(const char* text, ImVec2 size);
+        bool ButtonCentered(const char* text, const ImVec2& size);
     }
 }
 

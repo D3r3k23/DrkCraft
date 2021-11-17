@@ -23,17 +23,23 @@ namespace DrkCraft
         return monitors;
     }
 
-    Monitor Monitor::get_fullscreen_monitor(void)
+    Monitor Monitor::get_monitor(uint number)
     {
-        int monitorNum = RuntimeSettings::get().fullscreen_monitor;
         auto monitors = Monitor::get_monitors();
 
-        if (monitorNum >= monitors.size())
+        if (number >= monitors.size())
         {
             DRK_LOG_CORE_WARN("Invalid monitor selected. Defaulting to primary");
-            monitorNum = 0;
+            number = 0;
         }
-        return monitors[monitorNum];
+        return monitors[number];
+    }
+
+    Monitor Monitor::get_fullscreen_monitor(void)
+    {
+        int num = RuntimeSettings::get().fullscreen_monitor;
+
+        return get_monitor(num);
     }
 
     Monitor Monitor::get_primary_monitor(void)

@@ -52,18 +52,15 @@ namespace DrkCraft
         {
             ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration    | ImGuiWindowFlags_NoMove
                                          | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize;
-            const auto viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos(viewport->Pos);
-            ImGui::SetNextWindowSize(viewport->Size);
 
             ImGui::PushFont(ImGuiManager::get_font(Font::Title));
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-            ImGui::Begin("MainMenu", nullptr, windowFlags);
-
-            ImGuiTools::TextCentered("DrkCraft");
+            ImGuiTools::BeginFullscreen("MainMenu");
 
             ImGui::Dummy({250, 100});
+            ImGuiTools::TextCentered("DrkCraft");
 
+            ImGui::Dummy({250, 50});
             ImGui::BeginGroup();
 
             if (ImGuiTools::ButtonCentered("Play", {250, 100}))
@@ -90,26 +87,6 @@ namespace DrkCraft
     void MainMenu::on_event(Event& event)
     {
         EventDispatcher ed(event);
-        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
-    }
-
-    bool MainMenu::on_key_pressed(const KeyPressedEvent& event)
-    {
-        switch (event.key)
-        {
-            case KeyCode::Enter:
-            {
-                start_game();
-                return true;
-            }
-            case KeyCode::Escape:
-            {
-                exit();
-                return true;
-            }
-            default:
-                return false;
-        }
     }
 
     void MainMenu::start_game(void)

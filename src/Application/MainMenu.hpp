@@ -25,8 +25,6 @@ namespace DrkCraft
         void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(const KeyPressedEvent& event) override;
-
         void start_game(void);
         void open_settings(void);
         void exit(void);

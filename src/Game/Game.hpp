@@ -34,6 +34,8 @@ namespace DrkCraft
     private:
         bool on_key_pressed(const KeyPressedEvent& event) override;
         bool on_window_focus_lost(const WindowFocusLostEvent& event) override;
+        bool on_window_resized(const WindowResizedEvent& event) override;
+        bool on_window_moved(const WindowMovedEvent& event) override;
 
         void pause(void);
         void unpause(void);

@@ -30,6 +30,9 @@ namespace DrkCraft
 
         void on_monitor_event(Event& event);
 
+        void change_fullscreen_monitor(uint number);
+        void set_monitor(const Monitor& monitor);
+
         void set_fullscreen(void);
         void set_windowed(void);
 

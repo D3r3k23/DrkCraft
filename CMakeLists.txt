@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+cmake_policy(VERSION ${CMAKE_VERSION})
 
 # Set DRK_EN_PROFILE
 option(DRK_EN_PROFILE "Enable profiling" OFF)

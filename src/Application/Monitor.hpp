@@ -22,6 +22,7 @@ namespace DrkCraft
         static std::vector<Monitor> get_monitors(void);
 
         static Monitor get_fullscreen_monitor(void);
+        static Monitor get_monitor(uint number);
         static Monitor get_primary_monitor(void);
 
         static void register_event_handler(const AbstractEventHandlerFn& eventHandler);

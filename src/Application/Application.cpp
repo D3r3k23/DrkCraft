@@ -193,6 +193,8 @@ namespace DrkCraft
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_closed));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resized));
 
+        // We could redraw the screen on resize/move
+
         m_imGuiManager->on_event(event);
 
         for (auto& layer : *m_layerStackForwardView)

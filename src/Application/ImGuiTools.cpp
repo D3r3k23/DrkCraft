@@ -22,8 +22,8 @@ namespace DrkCraft
         auto context = ImGui::CreateContext();
 
         ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = "data/imgui.ini";
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.IniFilename = nullptr; // "data/imgui.ini";
+        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
         auto fontPath = font_asset_path("Kanit-Medium.ttf");
         ImFont* font;
@@ -100,6 +100,16 @@ namespace DrkCraft
         }
     }
 
+    void ImGuiManager::enable(void)
+    {
+        m_enabled = true;
+    }
+
+    void ImGuiManager::disable(void)
+    {
+        m_enabled = false;
+    }
+
     void ImGuiManager::block_events(bool block)
     {
         m_blockEvents = block;
@@ -118,19 +128,47 @@ namespace DrkCraft
 
     namespace ImGuiTools
     {
+        void BeginFullscreen(std::string_view name, ImGuiWindowFlags flags)
+        {
+            const auto viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
+
+            flags |= ImGuiWindowFlags_NoDecoration    | ImGuiWindowFlags_NoMove
+                   | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize;
+
+            ImGui::Begin(name.data(), nullptr, flags);
+        }
+
+        void BeginCentered(std::string_view name, const ImVec2& size, ImGuiWindowFlags flags)
+        {
+            // ImGui::SetNextWindowSize(WINDOW_SIZE);
+            // float x = (ImGui::GetWindowContentRegionMax().x - WINDOW_SIZE.x) * 0.5f;
+            // float y = (ImGui::GetCursorPos().y + WINDOW_SIZE.y) * 0.5;
+            // ImGui::SetNextWindowPos({x, y});
+
+            ImGui::SetNextWindowSize(size);
+
+            const auto viewport = ImGui::GetMainViewport();
+            float x = (viewport->Pos.x + (viewport->Size.x - size.x * 0.5f));
+            float y = (viewport->Pos.y + (viewport->Size.y - size.y * 0.5f));
+
+            ImGui::SetNextWindowPos({x, y});
+
+            flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+            ImGui::Begin(name.data(), nullptr, flags);
+        }
+
         void TextCentered(std::string_view text)
         {
-            float textHeight = ImGui::GetFontSize();
-            float textWidth = textHeight * text.size();
-            float x = (ImGui::GetContentRegionMax().x - textWidth) * 0.5f;
-            float y = (ImGui::GetCursorPos().y + textHeight) * 0.5f;
-            ImGui::SetCursorPos({x, y}); //  Or SetCursorPosX
+            float width = ImGui::CalcTextSize(text.data()).x;
+            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
             ImGui::Text(text.data());
         }
 
-        bool ButtonCentered(const char* text, ImVec2 size)
+        bool ButtonCentered(const char* text, const ImVec2& size)
         {
-            ImGui::SetCursorPosX((ImGui::GetContentRegionMax().x - size.x) * 0.5f);
+            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - size.x) * 0.5f);
             return ImGui::Button(text, size);
         }
     }

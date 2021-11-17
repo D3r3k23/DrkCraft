@@ -97,8 +97,27 @@ namespace DrkCraft
     {
         if (event.get_type() == EventType::MonitorDisconnected)
         {
-            m_fullscreenMonitor->set_monitor(Monitor::get_fullscreen_monitor());
+            set_monitor(Monitor::get_fullscreen_monitor());;
         }
+    }
+
+    void Window::change_fullscreen_monitor(uint number)
+    {
+        DRK_ASSERT_DEBUG(is_fullscreen(), "Window is not fulscreen");
+        if (number == m_fullscreenMonitor->get_monitor().get_number())
+            DRK_LOG_CORE_WARN("Monitor [{}] is already selected", number);
+        else
+            set_monitor(Monitor::get_monitor(number));
+    }
+
+    void Window::set_monitor(const Monitor& monitor)
+    {
+        m_fullscreenMonitor->set_monitor(monitor);
+
+        const GLFWvidmode& vidMode = m_fullscreenMonitor->get_monitor().get_best_vid_mode();
+        GLFWmonitor*    rawMonitor = m_fullscreenMonitor->get_monitor().get_raw_monitor();
+
+        glfwSetWindowMonitor(m_window, rawMonitor, 0, 0, vidMode.width, vidMode.height, vidMode.refreshRate);
     }
 
     void Window::set_fullscreen(void)
