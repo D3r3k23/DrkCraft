@@ -4,6 +4,7 @@
 #include "Core/Base.hpp"
 #include "Event.hpp"
 #include "Input.hpp"
+#include "Core/Profiler.hpp"
 
 #define DRK_EVENT_TYPE_INFO(type)                                             \
     static constexpr EventType static_type(void) { return EventType::type; } \
