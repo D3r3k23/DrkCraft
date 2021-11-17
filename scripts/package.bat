@@ -1,24 +1,25 @@
 @echo OFF
 
-call scripts\get_build_config.bat --release
+set "package_dir=packages\DrkCraft"
+
+if exist %package_dir% rmdir /S /Q %package_dir%
+mkdir %package_dir%
+
+call scripts\get_build_config.bat %1 %2 %3
 
 set /p version=<VERSION.txt
 
-set "package_name=DrkCraft-v%version%-win"
-set "package_dir=packages\%package_name%"
+set "package_name=DrkCraft-v%version%-%build_config%-win"
 set "package_zip=packages\%package_name%.zip"
 
 echo Building package: %package_name%
 
 call scripts\clean.bat
-call scripts\build.bat --release
+call scripts\build.bat %1 %2 %3
 if NOT %errorlevel% == 0 (
     echo CMake build failed
     exit /b 1
 )
-
-if exist %package_dir% rmdir /S /Q %package_dir%
-mkdir %package_dir%
 
 echo Copying executable
 xcopy /e %exe% %package_dir%
@@ -26,19 +27,25 @@ xcopy /e %exe% %package_dir%
 echo Copying assets
 xcopy /e assets %package_dir%\assets\
 
-echo Copying config files
-xcopy /e config %package_dir%\config\
+echo Creating config directory
+mkdir %package_dir%\config
+copy config\config.yaml %package_dir%\config\ >NUL
+copy config\default_settings.yaml %package_dir%\config\settings.yaml >NUL
 
 echo Creating data directory
-mkdir %package_dir%\data\logs
-mkdir %package_dir%\data\saves
+xcopy /e /t data %package_dir%\data\
 
-echo Copying licenses
-copy LICENSE.txt %package_dir%\data\ >NUL
-copy lib\LICENSE.txt %package_dir%\data\LICENSE_LIB.txt >NUL
+echo Creating about directory
+mkdir %package_dir%\about
+copy LICENSE.txt %package_dir%\about\ >NUL
+copy lib\LICENSE.txt %package_dir%\about\LICENSE_LIB.txt >NUL
+
+echo Writing build.txt
+python scripts\write_build_file.py %package_dir%\about\build.txt ^
+    %version% Windows %build_config% %en_profile% %en_dev_mode% %dist%
 
 echo Creating archive %package_zip%
 if exist %package_zip% del /Q %package_zip%
-tar -a -c -f %package_zip% -C "packages" %package_name%
+tar -a -c -f %package_zip% -C "packages" "DrkCraft"
 
 echo Package %package_name% built

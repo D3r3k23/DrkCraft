@@ -79,16 +79,18 @@ namespace DrkCraft
         m_eventGenerator->register_window_event_handler(handler);
     }
 
-    void Window::update(void)
+    void Window::poll_events(void)
     {
         DRK_PROFILE_FUNCTION();
-        {
-            DRK_PROFILE_SCOPE("glfwSwapBuffers");
-            glfwSwapBuffers(m_window);
-        }{
-            DRK_PROFILE_SCOPE("glfwPollEvents");
-            glfwPollEvents();
-        }
+
+        glfwPollEvents();
+    }
+
+    void Window::swap_buffers(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        glfwSwapBuffers(m_window);
     }
 
     void Window::on_monitor_event(Event& event)

@@ -43,6 +43,11 @@
         #define DRK_ASSERT_DEBUG_NO_MSG(cond)
     #endif
 
+#else
+    #define DRK_ASSERT_CORE(cond, ...)
+    #define DRK_ASSERT_CORE_NO_MSG(cond)
+    #define DRK_ASSERT_DEBUG(cond, ...)
+    #define DRK_ASSERT_DEBUG_NO_MSG(cond)
 #endif
 
 #endif // DRK_ASSERT_HPP

@@ -25,7 +25,8 @@ namespace DrkCraft
 
         void register_event_handler(const AbstractEventHandlerFn& handler);
 
-        void update(void);
+        void poll_events(void);
+        void swap_buffers(void);
 
         void on_monitor_event(Event& event);
 

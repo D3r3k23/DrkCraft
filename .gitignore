@@ -1,15 +1,14 @@
 /.vscode/**
 /.VSCodeCounter/**
-
 /.venv/**
 
 /build/**
+
+/config/settings.yaml
 
 /data/logs/**
 /data/profile/*.json
 /data/saves/**
 /data/imgui.ini
-
-/config/settings.yaml
 
 /packages/**

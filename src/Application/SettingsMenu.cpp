@@ -41,7 +41,7 @@ namespace DrkCraft
 
     static glm::vec2 WINDOW_SIZE(400, 600);
 
-    void SettingsMenu::on_render(Timestep timestep)
+    void SettingsMenu::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -104,8 +104,6 @@ namespace DrkCraft
 
     void SettingsMenu::on_event(Event& event)
     {
-        DRK_PROFILE_FUNCTION();
-
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }

@@ -93,6 +93,12 @@ namespace DrkCraft
     #endif
     }
 
+    Window& Application::get_window(void)
+    {
+        DRK_ASSERT_DEBUG(m_window, "Window not initialized");
+        return *m_window;
+    }
+
     void Application::add_overlay(const Ref<Layer>& layer)
     {
         layer->attach_layer();
@@ -122,12 +128,13 @@ namespace DrkCraft
             }{
                 DRK_PROFILE_SCOPE("Application core loop");
 
-                m_window->update(); // This is where events are polled
+                m_window->swap_buffers();
+                m_window->poll_events();
 
                 if (m_running && !m_minimized)
                 {
-                    on_update(timestep);
-                    on_render(timestep);
+                    update(timestep);
+                    render();
                 }
             }
             m_layerStackForwardView.reset();
@@ -155,7 +162,7 @@ namespace DrkCraft
         m_exitCode = status;
     }
 
-    void Application::on_update(Timestep timestep)
+    void Application::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -163,7 +170,7 @@ namespace DrkCraft
             layer->on_update(timestep);
     }
 
-    void Application::on_render(Timestep timestep)
+    void Application::render(void)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -172,7 +179,7 @@ namespace DrkCraft
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : *m_layerStackReverseView)
-                layer->on_render(timestep);
+                layer->on_render();
         }
         m_imGuiManager->end_frame();
         Renderer::end_frame();
@@ -183,10 +190,8 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         EventDispatcher ed(event);
-        ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_close));
-        ed.dispatch<WindowResizedEvent>(DRK_BIND_FN(on_window_resize));
-        ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resize));
-        ed.dispatch<WindowRefreshedEvent>(DRK_BIND_FN(on_window_refreshed));
+        ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_closed));
+        ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resized));
 
         m_imGuiManager->on_event(event);
 
@@ -196,36 +201,15 @@ namespace DrkCraft
         DRK_LOG_EVENT(event);
     }
 
-    bool Application::on_window_close(const WindowClosedEvent& event)
+    bool Application::on_window_closed(const WindowClosedEvent& event)
     {
         exit();
         return true;
     }
 
-    bool Application::on_window_resize(const WindowResizedEvent& event)
-    {
-        // Do we need this?
-        // m_window->resize(event.width, event.height);
-        return true;
-    }
-
-    bool Application::on_framebuffer_resize(const FramebufferResizedEvent& event)
+    bool Application::on_framebuffer_resized(const FramebufferResizedEvent& event)
     {
         Renderer::set_viewport(0, 0, event.width, event.height);
         return true;
-    }
-
-    bool Application::on_window_refreshed(const WindowRefreshedEvent& event)
-    {
-        // Or when resized?
-        // on_render(); // This could be slow
-        // Need to swap buffers
-        return true;
-    }
-
-    Window& Application::get_window(void)
-    {
-        DRK_ASSERT_DEBUG(m_window, "Window not initialized");
-        return *m_window;
     }
 }

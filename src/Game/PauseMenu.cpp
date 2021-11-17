@@ -41,18 +41,18 @@ namespace DrkCraft
 
     void PauseMenu::on_update(Timestep timestep)
     {
-        DRK_PROFILE_FUNCTION();
+
     }
 
-    void PauseMenu::on_render(Timestep timestep)
+    void PauseMenu::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
+
+
     }
 
     void PauseMenu::on_event(Event& event)
     {
-        DRK_PROFILE_FUNCTION();
-
         EventDispatcher ed(event);
         ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
