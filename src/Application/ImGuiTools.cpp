@@ -14,7 +14,8 @@ namespace DrkCraft
 
     ImGuiManager::ImGuiManager(GLFWwindow* window, bool enable)
       : m_enabled(enable),
-        m_blockEvents(true)
+        m_blockEvents(true),
+        m_showDemoWindow(false)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -76,12 +77,11 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        static bool showDemoWindow = true;
-        if (showDemoWindow)
-            ImGui::ShowDemoWindow(&showDemoWindow);
-
         if (m_enabled)
         {
+            if (m_showDemoWindow)
+                ImGui::ShowDemoWindow(&m_showDemoWindow);
+
             ImGui::Render();
             {
                 DRK_PROFILE_SCOPE("imgui_impl render");
@@ -92,11 +92,17 @@ namespace DrkCraft
 
     void ImGuiManager::on_event(Event& event)
     {
-        if (m_enabled && m_blockEvents)
+        if (m_enabled)
         {
-            ImGuiIO& io = ImGui::GetIO();
-            if (event == EventCategory::Mouse    && io.WantCaptureMouse)    event.set_handled();
-            if (event == EventCategory::Keyboard && io.WantCaptureKeyboard) event.set_handled();
+            EventDispatcher ed(event);
+            ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+
+            if (m_blockEvents)
+            {
+                ImGuiIO& io = ImGui::GetIO();
+                if (event == EventCategory::Mouse    && io.WantCaptureMouse)    event.set_handled();
+                if (event == EventCategory::Keyboard && io.WantCaptureKeyboard) event.set_handled();
+            }
         }
     }
 
@@ -126,6 +132,20 @@ namespace DrkCraft
         return s_fonts[font];
     }
 
+    bool ImGuiManager::on_key_pressed(const KeyPressedEvent& event)
+    {
+        switch (event.key)
+        {
+            case KeyCode::F12:
+            {
+                m_showDemoWindow = !m_showDemoWindow;
+                return true;
+            }
+            default:
+                return false;
+        }
+    }
+
     namespace ImGuiTools
     {
         void BeginFullscreen(std::string_view name, ImGuiWindowFlags flags)
@@ -137,22 +157,18 @@ namespace DrkCraft
             flags |= ImGuiWindowFlags_NoDecoration    | ImGuiWindowFlags_NoMove
                    | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize;
 
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
             ImGui::Begin(name.data(), nullptr, flags);
+            ImGui::PopStyleVar();
         }
 
         void BeginCentered(std::string_view name, const ImVec2& size, ImGuiWindowFlags flags)
         {
-            // ImGui::SetNextWindowSize(WINDOW_SIZE);
-            // float x = (ImGui::GetWindowContentRegionMax().x - WINDOW_SIZE.x) * 0.5f;
-            // float y = (ImGui::GetCursorPos().y + WINDOW_SIZE.y) * 0.5;
-            // ImGui::SetNextWindowPos({x, y});
+            const auto viewport = ImGui::GetMainViewport();
+            float x = (viewport->Pos.x + (viewport->Size.x - size.x) * 0.5f);
+            float y = (viewport->Pos.y + (viewport->Size.y - size.y) * 0.5f);
 
             ImGui::SetNextWindowSize(size);
-
-            const auto viewport = ImGui::GetMainViewport();
-            float x = (viewport->Pos.x + (viewport->Size.x - size.x * 0.5f));
-            float y = (viewport->Pos.y + (viewport->Size.y - size.y * 0.5f));
-
             ImGui::SetNextWindowPos({x, y});
 
             flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
@@ -163,7 +179,7 @@ namespace DrkCraft
         {
             float width = ImGui::CalcTextSize(text.data()).x;
             ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);
-            ImGui::Text(text.data());
+            ImGui::TextUnformatted(text.data());
         }
 
         bool ButtonCentered(const char* text, const ImVec2& size)

@@ -38,9 +38,13 @@ namespace DrkCraft
     private:
         void setup_style(void);
 
+        bool on_key_pressed(const KeyPressedEvent& event);
+
     private:
         bool m_enabled; // What happens if this is false and we still try and use ImGui?
         bool m_blockEvents;
+
+        bool m_showDemoWindow;
 
         static std::unordered_map<Font, ImFont*> s_fonts;
     };

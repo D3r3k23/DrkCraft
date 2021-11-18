@@ -48,13 +48,39 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
+        ImGui::PushFont(ImGuiManager::get_font(Font::Title));
+        ImGuiTools::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
 
+        ImGui::Dummy({250, 50});
+        ImGui::BeginGroup();
+
+        if (ImGuiTools::ButtonCentered("Unpause", {250, 100}))
+            unpause();
+
+        ImGui::Dummy({250, 50});
+
+        if (ImGuiTools::ButtonCentered("Settings", {250, 100}))
+            open_settings();
+
+        ImGui::Dummy({250, 50});
+
+        if (ImGuiTools::ButtonCentered("Save Game", {250, 100}))
+            save_game();
+
+        ImGui::Dummy({250, 50});
+
+        if (ImGuiTools::ButtonCentered("Exit", {250, 100}))
+            exit_game();
+
+        ImGui::EndGroup();
+
+        ImGui::End();
+        ImGui::PopFont();
     }
 
     void PauseMenu::on_event(Event& event)
     {
         EventDispatcher ed(event);
-        ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
 
@@ -64,19 +90,7 @@ namespace DrkCraft
         {
             case KeyCode::Escape:
             {
-                m_onUnpause();
-                detach_layer();
-                return true;
-            }
-            case KeyCode::Delete:
-            {
-                m_onExitGame();
-                detach_layer();
-                return true;
-            }
-            case KeyCode::Enter:
-            {
-                m_onSaveGame();
+                unpause();
                 return true;
             }
             default:
@@ -84,23 +98,31 @@ namespace DrkCraft
         }
     }
 
-    bool PauseMenu::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
+    void PauseMenu::open_settings(void)
     {
-        if (event.button == MouseCode::Left)
-        {
-            if (1)
-            {
-                m_settingsMenu->activate_layer();
-                deactivate_layer();
-                return true;
-            }
+        DRK_LOG_CORE_TRACE("PauseMenu: Opening Settings");
+        m_settingsMenu->activate_layer();
+        deactivate_layer();
+    }
 
-            // If Save & Exit button pressed:
-            // Application::get_instance().stop_game();
-            // Application::get_instance().get_layer_stack().remove(this);
-            return true;
-        }
-        else
-            return false;
+    void PauseMenu::save_game(void)
+    {
+        DRK_LOG_CORE_TRACE("PauseMenu: Saving Game");
+        m_onSaveGame();
+    }
+
+    void PauseMenu::unpause(void)
+    {
+        DRK_LOG_CORE_TRACE("PauseMenu: Closing");
+        m_onUnpause();
+        detach_layer();
+    }
+
+    void PauseMenu::exit_game(void)
+    {
+        DRK_LOG_CORE_TRACE("PauseMenu: Exiting Game");
+        // If not saved: pop up box
+        m_onExitGame();
+        detach_layer();
     }
 }

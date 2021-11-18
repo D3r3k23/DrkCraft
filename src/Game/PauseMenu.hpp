@@ -33,7 +33,11 @@ namespace DrkCraft
 
     private:
         bool on_key_pressed(const KeyPressedEvent& event) override;
-        bool on_mouse_button_pressed(const MouseButtonPressedEvent& event) override;
+
+        void open_settings(void);
+        void save_game(void);
+        void unpause(void);
+        void exit_game(void);
 
     private:
         Ref<SettingsMenu> m_settingsMenu;

@@ -27,9 +27,11 @@ namespace DrkCraft
         void on_event(Event& event) override;
 
     private:
+        void update_fps(float frameTime);
 
     private:
-
+        float m_fpsCurrent;
+        float m_fpsAvg;
     };
 }
 

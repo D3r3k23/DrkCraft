@@ -50,12 +50,8 @@ namespace DrkCraft
 
         if (m_show)
         {
-            ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration    | ImGuiWindowFlags_NoMove
-                                         | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize;
-
             ImGui::PushFont(ImGuiManager::get_font(Font::Title));
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-            ImGuiTools::BeginFullscreen("MainMenu");
+            ImGuiTools::BeginFullscreen("Main Menu", ImGuiWindowFlags_NoBackground);
 
             ImGui::Dummy({250, 100});
             ImGuiTools::TextCentered("DrkCraft");
@@ -80,7 +76,6 @@ namespace DrkCraft
 
             ImGui::End();
             ImGui::PopFont();
-            ImGui::PopStyleVar();
         }
     }
 
