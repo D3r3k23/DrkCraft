@@ -9,8 +9,9 @@ target_include_directories(glm INTERFACE glm)
 add_library(spdlog INTERFACE)
 target_include_directories(spdlog INTERFACE spdlog/include)
 
-message("Configuring Glad")
 add_subdirectory(glad)
+
+add_subdirectory(stb_image)
 
 message("Configuring GLFW")
 set(GLFW_BUILD_DOCS OFF)
@@ -32,5 +33,6 @@ target_link_libraries(DrkCraft
     glm
     imgui
     spdlog
+    stb_image
     yaml-cpp
 )
