@@ -3,6 +3,9 @@ set(BUILD_SHARED_LIBS OFF)
 add_library(entt INTERFACE)
 target_include_directories(entt INTERFACE entt/single_include)
 
+add_library(FastNoiseLite INTERFACE)
+target_include_directories(FastNoiseLite INTERFACE FastNoiseLite)
+
 add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE glm)
 
@@ -28,6 +31,7 @@ add_subdirectory(yaml-cpp)
 target_link_libraries(DrkCraft
   PUBLIC
     entt
+    FastNoiseLite
     glad
     glfw
     glm

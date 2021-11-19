@@ -6,6 +6,5 @@ target_sources(DrkCraft
     Shader.cpp
     Texture.cpp
     Transform.cpp
-    VertexArray.cpp
     VertexBuffer.cpp
 )

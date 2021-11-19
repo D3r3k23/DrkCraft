@@ -13,6 +13,7 @@ Minecraft clone in C++ created using an OpenGL renderer
 
 ### Libraries
 * [EnTT](https://github.com/skypjack/entt)
+* [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
 * [Glad](https://github.com/Dav1dde/glad)
 * [GLFW](https://github.com/glfw/glfw)
 * [GLM](https://github.com/g-truc/glm)
