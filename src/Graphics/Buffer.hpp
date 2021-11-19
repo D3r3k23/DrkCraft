@@ -14,22 +14,40 @@ namespace DrkCraft
 
     };
 
-    using BufferObjectID = GLuint;
+    using BufferID = GLuint;
 
-    class BufferObject
+    class Buffer
     {
     public:
-        BufferObject(void)
-        {
-            glGenBuffers(1, &m_id);
-        }
+        ~Buffer(void);
 
         virtual void bind(void) = 0;
+        virtual void unbind(void) = 0;
 
     protected:
-        BufferObjectID m_id;
+        BufferID m_id;
 
         std::vector<BufferElement> m_elements;
+    };
+
+    class VertexBuffer : public Buffer
+    {
+    public:
+        VertexBuffer(float* vertices, uint count);
+
+        void bind(void) override;
+        void unbind(void) override;
+    };
+
+    using Index = GLuint;
+
+    class IndexBuffer : public Buffer
+    {
+    public:
+        IndexBuffer(Index* indices, uint count);
+
+        void bind(void) override;
+        void unbind(void) override;
     };
 }
 

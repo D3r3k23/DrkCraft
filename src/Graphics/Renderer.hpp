@@ -27,7 +27,7 @@ namespace DrkCraft
 
         static void draw_triangle(GLuint vao);
 
-        static void draw_cube();
+        static void draw();
 
         static void set_viewport(int x, int y, int width, int height);
 

@@ -53,7 +53,7 @@ namespace DrkCraft
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer::draw_cube()
+    void Renderer::draw()
     {
 
     }

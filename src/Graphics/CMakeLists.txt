@@ -1,10 +1,9 @@
 target_sources(DrkCraft
   PRIVATE
+    Buffer.cpp
     Camera.cpp
-    IndexBuffer.cpp
     Renderer.cpp
     Shader.cpp
     Texture.cpp
     Transform.cpp
-    VertexBuffer.cpp
 )
