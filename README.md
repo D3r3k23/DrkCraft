@@ -1,6 +1,6 @@
 # DrkCraft
 
-<!-- [![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml) -->
+[![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml)
 
 Minecraft clone in C++ created using an OpenGL renderer
 
@@ -9,7 +9,6 @@ Minecraft clone in C++ created using an OpenGL renderer
 ### Dependencies
 * C++ 20
 * CMake
-* Python (building)
 
 ### Libraries
 * [EnTT](https://github.com/skypjack/entt)
