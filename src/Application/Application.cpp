@@ -127,8 +127,6 @@ namespace DrkCraft
                 m_layerStackReverseView = make_ptr<LayerStack::ReverseView>(frameLayerStack);
             }{
                 DRK_PROFILE_SCOPE("Application core loop");
-
-                m_window->swap_buffers();
                 m_window->poll_events();
 
                 if (m_running && !m_minimized)
@@ -136,6 +134,7 @@ namespace DrkCraft
                     update(timestep);
                     render();
                 }
+                m_window->swap_buffers();
             }
             m_layerStackForwardView.reset();
             m_layerStackReverseView.reset();
@@ -200,7 +199,7 @@ namespace DrkCraft
         for (auto& layer : *m_layerStackForwardView)
             layer->on_event(event);
 
-        DRK_LOG_EVENT(event);
+        event.log_event();
     }
 
     bool Application::on_window_closed(const WindowClosedEvent& event)

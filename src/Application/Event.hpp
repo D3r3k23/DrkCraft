@@ -24,13 +24,16 @@ namespace DrkCraft
         Event& operator=(const Event&) = delete;
         Event& operator=(Event&&) = delete;
 
+        // static EventType static_type(void) const = 0;
+
         virtual EventType   get_type(void) const = 0;
         virtual const char* get_name(void) const = 0;
         virtual EventCategoryFlags get_category(void) const = 0;
 
         virtual std::string get_details(void) const;
-
         std::string get_string(void) const;
+
+        void log_event(void) const;
 
         bool handled(void) const;
         void set_handled(void);

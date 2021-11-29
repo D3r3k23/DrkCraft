@@ -9,29 +9,31 @@ target_include_directories(FastNoiseLite INTERFACE FastNoiseLite)
 add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE glm)
 
-add_library(spdlog INTERFACE)
-target_include_directories(spdlog INTERFACE spdlog/include)
-
-add_subdirectory(glad)
-
-add_subdirectory(stb_image)
+message("Configuring {fmt}")
+add_subdirectory(fmt)
 
 message("Configuring GLFW")
 set(GLFW_BUILD_DOCS OFF)
 add_subdirectory(glfw)
 target_compile_definitions(glfw INTERFACE GLFW_INCLUDE_NONE) # Don't need GLFW to include OpenGL header
 
-message("Configuring ImGui")
-add_subdirectory(imgui)
+message("Configuring spdlog")
+set(SPDLOG_FMT_EXTERNAL ON)
+add_subdirectory(spdlog)
 
 message("Configuring yaml-cpp")
 set(YAML_CPP_BUILD_TOOLS OFF)
 add_subdirectory(yaml-cpp)
 
+add_subdirectory(glad)
+add_subdirectory(imgui)
+add_subdirectory(stb_image)
+
 target_link_libraries(DrkCraft
   PUBLIC
     entt
     FastNoiseLite
+    fmt
     glad
     glfw
     glm

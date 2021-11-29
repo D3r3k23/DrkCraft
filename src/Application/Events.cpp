@@ -1,13 +1,46 @@
 #include "Events.hpp"
 #include "EventInfo.hpp"
 
-#include <format>
+#include <fmt/format.h>
 
 namespace DrkCraft
 {
     Event::Event(void)
       : m_handled(false)
     { }
+
+    std::string Event::get_details(void) const
+    {
+        return "";
+    }
+
+    std::string Event::get_string(void) const
+    {
+        if (std::string details = get_details(); details.size() > 0)
+            return fmt::format("{}: {}", get_name(), details);
+        else
+            return get_name();
+    }
+
+    void Event::log_event(void) const
+    {
+        auto msg = fmt::format("[{0}:{1}handled] {2}", get_name(), !m_handled ? "un" : "", get_details());
+
+        switch (get_type())
+        {
+            case EventType::WindowResized:
+            case EventType::FramebufferResized:
+            case EventType::WindowRefreshed:
+            case EventType::WindowMoved:
+            case EventType::MouseMoved:
+            case EventType::CharTyped:
+            case EventType::KeyHeld:
+                DRK_LOG_EVENT_TRACE(msg);
+                break;
+            default:
+                DRK_LOG_EVENT_INFO(msg);
+        }
+    }
 
     bool Event::handled(void) const
     {
@@ -19,64 +52,51 @@ namespace DrkCraft
         m_handled = true;
     }
 
-    std::string Event::get_details(void) const
-    {
-        return "";
-    }
-
-    std::string Event::get_string(void) const
-    {
-        if (std::string details = get_details(); details.size() > 0)
-            return std::format("{}: {}", get_name(), details);
-        else
-            return get_name();
-    }
-
     ////////// Events.hpp //////////
 
     std::string WindowResizedEvent::get_details(void) const
     {
-        return std::format("width={} height={}", width, height);
+        return fmt::format("width={} height={}", width, height);
     }
 
     std::string FramebufferResizedEvent::get_details(void) const
     {
-        return std::format("width={} height={}", width, height);
+        return fmt::format("width={} height={}", width, height);
     }
 
     std::string WindowMovedEvent::get_details(void) const
     {
-        return std::format("xPos={} yPos={}", xPos, yPos);
+        return fmt::format("xPos={} yPos={}", xPos, yPos);
     }
 
     std::string WindowScaledEvent::get_details(void) const
     {
-        return std::format("xScale={} yScale={}", xScale, yScale);
+        return fmt::format("xScale={} yScale={}", xScale, yScale);
     }
 
     std::string KeyEvent::get_details(void) const
     {
-        return std::format("KeyCode={} InputMod={}", from_key_code(key), mods);
+        return fmt::format("KeyCode={} InputMod={}", from_key_code(key), mods);
     }
 
     std::string CharTypedEvent::get_details(void) const
     {
-        return std::format("char={}", ch);
+        return fmt::format("char={}", ch);
     }
 
     std::string MousePosEvent::get_details(void) const
     {
-        return std::format("xPos={} yPos={}",xPos, yPos);
+        return fmt::format("xPos={} yPos={}",xPos, yPos);
     }
 
     std::string MouseButtonEvent::get_details(void) const
     {
-        return std::format("MouseCode={} xPos={} yPos={} InputMod={}", from_mouse_code(button), xPos, yPos, mods);
+        return fmt::format("MouseCode={} xPos={} yPos={} InputMod={}", from_mouse_code(button), xPos, yPos, mods);
     }
 
     std::string ScrollWheelMovedEvent::get_details(void) const
     {
-        return std::format("xOffset={} yOffset={}", xOffset, yOffset);
+        return fmt::format("xOffset={} yOffset={}", xOffset, yOffset);
     }
 
     ////////// EventInfo.hpp //////////

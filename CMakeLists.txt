@@ -69,7 +69,6 @@ message("=======================================")
 
 add_executable(DrkCraft)
 add_subdirectory(src)
-add_subdirectory(lib)
 
 # C++ 20
 set_target_properties(DrkCraft
@@ -78,10 +77,7 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
-# Required because <format> is not included with std:c++20
-if(${PLATFORM} STREQUAL Windows)
-    target_compile_options(DrkCraft PUBLIC -std:c++latest)
-endif()
+add_subdirectory(lib)
 
 # Disable console window for Release builds
 if(${BUILD_CONFIG} STREQUAL Release)

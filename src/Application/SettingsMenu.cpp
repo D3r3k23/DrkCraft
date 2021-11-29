@@ -7,8 +7,7 @@
 
 #include <imgui/imgui.h>
 #include <glm/vec2.hpp>
-
-#include <format>
+#include <fmt/format.h>
 
 namespace DrkCraft
 {
@@ -58,7 +57,7 @@ namespace DrkCraft
             const auto& res = monitor.get_resolution();
             const auto& rRate = monitor.get_refresh_rate();
             const auto& name = monitor.get_name();
-            monitorStrings.push_back(std::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name));
+            monitorStrings.push_back(fmt::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name));
             i++;
         }
         if (ImGui::BeginCombo("Fullscreen Monitor", monitorStrings[m_settings->fullscreen_monitor].c_str()))

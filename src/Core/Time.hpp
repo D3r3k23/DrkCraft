@@ -19,16 +19,13 @@ namespace DrkCraft::Time
     template <typename Rep>
     using Micro = std::chrono::duration<Rep, std::micro>;
 
-    using SysTime   = std::chrono::sys_time<Seconds<int>>;
-    using LocalTime = std::chrono::local_time<Seconds<int>>;
+    using SysTime = std::chrono::sys_time<Seconds<int>>;
 
     using std::chrono::duration_cast;
     using std::chrono::time_point_cast;
 
     Time get_global_time(void);
-
     SysTime get_system_time(void);
-    LocalTime get_local_time(void);
 }
 
 #endif // DRK_TIME_HPP

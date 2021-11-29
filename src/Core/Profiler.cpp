@@ -3,8 +3,8 @@
 #if defined(DRK_EN_PROFILE)
 
     #if defined(DRK_PLATFORM_WINDOWS)
-        #include <processthreadsapi.h>
-        #define DRK_GET_PID() GetCurrentProcessId()
+        #include <process.h>
+        #define DRK_GET_PID() _getpid()
     #elif defined(DRK_PLATFORM_LINUX)
         #include <unistd.h>
         #define DRK_GET_PID() getpid()
@@ -12,7 +12,9 @@
         #error "Unsupported platform"
     #endif
 
-    #include <format>
+    #include <fmt/format.h>
+    #include <fmt/chrono.h>
+
     #include <sstream>
     #include <iomanip>
     #include <thread>
@@ -51,9 +53,9 @@
             DRK_LOG_CORE_INFO("Beginning Profiler session: {}", m_name);
             m_outStream.open(file);
 
-            auto time = Time::get_local_time();
+            auto time = Time::get_system_time();
             double timestamp = get_timestamp(Time::get_global_time());
-            write_header(m_name, DRK_VERSION_STRING, std::format("{:%F %T}", time).c_str(), timestamp);
+            write_header(m_name, DRK_VERSION_STRING, fmt::format("{:%Y-%m-%d %H:%M:%S}", fmt::localtime(time)).c_str(), timestamp);
         }
 
         void Profiler::end(void)

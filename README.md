@@ -14,6 +14,7 @@ Minecraft clone in C++ created using an OpenGL renderer
 ### Libraries
 * [EnTT](https://github.com/skypjack/entt)
 * [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
+* [{fmt}](https://github.com/fmtlib/fmt)
 * [Glad](https://github.com/Dav1dde/glad)
 * [GLFW](https://github.com/glfw/glfw)
 * [GLM](https://github.com/g-truc/glm)
@@ -25,6 +26,5 @@ Minecraft clone in C++ created using an OpenGL renderer
 ### Build Instructions
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `cd DrkCraft`
-3. `scripts\gen_glad.bat`
 4. `scripts\build.bat`
 5. `scripts\run.bat`

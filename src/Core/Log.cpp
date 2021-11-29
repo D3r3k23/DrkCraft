@@ -9,22 +9,25 @@
     #include <spdlog/sinks/basic_file_sink.h>
     #include <spdlog/sinks/dist_sink.h>
 
+    #include <fmt/format.h>
+    #include <fmt/chrono.h>
+
     #include <vector>
     #include <string>
     #include <string_view>
-    #include <format>
 
     namespace DrkCraft
     {
         std::shared_ptr<spdlog::logger> Logger::s_coreLogger;
         std::shared_ptr<spdlog::logger> Logger::s_gameLogger;
+        std::shared_ptr<spdlog::logger> Logger::s_eventLogger;
 
         using std::filesystem::path;
 
         void Logger::init(const path& dir)
         {
-            auto time = Time::get_local_time();
-            auto logName = std::format("DrkCraft_{:%F_%H.%M.%S}.log", time);
+            auto time = Time::get_system_time();
+            auto logName = fmt::format("DrkCraft_{:%Y-%m-%d_%H.%M.%S}.log", fmt::localtime(time));
             auto file = dir / path(logName);
 
             auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
@@ -48,7 +51,11 @@
 
             s_gameLogger = std::make_shared<spdlog::logger>("Game", sink);
             s_gameLogger->flush_on(spdlog::level::err);
-            s_gameLogger->set_level(spdlog::level::trace);
+            s_gameLogger->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
+
+            s_eventLogger = std::make_shared<spdlog::logger>("Event", sink);
+            s_eventLogger->flush_on(spdlog::level::err);
+            s_eventLogger->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
 
             DRK_LOG_CORE_INFO("DrkCraft Logger initialized");
         }
@@ -58,36 +65,22 @@
             DRK_LOG_CORE_INFO("Closing DrkCraft Logger");
             s_coreLogger->flush();
             s_gameLogger->flush();
+            s_eventLogger->flush();
         }
 
-        std::shared_ptr<spdlog::logger>& Logger::get_core_logger(void)
+        spdlog::logger& Logger::get_core_logger(void)
         {
-            return s_coreLogger;
+            return *s_coreLogger;
         }
 
-        std::shared_ptr<spdlog::logger>& Logger::get_game_logger(void)
+        spdlog::logger& Logger::get_game_logger(void)
         {
-            return s_gameLogger;
+            return *s_gameLogger;
         }
 
-        void Logger::log_event(const Event& event)
+        spdlog::logger& Logger::get_event_logger(void)
         {
-            switch (event.get_type())
-            {
-                case EventType::WindowResized:
-                case EventType::FramebufferResized:
-                case EventType::WindowRefreshed:
-                case EventType::WindowMoved:
-                case EventType::MouseMoved:
-                case EventType::CharTyped:
-                case EventType::KeyHeld:
-                    DRK_LOG_CORE_TRACE("[{0}:{1}handled] {2}", event.get_name(),
-                        !event.handled() ? "un" : "", event.get_details());
-                    break;
-                default:
-                    DRK_LOG_CORE_INFO("[{0}:{1}handled] {2}", event.get_name(),
-                        !event.handled() ? "un" : "", event.get_details());
-            }
+            return *s_eventLogger;
         }
     }
 

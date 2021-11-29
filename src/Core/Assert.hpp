@@ -7,8 +7,9 @@
 
 #if defined(DRK_EN_ASSERTS)
 
+    #include <fmt/format.h>
+
     #include <string_view>
-    #include <format>
     #include <source_location>
 
     namespace DrkCraft
@@ -21,7 +22,7 @@
         do {                                                         \
             if (!(cond))                                              \
                 assert_failure(#cond, std::source_location::current(), \
-                    std::format(__VA_ARGS__));                          \
+                    fmt::format(__VA_ARGS__));                          \
         } while (false)
 
     #define DRK_ASSERT_IMPL_NO_MSG(cond)                             \

@@ -13,9 +13,4 @@ namespace DrkCraft::Time
     {
         return time_point_cast<Seconds<int>>(std::chrono::system_clock::now());
     }
-
-    LocalTime get_local_time(void)
-    {
-        return time_point_cast<Seconds<int>>(std::chrono::current_zone()->to_local(get_system_time()));
-    }
 }
