@@ -9,8 +9,6 @@ Minecraft clone in C++ created using an OpenGL renderer
 ### Dependencies
 * C++ 20
 * CMake
-
-### Libraries
 * [EnTT](https://github.com/skypjack/entt)
 * [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
 * [{fmt}](https://github.com/fmtlib/fmt)
