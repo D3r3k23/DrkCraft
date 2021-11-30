@@ -53,8 +53,12 @@ namespace DrkCraft
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer::draw()
+    void Renderer::draw_cube_mesh(const CubeMesh& mesh)
     {
+        DRK_PROFILE_FUNCTION();
+
+        auto vertices = mesh.get_vertices();
+
 
     }
 

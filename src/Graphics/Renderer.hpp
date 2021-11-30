@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Core/BuildSettings.hpp"
+#include "Mesh.hpp"
 
 #include <glm/vec3.hpp>
 
@@ -27,7 +28,7 @@ namespace DrkCraft
 
         static void draw_triangle(GLuint vao);
 
-        static void draw();
+        static void draw_cube_mesh(const CubeMesh& mesh);
 
         static void set_viewport(int x, int y, int width, int height);
 

@@ -8,12 +8,12 @@
 #include "Hud.hpp"
 #include "Console.hpp"
 #include "DebugOverlay.hpp"
-#include "Engine/Scene.hpp"
-#include "World.hpp"
+#include "Engine/World.hpp"
 
 // Temp
 #include "Core/Util.hpp"
 #include "Graphics/Renderer.hpp"
+#include "Graphics/Shader.hpp"
 #include <array>
 
 namespace DrkCraft
@@ -44,7 +44,6 @@ namespace DrkCraft
         void save(void);
 
     private:
-        Scene m_scene;
         World m_world;
 
         Ref<Hud> m_hudLayer;

@@ -1,8 +1,9 @@
 target_sources(DrkCraft
   PRIVATE
     Chunk.cpp
+    ChunkManager.cpp
     ChunkRenderer.cpp
     Entity.cpp
-    Scene.cpp
+    World.cpp
     WorldGenerator.cpp
 )

@@ -32,6 +32,6 @@ endif()
 
 target_compile_definitions(imgui
   PUBLIC
-    IMGUI_USER_CONFIG="imgui_impl/imconfig.h"
     IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+    IMGUI_USER_CONFIG="imgui_impl/imconfig.h"
 )

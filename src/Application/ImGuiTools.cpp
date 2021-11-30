@@ -80,7 +80,7 @@ namespace DrkCraft
         if (m_enabled)
         {
             if (m_showDemoWindow)
-                ImGui::ShowDemoWindow(&m_showDemoWindow);
+                ImGui::ShowDemoWindow(&m_showDemoWindow); // Remove this once UI is set up
 
             ImGui::Render();
             {

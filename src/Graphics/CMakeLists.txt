@@ -2,6 +2,7 @@ target_sources(DrkCraft
   PRIVATE
     Buffer.cpp
     Camera.cpp
+    Mesh.cpp
     Renderer.cpp
     Shader.cpp
     Texture.cpp
