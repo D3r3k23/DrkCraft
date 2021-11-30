@@ -35,6 +35,11 @@ copy config\default_settings.yaml %package_dir%\config\settings.yaml >NUL
 echo Creating data directory
 xcopy /e /t data %package_dir%\data\
 
+echo Creating tools directory
+mkdir %package_dir%\tools
+copy scripts\clean_logs.py %package_dir%\tools\ >NUL
+copy scripts\gen_texture_atlas.py %package_dir%\tools\ >NUL
+
 echo Creating about directory
 mkdir %package_dir%\about
 copy LICENSE.txt %package_dir%\about\ >NUL
