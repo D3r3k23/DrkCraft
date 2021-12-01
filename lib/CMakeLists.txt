@@ -9,6 +9,9 @@ target_include_directories(FastNoiseLite INTERFACE FastNoiseLite)
 add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE glm)
 
+add_library(rapidjson INTERFACE)
+target_include_directories(rapidjson INTERFACE rapidjson/include)
+
 message("Configuring {fmt}")
 add_subdirectory(fmt)
 
@@ -38,6 +41,7 @@ target_link_libraries(DrkCraft
     glfw
     glm
     imgui
+    rapidjson
     spdlog
     stb_image
     yaml-cpp

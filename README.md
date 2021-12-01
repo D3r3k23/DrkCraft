@@ -9,13 +9,14 @@ Minecraft clone in C++ created using an OpenGL renderer
 ### Dependencies
 * C++ 20
 * CMake
+* [Dear ImGui](https://github.com/ocornut/imgui)
 * [EnTT](https://github.com/skypjack/entt)
 * [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
 * [{fmt}](https://github.com/fmtlib/fmt)
 * [Glad](https://github.com/Dav1dde/glad)
 * [GLFW](https://github.com/glfw/glfw)
 * [GLM](https://github.com/g-truc/glm)
-* [Dear ImGui](https://github.com/ocornut/imgui)
+* [RapidJSON](https://github.com/Tencent/rapidjson)
 * [spdlog](https://github.com/gabime/spdlog)
 * [stb_image](https://github.com/nothings/stb)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
