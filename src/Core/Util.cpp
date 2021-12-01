@@ -22,16 +22,16 @@ namespace DrkCraft
 
     static std::locale currentLocale;
 
-    std::string_view capitalize(std::string& str)
+    std::string capitalize(std::string_view str)
     {
+        std::string capitalized(str);
         if (str.size() > 0)
-            str[0] = std::toupper(str[0], currentLocale);
-        return str;
+            capitalized[0] = std::toupper(str[0], currentLocale);
+        return capitalized;
     }
 
     std::string to_lower(std::string_view str)
     {
-        std::locale loc;
         std::string lower;
         std::transform(str.begin(), str.end(), lower.begin(), [](char c)
         {
@@ -42,7 +42,6 @@ namespace DrkCraft
 
     std::string to_upper(std::string_view str)
     {
-        std::locale loc;
         std::string upper;
         std::transform(str.begin(), str.end(), upper.begin(), [](char c)
         {

@@ -69,6 +69,7 @@ message("=======================================")
 
 add_executable(DrkCraft)
 add_subdirectory(src)
+add_subdirectory(lib)
 
 # C++ 20
 set_target_properties(DrkCraft
@@ -76,8 +77,6 @@ set_target_properties(DrkCraft
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
-
-add_subdirectory(lib)
 
 # Disable console window for Release builds
 if(${BUILD_CONFIG} STREQUAL Release)

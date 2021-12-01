@@ -1,6 +1,6 @@
+#include "Core/Base.hpp"
 #include "Core/BuildSettings.hpp"
 #include "Core/RunSettings.hpp"
-#include "Core/Base.hpp"
 #include "Application/Application.hpp"
 #include "Application/MainMenu.hpp"
 #include "Core/Util.hpp"
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 #if defined(DRK_EN_PROFILE)
     DRK_LOG_CORE_INFO("Profiling enabled");
 #endif
-    std::string mode(game_mode_to_string(CommandLineOptions::get_game_mode()));
+    auto mode = game_mode_to_string(CommandLineOptions::get_game_mode());
     DRK_LOG_CORE_INFO("Game mode: {}", capitalize(mode));
 
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
