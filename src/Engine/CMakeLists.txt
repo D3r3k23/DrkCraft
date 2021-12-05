@@ -4,6 +4,7 @@ target_sources(DrkCraft
     ChunkManager.cpp
     ChunkRenderer.cpp
     Entity.cpp
+    Noise.cpp
     World.cpp
     WorldGenerator.cpp
 )
