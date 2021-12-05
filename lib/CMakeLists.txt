@@ -1,10 +1,10 @@
 set(BUILD_SHARED_LIBS OFF)
 
 add_library(entt INTERFACE)
-target_include_directories(entt INTERFACE entt/single_include)
+target_include_directories(entt INTERFACE entt/src)
 
 add_library(FastNoiseLite INTERFACE)
-target_include_directories(FastNoiseLite INTERFACE FastNoiseLite)
+target_include_directories(FastNoiseLite INTERFACE FastNoiseLite/Cpp)
 
 add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE glm)
