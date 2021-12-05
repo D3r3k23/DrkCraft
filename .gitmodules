@@ -22,3 +22,6 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "lib/FastNoiseLite"]
+	path = lib/FastNoiseLite
+	url = https://github.com/Auburn/FastNoiseLite.git
