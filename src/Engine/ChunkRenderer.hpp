@@ -1,5 +1,5 @@
 #ifndef DRK_CHUNK_RENDERER_HPP
-#define DRK_CHUNK_RENDERER_HPP
+#define DRK_CHUNK_RENDERER_HPP // ChunkMesher?
 
 #include "Core/Base.hpp"
 #include "Chunk.hpp"

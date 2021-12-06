@@ -72,16 +72,17 @@
     #define DRK_PROFILER_END()             Profiler::get_instance().end()
     #define DRK_PROFILER_ACTIVE()          Profiler::get_instance().active()
 
+    // At the moment we can't have two ProfileTimers in the same scope
+    // Could add line # to timer name?
+
     #define DRK_PROFILE_FUNCTION() \
         ProfileTimer function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
 
-    // At the moment we can't have two of these in the same scope - could add line # to timer name
     #define DRK_PROFILE_SCOPE(name) \
         ProfileTimer scope_profile_timer{name, "scope"}
 
     #define DRK_PROFILE_OBJECT(name) \
         ProfileTimer object_profile_timer{name, "object"}
-
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)

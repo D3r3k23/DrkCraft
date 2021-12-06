@@ -16,6 +16,11 @@ namespace DrkCraft
         m_dirty(false)
     { }
 
+    SettingsMenu::~SettingsMenu(void)
+    {
+
+    }
+
     void SettingsMenu::set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn)
     {
         m_onClose = fn;

@@ -17,6 +17,11 @@ namespace DrkCraft
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show));
     }
 
+    MainMenu::~MainMenu(void)
+    {
+
+    }
+
     void MainMenu::show(void)
     {
         m_show = true;

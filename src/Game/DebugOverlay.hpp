@@ -17,14 +17,14 @@ namespace DrkCraft
     {
     public:
         DebugOverlay(bool activate=false);
-        ~DebugOverlay(void);
+        virtual ~DebugOverlay(void);
 
-        void on_attach(void) override;
-        void on_detach(void) override;
+        virtual void on_attach(void) override;
+        virtual void on_detach(void) override;
 
-        void on_update(Timestep timestep) override;
-        void on_render(void) override;
-        void on_event(Event& event) override;
+        virtual void on_update(Timestep timestep) override;
+        virtual void on_render(void) override;
+        virtual void on_event(Event& event) override;
 
     private:
         void update_fps(float frameTime);

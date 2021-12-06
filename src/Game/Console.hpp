@@ -12,14 +12,14 @@ namespace DrkCraft
     {
     public:
         Console(bool activate=false);
-        ~Console(void);
+        virtual ~Console(void);
 
-        void on_attach(void) override;
-        void on_detach(void) override;
+        virtual void on_attach(void) override;
+        virtual void on_detach(void) override;
 
-        void on_update(Timestep timestep) override;
-        void on_render(void) override;
-        void on_event(Event& event) override;
+        virtual void on_update(Timestep timestep) override;
+        virtual void on_render(void) override;
+        virtual void on_event(Event& event) override;
 
     private:
 

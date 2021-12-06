@@ -13,16 +13,17 @@ namespace DrkCraft
     {
     public:
         MainMenu(void);
+        virtual ~MainMenu(void);
 
         void show(void);
         void hide(void);
 
-        void on_attach(void) override;
-        void on_detach(void) override;
+        virtual void on_attach(void) override;
+        virtual void on_detach(void) override;
 
-        void on_update(Timestep timestep) override;
-        void on_render(void) override;
-        void on_event(Event& event) override;
+        virtual void on_update(Timestep timestep) override;
+        virtual void on_render(void) override;
+        virtual void on_event(Event& event) override;
 
     private:
         void start_game(void);

@@ -17,18 +17,19 @@ namespace DrkCraft
     {
     public:
         SettingsMenu(bool activate=true);
+        virtual ~SettingsMenu(void);
 
         void set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn);
 
-        void on_attach(void) override;
-        void on_detach(void) override;
+        virtual void on_attach(void) override;
+        virtual void on_detach(void) override;
 
-        void on_update(Timestep timestep) override;
-        void on_render(void) override;
-        void on_event(Event& event) override;
+        virtual void on_update(Timestep timestep) override;
+        virtual void on_render(void) override;
+        virtual void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(const KeyPressedEvent& event) override;
+        virtual bool on_key_pressed(const KeyPressedEvent& event) override;
 
         void apply(void);
         void save(void);

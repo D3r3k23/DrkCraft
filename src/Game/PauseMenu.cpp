@@ -14,6 +14,11 @@ namespace DrkCraft
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(activate_layer));
     }
 
+    PauseMenu::~PauseMenu(void)
+    {
+
+    }
+
     void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
     {
         m_onUnpause = fn;

@@ -22,18 +22,18 @@ namespace DrkCraft
     {
     public:
         Game(void);
-        ~Game(void);
+        virtual ~Game(void);
 
-        void on_attach(void) override;
-        void on_detach(void) override;
+        virtual void on_attach(void) override;
+        virtual void on_detach(void) override;
 
-        void on_update(Timestep timestep) override;
-        void on_render(void) override;
-        void on_event(Event& event) override;
+        virtual void on_update(Timestep timestep) override;
+        virtual void on_render(void) override;
+        virtual void on_event(Event& event) override;
 
     private:
-        bool on_key_pressed(const KeyPressedEvent& event) override;
-        bool on_window_focus_lost(const WindowFocusLostEvent& event) override;
+        virtual bool on_key_pressed(const KeyPressedEvent& event) override;
+        virtual bool on_window_focus_lost(const WindowFocusLostEvent& event) override;
 
         void pause(void);
         void unpause(void);

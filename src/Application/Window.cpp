@@ -97,7 +97,7 @@ namespace DrkCraft
     {
         if (event.get_type() == EventType::MonitorDisconnected)
         {
-            set_monitor(Monitor::get_fullscreen_monitor());;
+            set_monitor(Monitor::get_fullscreen_monitor());
         }
     }
 

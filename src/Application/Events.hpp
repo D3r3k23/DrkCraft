@@ -6,14 +6,14 @@
 #include "Input.hpp"
 #include "Core/Profiler.hpp"
 
-#define DRK_EVENT_TYPE_INFO(type)                                             \
-    static constexpr EventType static_type(void) { return EventType::type; } \
-    EventType   get_type(void) const override { return static_type(); }     \
-    const char* get_name(void) const override { return #type##"Event";  }  \
-    DRK_PROFILE_OBJECT(#type##"Event");
+#define DRK_EVENT_TYPE_INFO(type)                                               \
+    static constexpr EventType static_type(void) { return EventType::type; }    \
+    virtual EventType   get_type(void) const override { return static_type(); } \
+    virtual const char* get_name(void) const override { return #type"Event";  } \
+    DRK_PROFILE_OBJECT(#type"Event");
 
-#define DRK_EVENT_CATEGORY_INFO(cat)                     \
-    EventCategoryFlags get_category(void) const override  \
+#define DRK_EVENT_CATEGORY_INFO(cat)                             \
+    virtual EventCategoryFlags get_category(void) const override  \
         { return static_cast<EventCategoryFlags>(EventCategory::cat); }
 
 namespace DrkCraft
@@ -41,7 +41,7 @@ namespace DrkCraft
             height(height)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         const uint width;
         const uint height;
@@ -56,7 +56,7 @@ namespace DrkCraft
             height(height)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         const uint width;
         const uint height;
@@ -71,7 +71,7 @@ namespace DrkCraft
             yPos(yPos)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         const int xPos;
         const int yPos;
@@ -122,7 +122,7 @@ namespace DrkCraft
             yScale(yScale)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         float xScale;
         float yScale;
@@ -188,7 +188,7 @@ namespace DrkCraft
           : ch(ch)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         const char ch;
     };
@@ -262,7 +262,7 @@ namespace DrkCraft
             yOffset(yOffset)
         { }
 
-        std::string get_details(void) const override;
+        virtual std::string get_details(void) const override;
 
         const float xOffset;
         const float yOffset;
