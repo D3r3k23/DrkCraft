@@ -18,7 +18,7 @@ Minecraft clone in C++ created using an OpenGL renderer
 * [GLM](https://github.com/g-truc/glm)
 * [RapidJSON](https://github.com/Tencent/rapidjson)
 * [spdlog](https://github.com/gabime/spdlog)
-* [stb_image](https://github.com/nothings/stb)
+* [stb](https://github.com/nothings/stb)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
 ### Build Instructions

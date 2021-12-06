@@ -30,7 +30,7 @@ add_subdirectory(yaml-cpp)
 
 add_subdirectory(glad)
 add_subdirectory(imgui)
-add_subdirectory(stb_image)
+add_subdirectory(stb)
 
 target_link_libraries(DrkCraft
   PUBLIC
