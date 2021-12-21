@@ -5,8 +5,6 @@
 #include "Core/BuildSettings.hpp"
 #include "Mesh.hpp"
 
-#include <glm/vec3.hpp>
-
 // Temp?
 #include <glad/glad.h>
 
@@ -14,7 +12,9 @@ namespace DrkCraft
 {
     struct RendererStats
     {
-        uint numQuads = 0;
+        uint drawCalls = 0;
+        uint triangles = 0;
+        uint quads = 0;
     };
 
     class Renderer
@@ -26,16 +26,17 @@ namespace DrkCraft
         static void begin_frame(void);
         static void end_frame(void);
 
+        static void draw_block(uint x, uint y, uint z);
+
         static void draw_triangle(GLuint vao);
 
-        static void draw_cube_mesh(const CubeMesh& mesh);
+        static void draw_cube_mesh(const CubeMesh& mesh); // ??
 
         static void set_viewport(int x, int y, int width, int height);
 
         static const RendererStats& get_stats(void);
 
     private:
-
     };
 
 #if defined(DRK_EN_LOGGING)

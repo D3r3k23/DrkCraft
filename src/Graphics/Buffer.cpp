@@ -6,8 +6,6 @@ namespace DrkCraft
 {
     Buffer::~Buffer(void)
     {
-        DRK_PROFILE_FUNCTION();
-
         glDeleteBuffers(1, &m_id);
     }
 
@@ -22,15 +20,11 @@ namespace DrkCraft
 
     void VertexBuffer::bind(void)
     {
-        DRK_PROFILE_FUNCTION();
-
         glBindBuffer(GL_ARRAY_BUFFER, m_id);
     }
 
     void VertexBuffer::unbind(void)
     {
-        DRK_PROFILE_FUNCTION();
-
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
@@ -45,15 +39,11 @@ namespace DrkCraft
 
     void IndexBuffer::bind(void)
     {
-        DRK_PROFILE_FUNCTION();
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
     }
 
     void IndexBuffer::unbind(void)
     {
-        DRK_PROFILE_FUNCTION();
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }

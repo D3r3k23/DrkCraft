@@ -74,7 +74,10 @@ namespace DrkCraft
 
         flatColorShaderProgram.bind();
         flatColorShaderProgram.upload_uniform_float4("u_color", glm::vec4(color, 1.0f));
-        Renderer::draw_triangle(vertexArrayObject);
+
+        // Renderer::draw_triangle(vertexArrayObject);
+        Renderer::draw_block(0, 0, 0);
+
         flatColorShaderProgram.unbind();
     }
 

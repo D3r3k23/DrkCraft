@@ -4,6 +4,7 @@
 #include "Core/Base.hpp"
 
 #include <glad/glad.h>
+#include <glm/vec3.hpp>
 
 #include <vector>
 

@@ -1,14 +1,20 @@
 #include "Renderer.hpp"
 
+#include "CubeRenderer.hpp"
 #include "Core/Profiler.hpp"
 
 #include <glad/glad.h>
+#include <glm/vec3.hpp>
+
+#include <array>
 
 namespace DrkCraft
 {
     struct RendererData
     {
         RendererStats stats;
+
+        Ptr<CubeRenderer> cubeRenderer;
     };
 
     static RendererData s_rendererData;
@@ -28,6 +34,8 @@ namespace DrkCraft
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
+
+        s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
     }
 
     void Renderer::shutdown(void)
@@ -51,6 +59,11 @@ namespace DrkCraft
 
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
+    void Renderer::draw_block(uint x, uint y, uint z)
+    {
+        s_rendererData.cubeRenderer->draw_cube({});
     }
 
     void Renderer::draw_cube_mesh(const CubeMesh& mesh)

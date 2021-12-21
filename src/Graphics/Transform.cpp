@@ -1,24 +1,30 @@
 #include "Transform.hpp"
 
+#include <glm/ext/matrix_transform.hpp>
+
 namespace DrkCraft
 {
+    Transform::Transform(void)
+      : m_matrix(glm::identity<glm::mat4>())
+    { }
+
     Transform::Transform(const glm::mat4& matrix)
       : m_matrix(matrix)
     { }
 
-    Transform Transform::Translation(double x, double y, double z)
+    Transform Transform::Translation(float x, float y, float z)
     {
-        return Transform(glm::mat4(1.0f));
+        return {glm::translate(glm::identity<glm::mat4>(), glm::vec3(x, y, z))};
     }
 
-    Transform Transform::Scale(double s)
+    Transform Transform::Scale(float s)
     {
-        return Transform(glm::mat4(1.0f));
+        return {glm::mat4(1.0f)};
     }
 
-    Transform Transform::Rotation(double theta)
+    Transform Transform::Rotation(float theta, const glm::vec3& axis)
     {
-        return Transform(glm::mat4(1.0f));
+        return {glm::rotate(glm::identity<glm::mat4>(), theta, axis)};
     }
 
     Transform Transform::Normal(void)
