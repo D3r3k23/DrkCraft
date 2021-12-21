@@ -20,9 +20,13 @@ namespace DrkCraft
         Transform& operator=(Transform&&) = default;
 
         static Transform Translation(float x, float y, float z);
-        static Transform Scale(float s);
         static Transform Rotation(float theta, const glm::vec3& axis);
+        static Transform Scale(float s);
         static Transform Normal(void);
+
+        Transform& translate(float x, float y, float z);
+        Transform& rotate(float theta, const glm::vec3& axis);
+        Transform& scale(float s);
 
         operator glm::mat4(void) const;
 
