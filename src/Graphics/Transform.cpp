@@ -14,22 +14,22 @@ namespace DrkCraft
 
     Transform Transform::Translation(float x, float y, float z)
     {
-        return {glm::translate(glm::identity<glm::mat4>(), glm::vec3(x, y, z))};
+        return { glm::translate(glm::identity<glm::mat4>(), glm::vec3(x, y, z)) };
     }
 
     Transform Transform::Scale(float s)
     {
-        return {glm::mat4(1.0f)};
+        return { glm::mat4(1.0f) };
     }
 
     Transform Transform::Rotation(float theta, const glm::vec3& axis)
     {
-        return {glm::rotate(glm::identity<glm::mat4>(), theta, axis)};
+        return { glm::rotate(glm::identity<glm::mat4>(), theta, axis) };
     }
 
     Transform Transform::Normal(void)
     {
-        return Transform(glm::mat4(1.0f));
+        return {glm::mat4(1.0f)};
     }
 
     Transform::operator glm::mat4(void) const
