@@ -1,5 +1,5 @@
-#ifndef CUBE_RENDERER_HPP
-#define CUBE_RENDERER_HPP
+#ifndef DRK_CUBE_RENDERER_HPP
+#define DRK_CUBE_RENDERER_HPP
 
 #include "Core/Base.hpp"
 #include "Buffer.hpp"
@@ -19,4 +19,4 @@ namespace DrkCraft
     };
 }
 
-#endif // CUBE_RENDERER_HPP
+#endif // DRK_CUBE_RENDERER_HPP

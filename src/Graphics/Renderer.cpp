@@ -75,7 +75,7 @@ namespace DrkCraft
 
     }
 
-    void Renderer::set_viewport(int x, int y, int width, int height)
+    void Renderer::set_viewport(int x, int y, uint width, uint height)
     {
         glViewport(x, y, width, height);
     }

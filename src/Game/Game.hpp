@@ -8,6 +8,7 @@
 #include "Hud.hpp"
 #include "Console.hpp"
 #include "DebugOverlay.hpp"
+#include "Player.hpp"
 #include "Engine/World.hpp"
 
 // Temp
@@ -49,6 +50,8 @@ namespace DrkCraft
         Ref<Hud> m_hudLayer;
         Ref<Console> m_consoleLayer;
         Ref<DebugOverlay> m_debugLayer;
+
+        Player m_player;
 
         bool m_running;
         bool m_paused;

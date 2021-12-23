@@ -9,6 +9,11 @@ namespace DrkCraft
         glDeleteBuffers(1, &m_id);
     }
 
+    BufferID Buffer::get_id(void) const
+    {
+        return m_id;
+    }
+
     VertexBuffer::VertexBuffer(float* vertices, uint count)
     {
         DRK_PROFILE_FUNCTION();

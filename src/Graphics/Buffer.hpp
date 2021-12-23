@@ -25,6 +25,8 @@ namespace DrkCraft
         virtual void bind(void) = 0;
         virtual void unbind(void) = 0;
 
+        BufferID get_id(void) const;
+
     protected:
         BufferID m_id;
 

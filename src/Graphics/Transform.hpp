@@ -19,6 +19,7 @@ namespace DrkCraft
         Transform& operator=(const Transform&) = default;
         Transform& operator=(Transform&&) = default;
 
+        static Transform Identity(void);
         static Transform Translation(float x, float y, float z);
         static Transform Rotation(float theta, const glm::vec3& axis);
         static Transform Scale(float s);

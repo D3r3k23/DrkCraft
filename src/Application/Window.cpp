@@ -4,8 +4,6 @@
 #include "Core/RunSettings.hpp"
 #include "Core/Profiler.hpp"
 
-#include <glad/glad.h>
-
 namespace DrkCraft
 {
     Window::Window(std::string_view title)
@@ -23,13 +21,6 @@ namespace DrkCraft
         set_vsync(settings.vsync);
 
         m_eventGenerator = make_ptr<EventGenerator>(m_window);
-
-        DRK_LOG_CORE_TRACE("Glad: Loading OpenGL using GLFW loader function");
-        {
-            DRK_PROFILE_SCOPE("Load OpenGL");
-            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
-        }
     }
 
     Window::~Window(void)

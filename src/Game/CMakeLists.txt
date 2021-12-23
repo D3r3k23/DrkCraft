@@ -5,4 +5,5 @@ target_sources(DrkCraft
     Game.cpp
     Hud.cpp
     PauseMenu.cpp
+    Player.cpp
 )

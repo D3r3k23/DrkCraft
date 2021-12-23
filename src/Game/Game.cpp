@@ -3,6 +3,7 @@
 #include "Application/Application.hpp"
 #include "PauseMenu.hpp"
 #include "Core/AssetManager.hpp"
+#include "Graphics/Transform.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft
@@ -65,7 +66,7 @@ namespace DrkCraft
 
     void Game::on_update(Timestep timestep)
     {
-
+        m_player.on_update(timestep);
     }
 
     void Game::on_render(void)
@@ -73,7 +74,10 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         flatColorShaderProgram.bind();
-        flatColorShaderProgram.upload_uniform_float4("u_color", glm::vec4(color, 1.0f));
+        flatColorShaderProgram.upload_uniform_mat4("u_viewProjection", m_player.get_view_projection());
+        flatColorShaderProgram.upload_uniform_mat4("u_transform", Transform::Identity());
+
+        flatColorShaderProgram.upload_uniform_vec4("u_color", glm::vec4(color, 1.0f));
 
         // Renderer::draw_triangle(vertexArrayObject);
         Renderer::draw_block(0, 0, 0);

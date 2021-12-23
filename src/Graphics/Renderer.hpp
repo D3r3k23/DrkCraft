@@ -32,7 +32,7 @@ namespace DrkCraft
 
         static void draw_cube_mesh(const CubeMesh& mesh); // ??
 
-        static void set_viewport(int x, int y, int width, int height);
+        static void set_viewport(int x, int y, uint width, uint height);
 
         static const RendererStats& get_stats(void);
 

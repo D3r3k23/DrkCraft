@@ -53,8 +53,17 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Registering event handler");
         m_window->register_event_handler(DRK_BIND_FN(on_event));
 
+        DRK_LOG_CORE_TRACE("Glad: Loading OpenGL using GLFW loader function");
+        {
+            DRK_PROFILE_SCOPE("Load OpenGL");
+            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
+        }
+
         DRK_LOG_CORE_TRACE("Initializing Renderer");
         Renderer::init();
+        const auto& viewportSize = m_window->get_size();
+        Renderer::set_viewport(0, 0, viewportSize.x, viewportSize.y);
 
         DRK_LOG_CORE_TRACE("Creating ImGuiManager");
         m_imGuiManager = new ImGuiManager(m_window->get_raw_window());

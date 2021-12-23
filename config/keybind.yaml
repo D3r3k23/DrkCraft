@@ -1,0 +1,8 @@
+forward: W
+left: A
+back: S
+right: D
+sprint: Shift
+jump: Space
+crouch: Ctrl
+
