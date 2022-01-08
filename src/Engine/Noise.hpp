@@ -1,5 +1,5 @@
-#ifndef NOISE_HPP
-#define NOISE_HPP
+#ifndef DRK_NOISE_HPP
+#define DRK_NOISE_HPP
 
 #include "Core/Base.hpp"
 
@@ -32,4 +32,4 @@ namespace DrkCraft
     };
 }
 
-#endif // NOISE_HPP
+#endif // DRK_NOISE_HPP

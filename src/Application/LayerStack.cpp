@@ -6,6 +6,15 @@
 
 namespace DrkCraft
 {
+    LayerStack::~LayerStack(void)
+    {
+        while (!m_layers.empty())
+        {
+            auto it = m_layers.end() - 1;
+            m_layers.erase(it);
+        }
+    }
+
     LayerStack LayerStack::copy_active(const LayerStack& src)
     {
         LayerStack copy;
@@ -44,10 +53,10 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        std::vector<Ref<Layer>> detachedLayers;
+        std::deque<Ref<Layer>> detachedLayers;
         for (const auto& layer : m_layers)
             if (layer->is_layer_detached() && !layer->is_layer_active())
-                detachedLayers.push_back(layer);
+                detachedLayers.push_front(layer);
 
         for (const auto& layer : detachedLayers)
             pop(layer);

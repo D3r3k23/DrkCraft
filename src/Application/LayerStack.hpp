@@ -14,7 +14,7 @@ namespace DrkCraft
     {
     public:
         LayerStack(void) = default;
-        ~LayerStack(void) = default;
+        ~LayerStack(void);
 
         static LayerStack copy_active(const LayerStack& src);
 

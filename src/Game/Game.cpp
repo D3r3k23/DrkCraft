@@ -51,9 +51,9 @@ namespace DrkCraft
 
     void Game::on_attach(void)
     {
-        Application::get_instance().add_overlay(m_hudLayer);
-        Application::get_instance().add_overlay(m_consoleLayer);
-        Application::get_instance().add_overlay(m_debugLayer);
+        Application::get_instance().add_layer(m_hudLayer);
+        Application::get_instance().add_layer(m_consoleLayer);
+        Application::get_instance().add_layer(m_debugLayer);
     }
 
     void Game::on_detach(void)
@@ -153,7 +153,7 @@ namespace DrkCraft
             detach_layer();
         });
         pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
-        Application::get_instance().add_overlay(pauseMenu);
+        Application::get_instance().add_layer(pauseMenu);
     }
 
     void Game::save(void)

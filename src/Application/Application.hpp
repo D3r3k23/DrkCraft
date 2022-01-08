@@ -26,16 +26,16 @@ namespace DrkCraft
 
         Window& get_window(void);
 
-        void add_overlay(const Ref<Layer>& layer); // Pushes layer to front
-        void add_layer(const Ref<Layer>& layer);   // Pushes layer to back
+        void add_layer(const Ref<Layer>& layer);
 
         void run(void);
         void exit(int status=0);
 
         void update(Timestep timestep);
         void render(void);
-        void on_event(Event& event);
+        void handle_event(Event& event);
 
+        bool on_key_pressed(const KeyPressedEvent& event);
         bool on_window_closed(const WindowClosedEvent& event);
         bool on_framebuffer_resized(const FramebufferResizedEvent& event);
 

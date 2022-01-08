@@ -9,6 +9,28 @@ namespace DrkCraft
       : m_window(window)
     { }
 
+    EventGenerator::~EventGenerator(void)
+    {
+        glfwSetWindowUserPointer(m_window, nullptr);
+
+        glfwSetWindowCloseCallback(m_window, nullptr);
+        glfwSetWindowSizeCallback(m_window, nullptr);
+        glfwSetFramebufferSizeCallback(m_window, nullptr);
+        glfwSetWindowPosCallback(m_window, nullptr);
+        glfwSetWindowFocusCallback(m_window, nullptr);
+        glfwSetWindowMaximizeCallback(m_window, nullptr);
+        glfwSetWindowIconifyCallback(m_window, nullptr);
+        glfwSetWindowContentScaleCallback(m_window, nullptr);
+        glfwSetWindowRefreshCallback(m_window, nullptr);
+
+        glfwSetKeyCallback(m_window, nullptr);
+        glfwSetCharCallback(m_window, nullptr);
+
+        glfwSetCursorPosCallback(m_window, nullptr);
+        glfwSetMouseButtonCallback(m_window, nullptr);
+        glfwSetScrollCallback(m_window, nullptr);
+    }
+
     void EventGenerator::register_window_event_handler(const AbstractEventHandlerFn& handler)
     {
         m_handler = handler;
@@ -21,180 +43,178 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Registering event callbacks with GLFW");
 
-        using namespace WindowEventCallbackFunctions;
+        glfwSetWindowCloseCallback(m_window,        Callbacks::window_close_callback);
+        glfwSetWindowSizeCallback(m_window,         Callbacks::window_size_callback);
+        glfwSetFramebufferSizeCallback(m_window,    Callbacks::framebuffer_size_callback);
+        glfwSetWindowPosCallback(m_window,          Callbacks::window_pos_callback);
+        glfwSetWindowFocusCallback(m_window,        Callbacks::window_focus_callback);
+        glfwSetWindowMaximizeCallback(m_window,     Callbacks::window_maximize_callback);
+        glfwSetWindowIconifyCallback(m_window,      Callbacks::window_iconify_callback);
+        glfwSetWindowContentScaleCallback(m_window, Callbacks::window_content_scale_callback);
+        glfwSetWindowRefreshCallback(m_window,      Callbacks::window_refresh_callback);
 
-        glfwSetWindowCloseCallback(m_window, window_close_callback);
-        glfwSetWindowSizeCallback(m_window, window_size_callback);
-        glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
-        glfwSetWindowPosCallback(m_window, window_pos_callback);
-        glfwSetWindowFocusCallback(m_window, window_focus_callback);
-        glfwSetWindowMaximizeCallback(m_window, window_maximize_callback);
-        glfwSetWindowIconifyCallback(m_window, window_iconify_callback);
-        glfwSetWindowContentScaleCallback(m_window, window_content_scale_callback);
-        glfwSetWindowRefreshCallback(m_window, window_refresh_callback);
+        glfwSetKeyCallback(m_window,  Callbacks::key_callback);
+        glfwSetCharCallback(m_window, Callbacks::char_callback);
 
-        glfwSetKeyCallback(m_window, key_callback);
-        glfwSetCharCallback(m_window, char_callback);
-
-        glfwSetCursorPosCallback(m_window, cursor_pos_callback);
-        glfwSetMouseButtonCallback(m_window, mouse_button_callback);
-        glfwSetScrollCallback(m_window, scroll_callback);
+        glfwSetCursorPosCallback(m_window,   Callbacks::cursor_pos_callback);
+        glfwSetMouseButtonCallback(m_window, Callbacks::mouse_button_callback);
+        glfwSetScrollCallback(m_window,      Callbacks::scroll_callback);
     }
 
-    // Calls m_eventHandler through GLFW user pointer
-    #define DRK_CALL_EVENT_HANDLER_FN(event) \
-        (*static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window)))(event)
-
-    namespace WindowEventCallbackFunctions
+    void EventGenerator::handle_event(GLFWwindow* window, Event& event)
     {
-        ////////// Window Events //////////
+        auto handler = *static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window));
+        handler(event);
+        event.log_event();
+    }
 
-        void window_close_callback(GLFWwindow* window)
+    ////////// Window Events //////////
+
+    void EventGenerator::Callbacks::window_close_callback(GLFWwindow* window)
+    {
+        WindowClosedEvent event;
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::window_size_callback(GLFWwindow* window, int width, int height)
+    {
+        WindowResizedEvent event((uint)width, (uint)height);
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    {
+        FramebufferResizedEvent event((uint)width, (uint)height);
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::window_pos_callback(GLFWwindow* window, int xPos, int yPos)
+    {
+        WindowMovedEvent event(xPos, yPos);
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::window_focus_callback(GLFWwindow* window, int focused)
+    {
+        if (focused == GLFW_TRUE)
         {
-            WindowClosedEvent event;
-            DRK_CALL_EVENT_HANDLER_FN(event);
+            WindowFocusGainedEvent event;
+            handle_event(window, event);
         }
-
-        void window_size_callback(GLFWwindow* window, int width, int height)
+        else
         {
-            WindowResizedEvent event((uint)width, (uint)height);
-            DRK_CALL_EVENT_HANDLER_FN(event);
+            WindowFocusLostEvent event;
+            handle_event(window, event);
         }
+    }
 
-        void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    void EventGenerator::Callbacks::window_maximize_callback(GLFWwindow* window, int maximized)
+    {
+        if (maximized == GLFW_TRUE)
         {
-            FramebufferResizedEvent event((uint)width, (uint)height);
-            DRK_CALL_EVENT_HANDLER_FN(event);
+            WindowMaximizedEvent event;
+            handle_event(window, event);
         }
-
-        void window_pos_callback(GLFWwindow* window, int xPos, int yPos)
+        else
         {
-            WindowMovedEvent event(xPos, yPos);
-            DRK_CALL_EVENT_HANDLER_FN(event);
+            WindowRestoredEvent event;
+            handle_event(window, event);
         }
+    }
 
-        void window_focus_callback(GLFWwindow* window, int focused)
+    void EventGenerator::Callbacks::window_iconify_callback(GLFWwindow* window, int iconified)
+    {
+        if (iconified == GLFW_TRUE)
         {
-            if (focused == GLFW_TRUE)
+            WindowMinimizedEvent event;
+            handle_event(window, event);
+        }
+        else
+        {
+            WindowRestoredEvent event;
+            handle_event(window, event);
+        }
+    }
+
+    void EventGenerator::Callbacks::window_content_scale_callback(GLFWwindow* window, float xScale, float yScale)
+    {
+        WindowScaledEvent event(xScale, yScale);
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::window_refresh_callback(GLFWwindow* window)
+    {
+        WindowRefreshedEvent event;
+        handle_event(window, event);
+    }
+
+    ////////// Keyboard Events //////////
+
+    void EventGenerator::Callbacks::key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods)
+    {
+        switch (action)
+        {
+            case GLFW_PRESS:
             {
-                WindowFocusGainedEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
+                KeyPressedEvent event(to_key_code(key), get_input_mod_flags(mods));
+                handle_event(window, event);
+                break;
             }
-            else
+            case GLFW_REPEAT:
             {
-                WindowFocusLostEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
+                KeyHeldEvent event(to_key_code(key), get_input_mod_flags(mods));
+                handle_event(window, event);
+                break;
             }
-        }
-
-        void window_maximize_callback(GLFWwindow* window, int maximized)
-        {
-            if (maximized == GLFW_TRUE)
+            case GLFW_RELEASE:
             {
-                WindowMaximizedEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
+                KeyReleasedEvent event(to_key_code(key), get_input_mod_flags(mods));
+                handle_event(window, event);
+                break;
             }
-            else
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown key action in callback");
+        }
+    }
+
+    void EventGenerator::Callbacks::char_callback(GLFWwindow* window, uint codePoint)
+    {
+        CharTypedEvent event(static_cast<char>(codePoint));
+        handle_event(window, event);
+    }
+
+    ////////// Mouse Events //////////
+
+    void EventGenerator::Callbacks::cursor_pos_callback(GLFWwindow* window, double xPos, double yPos)
+    {
+        MouseMovedEvent event((float)xPos, (float)yPos);
+        handle_event(window, event);
+    }
+
+    void EventGenerator::Callbacks::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+    {
+        switch (action)
+        {
+            case GLFW_PRESS:
             {
-                WindowRestoredEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
+                MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
+                handle_event(window, event);
+                break;
             }
-        }
-
-        void window_iconify_callback(GLFWwindow* window, int iconified)
-        {
-            if (iconified == GLFW_TRUE)
+            case GLFW_RELEASE:
             {
-                WindowMinimizedEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
+                MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
+                handle_event(window, event);
+                break;
             }
-            else
-            {
-                WindowRestoredEvent event;
-                DRK_CALL_EVENT_HANDLER_FN(event);
-            }
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown mouse button action in callback");
         }
+    }
 
-        void window_content_scale_callback(GLFWwindow* window, float xScale, float yScale)
-        {
-            WindowScaledEvent event(xScale, yScale);
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
-
-        void window_refresh_callback(GLFWwindow* window)
-        {
-            WindowRefreshedEvent event;
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
-
-        ////////// Keyboard Events //////////
-
-        void key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods)
-        {
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    KeyPressedEvent event(to_key_code(key), get_input_mod_flags(mods));
-                    DRK_CALL_EVENT_HANDLER_FN(event);
-                    break;
-                }
-                case GLFW_REPEAT:
-                {
-                    KeyHeldEvent event(to_key_code(key), get_input_mod_flags(mods));
-                    DRK_CALL_EVENT_HANDLER_FN(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    KeyReleasedEvent event(to_key_code(key), get_input_mod_flags(mods));
-                    DRK_CALL_EVENT_HANDLER_FN(event);
-                    break;
-                }
-                default:
-                    DRK_ASSERT_DEBUG(false, "Unknown key action in callback");
-            }
-        }
-
-        void char_callback(GLFWwindow* window, uint codePoint)
-        {
-            CharTypedEvent event(static_cast<char>(codePoint));
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
-
-        ////////// Mouse Events //////////
-
-        void cursor_pos_callback(GLFWwindow* window, double xPos, double yPos)
-        {
-            MouseMovedEvent event((float)xPos, (float)yPos);
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
-
-        void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-        {
-            switch (action)
-            {
-                case GLFW_PRESS:
-                {
-                    MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
-                    DRK_CALL_EVENT_HANDLER_FN(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
-                    DRK_CALL_EVENT_HANDLER_FN(event);
-                    break;
-                }
-                default:
-                    DRK_ASSERT_DEBUG(false, "Unknown mouse button action in callback");
-            }
-        }
-
-        void scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
-        {
-            ScrollWheelMovedEvent event((float)xOffset, (float)yOffset);
-            DRK_CALL_EVENT_HANDLER_FN(event);
-        }
+    void EventGenerator::Callbacks::scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
+    {
+        ScrollWheelMovedEvent event((float)xOffset, (float)yOffset);
+        handle_event(window, event);
     }
 }

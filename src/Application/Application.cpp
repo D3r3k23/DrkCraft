@@ -51,7 +51,7 @@ namespace DrkCraft
         m_window = new Window("DrkCraft");
 
         DRK_LOG_CORE_TRACE("Registering event handler");
-        m_window->register_event_handler(DRK_BIND_FN(on_event));
+        m_window->register_event_handler(DRK_BIND_FN(handle_event));
 
         DRK_LOG_CORE_TRACE("Initializing Renderer");
         Renderer::init();
@@ -99,16 +99,10 @@ namespace DrkCraft
         return *m_window;
     }
 
-    void Application::add_overlay(const Ref<Layer>& layer)
-    {
-        layer->attach_layer();
-        m_layerStack.push_front(layer);
-    }
-
     void Application::add_layer(const Ref<Layer>& layer)
     {
         layer->attach_layer();
-        m_layerStack.push_back(layer);
+        m_layerStack.push_front(layer);
     }
 
     void Application::run(void)
@@ -184,11 +178,12 @@ namespace DrkCraft
         Renderer::end_frame();
     }
 
-    void Application::on_event(Event& event)
+    void Application::handle_event(Event& event)
     {
         DRK_PROFILE_FUNCTION();
 
         EventDispatcher ed(event);
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_closed));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resized));
 
@@ -198,8 +193,22 @@ namespace DrkCraft
 
         for (auto& layer : *m_layerStackForwardView)
             layer->on_event(event);
+    }
 
-        event.log_event();
+    bool Application::on_key_pressed(const KeyPressedEvent& event)
+    {
+        switch (event.key)
+        {
+            case KeyCode::F12:
+            {
+            #if defined(DRK_CONFIG_DEBUG)
+                m_imGuiManager->toggle_demo_window();
+            #endif
+                return true;
+            }
+            default:
+                return false;
+        }
     }
 
     bool Application::on_window_closed(const WindowClosedEvent& event)

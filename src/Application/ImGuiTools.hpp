@@ -33,10 +33,16 @@ namespace DrkCraft
 
         void block_events(bool block);
 
+        void enable_demo_window(void);
+        void disable_demo_window(void);
+        void toggle_demo_window(void);
+        bool demo_window_enabled(void) const;
+
         static ImFont* get_font(Font font);
 
     private:
         void setup_style(void);
+        bool should_capture_event(const Event& event) const;
 
         bool on_key_pressed(const KeyPressedEvent& event);
 

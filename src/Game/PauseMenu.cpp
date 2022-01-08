@@ -36,7 +36,7 @@ namespace DrkCraft
 
     void PauseMenu::on_attach(void)
     {
-        Application::get_instance().add_overlay(m_settingsMenu);
+        Application::get_instance().add_layer(m_settingsMenu);
     }
 
     void PauseMenu::on_detach(void)

@@ -51,7 +51,7 @@ namespace DrkCraft
     using AbstractEventHandlerFn = std::function<void(Event&)>;
 
     template <ConcreteEventConcept E>
-    using ConcreteEventHandlerFn = std::function<bool(const E&)>;
+    using ConcreteEventHandlerFn = std::function<bool(const E&)>; // Returns true if event was handled
 
     class EventDispatcher
     {
@@ -61,11 +61,10 @@ namespace DrkCraft
         { }
 
         // Calls event handler function for events of type E
-        // Handlers return true if event handled
         template <ConcreteEventConcept E>
         void dispatch(const ConcreteEventHandlerFn<E>& handler)
         {
-            if (!event.handled() && event.get_type() == E::static_type())
+            if (E::static_type() == event.get_type() && !event.handled())
             {
                 bool handled = handler(static_cast<E&>(event));
                 if (handled)

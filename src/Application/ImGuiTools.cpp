@@ -1,5 +1,6 @@
 #include "ImGuiTools.hpp"
 
+#include "Core/BuildSettings.hpp"
 #include "Core/AssetManager.hpp"
 #include "Core/Profiler.hpp"
 
@@ -79,9 +80,10 @@ namespace DrkCraft
 
         if (m_enabled)
         {
+        #if defined(DRK_CONFIG_DEBUG)
             if (m_showDemoWindow)
-                ImGui::ShowDemoWindow(&m_showDemoWindow); // Remove this once UI is set up
-
+                ImGui::ShowDemoWindow(&m_showDemoWindow);
+        #endif
             ImGui::Render();
             {
                 DRK_PROFILE_SCOPE("imgui_impl render");
@@ -94,14 +96,10 @@ namespace DrkCraft
     {
         if (m_enabled)
         {
-            EventDispatcher ed(event);
-            ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
-
             if (m_blockEvents)
             {
-                ImGuiIO& io = ImGui::GetIO();
-                if (event == EventCategory::Mouse    && io.WantCaptureMouse)    event.set_handled();
-                if (event == EventCategory::Keyboard && io.WantCaptureKeyboard) event.set_handled();
+                if (should_capture_event(event))
+                    event.set_handled();
             }
         }
     }
@@ -121,29 +119,42 @@ namespace DrkCraft
         m_blockEvents = block;
     }
 
+    void ImGuiManager::enable_demo_window(void)
+    {
+        m_showDemoWindow = true;
+    }
+
+    void ImGuiManager::disable_demo_window(void)
+    {
+        m_showDemoWindow = false;
+    }
+
+    void ImGuiManager::toggle_demo_window(void)
+    {
+        m_showDemoWindow = !m_showDemoWindow;
+    }
+
+    bool ImGuiManager::demo_window_enabled(void) const
+    {
+        return m_showDemoWindow;
+    }
+
     void ImGuiManager::setup_style(void)
     {
         ImGui::StyleColorsDark();
+    }
+
+    bool ImGuiManager::should_capture_event(const Event& event) const
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        return (event == EventCategory::Mouse    && io.WantCaptureMouse)
+            || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
     }
 
     ImFont* ImGuiManager::get_font(Font font)
     {
         DRK_ASSERT_DEBUG(s_fonts.contains(font), "Unknown font");
         return s_fonts[font];
-    }
-
-    bool ImGuiManager::on_key_pressed(const KeyPressedEvent& event)
-    {
-        switch (event.key)
-        {
-            case KeyCode::F12:
-            {
-                m_showDemoWindow = !m_showDemoWindow;
-                return true;
-            }
-            default:
-                return false;
-        }
     }
 
     namespace ImGuiTools

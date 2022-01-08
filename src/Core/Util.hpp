@@ -3,10 +3,14 @@
 
 #include "Base.hpp"
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+
 #include <string>
 #include <string_view>
 #include <filesystem>
 #include <random>
+#include <tuple>
 
 namespace DrkCraft
 {
@@ -44,6 +48,33 @@ namespace DrkCraft
         RandomEngine rng;
         std::uniform_real_distribution<float> dist;
     };
+
+    template <typename V>
+    concept Vector2Concept = requires(V vec)
+    {
+        { vec.x };
+        { vec.y };
+    };
+
+    template <typename V>
+    concept Vector3Concept = requires(V vec)
+    {
+        { vec.x };
+        { vec.y };
+        { vec.z };
+    };
+
+    template <Vector2Concept V>
+    std::tuple<decltype(V::x), decltype(V::y)> glm_bind(const V& vec)
+    {
+        return { vec.x, vec.y };
+    }
+
+    template <Vector3Concept V>
+    std::tuple<decltype(V::x), decltype(V::y), decltype(V::z)> glm_bind(constV& vec)
+    {
+        return { vec.x, vec.y, vec.z };
+    }
 }
 
 #endif // DRK_UTIL_HPP
