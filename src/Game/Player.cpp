@@ -10,9 +10,11 @@ namespace DrkCraft
 {
     Player::Player(void)
       : m_camera(45.0f, 16.9f, 0.01f, 1000.0f), //
-        m_speed(1.0f),
-        m_viewpointOffset(0.0f), // 2.0f?
-        m_flying(true) // false
+        m_position(0.0f, 0.0f, -2.0f),
+        m_direction(0.0f, 0.0f, 1.0f),
+        m_viewpointOffset(0.0f, 0.0f, 0.0f), // 2.0f?
+        m_flying(true), // false
+        m_speed(1.0f)
     { }
 
     void Player::on_update(Timestep timestep)
@@ -33,7 +35,7 @@ namespace DrkCraft
             {
                 m_position.y += m_speed * ts;
             }
-            else
+            else // Jumping should be handled by events
             {
 
             }

@@ -1,14 +1,14 @@
-/.vscode/**
-/.VSCodeCounter/**
-/.venv/**
+/.vscode/*
+/.VSCodeCounter/*
+/.venv/*
 
-/build/**
+/build/*
 
-/config/settings.yaml
+/config/*.yaml
 
-/data/logs/**
+/data/logs/*.log
 /data/profile/*.json
-/data/saves/**
+/data/saves/*
 /data/imgui.ini
 
-/packages/**
+/packages/*

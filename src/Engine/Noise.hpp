@@ -3,15 +3,29 @@
 
 #include "Core/Base.hpp"
 
-#include <FastNoiseLite.h>
 #include <glm/vec2.hpp>
 
 namespace DrkCraft
 {
+    struct NoiseSpec
+    {
+        enum class Type
+        {
+            OpenSimplex2,
+            OpenSimplex2S,
+            Cellular,
+            Perlin,
+            ValueCubic,
+            Value
+        };
+
+        NoiseSpec::Type type;
+    };
+
     class Noise
     {
     public:
-        Noise(FastNoiseLite& generator, glm::uvec2 size);
+        Noise(const NoiseSpec& spec, glm::uvec2 size, int seed);
         ~Noise(void);
 
         Noise(Noise&& other);

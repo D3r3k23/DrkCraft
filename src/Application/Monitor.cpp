@@ -2,7 +2,7 @@
 
 #include "Core/RunSettings.hpp"
 
-#include <algorithm>
+#include <ranges>
 
 namespace DrkCraft
 {
@@ -130,7 +130,7 @@ namespace DrkCraft
         //         vidModesPtr[i].refreshRate);
 
         std::vector<GLFWvidmode> vidModes(vidModesPtr, vidModesPtr + count);
-        std::sort(vidModes.begin(), vidModes.end(), [](GLFWvidmode& v1, GLFWvidmode& v2)
+        std::ranges::sort(vidModes, [](GLFWvidmode& v1, GLFWvidmode& v2)
         {
             return v1.width * v1.height > v2.width * v2.height;
         });
@@ -144,7 +144,7 @@ namespace DrkCraft
                 vidModes[i].blueBits,
                 vidModes[i].refreshRate);
 
-        return vidModesPtr[count - 1];
+        return *vidModes.begin();
     }
 
     FullscreenMonitor::FullscreenMonitor(const Monitor& monitor, const glm::uvec2 currentSize, const glm::ivec2& currentPos)
