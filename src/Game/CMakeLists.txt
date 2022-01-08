@@ -3,6 +3,8 @@ target_sources(DrkCraft
     Console.cpp
     DebugOverlay.cpp
     Game.cpp
+    GameEvent.cpp
     Hud.cpp
     PauseMenu.cpp
+    Player.cpp
 )

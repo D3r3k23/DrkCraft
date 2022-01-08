@@ -2,7 +2,7 @@
 
 #include "Core/Profiler.hpp"
 
-#include <algorithm>
+#include <ranges>
 
 namespace DrkCraft
 {
@@ -18,7 +18,7 @@ namespace DrkCraft
     LayerStack LayerStack::copy_active(const LayerStack& src)
     {
         LayerStack copy;
-        std::copy_if(src.m_layers.begin(), src.m_layers.end(), std::back_inserter(copy.m_layers), [](const auto& layer)
+        std::ranges::copy_if(src.m_layers, std::back_inserter(copy.m_layers), [](const auto& layer)
         {
             return layer->is_layer_active();
         });
@@ -39,7 +39,7 @@ namespace DrkCraft
 
     bool LayerStack::pop(const Ref<Layer>& layer)
     {
-        if (auto it = std::find(m_layers.begin(), m_layers.end(), layer); it != m_layers.end())
+        if (auto it = std::ranges::find(m_layers, layer); it != m_layers.end())
         {
             DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());
             m_layers.erase(it);
@@ -82,7 +82,7 @@ namespace DrkCraft
 
     bool LayerStack::all_layers_inactive(void) const
     {
-        return std::all_of(m_layers.begin(), m_layers.end(), [](const auto& layer)
+        return std::ranges::all_of(m_layers, [](const auto& layer)
         {
             return !layer->is_layer_active();
         });

@@ -1,11 +1,33 @@
 #include "Noise.hpp"
 
+#include <FastNoiseLite.h>
+
+#include <unordered_map>
+
 namespace DrkCraft
 {
-    Noise::Noise(FastNoiseLite& generator, glm::uvec2 size)
+    static void apply_fast_noise_lite_spec(FastNoiseLite& generator, const NoiseSpec& spec)
+    {
+        static std::unordered_map<NoiseSpec::Type, FastNoiseLite::NoiseType> noiseTypeMap
+        ({
+            { NoiseSpec::Type::OpenSimplex2,  FastNoiseLite::NoiseType_OpenSimplex2 },
+            { NoiseSpec::Type::OpenSimplex2S, FastNoiseLite::NoiseType_OpenSimplex2S },
+            { NoiseSpec::Type::Cellular,      FastNoiseLite::NoiseType_Cellular },
+            { NoiseSpec::Type::Perlin,        FastNoiseLite::NoiseType_Perlin },
+            { NoiseSpec::Type::ValueCubic,    FastNoiseLite::NoiseType_ValueCubic },
+            { NoiseSpec::Type::Value,         FastNoiseLite::NoiseType_Value }
+        });
+        DRK_ASSERT_DEBUG(noiseTypeMap.contains(spec.type), "Unkown noise type");
+        generator.SetNoiseType(noiseTypeMap[spec.type]);
+    }
+
+    Noise::Noise(const NoiseSpec& spec, glm::uvec2 size, int seed)
       : m_size(size)
     {
         m_data = new float[size.x * size.y];
+
+        FastNoiseLite generator(seed);
+        apply_fast_noise_lite_spec(generator, spec);
 
         for (uint x = 0; x < size.x; x++)
             for (uint y = 0; y < size.y; y++)

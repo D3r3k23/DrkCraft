@@ -63,7 +63,7 @@ namespace DrkCraft
 
     void Renderer::draw_block(uint x, uint y, uint z)
     {
-        s_rendererData.cubeRenderer->draw_cube({});
+        s_rendererData.cubeRenderer->draw_cube(Transform::Identity());
     }
 
     void Renderer::draw_cube_mesh(const CubeMesh& mesh)
@@ -75,7 +75,7 @@ namespace DrkCraft
 
     }
 
-    void Renderer::set_viewport(int x, int y, int width, int height)
+    void Renderer::set_viewport(int x, int y, uint width, uint height)
     {
         glViewport(x, y, width, height);
     }

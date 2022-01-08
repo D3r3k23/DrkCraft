@@ -4,9 +4,9 @@
 
 uniform vec4 u_color;
 
-out vec4 fragColor;
+layout(location = 0) out vec4 f_color;
 
 void main()
 {
-    fragColor = u_color;
+    f_color = u_color;
 }

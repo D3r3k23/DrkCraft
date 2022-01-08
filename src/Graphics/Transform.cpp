@@ -5,31 +5,36 @@
 namespace DrkCraft
 {
     Transform::Transform(void)
-      : m_matrix(glm::identity<glm::mat4>())
+      : m_matrix(Identity())
     { }
 
     Transform::Transform(const glm::mat4& matrix)
       : m_matrix(matrix)
     { }
 
+    Transform Transform::Identity(void)
+    {
+        return { glm::identity<glm::mat4>() };
+    }
+
     Transform Transform::Translation(float x, float y, float z)
     {
-        return Transform{}.translate(x, y, z);
+        return Identity().translate(x, y, z);
     }
 
     Transform Transform::Rotation(float theta, const glm::vec3& axis)
     {
-        return Transform{}.rotate(theta, axis);
+        return Identity().rotate(theta, axis);
     }
 
     Transform Transform::Scale(float s)
     {
-        return { glm::mat4(1.0f) };
+        return Identity();
     }
 
     Transform Transform::Normal(void)
     {
-        return { glm::mat4(1.0f) };
+        return Identity();
     }
 
     Transform& Transform::translate(float x, float y, float z)

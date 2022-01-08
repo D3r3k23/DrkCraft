@@ -34,6 +34,8 @@ namespace DrkCraft
         NumLock  = 0b100000,
     };
 
+    bool is_mod_pressed(KeyMod mod);
+
     // Should probably simplify this
 
     InputModFlags get_input_mod_flags(int mods);

@@ -49,6 +49,22 @@ namespace DrkCraft
 
     ////////// Input Mods //////////
 
+    bool is_mod_pressed(KeyMod mod)
+    {
+        switch (mod)
+        {
+            case KeyMod::Shift    : return is_key_pressed(KeyCode::LeftShift) || is_key_pressed(KeyCode::RightShift);
+            case KeyMod::Ctrl     : return is_key_pressed(KeyCode::LeftCtrl)  || is_key_pressed(KeyCode::RightCtrl);
+            case KeyMod::Alt      : return is_key_pressed(KeyCode::LeftAlt)   || is_key_pressed(KeyCode::RightAlt);
+            case KeyMod::Super    : return is_key_pressed(KeyCode::LeftSuper) || is_key_pressed(KeyCode::RightSuper);
+            case KeyMod::CapsLock : return is_key_pressed(KeyCode::CapsLock); // Or get a key and check its mods
+            case KeyMod::NumLock  : return is_key_pressed(KeyCode::NumLock);
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown KeyMod");
+                return false;
+        }
+    }
+
     InputModFlags get_input_mod_flags(int mods)
     {
         InputModFlags flags = 0;
