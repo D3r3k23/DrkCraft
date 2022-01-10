@@ -67,6 +67,7 @@ namespace DrkCraft
 
     private:
         // Window Event handlers
+        virtual bool on_window_event(const WindowEvent& event) { return false; }
         virtual bool on_window_closed(const WindowClosedEvent& event) { return false; }
         virtual bool on_window_resized(const WindowResizedEvent& event) { return false; }
         virtual bool on_framebuffer_resized(const FramebufferResizedEvent& event) { return false; }
@@ -79,19 +80,28 @@ namespace DrkCraft
         virtual bool on_window_scaled(const WindowScaledEvent& event) { return false; }
         virtual bool on_window_refreshed(const WindowRefreshedEvent& event) { return false; }
 
+        // Input Event handlers
+        virtual bool on_input_event(const InputEvent& event) { return false; }
+
         // Keyboard Event handlers
+        virtual bool on_keyboard_event(const KeyboardEvent& event) { return false; }
+        virtual bool on_key_event(const KeyEvent& event) { return false; }
         virtual bool on_key_pressed(const KeyPressedEvent& event) { return false; }
         virtual bool on_key_held(const KeyHeldEvent& event) { return false; }
         virtual bool on_key_released(const KeyReleasedEvent& event) { return false; }
         virtual bool on_char_typed(const CharTypedEvent& event) { return false; }
 
         // Mouse Event handlers
+        virtual bool on_mouse_event(const MouseEvent& event) { return false; }
+        virtual bool on_mouse_pos_event(const MousePosEvent& event) { return false; }
+        virtual bool on_mouse_button_event(const MouseButtonEvent& event) { return false; }
         virtual bool on_mouse_button_pressed(const MouseButtonPressedEvent& event) { return false; }
-        virtual bool on_mouse_focus_released(const MouseButtonReleasedEvent& event) { return false; }
+        virtual bool on_mouse_button_released(const MouseButtonReleasedEvent& event) { return false; }
         virtual bool on_mouse_moved(const MouseMovedEvent& event) { return false; }
         virtual bool on_scroll_wheel_moved(const ScrollWheelMovedEvent& event) { return false; }
 
         // Monitor Event handlers
+        virtual bool on_monitor_event(const MonitorEvent& event) { return false; }
         virtual bool on_monitor_connected(const MonitorConnectedEvent& event) { return false; }
         virtual bool on_monitor_disconnected(const MonitorDisconnectedEvent& event) { return false; }
     };

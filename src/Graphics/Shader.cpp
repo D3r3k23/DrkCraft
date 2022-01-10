@@ -22,26 +22,40 @@ namespace DrkCraft
         }
     }
 
-    Ref<Shader> Shader::create(std::filesystem::path path, ShaderType type)
+    std::unordered_map<std::string, Ref<Shader>> Shader::s_shaderCache;
+
+    Ref<Shader> Shader::create(const std::filesystem::path& path, ShaderType type)
     {
         DRK_PROFILE_FUNCTION();
-
         DRK_LOG_CORE_TRACE("Creating Shader from file {}", path.string());
 
         DRK_ASSERT_DEBUG(std::filesystem::is_regular_file(path), "Shader file does not exist");
         DRK_ASSERT_DEBUG(type != ShaderType::None, "Unknown shader type");
 
-        const std::string source = read_file(path);
-        DRK_ASSERT_DEBUG(source.size() > 0, "Could not load shader file");
+        if (s_shaderCache.contains(path.string()))
+        {
+            DRK_LOG_CORE_INFO("Shader found in cache");
+            const auto& shader = s_shaderCache[path.string()];
+            DRK_ASSERT_DEBUG(type == shader->get_type(), "Shader type does not match type in cache");
+            return shader;
+        }
+        else
+        {
+            const std::string source = read_file(path);
+            DRK_ASSERT_DEBUG(source.size() > 0, "Could not load shader file");
 
+            const auto& shader = make_ref<Shader>(type);
+            shader->compile(source);
+            return shader;
+        }
+    }
+
+    Shader::Shader(ShaderType type)
+    {
         ShaderID id = glCreateShader(get_gl_shader_type(type));
         DRK_ASSERT_DEBUG(id, "glCreateShader failed");
-
-        auto shader = make_ref<Shader>();
-        shader->m_id = id;
-        shader->m_type = type;
-        shader->compile(source);
-        return shader;
+        m_id = id;
+        m_type = type;
     }
 
     Shader::~Shader(void)
@@ -87,7 +101,6 @@ namespace DrkCraft
       : m_name(name)
     {
         DRK_PROFILE_FUNCTION();
-
         DRK_LOG_CORE_TRACE("Creating ShaderProgram {}", m_name);
 
         m_id = glCreateProgram();

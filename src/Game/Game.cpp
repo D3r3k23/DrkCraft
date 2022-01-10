@@ -2,7 +2,7 @@
 
 #include "Application/Application.hpp"
 #include "PauseMenu.hpp"
-#include "Core/AssetManager.hpp"
+#include "Engine/AssetManager.hpp"
 #include "Graphics/Transform.hpp"
 #include "Core/Profiler.hpp"
 
@@ -28,7 +28,7 @@ namespace DrkCraft
         //      0.5f, -0.5f, 0.0f,
         //     -0.5f, -0.5f, 0.0f
         // };
-        // 
+        //
         // GLuint vertexBufferObject;
         // glGenBuffers(1, &vertexBufferObject);
         // glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
@@ -53,8 +53,8 @@ namespace DrkCraft
     void Game::on_attach(void)
     {
         Application::get_instance().add_layer(m_hudLayer);
-        Application::get_instance().add_layer(m_consoleLayer);
-        Application::get_instance().add_layer(m_debugLayer);
+        Application::get_instance().add_overlay(m_consoleLayer);
+        Application::get_instance().add_overlay(m_debugLayer);
     }
 
     void Game::on_detach(void)
@@ -90,6 +90,7 @@ namespace DrkCraft
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));
+        ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
     }
 
     bool Game::on_key_pressed(const KeyPressedEvent& event)
@@ -124,6 +125,12 @@ namespace DrkCraft
     {
         pause();
         return true;
+    }
+
+    bool Game::on_monitor_event(const MonitorEvent& event)
+    {
+        pause();
+        return false;
     }
 
     void Game::pause(void)

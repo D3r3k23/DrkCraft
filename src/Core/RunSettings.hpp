@@ -39,6 +39,15 @@ namespace DrkCraft
         GameMode mode = GameMode::Player; // Or maybe this should be runtime-enabled with a hotkey
     };
 
+    const unsigned int NUM_SETTINGS = 3;
+
+    enum SettingsEnum
+    {
+        Settings_Fullscreen,
+        Settings_FullscreenMonitor,
+        Settings_VSync
+    };
+
     struct SettingsData
     {
         bool fullscreen = false;
@@ -48,8 +57,11 @@ namespace DrkCraft
 
     struct ConfigData
     {
-        int init_window_width = 1280;
-        int init_window_height = 720;
+        struct
+        {
+            int width = 1280;
+            int height = 720;
+        } init_window_size;
 
         std::string saves_directory = "data/saves";
     };
@@ -58,6 +70,7 @@ namespace DrkCraft
     {
     public:
         static void load(const std::filesystem::path& location);
+
         static void save_settings(void);
 
         static const ConfigData& config(void);
@@ -68,6 +81,8 @@ namespace DrkCraft
     private:
         static void load_config(void);
         static void load_settings(void);
+
+        static void save_config(void);
 
     private:
         static std::string s_configFile;

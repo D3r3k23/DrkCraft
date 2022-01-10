@@ -44,5 +44,6 @@ target_link_libraries(DrkCraft
     rapidjson
     spdlog
     stb_image
+    stb_truetype
     yaml-cpp
 )

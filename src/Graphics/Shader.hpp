@@ -38,9 +38,9 @@ namespace DrkCraft
     class Shader
     {
     public:
-        static Ref<Shader> create(std::filesystem::path path, ShaderType type);
+        static Ref<Shader> create(const std::filesystem::path& path, ShaderType type);
+        Shader(ShaderType type); // Required for make_ptr, should not use directly
         ~Shader(void);
-        Shader(void) = default; // Required for make_ptr, should not use directly
 
         Shader(const Shader&) = delete;
         Shader(Shader&&) = delete;
@@ -56,6 +56,8 @@ namespace DrkCraft
     private:
         ShaderID m_id = 0;
         ShaderType m_type = ShaderType::None;
+
+        static std::unordered_map<std::string, Ref<Shader>> s_shaderCache;
     };
 
     class ShaderProgram

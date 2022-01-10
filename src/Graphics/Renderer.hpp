@@ -26,6 +26,8 @@ namespace DrkCraft
         static void begin_frame(void);
         static void end_frame(void);
 
+        static void clear(void);
+
         static void draw_block(uint x, uint y, uint z);
 
         static void draw_triangle(GLuint vao);
@@ -38,10 +40,6 @@ namespace DrkCraft
 
     private:
     };
-
-#if defined(DRK_EN_LOGGING)
-    void register_gl_message_handler(void);
-#endif
 }
 
 #endif // DRK_RENDERER_HPP

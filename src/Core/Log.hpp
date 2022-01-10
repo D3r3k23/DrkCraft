@@ -77,12 +77,12 @@
     #define DRK_LOG_GAME_ERROR(...)
     #define DRK_LOG_GAME_CRITICAL(...)
 
-    #define DRK_LOG_EVENT_TRACE(event)
-    #define DRK_LOG_EVENT_DEBUG(event)
-    #define DRK_LOG_EVENT_INFO(event)
-    #define DRK_LOG_EVENT_WARN(event)
-    #define DRK_LOG_EVENT_ERROR(event)
-    #define DRK_LOG_EVENT_CRITICAL(event)
+    #define DRK_LOG_EVENT_TRACE(...)
+    #define DRK_LOG_EVENT_DEBUG(...)
+    #define DRK_LOG_EVENT_INFO(...)
+    #define DRK_LOG_EVENT_WARN(...)
+    #define DRK_LOG_EVENT_ERROR(...)
+    #define DRK_LOG_EVENT_CRITICAL(...)
 #endif
 
 #endif // DRK_LOG_CORE_HPP

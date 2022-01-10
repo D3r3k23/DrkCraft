@@ -33,7 +33,7 @@
             auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
 
             auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_st>(file.string());
-            fileSink->set_level(spdlog::level::trace);
+            fileSink->set_level(spdlog::level::DRK_STATIC_LOG_LEVEL);
             sink->add_sink(fileSink);
 
         #if defined(DRK_CONFIG_DEBUG)

@@ -98,6 +98,12 @@ target_compile_definitions(DrkCraft
     ${DRK_BUILD_CONFIG}
 )
 
+if(${PLATFORM} STREQUAL Debug)
+    target_compile_definitions(DrkCraft PUBLIC _DEBUG)
+elseif(${BUILD_CONFIG} STREQUAL Release)
+    target_compile_definitions(DrkCraft PUBLIC NDEBUG)
+endif()
+
 if(${DRK_EN_LOGGING})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_LOGGING)
 endif()

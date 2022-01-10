@@ -7,11 +7,13 @@ namespace DrkCraft
 {
     EventGenerator::EventGenerator(GLFWwindow* window)
       : m_window(window)
-    { }
+    {
+        DRK_LOG_CORE_TRACE("Creating EventGenerator");
+    }
 
     EventGenerator::~EventGenerator(void)
     {
-        glfwSetWindowUserPointer(m_window, nullptr);
+        DRK_LOG_CORE_TRACE("Destroying EventGenerator");
 
         glfwSetWindowCloseCallback(m_window, nullptr);
         glfwSetWindowSizeCallback(m_window, nullptr);
@@ -29,9 +31,11 @@ namespace DrkCraft
         glfwSetCursorPosCallback(m_window, nullptr);
         glfwSetMouseButtonCallback(m_window, nullptr);
         glfwSetScrollCallback(m_window, nullptr);
+
+        glfwSetWindowUserPointer(m_window, nullptr);
     }
 
-    void EventGenerator::register_window_event_handler(const AbstractEventHandlerFn& handler)
+    void EventGenerator::register_event_handler(const AbstractEventHandlerFn<Event>& handler)
     {
         m_handler = handler;
         glfwSetWindowUserPointer(m_window, static_cast<void*>(&m_handler));
@@ -63,8 +67,11 @@ namespace DrkCraft
 
     void EventGenerator::handle_event(GLFWwindow* window, Event& event)
     {
-        auto handler = *static_cast<AbstractEventHandlerFn*>(glfwGetWindowUserPointer(window));
-        handler(event);
+        const auto& handler = *static_cast<AbstractEventHandlerFn<Event>*>(glfwGetWindowUserPointer(window));
+        {
+            DRK_PROFILE_SCOPE(event.get_name());
+            handler(event);
+        }
         event.log_event();
     }
 
@@ -156,19 +163,19 @@ namespace DrkCraft
         {
             case GLFW_PRESS:
             {
-                KeyPressedEvent event(to_key_code(key), get_input_mod_flags(mods));
+                KeyPressedEvent event(to_key_code(key), to_key_mod_flags(mods));
                 handle_event(window, event);
                 break;
             }
             case GLFW_REPEAT:
             {
-                KeyHeldEvent event(to_key_code(key), get_input_mod_flags(mods));
+                KeyHeldEvent event(to_key_code(key), to_key_mod_flags(mods));
                 handle_event(window, event);
                 break;
             }
             case GLFW_RELEASE:
             {
-                KeyReleasedEvent event(to_key_code(key), get_input_mod_flags(mods));
+                KeyReleasedEvent event(to_key_code(key), to_key_mod_flags(mods));
                 handle_event(window, event);
                 break;
             }
@@ -197,13 +204,13 @@ namespace DrkCraft
         {
             case GLFW_PRESS:
             {
-                MouseButtonPressedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
+                MouseButtonPressedEvent event(to_mouse_code(button), to_key_mod_flags(mods));
                 handle_event(window, event);
                 break;
             }
             case GLFW_RELEASE:
             {
-                MouseButtonReleasedEvent event(to_mouse_code(button), get_input_mod_flags(mods));
+                MouseButtonReleasedEvent event(to_mouse_code(button), to_key_mod_flags(mods));
                 handle_event(window, event);
                 break;
             }

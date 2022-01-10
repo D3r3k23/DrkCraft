@@ -3,6 +3,11 @@
 
 namespace DrkCraft
 {
+    enum class MouseCode;
+
+    MouseCode to_mouse_code(int button);
+    int from_mouse_code(MouseCode button);
+
     // From glfw3.h, same codes as in imgui_impl_glfw.cpp
     enum class MouseCode
     {
@@ -21,9 +26,6 @@ namespace DrkCraft
         Right  = Button1,
         Middle = Button2
     };
-
-    MouseCode to_mouse_code(int button);
-    int from_mouse_code(MouseCode button);
 }
 
 #endif // DRK_MOUSE_CODES_HPP

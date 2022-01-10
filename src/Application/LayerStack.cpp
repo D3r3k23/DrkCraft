@@ -6,6 +6,10 @@
 
 namespace DrkCraft
 {
+    LayerStack::LayerStack(void)
+      : m_nOverlays(0)
+    { }
+
     LayerStack::~LayerStack(void)
     {
         while (!m_layers.empty())
@@ -17,7 +21,11 @@ namespace DrkCraft
 
     LayerStack LayerStack::copy_active(const LayerStack& src)
     {
+        DRK_PROFILE_FUNCTION();
+
         LayerStack copy;
+        copy.m_nOverlays = src.m_nOverlays;
+
         std::ranges::copy_if(src.m_layers, std::back_inserter(copy.m_layers), [](const auto& layer)
         {
             return layer->is_layer_active();
@@ -25,23 +33,34 @@ namespace DrkCraft
         return copy;
     }
 
-    void LayerStack::push_front(const Ref<Layer>& layer)
+    void LayerStack::push(const Ref<Layer>& layer, bool overlay)
     {
-        DRK_LOG_CORE_TRACE("Pushing Layer (front): {}", layer->get_layer_name());
-        m_layers.push_front(layer);
-    }
-
-    void LayerStack::push_back(const Ref<Layer>& layer)
-    {
-        DRK_LOG_CORE_TRACE("Pushing Layer (back): {}", layer->get_layer_name());
-        m_layers.push_back(layer);
+        if (overlay)
+        {
+            DRK_LOG_CORE_TRACE("Pushing overlay Layer: {}", layer->get_layer_name());
+            m_layers.push_front(layer);
+            m_nOverlays++;
+        }
+        else
+        {
+            DRK_LOG_CORE_TRACE("Pushing Layer: {}", layer->get_layer_name());
+            const auto pos = m_layers.begin() + m_nOverlays;
+            m_layers.insert(pos, layer);
+        }
     }
 
     bool LayerStack::pop(const Ref<Layer>& layer)
     {
         if (auto it = std::ranges::find(m_layers, layer); it != m_layers.end())
         {
-            DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());
+            if (it - m_layers.begin() < m_nOverlays)
+            {
+                DRK_LOG_CORE_TRACE("Popping overlay Layer: {}", layer->get_layer_name());
+                m_nOverlays--;
+            }
+            else
+                DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());
+
             m_layers.erase(it);
             return true;
         }

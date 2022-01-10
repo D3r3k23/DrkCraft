@@ -4,8 +4,9 @@
 #include "Core/Base.hpp"
 #include "Events.hpp"
 
-#include <imgui/imgui.h>
 #include <GLFW/glfw3.h>
+#include <imgui/imgui.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
 
 #include <unordered_map>
 
@@ -22,6 +23,9 @@ namespace DrkCraft
     public:
         ImGuiManager(GLFWwindow* window, bool enable=true);
         ~ImGuiManager(void);
+
+        void init_impl(GLFWwindow* window);
+        void shutdown_impl(void);
 
         void begin_frame(void);
         void end_frame(void);
@@ -47,6 +51,7 @@ namespace DrkCraft
         bool on_key_pressed(const KeyPressedEvent& event);
 
     private:
+        ImGuiContext* m_context;
         bool m_enabled; // What happens if this is false and we still try and use ImGui?
         bool m_blockEvents;
 

@@ -9,11 +9,18 @@
 
 namespace DrkCraft
 {
+    enum class PlayerState
+    {
+        Standing,
+        Jumping,
+        Crouching
+    };
+
     class Player
     {
     public:
         Player(void);
-    
+
         void on_update(Timestep timestep);
 
         glm::mat4 get_view_projection(void) const;

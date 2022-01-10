@@ -1,9 +1,8 @@
 #include "Application.hpp"
 
+#include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Core/Profiler.hpp"
-
-#include <GLFW/glfw3.h>
 
 namespace DrkCraft
 {
@@ -11,17 +10,29 @@ namespace DrkCraft
 
     void Application::init(void)
     {
+        DRK_PROFILE_FUNCTION();
+
+        DRK_LOG_CORE_TRACE("Initializing GLFW");
+        Window::init_glfw();
+
         s_instance = new Application;
     }
 
     int Application::shutdown(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (s_instance)
         {
             int exitCode = s_instance->m_exitCode;
             delete s_instance;
+
+            DRK_LOG_CORE_TRACE("Shutting down GLFW");
+            Window::shutdown_glfw();
+
             if (exitCode)
                 DRK_LOG_CORE_ERROR("Application stopped with error code {}", exitCode);
+
             return exitCode;
         }
         else
@@ -38,35 +49,29 @@ namespace DrkCraft
     }
 
     Application::Application(void)
-      : m_exitCode(0),
+      : m_window("DrkCraft"),
+        m_eventGenerator(m_window.get_raw_window()),
+        m_imGuiManager(m_window.get_raw_window()),
+        m_layerStackForwardView(m_frameLayerStack),
+        m_layerStackReverseView(m_frameLayerStack),
+        m_exitCode(0),
         m_running(false),
         m_minimized(false)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_TRACE("Initializing GLFW");
-        init_glfw();
-
-        DRK_LOG_CORE_TRACE("Creating Window");
-        m_window = new Window("DrkCraft");
-
-        DRK_LOG_CORE_TRACE("Registering event handler");
-        m_window->register_event_handler(DRK_BIND_FN(handle_event));
-
-        DRK_LOG_CORE_TRACE("Glad: Loading OpenGL using GLFW loader function");
-        {
-            DRK_PROFILE_SCOPE("Load OpenGL");
-            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
-        }
+        if (RuntimeSettings::get().fullscreen)
+            set_fullscreen();
 
         DRK_LOG_CORE_TRACE("Initializing Renderer");
         Renderer::init();
-        const auto& viewportSize = m_window->get_size();
+
+        const auto& viewportSize = m_window.get_framebuffer_size();
         Renderer::set_viewport(0, 0, viewportSize.x, viewportSize.y);
 
-        DRK_LOG_CORE_TRACE("Creating ImGuiManager");
-        m_imGuiManager = new ImGuiManager(m_window->get_raw_window());
+        DRK_LOG_CORE_TRACE("Registering Application event handler");
+        m_eventGenerator.register_event_handler(DRK_BIND_FN(handle_event));
+        m_monitorManager.register_event_handler(DRK_BIND_FN(handle_event));
     }
 
     Application::~Application(void)
@@ -74,44 +79,33 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("Clearing Layer Stack");
+        m_frameLayerStack.clear();
         m_layerStack.clear();
-
-        DRK_LOG_CORE_TRACE("Deleting ImGuiManger");
-        delete m_imGuiManager;
 
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
-
-        DRK_LOG_CORE_TRACE("Deleting Window");
-        delete m_window;
-
-        DRK_LOG_CORE_TRACE("Terminating GLFW");
-        glfwTerminate();
-    }
-
-    void Application::init_glfw(void)
-    {
-        auto status = glfwInit();
-        DRK_ASSERT_CORE(status == GLFW_TRUE, "Failed to initialize GLFW");
-
-    #if defined(DRK_EN_LOGGING)
-        glfwSetErrorCallback([](int error, const char* description)
-        {
-            DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
-        });
-    #endif
     }
 
     Window& Application::get_window(void)
     {
-        DRK_ASSERT_DEBUG(m_window, "Window not initialized");
-        return *m_window;
+        return m_window;
+    }
+
+    MonitorManager& Application::get_monitors(void)
+    {
+        return m_monitorManager;
     }
 
     void Application::add_layer(const Ref<Layer>& layer)
     {
         layer->attach_layer();
-        m_layerStack.push_front(layer);
+        m_layerStack.push(layer);
+    }
+
+    void Application::add_overlay(const Ref<Layer>& layer)
+    {
+        layer->attach_layer();
+        m_layerStack.push(layer, true);
     }
 
     void Application::run(void)
@@ -122,25 +116,18 @@ namespace DrkCraft
         while (m_running)
         {
             Timestep timestep;
-            LayerStack frameLayerStack;
+            m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
-                DRK_PROFILE_SCOPE("LayerStackView creation");
-                frameLayerStack = LayerStack::copy_active(m_layerStack);
-                m_layerStackForwardView = make_ptr<LayerStack::ForwardView>(frameLayerStack);
-                m_layerStackReverseView = make_ptr<LayerStack::ReverseView>(frameLayerStack);
-            }{
                 DRK_PROFILE_SCOPE("Application core loop");
-                m_window->poll_events();
+                m_window.poll_events();
 
                 if (m_running && !m_minimized)
                 {
                     update(timestep);
                     render();
                 }
-                m_window->swap_buffers();
+                m_window.swap_buffers();
             }
-            m_layerStackForwardView.reset();
-            m_layerStackReverseView.reset();
 
             m_layerStack.refresh();
 
@@ -168,7 +155,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        for (auto& layer : *m_layerStackReverseView)
+        for (auto& layer : m_layerStackReverseView)
             layer->on_update(timestep);
     }
 
@@ -177,13 +164,13 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiManager->begin_frame();
+        m_imGuiManager.begin_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
-            for (auto& layer : *m_layerStackReverseView)
+            for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
-        m_imGuiManager->end_frame();
+        m_imGuiManager.end_frame();
         Renderer::end_frame();
     }
 
@@ -195,12 +182,14 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_closed));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resized));
+        ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
+        ed.dispatch<MonitorDisconnectedEvent>(DRK_BIND_FN(on_monitor_disconnected));
 
         // We could redraw the screen on resize/move
 
-        m_imGuiManager->on_event(event);
+        m_imGuiManager.on_event(event);
 
-        for (auto& layer : *m_layerStackForwardView)
+        for (auto& layer : m_layerStackForwardView)
             layer->on_event(event);
     }
 
@@ -208,13 +197,13 @@ namespace DrkCraft
     {
         switch (event.key)
         {
+        #if defined(DRK_CONFIG_DEBUG)
             case KeyCode::F12:
             {
-            #if defined(DRK_CONFIG_DEBUG)
-                m_imGuiManager->toggle_demo_window();
-            #endif
+                m_imGuiManager.toggle_demo_window();
                 return true;
             }
+        #endif
             default:
                 return false;
         }
@@ -230,5 +219,49 @@ namespace DrkCraft
     {
         Renderer::set_viewport(0, 0, event.width, event.height);
         return true;
+    }
+
+    bool Application::on_monitor_event(const MonitorEvent& event)
+    {
+        m_monitorManager.refresh_monitors();
+        return false;
+    }
+
+    bool Application::on_monitor_disconnected(const MonitorDisconnectedEvent& event)
+    {
+        RuntimeSettings::get().fullscreen_monitor = 0;
+        RuntimeSettings::save_settings();
+
+        if (is_fullscreen())
+            set_fullscreen();
+
+        return false;
+    }
+
+    void Application::set_fullscreen(int monitor)
+    {
+        DRK_LOG_CORE_TRACE("Setting Application to fullscreen");
+
+        if (monitor < 0)
+            monitor = RuntimeSettings::get().fullscreen_monitor;
+
+        m_monitorManager.activate_fullscreen(m_window, monitor);
+    }
+
+    void Application::set_windowed(void)
+    {
+        DRK_LOG_CORE_TRACE("Setting Application to windowed");
+
+        m_monitorManager.deactivate_fullscreen(m_window);
+    }
+
+    bool Application::is_fullscreen(void) const
+    {
+        return m_monitorManager.fullscreen_activated();
+    }
+
+    bool Application::is_windowed(void) const
+    {
+        return !m_monitorManager.fullscreen_activated();
     }
 }

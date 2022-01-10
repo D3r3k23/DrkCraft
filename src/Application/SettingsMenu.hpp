@@ -7,6 +7,7 @@
 #include "Events.hpp"
 #include "Core/RunSettings.hpp"
 
+#include <array>
 #include <functional>
 
 namespace DrkCraft
@@ -31,13 +32,13 @@ namespace DrkCraft
     private:
         virtual bool on_key_pressed(const KeyPressedEvent& event) override;
 
-        void apply(void);
         void save(void);
+        void apply(void);
         void close(void);
 
     private:
-        Ptr<SettingsData> m_settings;
-        bool m_dirty;
+        SettingsData m_settings;
+        std::array<bool, NUM_SETTINGS> m_dirty;
 
         SettingsMenuCloseCallbackFn m_onClose;
     };

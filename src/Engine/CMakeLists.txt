@@ -1,8 +1,10 @@
 target_sources(DrkCraft
   PRIVATE
+    AssetManager.cpp
     Chunk.cpp
     ChunkManager.cpp
     ChunkRenderer.cpp
+    Components.cpp
     Entity.cpp
     Noise.cpp
     World.cpp

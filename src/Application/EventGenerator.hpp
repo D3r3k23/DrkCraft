@@ -14,7 +14,7 @@ namespace DrkCraft
         EventGenerator(GLFWwindow* window);
         ~EventGenerator(void);
 
-        void register_window_event_handler(const AbstractEventHandlerFn& handler);
+        void register_event_handler(const AbstractEventHandlerFn<Event>& handler);
 
     private:
         void set_window_callbacks(void);
@@ -44,7 +44,7 @@ namespace DrkCraft
 
     private:
         GLFWwindow* m_window;
-        AbstractEventHandlerFn m_handler;
+        AbstractEventHandlerFn<Event> m_handler;
     };
 }
 

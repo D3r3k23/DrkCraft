@@ -13,7 +13,7 @@ namespace DrkCraft
     class LayerStack
     {
     public:
-        LayerStack(void) = default;
+        LayerStack(void);
         ~LayerStack(void);
 
         static LayerStack copy_active(const LayerStack& src);
@@ -24,9 +24,7 @@ namespace DrkCraft
         LayerStack& operator=(LayerStack&&) = default;
         LayerStack& operator=(const LayerStack&) = delete;
 
-        void push_front(const Ref<Layer>& layer);
-        void push_back(const Ref<Layer>& layer);
-
+        void push(const Ref<Layer>& layer, bool overlay=false);
         bool pop(const Ref<Layer>& layer);
 
         void refresh(void); // Pops detached Layers
@@ -41,6 +39,7 @@ namespace DrkCraft
 
     private:
         LayerDeque m_layers;
+        uint m_nOverlays;
 
     public:
         // Note: Modifying a LayerStack will invalidate any of its Views

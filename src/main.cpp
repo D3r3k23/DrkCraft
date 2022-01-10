@@ -12,18 +12,18 @@ int main(int argc, char* argv[])
 {
     DRK_LOGGER_INIT("data/logs");
 
-    DRK_LOG_CORE_INFO("Build:");
+    DRK_LOG_CORE_INFO("DrkCraft Build:");
     DRK_LOG_CORE_INFO("Version: {}", DRK_VERSION_STRING);
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
     DRK_LOG_CORE_INFO("Config: {}", DRK_CONFIG_NAME);
+
+    DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
 
     DRK_LOG_CORE_INFO("Loading settings");
     CommandLineOptions::parse_args(argc, argv);
     RuntimeSettings::load("config");
     auto mode = game_mode_to_string(CommandLineOptions::get_game_mode());
     DRK_LOG_CORE_INFO("Game mode: {}", capitalize(mode));
-
-    DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
 
     DRK_LOG_CORE_TRACE("Initializing Application");
     Application::init();

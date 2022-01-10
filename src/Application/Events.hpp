@@ -4,17 +4,14 @@
 #include "Core/Base.hpp"
 #include "Event.hpp"
 #include "Input.hpp"
-#include "Core/Profiler.hpp"
 
-#define DRK_EVENT_TYPE_INFO(type)                                               \
-    static constexpr EventType static_type(void) { return EventType::type; }    \
-    virtual EventType   get_type(void) const override { return static_type(); } \
-    virtual const char* get_name(void) const override { return #type"Event";  } \
-    DRK_PROFILE_OBJECT(#type"Event");
-
-#define DRK_EVENT_CATEGORY_INFO(cat)                             \
-    virtual EventCategoryFlags get_category(void) const override  \
-        { return static_cast<EventCategoryFlags>(EventCategory::cat); }
+#define DRK_EVENT_TYPE_INFO(flagType, name)            \
+    virtual const char* get_name(void) const override   \
+        { return #name"Event"; }                         \
+    virtual EventFlags get_type(void) const override      \
+        { return static_cast<EventFlags>(static_type()); } \
+    static constexpr flagType static_type(void)             \
+        { return flagType::name; }
 
 namespace DrkCraft
 {
@@ -22,19 +19,19 @@ namespace DrkCraft
 
     struct WindowEvent : Event
     {
-        DRK_EVENT_CATEGORY_INFO(Window)
+        DRK_EVENT_TYPE_INFO(EventCategory, Window)
     };
 
     struct WindowClosedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowClosed)
+        DRK_EVENT_TYPE_INFO(EventType, WindowClosed)
 
         WindowClosedEvent(void) = default;
     };
 
     struct WindowResizedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowResized)
+        DRK_EVENT_TYPE_INFO(EventType, WindowResized)
 
         WindowResizedEvent(uint width, uint height)
           : width(width),
@@ -49,7 +46,7 @@ namespace DrkCraft
 
     struct FramebufferResizedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(FramebufferResized)
+        DRK_EVENT_TYPE_INFO(EventType, FramebufferResized)
 
         FramebufferResizedEvent(uint width, uint height)
           : width(width),
@@ -64,7 +61,7 @@ namespace DrkCraft
 
     struct WindowMovedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowMoved)
+        DRK_EVENT_TYPE_INFO(EventType, WindowMoved)
 
         WindowMovedEvent(int xPos, int yPos)
           : xPos(xPos),
@@ -79,28 +76,28 @@ namespace DrkCraft
 
     struct WindowFocusGainedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowFocusGained)
+        DRK_EVENT_TYPE_INFO(EventType, WindowFocusGained)
 
         WindowFocusGainedEvent(void) = default;
     };
 
     struct WindowFocusLostEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowFocusLost)
+        DRK_EVENT_TYPE_INFO(EventType, WindowFocusLost)
 
         WindowFocusLostEvent(void) = default;
     };
 
     struct WindowMaximizedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowMaximized)
+        DRK_EVENT_TYPE_INFO(EventType, WindowMaximized)
 
         WindowMaximizedEvent(void) = default;
     };
 
     struct WindowMinimizedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowMinimized)
+        DRK_EVENT_TYPE_INFO(EventType, WindowMinimized)
 
         WindowMinimizedEvent(void) = default;
     };
@@ -108,14 +105,14 @@ namespace DrkCraft
     // Could add param to say if it was restored from maximized of minimized
     struct WindowRestoredEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowRestored)
+        DRK_EVENT_TYPE_INFO(EventType, WindowRestored)
 
         WindowRestoredEvent(void) = default;
     };
 
     struct WindowScaledEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowScaled)
+        DRK_EVENT_TYPE_INFO(EventType, WindowScaled)
 
         WindowScaledEvent(float xScale, float yScale)
           : xScale(xScale),
@@ -130,18 +127,30 @@ namespace DrkCraft
 
     struct WindowRefreshedEvent : WindowEvent
     {
-        DRK_EVENT_TYPE_INFO(WindowRefreshed)
+        DRK_EVENT_TYPE_INFO(EventType, WindowRefreshed)
 
         WindowRefreshedEvent(void) = default;
     };
 
+    ////////// Input Events //////////
+
+    struct InputEvent : Event
+    {
+        DRK_EVENT_TYPE_INFO(EventCategory, Input);
+    };
+
     ////////// Keyboard Events //////////
 
-    struct KeyEvent : Event
+    struct KeyboardEvent : InputEvent
     {
-        DRK_EVENT_CATEGORY_INFO(Keyboard)
+        DRK_EVENT_TYPE_INFO(EventCategory, Keyboard)
+    };
 
-        KeyEvent(KeyCode key, InputModFlags mods)
+    struct KeyEvent : KeyboardEvent
+    {
+        DRK_EVENT_TYPE_INFO(EventCategory, Keyboard)
+
+        KeyEvent(KeyCode key, KeyModFlags mods)
           : key(key),
             mods(mods)
         { }
@@ -149,40 +158,39 @@ namespace DrkCraft
         virtual std::string get_details(void) const override;
 
         const KeyCode key;
-        const InputModFlags mods;
+        const KeyModFlags mods;
     };
 
     struct KeyPressedEvent : KeyEvent
     {
-        DRK_EVENT_TYPE_INFO(KeyPressed)
+        DRK_EVENT_TYPE_INFO(EventType, KeyPressed)
 
-        KeyPressedEvent(KeyCode key, InputModFlags mods)
+        KeyPressedEvent(KeyCode key, KeyModFlags mods)
           : KeyEvent(key, mods)
         { }
     };
 
     struct KeyHeldEvent : KeyEvent
     {
-        DRK_EVENT_TYPE_INFO(KeyHeld)
+        DRK_EVENT_TYPE_INFO(EventType, KeyHeld)
 
-        KeyHeldEvent(KeyCode key, InputModFlags mods)
+        KeyHeldEvent(KeyCode key, KeyModFlags mods)
           : KeyEvent(key, mods)
         { }
     };
 
     struct KeyReleasedEvent : KeyEvent
     {
-        DRK_EVENT_TYPE_INFO(KeyReleased)
+        DRK_EVENT_TYPE_INFO(EventType, KeyReleased)
 
-        KeyReleasedEvent(KeyCode key, InputModFlags mods)
+        KeyReleasedEvent(KeyCode key, KeyModFlags mods)
           : KeyEvent(key, mods)
         { }
     };
 
-    struct CharTypedEvent : Event
+    struct CharTypedEvent : KeyboardEvent
     {
-        DRK_EVENT_TYPE_INFO(CharTyped)
-        DRK_EVENT_CATEGORY_INFO(Keyboard)
+        DRK_EVENT_TYPE_INFO(EventType, CharTyped)
 
         CharTypedEvent(char ch)
           : ch(ch)
@@ -195,8 +203,15 @@ namespace DrkCraft
 
     ////////// Mouse Events //////////
 
-    struct MousePosEvent : Event
+    struct MouseEvent : InputEvent
     {
+        DRK_EVENT_TYPE_INFO(EventCategory, Mouse)
+    };
+
+    struct MousePosEvent : MouseEvent
+    {
+        DRK_EVENT_TYPE_INFO(EventCategory, MousePos)
+
         MousePosEvent(float xPos, float yPos)
           : xPos(xPos),
             yPos(yPos)
@@ -210,8 +225,7 @@ namespace DrkCraft
 
     struct MouseMovedEvent : MousePosEvent
     {
-        DRK_EVENT_TYPE_INFO(MouseMoved)
-        DRK_EVENT_CATEGORY_INFO(Mouse)
+        DRK_EVENT_TYPE_INFO(EventType, MouseMoved)
 
         MouseMovedEvent(float xPos, float yPos)
           : MousePosEvent(xPos, yPos)
@@ -220,9 +234,9 @@ namespace DrkCraft
 
     struct MouseButtonEvent : MousePosEvent
     {
-        DRK_EVENT_CATEGORY_INFO(MouseButton)
+        DRK_EVENT_TYPE_INFO(EventCategory, MouseButton)
 
-        MouseButtonEvent(MouseCode button, InputModFlags mods)
+        MouseButtonEvent(MouseCode button, KeyModFlags mods)
           : MousePosEvent(get_mouse_x(), get_mouse_y()),
             button(button),
             mods(mods)
@@ -231,31 +245,30 @@ namespace DrkCraft
         virtual std::string get_details(void) const override;
 
         const MouseCode button;
-        const InputModFlags mods;
+        const KeyModFlags mods;
     };
 
     struct MouseButtonPressedEvent : MouseButtonEvent
     {
-        DRK_EVENT_TYPE_INFO(MouseButtonPressed)
+        DRK_EVENT_TYPE_INFO(EventType, MouseButtonPressed)
 
-        MouseButtonPressedEvent(MouseCode button, InputModFlags mods)
+        MouseButtonPressedEvent(MouseCode button, KeyModFlags mods)
           : MouseButtonEvent(button, mods)
         { }
     };
 
     struct MouseButtonReleasedEvent : MouseButtonEvent
     {
-        DRK_EVENT_TYPE_INFO(MouseButtonReleased)
+        DRK_EVENT_TYPE_INFO(EventType, MouseButtonReleased)
 
-        MouseButtonReleasedEvent(MouseCode button, InputModFlags mods)
+        MouseButtonReleasedEvent(MouseCode button, KeyModFlags mods)
           : MouseButtonEvent(button, mods)
         { }
     };
 
-    struct ScrollWheelMovedEvent : Event
+    struct ScrollWheelMovedEvent : MouseEvent
     {
-        DRK_EVENT_TYPE_INFO(ScrollWheelMoved)
-        DRK_EVENT_CATEGORY_INFO(Mouse)
+        DRK_EVENT_TYPE_INFO(EventType, ScrollWheelMoved)
 
         ScrollWheelMovedEvent(float xOffset, float yOffset)
           : xOffset(xOffset),
@@ -272,25 +285,36 @@ namespace DrkCraft
 
     struct MonitorEvent : Event
     {
-        DRK_EVENT_CATEGORY_INFO(Monitor)
+        DRK_EVENT_TYPE_INFO(EventCategory, Monitor)
+
+        MonitorEvent(uint number)
+          : number(number)
+        { }
+
+        virtual std::string get_details(void) const override;
+
+        const uint number;
     };
 
     struct MonitorConnectedEvent : MonitorEvent
     {
-        DRK_EVENT_TYPE_INFO(MonitorConnected)
+        DRK_EVENT_TYPE_INFO(EventType, MonitorConnected)
 
-        MonitorConnectedEvent(void) = default;
+        MonitorConnectedEvent(uint number)
+          : MonitorEvent(number)
+        { }
     };
 
     struct MonitorDisconnectedEvent : MonitorEvent
     {
-        DRK_EVENT_TYPE_INFO(MonitorDisconnected)
+        DRK_EVENT_TYPE_INFO(EventType, MonitorDisconnected)
 
-        MonitorDisconnectedEvent(void) = default;
+        MonitorDisconnectedEvent(uint number)
+          : MonitorEvent(number)
+        { }
     };
 }
 
 #undef DRK_EVENT_TYPE_INFO
-#undef DRK_EVENT_CATEGORY_INFO
 
 #endif // DRK_EVENTS_HPP

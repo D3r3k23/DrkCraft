@@ -14,7 +14,7 @@
     #define DRK_STATIC_LOG_LEVEL trace
 #elif defined(DRK_CONFIG_RELEASE)
     #define DRK_CONFIG_NAME "Release"
-    #define DRK_STATIC_LOG_LEVEL warn
+    #define DRK_STATIC_LOG_LEVEL info
 #else
     #error "Unknown config"
 #endif

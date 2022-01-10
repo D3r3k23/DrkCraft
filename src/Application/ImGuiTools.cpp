@@ -1,13 +1,10 @@
 #include "ImGuiTools.hpp"
 
 #include "Core/BuildSettings.hpp"
-#include "Core/AssetManager.hpp"
+#include "Engine/AssetManager.hpp"
 #include "Core/Profiler.hpp"
 
-#include <imgui/imgui.h>
-#include <imgui/misc/cpp/imgui_stdlib.h>
-#include <imgui_impl/imgui_impl_glfw.h>
-#include <imgui_impl/imgui_impl_opengl3.h>
+#include <imgui_impl/imgui_impl.h>
 
 namespace DrkCraft
 {
@@ -21,7 +18,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         IMGUI_CHECKVERSION();
-        auto context = ImGui::CreateContext();
+        m_context = ImGui::CreateContext();
 
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr; // "data/imgui.ini";
@@ -40,23 +37,31 @@ namespace DrkCraft
         s_fonts[Font::Title] = font;
 
         setup_style();
-
-        {
-            DRK_PROFILE_SCOPE("imgui_impl init");
-            ImGui_ImplGlfw_InitForOpenGL(window, true);
-            ImGui_ImplOpenGL3_Init("#version 400");
-        }
+        init_impl(window);
     }
 
     ImGuiManager::~ImGuiManager(void)
     {
+        shutdown_impl();
+        ImGui::DestroyContext(m_context);
+    }
+
+    void ImGuiManager::init_impl(GLFWwindow* window)
+    {
         DRK_PROFILE_FUNCTION();
-        {
-            DRK_PROFILE_SCOPE("imgui_impl shutdown");
-            ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplGlfw_Shutdown();
-        }
-        ImGui::DestroyContext(nullptr);
+        DRK_LOG_CORE_TRACE("Initializing ImGui");
+
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 400");
+    }
+
+    void ImGuiManager::shutdown_impl(void)
+    {
+        DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Shutting down ImGui");
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
     }
 
     void ImGuiManager::begin_frame(void)

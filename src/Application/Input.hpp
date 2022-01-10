@@ -20,9 +20,9 @@ namespace DrkCraft
 
     ////////// Key Mods //////////
 
-    using InputModFlags = uint;
+    using KeyModFlags = uint;
 
-    enum class KeyMod : InputModFlags
+    enum class KeyMod : KeyModFlags
     {
         None = 0,
 
@@ -36,20 +36,27 @@ namespace DrkCraft
 
     bool is_mod_pressed(KeyMod mod);
 
-    // Should probably simplify this
+    KeyModFlags to_key_mod_flags(int mods);
+    KeyModFlags to_key_mod_flags(KeyMod mod);
 
-    InputModFlags get_input_mod_flags(int mods);
-    KeyMod to_key_mod(KeyCode key);
+    bool key_mod_flag_contains(KeyModFlags flags, KeyMod mod);
+    bool key_mod_flag_equals(KeyModFlags flags, KeyMod mod);
 
-    InputModFlags operator|(InputModFlags flags, KeyMod mod);
-    InputModFlags operator|(KeyMod mod, InputModFlags flags);
-    InputModFlags operator|(KeyMod mod1, KeyMod mod2);
+    bool operator==(KeyModFlags flags, KeyMod mod);
+    bool operator!=(KeyModFlags flags, KeyMod mod);
 
-    bool operator==(InputModFlags flags, KeyMod mod);
-    bool operator==(KeyMod mod, InputModFlags flags);
+    bool operator==(KeyMod mod, KeyModFlags flags);
+    bool operator!=(KeyMod mod, KeyModFlags flags);
 
-    bool operator!=(InputModFlags flags, KeyMod mod);
-    bool operator!=(KeyMod mod, InputModFlags flags);
+    KeyModFlags operator|(KeyModFlags flags, KeyMod mod);
+    KeyModFlags operator|(KeyMod mod, KeyModFlags flags);
+    KeyModFlags operator|(KeyMod mod1, KeyMod mod2);
+    KeyModFlags operator|=(KeyModFlags& flags, KeyMod mod);
+
+    KeyModFlags operator&(KeyModFlags flags, KeyMod mod);
+    KeyModFlags operator&(KeyMod mod, KeyModFlags flags);
+    KeyModFlags operator&(KeyMod mod1, KeyMod mod2);
+    KeyModFlags operator&=(KeyModFlags& flags, KeyMod mod);
 }
 
 #endif // DRK_INPUT_HPP

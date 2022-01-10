@@ -65,51 +65,94 @@ namespace DrkCraft
         }
     }
 
-    InputModFlags get_input_mod_flags(int mods)
+    KeyModFlags to_key_mod_flags(int mods)
     {
-        InputModFlags flags = 0;
-        if (mods & GLFW_MOD_SHIFT)     flags = flags | KeyMod::Shift;
-        if (mods & GLFW_MOD_CONTROL)   flags = flags | KeyMod::Ctrl;
-        if (mods & GLFW_MOD_ALT)       flags = flags | KeyMod::Alt;
-        if (mods & GLFW_MOD_SUPER)     flags = flags | KeyMod::Super;
-        if (mods & GLFW_MOD_CAPS_LOCK) flags = flags | KeyMod::CapsLock;
-        if (mods & GLFW_MOD_NUM_LOCK)  flags = flags | KeyMod::NumLock;
+        KeyModFlags flags = 0;
+        if (mods & GLFW_MOD_SHIFT)     flags |= KeyMod::Shift;
+        if (mods & GLFW_MOD_CONTROL)   flags |= KeyMod::Ctrl;
+        if (mods & GLFW_MOD_ALT)       flags |= KeyMod::Alt;
+        if (mods & GLFW_MOD_SUPER)     flags |= KeyMod::Super;
+        if (mods & GLFW_MOD_CAPS_LOCK) flags |= KeyMod::CapsLock;
+        if (mods & GLFW_MOD_NUM_LOCK)  flags |= KeyMod::NumLock;
         return flags;
     }
 
-    InputModFlags operator|(InputModFlags flags, KeyMod mod)
+    KeyModFlags to_key_mod_flags(KeyMod mod)
     {
-        return flags | static_cast<InputModFlags>(mod);
+        return static_cast<KeyModFlags>(mod);
     }
 
-    InputModFlags operator|(KeyMod mod, InputModFlags flags)
+    bool key_mod_flag_contains(KeyModFlags flags, KeyMod mod)
+    {
+        return to_key_mod_flags(mod) & flags != 0;
+    }
+
+    bool key_mod_flag_equals(KeyModFlags flags, KeyMod mod)
+    {
+        KeyModFlags modFlag = to_key_mod_flags(mod);
+        return modFlag & flags == modFlag;
+    }
+
+    bool operator==(KeyMod mod, KeyModFlags flags)
+    {
+        return key_mod_flag_contains(flags, mod);
+    }
+
+    bool operator!=(KeyModFlags flags, KeyMod mod)
+    {
+        return !key_mod_flag_contains(flags, mod);
+    }
+
+    bool operator==(KeyModFlags flags, KeyMod mod)
+    {
+        return key_mod_flag_equals(flags, mod);
+    }
+
+    bool operator!=(KeyMod mod, KeyModFlags flags)
+    {
+        return !key_mod_flag_equals(flags, mod);
+    }
+
+    KeyModFlags operator|(KeyModFlags flags, KeyMod mod)
+    {
+        return flags | to_key_mod_flags(mod);
+    }
+
+    KeyModFlags operator|(KeyMod mod, KeyModFlags flags)
     {
         return flags | mod;
     }
 
-    InputModFlags operator|(KeyMod mod1, KeyMod mod2)
+    KeyModFlags operator|(KeyMod mod1, KeyMod mod2)
     {
-        return static_cast<InputModFlags>(mod1) | mod2;
+        return to_key_mod_flags(mod1) | mod2;
     }
 
-    bool operator==(InputModFlags flags, KeyMod mod)
+    KeyModFlags operator|=(KeyModFlags& flags, KeyMod mod)
     {
-        return flags & static_cast<InputModFlags>(mod);
+        flags = flags | mod;
+        return flags;
     }
 
-    bool operator==(KeyMod mod, InputModFlags flags)
+    KeyModFlags operator&(KeyModFlags flags, KeyMod mod)
     {
-        return flags == mod;
+        return flags & to_key_mod_flags(mod);
     }
 
-    bool operator!=(InputModFlags flags, KeyMod mod)
+    KeyModFlags operator&(KeyMod mod, KeyModFlags flags)
     {
-        return !(flags == mod);
+        return flags & mod;
     }
 
-    bool operator!=(KeyMod mod, InputModFlags flags)
+    KeyModFlags operator&(KeyMod mod1, KeyMod mod2)
     {
-        return !(flags == mod);
+        return to_key_mod_flags(mod1) & mod2;
+    }
+
+    KeyModFlags operator&=(KeyModFlags& flags, KeyMod mod)
+    {
+        flags = flags & mod;
+        return flags;
     }
 
     ////////// KeyCodes.hpp //////////

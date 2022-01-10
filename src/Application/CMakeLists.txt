@@ -2,14 +2,12 @@ target_sources(DrkCraft
   PRIVATE
     Application.cpp
     EventGenerator.cpp
-    Events.cpp
+    Event.cpp
     ImGuiTools.cpp
     Input.cpp
     Layer.cpp
     LayerStack.cpp
     MainMenu.cpp
-    Monitor.cpp
     SettingsMenu.cpp
     Timestep.cpp
-    Window.cpp
 )

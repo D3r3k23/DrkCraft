@@ -1,33 +1,82 @@
 #ifndef DRK_GAME_EVENT_HPP
 #define DRK_GAME_EVENT_HPP
 
-#include "Core/Base.hpp"
+// Do not include directly, use Game/GameEvents.hpp instead
 
-#include <vector>
+#include "Core/Base.hpp"
+#include "GameEventTypes.hpp"
+
+#include <deque>
 
 namespace DrkCraft
 {
-    class GameEventSubscriber
-    {
-
-    };
-
-    class GameEventSubject
+    struct GameEvent
     {
     public:
-        void post_event(const GameEvent& event);
+        friend class GameEventSubscriber;
+
+        static void post(GameEvent& event);
 
     private:
-        std::vector<GameEventSubscriber> m_subscribers;
+        static void subscribe(GameEventSubscriber* subscriber);
+        static void unsubscribe(GameEventSubscriber* subscriber);
+
+        GameEvent(void) = default;
+
+    public:
+        virtual ~GameEvent(void) = default;
+
+        GameEvent(const GameEvent&) = delete;
+        GameEvent(GameEvent&&) = delete;
+        GameEvent& operator=(const GameEvent&) = delete;
+        GameEvent& operator=(GameEvent&&) = delete;
+
+        virtual const char*    get_name(void) const = 0;
+        virtual GameEventFlags get_type(void) const = 0;
+
+        static constexpr GameEventFlags static_type(void) { return 0; }
+
+    private:
+        static std::deque<GameEventSubscriber*> s_subscribers;
     };
 
-    class GameEvent
+    class GameEventSubscriber
     {
     public:
-        static void add_subscriber(const GameEventSubscriber& subscriber);
-        static void post(const GameEvent& event);
+        GameEventSubscriber(GameEventFlags subscriptions);
+        ~GameEventSubscriber(void);
 
-        static GameEventSubject s_subject;
+        virtual void on_game_event(GameEvent& event) = 0;
+
+        GameEventFlags game_event_subscriptions(void) const;
+        bool subscribed(const GameEvent& event) const;
+
+    protected:
+        GameEventFlags m_gameEventSubscriptions;
+    };
+
+    template <typename E>
+    concept GameEventConcept = std::derived_from<E, GameEvent>;
+
+    template <typename E>
+    using GameEventHandlerFn = std::function<void(const E&)>;
+
+    class GameEventDispatcher
+    {
+    public:
+        GameEventDispatcher(const GameEvent& event)
+          : event(event)
+        { }
+
+        template <GameEventConcept E>
+        void dispatch(const GameEventHandlerFn<E>& handler)
+        {
+            if (event.get_type() == E::static_type())
+                handler(static_cast<const E&>(event));
+        }
+
+    private:
+        const GameEvent& event;
     };
 }
 

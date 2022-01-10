@@ -35,6 +35,7 @@ namespace DrkCraft
     private:
         virtual bool on_key_pressed(const KeyPressedEvent& event) override;
         virtual bool on_window_focus_lost(const WindowFocusLostEvent& event) override;
+        virtual bool on_monitor_event(const MonitorEvent& event) override;
 
         void pause(void);
         void unpause(void);

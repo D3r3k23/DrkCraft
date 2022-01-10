@@ -34,7 +34,7 @@ namespace DrkCraft
 
     void MainMenu::on_attach(void)
     {
-        Application::get_instance().add_overlay(m_settingsMenu);
+        Application::get_instance().add_layer(m_settingsMenu);
     }
 
     void MainMenu::on_detach(void)
