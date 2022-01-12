@@ -1,6 +1,6 @@
 #include "Log.hpp"
 
-#if defined(DRK_EN_LOGGING)
+#if DRK_LOGGING_ENABLED
 
     #include "Time.hpp"
     #include "Application/Events.hpp"
@@ -14,21 +14,21 @@
 
     #include <vector>
     #include <string>
-    #include <string_view>
+    #include <filesystem>
 
     namespace DrkCraft
     {
+        using std::filesystem::path;
+
         std::shared_ptr<spdlog::logger> Logger::s_coreLogger;
         std::shared_ptr<spdlog::logger> Logger::s_gameLogger;
         std::shared_ptr<spdlog::logger> Logger::s_eventLogger;
 
-        using std::filesystem::path;
-
-        void Logger::init(const path& dir)
+        void Logger::init(const char* dir)
         {
             auto time = Time::get_system_time();
             auto logName = fmt::format("DrkCraft_{:%Y-%m-%d_%H.%M.%S}.log", fmt::localtime(time));
-            auto file = dir / path(logName);
+            auto file = path(dir) / path(logName);
 
             auto sink = std::make_shared<spdlog::sinks::dist_sink_st>();
 

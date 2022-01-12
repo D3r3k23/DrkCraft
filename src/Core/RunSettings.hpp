@@ -63,7 +63,7 @@ namespace DrkCraft
             int height = 720;
         } init_window_size;
 
-        std::string saves_directory = "data/saves";
+        std::filesystem::path saves_directory = "data/saves";
     };
 
     class RuntimeSettings
@@ -85,8 +85,8 @@ namespace DrkCraft
         static void save_config(void);
 
     private:
-        static std::string s_configFile;
-        static std::string s_settingsFile;
+        static std::filesystem::path s_configFile;
+        static std::filesystem::path s_settingsFile;
 
         static ConfigData s_configData;
         static SettingsData s_settingsData;

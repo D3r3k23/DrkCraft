@@ -76,7 +76,7 @@ namespace DrkCraft
         switch (mode)
         {
             case GameMode::Dev:
-            #if defined(DRK_EN_DEV_MODE)
+            #if DRK_DEV_MODE_ENABLED
                 get_instance().mode = GameMode::Dev;
             #else
                 DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
@@ -94,27 +94,28 @@ namespace DrkCraft
 
     //////// RuntimeSettings ////////
 
-    std::string RuntimeSettings::s_configFile;
-    std::string RuntimeSettings::s_settingsFile;
+    namespace fs = std::filesystem;
+
+    fs::path RuntimeSettings::s_configFile;
+    fs::path RuntimeSettings::s_settingsFile;
 
     ConfigData   RuntimeSettings::s_configData;
     SettingsData RuntimeSettings::s_settingsData;
 
-    namespace fs = std::filesystem;
-
     void RuntimeSettings::load(const fs::path& location)
     {
         DRK_ASSERT_DEBUG(fs::is_directory(location), "Invalid config directory");
-        bool defaultsFound = fs::is_directory(location / fs::path("default"));
+        auto defaultsLocation = location / "default";
+        bool defaultsFound = fs::is_directory(defaultsLocation);
 
-        s_configFile   = (location / fs::path("config.yaml")).string();
-        s_settingsFile = (location / fs::path("settings.yaml")).string();
+        s_configFile   = location / "config.yaml";
+        s_settingsFile = location / "settings.yaml";
 
         if (!fs::is_regular_file(s_configFile))
         {
             if (defaultsFound)
             {
-                auto defaultConfigFile = location / fs::path("default") / fs::path("config.yaml");
+                auto defaultConfigFile = defaultsLocation / "config.yaml";
                 if (fs::is_regular_file(defaultConfigFile))
                     fs::copy(defaultConfigFile, s_configFile);
                 else
@@ -129,7 +130,7 @@ namespace DrkCraft
         {
             if (defaultsFound)
             {
-                auto defaultSettingsFile = location / fs::path("default") / fs::path("settings.yaml");
+                auto defaultSettingsFile = defaultsLocation / "settings.yaml";
                 if (fs::is_regular_file(defaultSettingsFile))
                     fs::copy(defaultSettingsFile, s_settingsFile);
                 else
@@ -143,7 +144,7 @@ namespace DrkCraft
 
     void RuntimeSettings::save_settings(void)
     {
-        DRK_LOG_CORE_TRACE("Saving settings to file {}", s_settingsFile);
+        DRK_LOG_CORE_INFO("Saving settings to {}", s_settingsFile.generic_string());
 
         YAML::Emitter settings;
         settings << YAML::BeginMap;
@@ -173,8 +174,9 @@ namespace DrkCraft
 
     void RuntimeSettings::load_config(void)
     {
-        DRK_ASSERT_DEBUG(fs::is_regular_file(s_configFile), "Settings file not found");
-        YAML::Node config = YAML::LoadFile(s_configFile);
+        DRK_ASSERT_DEBUG(fs::is_regular_file(s_configFile), "Config file not found");
+        DRK_LOG_CORE_INFO("Loading config from {}", s_configFile.generic_string());
+        YAML::Node config = YAML::LoadFile(s_configFile.string());
 
         if (!config.IsMap())
             DRK_LOG_CORE_WARN("Invalid config.yaml format");
@@ -184,7 +186,7 @@ namespace DrkCraft
             {
                 YAML::Node initWindowSize = config["init_window_size"].as<YAML::Node>();
                 if (!initWindowSize.IsMap())
-                    DRK_LOG_CORE_WARN("Invalid config.yaml format: {}", "init_window_size");
+                    DRK_LOG_CORE_WARN("Invalid config.yaml format");
                 else
                 {
                     s_configData.init_window_size.width  = initWindowSize["width"].as<int>();
@@ -201,7 +203,8 @@ namespace DrkCraft
     void RuntimeSettings::load_settings(void)
     {
         DRK_ASSERT_DEBUG(fs::is_regular_file(s_settingsFile), "Settings file not found");
-        YAML::Node settings = YAML::LoadFile(s_settingsFile);
+        DRK_LOG_CORE_INFO("Loading settings from {}", s_settingsFile.generic_string());
+        YAML::Node settings = YAML::LoadFile(s_settingsFile.string());
 
         if (!settings.IsMap())
             DRK_LOG_CORE_WARN("Invalid settings.yaml format");
@@ -226,7 +229,7 @@ namespace DrkCraft
 
     void RuntimeSettings::save_config(void)
     {
-        DRK_LOG_CORE_TRACE("Saving config to file {}", s_configFile);
+        DRK_LOG_CORE_INFO("Saving config to {}", s_configFile.generic_string());
 
         YAML::Emitter config;
         config << YAML::BeginMap;
@@ -235,7 +238,7 @@ namespace DrkCraft
         config     << YAML::Key << "width"  << YAML::Value << s_configData.init_window_size.width;
         config     << YAML::Key << "height" << YAML::Value << s_settingsData.fullscreen_monitor;
         config   << YAML::EndMap;
-        config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory;
+        config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory.generic_string();
         config << YAML::EndMap;
 
         std::ofstream outfile(s_configFile);

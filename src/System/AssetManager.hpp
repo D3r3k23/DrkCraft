@@ -3,19 +3,18 @@
 
 #include "Core/Base.hpp"
 
-#include <string>
-#include <string_view>
+#include <filesystem>
 
 namespace DrkCraft
 {
-    std::string font_asset_path(std::string_view name);
-    std::string icon_asset_path(std::string_view name);
-    std::string image_asset_path(std::string_view name);
-    std::string model_asset_path(std::string_view name);
-    std::string music_asset_path(std::string_view name);
-    std::string shader_asset_path(std::string_view name);
-    std::string sound_asset_path(std::string_view name);
-    std::string texture_asset_path(std::string_view name);
+    std::filesystem::path font_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path icon_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path image_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path model_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path music_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path shader_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path sound_asset_path(const std::filesystem::path& filename);
+    std::filesystem::path texture_asset_path(const std::filesystem::path& filename);
 
     class AssetManager
     {

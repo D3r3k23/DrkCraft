@@ -1,6 +1,6 @@
 #include "Assert.hpp"
 
-#if defined(DRK_EN_ASSERTS)
+#if DRK_ASSERTS_ENABLED
 
     #include "Log.hpp"
     #include "Profiler.hpp"

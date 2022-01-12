@@ -27,13 +27,13 @@ namespace DrkCraft
         auto fontPath = font_asset_path("Kanit-Medium.ttf");
         ImFont* font;
 
-        font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 16.0f);
-        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
+        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 16.0f);
+        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
         s_fonts[ImGuiFont::Regular] = font;
         io.FontDefault = font;
 
-        font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 40.0f);
-        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
+        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 40.0f);
+        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
         s_fonts[ImGuiFont::Title] = font;
 
         setup_style();

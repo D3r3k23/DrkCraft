@@ -64,7 +64,7 @@
         };
     }
 
-    #define DRK_FUNC_SIG __FUNCTION__ // Works with MSVC
+    #define DRK_FUNC_SIG __FUNCTION__
 
     #define DRK_CLEAN_FUNC_NAME (const char*)(DRK_FUNC_SIG + 10) // Trims "DrkCraft::"
 

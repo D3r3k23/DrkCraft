@@ -1,8 +1,8 @@
 target_sources(DrkCraft
   PRIVATE
     Application.cpp
-    EventGenerator.cpp
     Event.cpp
+    EventGenerator.cpp
     ImGuiTools.cpp
     Layer.cpp
     LayerStack.cpp

@@ -5,12 +5,11 @@
 
 #include "BuildSettings.hpp"
 
-#if defined(DRK_EN_LOGGING)
+#if DRK_LOGGING_ENABLED
 
     #include <spdlog/spdlog.h>
 
     #include <memory>
-    #include <filesystem>
 
     namespace DrkCraft
     {
@@ -19,7 +18,7 @@
         class Logger
         {
         public:
-            static void init(const std::filesystem::path& dir);
+            static void init(const char* dir);
             static void close(void);
 
             static spdlog::logger& get_core_logger(void);

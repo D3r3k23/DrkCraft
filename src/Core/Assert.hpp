@@ -5,7 +5,7 @@
 
 #include "BuildSettings.hpp"
 
-#if defined(DRK_EN_ASSERTS)
+#if DRK_ASSERTS_ENABLED
 
     #include <fmt/format.h>
 

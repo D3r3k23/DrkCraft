@@ -32,7 +32,9 @@ namespace DrkCraft
             {
                 case AudioSourceFormat::Mp3 : return make_ptr<AudioSourceMp3>(filename);
                 case AudioSourceFormat::Ogg : return make_ptr<AudioSourceOgg>(filename);
-                default: DRK_ASSERT_DEBUG(false, "Audio file {} not supported", filename.string());
+                default:
+                    DRK_ASSERT_DEBUG(false, "Audio file {} not supported", filename.string());
+                    return {};
             }
         }
 
