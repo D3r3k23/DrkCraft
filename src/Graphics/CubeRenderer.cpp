@@ -1,7 +1,8 @@
 #include "CubeRenderer.hpp"
 
+#include "Util.hpp"
+
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace DrkCraft
 {
@@ -42,8 +43,8 @@ namespace DrkCraft
             4, 5, 0,  5, 1, 0  // Bottom
         };
 
-        cubeVertexBuffer = make_ptr<VertexBuffer>(glm::value_ptr(vertices[0]), NUM_VERTICES);
-        cubeIndexBuffer  = make_ptr<IndexBuffer>(indices, NUM_INDICES);
+        cubeVertexBuffer = make_ptr<VertexBuffer>(vertices);
+        cubeIndexBuffer = make_ptr<IndexBuffer>(indices);
 
         cubeVertexBuffer->bind();
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -51,12 +52,10 @@ namespace DrkCraft
 
     void CubeRenderer::draw_cube(const Transform& transform)
     {
-        cubeVertexBuffer->bind();
+        GlObject<VertexBuffer> vbo(*cubeVertexBuffer);
         glEnableVertexAttribArray(0);
-        cubeIndexBuffer->bind();
+        GlObject<IndexBuffer> vao(*cubeIndexBuffer);
         glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, nullptr);
-        cubeIndexBuffer->unbind();
         glDisableVertexAttribArray(0);
-        cubeVertexBuffer->unbind();
     }
 }

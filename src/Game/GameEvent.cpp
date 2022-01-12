@@ -2,7 +2,7 @@
 #include "GameEvent.hpp"
 #include "GameEvents.hpp"
 
-#include <ranges>
+#include <algorithm>
 
 namespace DrkCraft
 {

@@ -1,5 +1,7 @@
 set(BUILD_SHARED_LIBS OFF)
 
+add_subdirectory(stb)
+
 add_library(entt INTERFACE)
 target_include_directories(entt INTERFACE entt/src)
 
@@ -30,7 +32,6 @@ add_subdirectory(yaml-cpp)
 
 add_subdirectory(glad)
 add_subdirectory(imgui)
-add_subdirectory(stb)
 
 target_link_libraries(DrkCraft
   PUBLIC
@@ -44,6 +45,7 @@ target_link_libraries(DrkCraft
     rapidjson
     spdlog
     stb_image
+    stb_rect_pack
     stb_truetype
     yaml-cpp
 )

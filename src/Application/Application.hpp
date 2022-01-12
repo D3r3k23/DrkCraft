@@ -10,7 +10,7 @@
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Timestep.hpp"
-#include "Core/Util.hpp"
+#include "Graphics/Util.hpp"
 
 namespace DrkCraft
 {
@@ -56,7 +56,7 @@ namespace DrkCraft
         static Application* s_instance;
 
         Window m_window;
-        OpenGLLoader m_openGlLoader;
+        OpenGlLoader m_openGlLoader;
 
         EventGenerator m_eventGenerator;
         MonitorManager m_monitorManager;

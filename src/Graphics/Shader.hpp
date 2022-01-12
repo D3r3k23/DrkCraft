@@ -2,6 +2,7 @@
 #define DRK_SHADER_HPP
 
 #include "Core/Base.hpp"
+#include "OpenGlObject.hpp"
 
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
@@ -20,9 +21,6 @@
 
 namespace DrkCraft
 {
-    using ShaderID = GLuint;
-    using ShaderProgramID = GLuint;
-
     enum class ShaderType
     {
         None,
@@ -35,7 +33,7 @@ namespace DrkCraft
 
     GLenum get_gl_shader_type(ShaderType type);
 
-    class Shader
+    class Shader : public OpenGlObject
     {
     public:
         static Ref<Shader> create(const std::filesystem::path& path, ShaderType type);
@@ -47,20 +45,18 @@ namespace DrkCraft
         Shader& operator=(const Shader&) = delete;
         Shader& operator=(Shader&&) = delete;
 
-        ShaderID get_id(void) const;
         ShaderType get_type(void) const;
 
     private:
         void compile(std::string_view source);
 
     private:
-        ShaderID m_id = 0;
         ShaderType m_type = ShaderType::None;
 
         static std::unordered_map<std::string, Ref<Shader>> s_shaderCache;
     };
 
-    class ShaderProgram
+    class ShaderProgram : public OpenGlObject
     {
     public:
         ShaderProgram(std::string_view name);
@@ -74,12 +70,14 @@ namespace DrkCraft
         ShaderProgram& operator=(ShaderProgram&&) = delete;
 
         void add_shader(Ref<Shader> shader);
-        void link(void) const;
+        void link(void);
 
-        std::string get_name(void) const;
+        std::string_view get_name(void) const;
 
-        void bind(void) const;
-        void unbind(void) const;
+        void bind(void);
+        void unbind(void);
+
+        GLint get_uniform_location(const std::string& name);
 
         void upload_uniform_int_array(const std::string& name, const std::span<int> data);
         void upload_uniform_int(const std::string& name, int data);
@@ -104,10 +102,6 @@ namespace DrkCraft
         void upload_uniform_mat4(const std::string& name, const glm::mat4& data);
 
     private:
-        GLint get_uniform_location(const std::string& name);
-
-    private:
-        ShaderProgramID m_id = 0;
         std::string m_name;
 
         std::vector<Ref<Shader>> m_shaders;

@@ -1,6 +1,6 @@
 #include "Player.hpp"
 
-#include "Application/Input.hpp"
+#include "System/Input.hpp"
 #include "Core/Profiler.hpp"
 
 #include <glm/geometric.hpp>

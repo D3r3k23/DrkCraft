@@ -4,8 +4,10 @@ target_sources(DrkCraft
     Camera.cpp
     CubeRenderer.cpp
     Mesh.cpp
+    OpenGlObject.cpp
     Renderer.cpp
     Shader.cpp
     Texture.cpp
     Transform.cpp
+    Util.cpp
 )

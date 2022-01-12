@@ -4,7 +4,6 @@ target_sources(DrkCraft
     EventGenerator.cpp
     Event.cpp
     ImGuiTools.cpp
-    Input.cpp
     Layer.cpp
     LayerStack.cpp
     MainMenu.cpp

@@ -55,7 +55,7 @@ namespace DrkCraft
 
         if (m_show)
         {
-            ImGui::PushFont(ImGuiManager::get_font(Font::Title));
+            ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
             ImGuiTools::BeginFullscreen("Main Menu", ImGuiWindowFlags_NoBackground);
 
             ImGui::Dummy({250, 100});

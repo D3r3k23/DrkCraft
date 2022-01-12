@@ -2,8 +2,8 @@
 #define DRK_INPUT_HPP
 
 #include "Core/Base.hpp"
-#include "Core/KeyCodes.hpp"
-#include "Core/MouseCodes.hpp"
+#include "KeyCodes.hpp"
+#include "MouseCodes.hpp"
 
 #include <glm/vec2.hpp>
 

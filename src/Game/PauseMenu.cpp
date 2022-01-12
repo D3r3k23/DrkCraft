@@ -1,6 +1,7 @@
 #include "PauseMenu.hpp"
 
 #include "Application/Application.hpp"
+#include "System/Input.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -53,7 +54,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGui::PushFont(ImGuiManager::get_font(Font::Title));
+        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
         ImGuiTools::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
 
         ImGui::Dummy({250, 50});

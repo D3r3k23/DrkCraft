@@ -16,6 +16,7 @@ target_sources(imgui
 target_include_directories(imgui
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE
     imgui
 )
 
@@ -24,6 +25,8 @@ target_link_libraries(imgui
     glad
     glfw
     glm
+    stb_rect_pack
+    stb_truetype
 )
 
 if(${BUILD_CONFIG} STREQUAL Release)

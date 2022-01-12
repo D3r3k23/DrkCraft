@@ -1,8 +1,8 @@
 #include "Input.hpp"
-#include "Core/KeyCodes.hpp"
-#include "Core/MouseCodes.hpp"
+#include "KeyCodes.hpp"
+#include "MouseCodes.hpp"
 
-#include "Application.hpp"
+#include "Application/Application.hpp"
 
 #include <GLFW/glfw3.h>
 

@@ -44,7 +44,7 @@ namespace DrkCraft
             const std::string source = read_file(path);
             DRK_ASSERT_DEBUG(source.size() > 0, "Could not load shader file");
 
-            const auto& shader = make_ref<Shader>(type);
+            auto shader = make_ref<Shader>(type);
             shader->compile(source);
             return shader;
         }
@@ -52,7 +52,7 @@ namespace DrkCraft
 
     Shader::Shader(ShaderType type)
     {
-        ShaderID id = glCreateShader(get_gl_shader_type(type));
+        GlObjectID id = glCreateShader(get_gl_shader_type(type));
         DRK_ASSERT_DEBUG(id, "glCreateShader failed");
         m_id = id;
         m_type = type;
@@ -61,11 +61,6 @@ namespace DrkCraft
     Shader::~Shader(void)
     {
         glDeleteShader(m_id);
-    }
-
-    ShaderID Shader::get_id(void) const
-    {
-        return m_id;
     }
 
     ShaderType Shader::get_type(void) const
@@ -128,7 +123,7 @@ namespace DrkCraft
         m_shaders.push_back(shader);
     }
 
-    void ShaderProgram::link(void) const
+    void ShaderProgram::link(void)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -148,19 +143,32 @@ namespace DrkCraft
         }
     }
 
-    std::string ShaderProgram::get_name(void) const
+    std::string_view ShaderProgram::get_name(void) const
     {
         return m_name;
     }
 
-    void ShaderProgram::bind(void) const
+    void ShaderProgram::bind(void)
     {
         glUseProgram(m_id);
     }
 
-    void ShaderProgram::unbind(void) const
+    void ShaderProgram::unbind(void)
     {
         glUseProgram(0);
+    }
+
+    GLint ShaderProgram::get_uniform_location(const std::string& name)
+    {
+        if (m_uniformLocationCache.contains(name))
+            return m_uniformLocationCache[name];
+        else
+        {
+            GLint location = glGetUniformLocation(m_id, name.c_str());
+            DRK_ASSERT_DEBUG(location != -1, "Uniform \"{}\" does not exist", name);
+            m_uniformLocationCache[name] = location;
+            return location;
+        }
     }
 
     void ShaderProgram::upload_uniform_int_array(const std::string& name, const std::span<int> data)
@@ -269,18 +277,5 @@ namespace DrkCraft
     {
         GLint location = get_uniform_location(name);
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(data));
-    }
-
-    GLint ShaderProgram::get_uniform_location(const std::string& name)
-    {
-        if (m_uniformLocationCache.contains(name))
-            return m_uniformLocationCache[name];
-        else
-        {
-            GLint location = glGetUniformLocation(m_id, name.c_str());
-            DRK_ASSERT_DEBUG(location != -1, "Uniform \"{}\" does not exist", name);
-            m_uniformLocationCache[name] = location;
-            return location;
-        }
     }
 }

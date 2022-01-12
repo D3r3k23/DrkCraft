@@ -1,7 +1,11 @@
 target_sources(DrkCraft
   PRIVATE
+    AssetManager.cpp
     Audio.cpp
     Font.cpp
+    Image.cpp
+    Input.cpp
     Monitor.cpp
+    MusicPlayer.cpp
     Window.cpp
 )

@@ -58,7 +58,7 @@ namespace DrkCraft
         return !m_layerAttached;
     }
 
-    std::string Layer::get_layer_name(void) const
+    std::string_view Layer::get_layer_name(void) const
     {
         return m_layerName;
     }

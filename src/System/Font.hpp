@@ -3,9 +3,14 @@
 
 #include "Core/Base.hpp"
 
+#include <stb/stb_truetype.h>
+
 namespace DrkCraft
 {
+    class Font
+    {
 
+    };
 }
 
 #endif // DRK_FONT_HPP

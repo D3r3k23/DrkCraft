@@ -1,6 +1,6 @@
 #include "EventGenerator.hpp"
 
-#include "Input.hpp"
+#include "System/Input.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft

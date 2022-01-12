@@ -12,7 +12,7 @@
 
 namespace DrkCraft
 {
-    enum class Font
+    enum class ImGuiFont
     {
         Regular = 0,
         Title
@@ -42,7 +42,7 @@ namespace DrkCraft
         void toggle_demo_window(void);
         bool demo_window_enabled(void) const;
 
-        static ImFont* get_font(Font font);
+        static ImFont* get_font(ImGuiFont font);
 
     private:
         void setup_style(void);
@@ -57,7 +57,7 @@ namespace DrkCraft
 
         bool m_showDemoWindow;
 
-        static std::unordered_map<Font, ImFont*> s_fonts;
+        static std::unordered_map<ImGuiFont, ImFont*> s_fonts;
     };
 
     namespace ImGuiTools

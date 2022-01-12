@@ -1,14 +1,14 @@
 #include "ImGuiTools.hpp"
 
 #include "Core/BuildSettings.hpp"
-#include "Engine/AssetManager.hpp"
+#include "System/AssetManager.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui_impl/imgui_impl.h>
 
 namespace DrkCraft
 {
-    std::unordered_map<Font, ImFont*> ImGuiManager::s_fonts;
+    std::unordered_map<ImGuiFont, ImFont*> ImGuiManager::s_fonts;
 
     ImGuiManager::ImGuiManager(GLFWwindow* window, bool enable)
       : m_enabled(enable),
@@ -29,12 +29,12 @@ namespace DrkCraft
 
         font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 16.0f);
         DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
-        s_fonts[Font::Regular] = font;
+        s_fonts[ImGuiFont::Regular] = font;
         io.FontDefault = font;
 
         font = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 40.0f);
         DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath);
-        s_fonts[Font::Title] = font;
+        s_fonts[ImGuiFont::Title] = font;
 
         setup_style();
         init_impl(window);
@@ -156,7 +156,7 @@ namespace DrkCraft
             || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
     }
 
-    ImFont* ImGuiManager::get_font(Font font)
+    ImFont* ImGuiManager::get_font(ImGuiFont font)
     {
         DRK_ASSERT_DEBUG(s_fonts.contains(font), "Unknown font");
         return s_fonts[font];

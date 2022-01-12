@@ -2,6 +2,7 @@
 
 #include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
+#include "System/Input.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft

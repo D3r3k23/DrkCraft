@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Event.hpp"
-#include "Input.hpp"
+#include "System/Input.hpp"
 
 #define DRK_EVENT_TYPE_INFO(flagType, name)            \
     virtual const char* get_name(void) const override   \

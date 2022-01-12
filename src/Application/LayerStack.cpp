@@ -2,7 +2,7 @@
 
 #include "Core/Profiler.hpp"
 
-#include <ranges>
+#include <algorithm>
 
 namespace DrkCraft
 {

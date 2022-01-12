@@ -57,7 +57,7 @@ namespace DrkCraft
         bool is_layer_attached(void) const;
         bool is_layer_detached(void) const;
 
-        std::string get_layer_name(void) const;
+        std::string_view get_layer_name(void) const;
 
     private:
         const std::string m_layerName;
