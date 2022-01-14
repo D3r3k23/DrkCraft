@@ -19,6 +19,12 @@
 [submodule "lib/minimp3/minimp3"]
 	path = lib/minimp3/minimp3
 	url = https://github.com/lieff/minimp3.git
+[submodule "lib/ogg"]
+	path = lib/ogg
+	url = https://gitlab.xiph.org/xiph/ogg.git
+[submodule "lib/openal-soft"]
+	path = lib/openal-soft
+	url = https://github.com/kcat/openal-soft.git
 [submodule "lib/rapidjson"]
 	path = lib/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
@@ -28,9 +34,12 @@
 [submodule "lib/stb/stb"]
 	path = lib/stb/stb
 	url = https://github.com/nothings/stb.git
+[submodule "lib/vorbis"]
+	path = lib/vorbis
+	url = https://github.com/xiph/vorbis.git
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "lib/ogg"]
-	path = lib/ogg
-	url = https://gitlab.xiph.org/xiph/ogg.git
+[submodule "lib/nameof"]
+	path = lib/nameof
+	url = https://github.com/Neargye/nameof.git
