@@ -8,6 +8,7 @@
 
 // Temp
 #include <Audio/Audio.hpp>
+#include <array>
 
 namespace DrkCraft
 {
@@ -27,23 +28,23 @@ namespace DrkCraft
         m_consoleLayer = Layer::create<Console>();
         m_debugLayer   = Layer::create<DebugOverlay>();
 
-        // std::array<float, 9> vertexPositions
-        // {
-        //      0.0f,  0.5f, 0.0f,
-        //      0.5f, -0.5f, 0.0f,
-        //     -0.5f, -0.5f, 0.0f
-        // };
-        //
-        // GLuint vertexBufferObject;
-        // glGenBuffers(1, &vertexBufferObject);
-        // glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions.data(), GL_STATIC_DRAW);
+        std::array<float, 9> vertexPositions
+        {
+             0.0f,  0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f
+        };
 
-        // glGenVertexArrays(1, &vertexArrayObject);
-        // glBindVertexArray(vertexArrayObject);
-        // glEnableVertexAttribArray(0); // First attribute
-        // glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        GLuint vertexBufferObject;
+        glGenBuffers(1, &vertexBufferObject);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions.data(), GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vertexArrayObject);
+        glBindVertexArray(vertexArrayObject);
+        glEnableVertexAttribArray(0); // First attribute
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
         flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
         flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
@@ -87,12 +88,12 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
-        flatColorShaderProgram.upload_uniform_mat4("u_viewProjection", m_player.get_view_projection());
-        flatColorShaderProgram.upload_uniform_mat4("u_transform", Transform::Identity());
+        // flatColorShaderProgram.upload_uniform_mat("u_viewProjection", m_player.get_view_projection());
+        // flatColorShaderProgram.upload_uniform_mat("u_transform", Transform::Identity());
         flatColorShaderProgram.upload_uniform_vec4("u_color", glm::vec4(color, 1.0f));
 
-        // Renderer::draw_triangle(vertexArrayObject);
-        Renderer::draw_block(0, 0, 0);
+        Renderer::draw_triangle(vertexArrayObject);
+        // Renderer::draw_block(0, 0, 0);
     }
 
     void Game::on_event(Event& event)
@@ -110,11 +111,17 @@ namespace DrkCraft
             case KeyCode::Space:
             {
                 color = { randomDist(), randomDist(), randomDist() };
-                DRK_LOG_GAME_INFO("Changing color to: ({}, {} {})", color.r, color.g, color.b);
+                DRK_LOG_GAME_INFO("Changed color to: ({}, {} {})", color.r, color.g, color.b);
                 if (song->is_playing())
+                {
+                    DRK_LOG_GAME_INFO("Pausing song");
                     Audio::pause(song);
+                }
                 else
+                {
+                    DRK_LOG_GAME_INFO("Playing song");
                     Audio::play(song);
+                }
                 return true;
             }
             case KeyCode::Escape:

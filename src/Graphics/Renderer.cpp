@@ -29,7 +29,7 @@ namespace DrkCraft
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
-        s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
+        // s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
     }
 
     void Renderer::shutdown(void)

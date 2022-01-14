@@ -3,7 +3,6 @@
 #include "Core/RunSettings.hpp"
 #include "Application/Application.hpp"
 #include "Application/MainMenu.hpp"
-#include "Core/Util.hpp"
 #include "Core/Profiler.hpp"
 
 using namespace DrkCraft;
@@ -22,9 +21,7 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("Loading settings");
     CommandLineOptions::parse_args(argc, argv);
     RuntimeSettings::load("config");
-
-    auto mode = game_mode_to_string(CommandLineOptions::get_game_mode());
-    DRK_LOG_CORE_INFO("Game mode: {}", capitalize(mode));
+    DRK_LOG_CORE_INFO("Game mode: {}", game_mode_to_string(CommandLineOptions::get_game_mode()));
 
     if (DRK_TRACE_LOGGING_ENABLED)
         DRK_LOG_CORE_INFO("Trace logging enabled");

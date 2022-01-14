@@ -80,27 +80,27 @@ namespace DrkCraft
 
         GLint get_uniform_location(const std::string& name);
 
-        void upload_uniform_int_array(const std::string& name, const std::span<int> data);
-        void upload_uniform_int(const std::string& name, int data);
-        void upload_uniform_ivec2(const std::string& name, const glm::ivec2& data);
-        void upload_uniform_ivec3(const std::string& name, const glm::ivec3& data);
-        void upload_uniform_ivec4(const std::string& name, const glm::ivec4& data);
+        void upload_uniform(const std::string& name, int data);
+        void upload_uniform_vec2(const std::string& name, const glm::ivec2& data);
+        void upload_uniform_vec3(const std::string& name, const glm::ivec3& data);
+        void upload_uniform_vec4(const std::string& name, const glm::ivec4& data);
+        void upload_uniform_array(const std::string& name, const std::span<int> data);
 
-        void upload_uniform_uint_array(const std::string& name, const std::span<uint> data);
-        void upload_uniform_uint(const std::string& name, uint data);
-        void upload_uniform_uvec2(const std::string& name, const glm::uvec2& data);
-        void upload_uniform_uvec3(const std::string& name, const glm::uvec3& data);
-        void upload_uniform_uvec4(const std::string& name, const glm::uvec4& data);
+        void upload_uniform(const std::string& name, uint data);
+        void upload_uniform_vec2(const std::string& name, const glm::uvec2& data);
+        void upload_uniform_vec3(const std::string& name, const glm::uvec3& data);
+        void upload_uniform_vec4(const std::string& name, const glm::uvec4& data);
+        void upload_uniform_array(const std::string& name, const std::span<uint> data);
 
-        void upload_uniform_float_array(const std::string& name, const std::span<float> data);
-        void upload_uniform_float(const std::string& name, float data);
+        void upload_uniform(const std::string& name, float data);
         void upload_uniform_vec2(const std::string& name, const glm::vec2& data);
         void upload_uniform_vec3(const std::string& name, const glm::vec3& data);
         void upload_uniform_vec4(const std::string& name, const glm::vec4& data);
+        void upload_uniform_array(const std::string& name, const std::span<float> data);
 
-        void upload_uniform_mat2(const std::string& name, const glm::mat2& data);
-        void upload_uniform_mat3(const std::string& name, const glm::mat3& data);
-        void upload_uniform_mat4(const std::string& name, const glm::mat4& data);
+        void upload_uniform_mat(const std::string& name, const glm::mat2& data);
+        void upload_uniform_mat(const std::string& name, const glm::mat3& data);
+        void upload_uniform_mat(const std::string& name, const glm::mat4& data);
 
     private:
         std::string m_name;

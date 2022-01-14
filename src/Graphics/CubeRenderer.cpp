@@ -48,7 +48,7 @@ namespace DrkCraft
         m_cubeVertexBuffer = make_ptr<VertexBuffer>(vertices);
         m_cubeIndexBuffer = make_ptr<IndexBuffer>(indices);
 
-        m_cubeVertexBuffer->bind();
+        GlObjectHandler<VertexBuffer> vbo(*m_cubeVertexBuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
 

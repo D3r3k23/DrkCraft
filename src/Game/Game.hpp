@@ -18,7 +18,6 @@
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
 #include "Audio/AudioSource.hpp"
-#include <array>
 
 namespace DrkCraft
 {

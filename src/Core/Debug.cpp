@@ -1,11 +1,15 @@
 #include "Debug.hpp"
 
+#include <nameof.hpp>
+
 namespace DrkCraft
 {
     #if 0 // defined(DRK_CONFIG_DEBUG)
 
         std::string stringify_key_code(KeyCode key)
         {
+            return NAMEOF_ENUM(key);
+
             int code = from_key_code(key);
 
             if (48 <= code && code <= 57) { // Digit
@@ -79,6 +83,8 @@ namespace DrkCraft
 
         std::string stringify_mouse_code(MouseCode button)
         {
+            return NAMEOF_ENUM(button);
+
             int code = from_mouse_code(button);
 
             if (3 <= code && code <= 7) {
