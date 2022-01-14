@@ -1,5 +1,7 @@
 #include "AssetManager.hpp"
 
+#include "Audio/Audio.hpp"
+
 namespace DrkCraft
 {
     using std::filesystem::path;
@@ -22,4 +24,16 @@ namespace DrkCraft
     path shader_asset_path(const path& filename)  { return SHADER_ASSET_DIR  / filename; }
     path sound_asset_path(const path& filename)   { return SOUND_ASSET_DIR   / filename; }
     path texture_asset_path(const path& filename) { return TEXTURE_ASSET_DIR / filename; }
+
+    AssetManager::AssetManager(void)
+    {
+        DRK_LOG_CORE_TRACE("Initializing Audio system");
+        Audio::init();
+    }
+
+    AssetManager::~AssetManager(void)
+    {
+        DRK_LOG_CORE_TRACE("Shutting down Audio system");
+        Audio::shutdown();
+    }
 }

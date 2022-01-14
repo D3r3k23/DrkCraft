@@ -1,12 +1,13 @@
 #include "Monitor.hpp"
 
-#include "Core/RunSettings.hpp"
 #include "Core/Profiler.hpp"
 
 #include <algorithm>
 
 namespace DrkCraft
 {
+    ////////// Monitor //////////
+
     Monitor::Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>& eventHandler)
       : m_monitor(monitor),
         m_number(number)
@@ -62,8 +63,8 @@ namespace DrkCraft
         }
         DRK_ASSERT_CORE(count, "glfwGetVideoModes error");
 
+    #if 0
         DRK_LOG_CORE_DEBUG("Monitor: {}", get_name());
-
         for (int i = 0; i < count; i++)
             DRK_LOG_CORE_DEBUG("vidMode[{}]: W={} H={} R={} G={} B={} RR={}", i,
                 vidModesPtr[i].width,
@@ -72,6 +73,7 @@ namespace DrkCraft
                 vidModesPtr[i].greenBits,
                 vidModesPtr[i].blueBits,
                 vidModesPtr[i].refreshRate);
+    #endif
 
         return vidModesPtr[count - 1];
 
@@ -104,6 +106,8 @@ namespace DrkCraft
     {
         return !(*this == other);
     }
+
+    ////////// MonitorManager //////////
 
     MonitorManager::MonitorManager(void)
       : m_fullscreen(false)
@@ -147,7 +151,7 @@ namespace DrkCraft
         }
     }
 
-    uint MonitorManager::get_monitor_number(GLFWmonitor* rawMonitor)
+    uint MonitorManager::get_monitor_number(GLFWmonitor* rawMonitor) const
     {
         for (const auto& monitor : m_monitors)
             if (rawMonitor == monitor.get_raw_monitor())
@@ -162,25 +166,17 @@ namespace DrkCraft
         if (number >= num_monitors())
         {
             DRK_LOG_CORE_WARN("Invalid monitor selected. Defaulting to primary");
-            return get_primary_monitor();
+            return m_monitors[0];
         }
         return m_monitors[number];
     }
 
-    Monitor& MonitorManager::get_primary_monitor(void)
+    int MonitorManager::get_fullscreen_monitor(void) const
     {
-        return m_monitors[0];
-    }
-
-    uint MonitorManager::get_fullscreen_monitor(void)
-    {
-        int num = RuntimeSettings::get().fullscreen_monitor;
-        if (num < 0 || num >= num_monitors())
-        {
-            num = 0;
-            RuntimeSettings::get().fullscreen_monitor = num;
-        }
-        return num;
+        if (m_fullscreenMonitor)
+            return *m_fullscreenMonitor;
+        else
+            return -1;
     }
 
     void MonitorManager::activate_fullscreen(const Window& window, uint monitor)
@@ -193,9 +189,10 @@ namespace DrkCraft
         }
         if (!fullscreen_activated())
         {
+            m_fullscreen = true;
+            m_fullscreenMonitor = monitor;
             m_savedWindowedSize = window.get_size();
             m_savedWindowedPos  = window.get_pos();
-            m_fullscreen = true;
         }
         const GLFWvidmode& vidMode = get_monitor(monitor).get_vid_mode();
         GLFWmonitor*    rawMonitor = get_monitor(monitor).get_raw_monitor();
@@ -211,6 +208,7 @@ namespace DrkCraft
 
         glfwSetWindowMonitor(window.get_raw_window(), nullptr, pos.x, pos.y, size.x, size.y, 0);
 
+        m_fullscreenMonitor.reset();
         m_savedWindowedSize.reset();
         m_savedWindowedPos.reset();
     }

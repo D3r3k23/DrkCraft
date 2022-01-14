@@ -7,6 +7,8 @@
 
 namespace DrkCraft
 {
+    // Managed by AssetManager, pass to ImGui::AddFontFromMemoryTTF
+
     class Font
     {
 

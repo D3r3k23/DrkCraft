@@ -28,6 +28,8 @@ namespace DrkCraft
 
         static void clear(void);
 
+        static void draw_indexed(const IndexBuffer& buffer);
+
         static void draw_block(uint x, uint y, uint z);
 
         static void draw_triangle(GLuint vao);

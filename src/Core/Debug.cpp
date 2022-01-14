@@ -2,7 +2,7 @@
 
 namespace DrkCraft
 {
-    #if defined(DRK_CONFIG_DEBUG)
+    #if 0 // defined(DRK_CONFIG_DEBUG)
 
         std::string stringify_key_code(KeyCode key)
         {

@@ -1,34 +1,12 @@
 #include "Window.hpp"
 
 #include "Graphics/Renderer.hpp"
-#include "Core/BuildSettings.hpp"
 #include "Core/RunSettings.hpp"
 #include "Core/Util.hpp"
 #include "Core/Profiler.hpp"
 
 namespace DrkCraft
 {
-    void Window::init_glfw(void)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        auto status = glfwInit();
-        DRK_ASSERT_CORE(status == GLFW_TRUE, "Failed to initialize GLFW");
-
-    #if DRK_LOGGING_ENABLED
-        glfwSetErrorCallback([](int error, const char* description)
-        {
-            DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
-        });
-    #endif
-    }
-
-    void Window::shutdown_glfw(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        glfwTerminate();
-    }
-
     Window::Window(std::string_view title)
       : m_title(title)
     {

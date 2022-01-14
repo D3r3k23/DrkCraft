@@ -88,4 +88,40 @@ namespace DrkCraft
     {
         return get();
     }
+
+    IntervalCounter::IntervalCounter(uint interval)
+      : m_INTERVAL(interval),
+        m_count(0)
+    { }
+
+    void IntervalCounter::count(int x)
+    {
+        m_count += x;
+    }
+
+    bool IntervalCounter::on_interval(void)
+    {
+        if (m_count >= m_INTERVAL)
+        {
+            m_count = 0;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    IntervalTimer::IntervalTimer(int interval)
+      : m_INTERVAL(interval)
+    { }
+
+    bool IntervalTimer::on_interval(void)
+    {
+        if (m_timer.get_elapsed() >= m_INTERVAL)
+        {
+            m_timer.reset();
+            return true;
+        }
+        else
+            return false;
+    }
 }

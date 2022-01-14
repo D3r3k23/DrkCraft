@@ -57,7 +57,7 @@ namespace DrkCraft
         if (ImGui::Checkbox("Fullscreen", &m_settings.fullscreen))
             m_dirty[Settings_Fullscreen] = true;
 
-        const auto& monitors = Application::get_instance().get_monitors().monitors();
+        const auto& monitors = Application::get_monitors().monitors();
         std::vector<std::string> monitorStrings;
         for (int i = 0; const auto& monitor : monitors)
         {
@@ -136,18 +136,25 @@ namespace DrkCraft
 
     void SettingsMenu::save(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (std::ranges::any_of(m_dirty, [](bool dirty) { return dirty; }));
         {
             apply();
             RuntimeSettings::set(m_settings);
+
             for (uint i = 0; i < NUM_SETTINGS; i++)
                 m_dirty[i] = false;
+
+            RuntimeSettings::save_settings();
         }
         DRK_LOG_CORE_TRACE("SettingsMenu: Saved");
     }
 
     void SettingsMenu::apply(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         auto& app = Application::get_instance();
         if (m_dirty[Settings_Fullscreen])
         {

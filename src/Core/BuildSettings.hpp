@@ -11,18 +11,22 @@
 
 #if defined(DRK_CONFIG_DEBUG)
     #define DRK_CONFIG_NAME "Debug"
-    #define DRK_STATIC_LOG_LEVEL trace
 #elif defined(DRK_CONFIG_RELEASE)
     #define DRK_CONFIG_NAME "Release"
-    #define DRK_STATIC_LOG_LEVEL info
 #else
     #error "Unknown config"
 #endif
 
 #if defined(DRK_EN_LOGGING)
     #define DRK_LOGGING_ENABLED true
+    #if defined(DRK_EN_TRACE_LOGGING)
+        #define DRK_TRACE_LOGGING_ENABLED true
+    #else
+        #define DRK_TRACE_LOGGING_ENABLED false
+    #endif
 #else
     #define DRK_LOGGING_ENABLED false
+    #define DRK_TRACE_LOGGING_ENABLED false
 #endif
 
 #if defined(DRK_EN_ASSERTS)

@@ -1,15 +1,15 @@
 #ifndef DRK_DEBUG_HPP
 #define DRK_DEBUG_HPP
 
-#include "BuildSettings.hpp"
 #include "Base.hpp"
+#include "BuildSettings.hpp"
 
 namespace DrkCraft
 {
-    #if defined(DRK_CONFIG_DEBUG)
+    #if 0 // defined(DRK_CONFIG_DEBUG)
 
-        #include "Application/KeyCodes.hpp"
-        #include "Application/MouseCodes.hpp"
+        #include "System/KeyCodes.hpp"
+        #include "System/MouseCodes.hpp"
 
         #include <string>
 

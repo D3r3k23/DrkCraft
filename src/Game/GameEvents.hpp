@@ -4,29 +4,34 @@
 #include "Core/Base.hpp"
 #include "GameEvent.hpp"
 
-#define DRK_GAME_EVENT_TYPE_INFO(flagType, name)           \
-    virtual const char* get_name(void) const override       \
-        { return #name"Event"; }                             \
-    virtual GameEventFlags get_type(void) const override      \
-        { return static_cast<GameEventFlags>(static_type()); } \
-    static constexpr flagType static_type(void)                 \
-        { return flagType::name; }
+#define DRK_GAME_EVENT_TYPE_INFO(name)                                          \
+    virtual const char*   get_name(void) const override { return #name"Event"; } \
+    virtual GameEventType get_type(void) const override { return static_type(); } \
+    static constexpr GameEventType static_type(void)    { return GameEventType::name; }
+
+#define DRK_GAME_EVENT_CATEGORY_INFO(name) \
+    static constexpr GameEventCategory static_type(void) { return GameEventCategory::name; }
 
 namespace DrkCraft
 {
-    struct PlayerEvent : public GameEvent
+    struct PlayerEvent : GameEvent
     {
-        DRK_GAME_EVENT_TYPE_INFO(GameEventCategory, Player)
+        DRK_GAME_EVENT_CATEGORY_INFO(Player)
     };
 
-    struct PlayerSpawnEvent : public PlayerEvent
+    struct PlayerSpawnEvent final : PlayerEvent
     {
-        DRK_GAME_EVENT_TYPE_INFO(GameEventType, PlayerSpawn)
+        DRK_GAME_EVENT_TYPE_INFO( PlayerSpawn)
     };
 
-    struct PlayerDeathEvent : public PlayerEvent
+    struct PlayerDeathEvent final : PlayerEvent
     {
-        DRK_GAME_EVENT_TYPE_INFO(GameEventType, PlayerDeath)
+        DRK_GAME_EVENT_TYPE_INFO( PlayerDeath)
+    };
+
+    struct WorldEvent final : GameEvent
+    {
+        DRK_GAME_EVENT_CATEGORY_INFO(World)
     };
 }
 

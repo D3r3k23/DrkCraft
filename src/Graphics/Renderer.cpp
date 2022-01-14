@@ -52,6 +52,11 @@ namespace DrkCraft
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    void Renderer::draw_indexed(const IndexBuffer& buffer)
+    {
+        glDrawElements(GL_TRIANGLES, buffer.get_count(), GL_UNSIGNED_INT, nullptr);
+    }
+
     void Renderer::draw_triangle(GLuint vao)
     {
         DRK_PROFILE_FUNCTION();

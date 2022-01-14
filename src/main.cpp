@@ -22,8 +22,12 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("Loading settings");
     CommandLineOptions::parse_args(argc, argv);
     RuntimeSettings::load("config");
+
     auto mode = game_mode_to_string(CommandLineOptions::get_game_mode());
     DRK_LOG_CORE_INFO("Game mode: {}", capitalize(mode));
+
+    if (DRK_TRACE_LOGGING_ENABLED)
+        DRK_LOG_CORE_INFO("Trace logging enabled");
 
     DRK_LOG_CORE_TRACE("Initializing Application");
     Application::init();
@@ -36,8 +40,6 @@ int main(int argc, char* argv[])
 
     DRK_LOG_CORE_TRACE("Shutting down Application");
     int status = Application::shutdown();
-
-    RuntimeSettings::save_settings();
 
     DRK_PROFILER_END();
     DRK_LOGGER_CLOSE();

@@ -3,8 +3,9 @@
 
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
-#include "Application/Timestep.hpp"
 #include "Application/Events.hpp"
+#include "Core/Timestep.hpp"
+#include "System/AssetManager.hpp"
 #include "Hud.hpp"
 #include "Console.hpp"
 #include "DebugOverlay.hpp"
@@ -13,8 +14,10 @@
 
 // Temp
 #include "Core/Util.hpp"
+#include "Graphics/Util.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
+#include "Audio/AudioSource.hpp"
 #include <array>
 
 namespace DrkCraft
@@ -46,6 +49,8 @@ namespace DrkCraft
         void save(void);
 
     private:
+        AssetManager& m_assetManager;
+
         World m_world;
 
         Ref<Hud> m_hudLayer;
@@ -62,6 +67,8 @@ namespace DrkCraft
         ShaderProgram flatColorShaderProgram;
         glm::vec3 color;
         RandomFloatDist randomDist;
+
+        Ref<AudioSource> song;
     };
 }
 

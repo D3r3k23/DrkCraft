@@ -2,7 +2,7 @@
 #define DRK_GRAPHICS_UTIL_HPP
 
 #include "Core/Base.hpp"
-#include "OpenGlObject.hpp"
+#include "GlObject.hpp"
 
 namespace DrkCraft
 {
@@ -12,14 +12,14 @@ namespace DrkCraft
         void load_gl(void);
     };
 
-    template <OpenGlObjectConcept O>
-    class GlObject
+    template <GlObjectConcept O>
+    class GlObjectHandler
     {
     public:
-        GlObject(O& object) : m_object(object)
+        GlObjectHandler(O& object) : m_object(object)
             {  m_object.bind(); }
 
-        ~GlObject(void)
+        ~GlObjectHandler(void)
             { m_object.unbind(); }
 
         O& get(void)

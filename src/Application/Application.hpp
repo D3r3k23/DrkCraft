@@ -4,12 +4,13 @@
 #include "Core/Base.hpp"
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
+#include "System/AssetManager.hpp"
 #include "Events.hpp"
 #include "EventGenerator.hpp"
 #include "ImGuiTools.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
-#include "Timestep.hpp"
+#include "Core/Timestep.hpp"
 #include "Graphics/Util.hpp"
 
 namespace DrkCraft
@@ -21,12 +22,12 @@ namespace DrkCraft
         static int shutdown(void);
 
         static Application& get_instance(void);
+        static Window& get_window(void);
+        static MonitorManager& get_monitors(void);
+        static AssetManager& get_assets(void);
 
         Application();
         ~Application();
-
-        Window& get_window(void);
-        MonitorManager& get_monitors(void);
 
         void add_layer(const Ref<Layer>& layer);
         void add_overlay(const Ref<Layer>& layer);
@@ -60,7 +61,7 @@ namespace DrkCraft
 
         EventGenerator m_eventGenerator;
         MonitorManager m_monitorManager;
-
+        AssetManager m_assetManager;
         ImGuiManager m_imGuiManager;
 
         LayerStack m_layerStack;

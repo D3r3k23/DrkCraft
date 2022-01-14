@@ -1,5 +1,6 @@
 #include "Application.hpp"
 
+#include "System/GlfwTools.hpp"
 #include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
 #include "System/Input.hpp"
@@ -14,7 +15,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("Initializing GLFW");
-        Window::init_glfw();
+        init_glfw();
 
         s_instance = new Application;
     }
@@ -29,7 +30,7 @@ namespace DrkCraft
             delete s_instance;
 
             DRK_LOG_CORE_TRACE("Shutting down GLFW");
-            Window::shutdown_glfw();
+            shutdown_glfw();
 
             if (exitCode)
                 DRK_LOG_CORE_ERROR("Application stopped with error code {}", exitCode);
@@ -47,6 +48,21 @@ namespace DrkCraft
     {
         DRK_ASSERT_DEBUG(s_instance, "Application not initialized");
         return *s_instance;
+    }
+
+    Window& Application::get_window(void)
+    {
+        return get_instance().m_window;
+    }
+
+    MonitorManager& Application::get_monitors(void)
+    {
+        return get_instance().m_monitorManager;
+    }
+
+    AssetManager& Application::get_assets(void)
+    {
+        return get_instance().m_assetManager;
     }
 
     Application::Application(void)
@@ -85,16 +101,6 @@ namespace DrkCraft
 
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
-    }
-
-    Window& Application::get_window(void)
-    {
-        return m_window;
-    }
-
-    MonitorManager& Application::get_monitors(void)
-    {
-        return m_monitorManager;
     }
 
     void Application::add_layer(const Ref<Layer>& layer)
@@ -148,6 +154,8 @@ namespace DrkCraft
 
     void Application::exit(int status)
     {
+        if (!m_running)
+            DRK_LOG_CORE_WARN("Application is not running");
         m_running  = false;
         m_exitCode = status;
     }
@@ -224,7 +232,7 @@ namespace DrkCraft
 
     bool Application::on_monitor_event(const MonitorEvent& event)
     {
-        m_monitorManager.refresh_monitors();
+        m_monitorManager.refresh_monitors(); // Will this work?
         return false;
     }
 
@@ -234,7 +242,7 @@ namespace DrkCraft
         RuntimeSettings::save_settings();
 
         if (is_fullscreen())
-            set_fullscreen();
+            set_fullscreen(0);
 
         return false;
     }
@@ -247,6 +255,7 @@ namespace DrkCraft
             monitor = RuntimeSettings::get().fullscreen_monitor;
 
         m_monitorManager.activate_fullscreen(m_window, monitor);
+        DRK_LOG_CORE_INFO("Fullscreen monitor: {}", m_monitorManager.get_monitor(monitor).get_name());
     }
 
     void Application::set_windowed(void)

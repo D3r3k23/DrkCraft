@@ -7,9 +7,10 @@
 #include "EventTypes.hpp"
 
 #include <string>
+#include <concepts>
+#include <type_traits>
 #include <functional>
 #include <utility>
-#include <concepts>
 
 namespace DrkCraft
 {
@@ -25,9 +26,9 @@ namespace DrkCraft
         Event& operator=(Event&&) = delete;
 
         virtual const char* get_name(void) const = 0;
-        virtual EventFlags  get_type(void) const = 0;
+        virtual EventType   get_type(void) const = 0;
 
-        static constexpr EventFlags static_type(void) { return 0; }
+        static constexpr EventCategory static_type(void) { return EventCategory::Event; }
 
         virtual std::string get_details(void) const;
         std::string get_string(void) const;
@@ -42,20 +43,25 @@ namespace DrkCraft
     };
 
     template <typename E>
-    concept AbstractEventConcept = std::derived_from<E, Event>;
+    concept EventConcept = std::derived_from<E, Event>;
 
     template <typename E>
-    concept ConcreteEventConcept = AbstractEventConcept<E> && !std::same_as<E, Event>;
+    concept AbstractEventConcept = EventConcept<E> && !std::is_final<E>::value;
+
+    template <typename E>
+    concept CategoryEventConcept = AbstractEventConcept<E> && !std::same_as<E, Event>;
+
+    template <typename E>
+    concept ConcreteEventConcept = EventConcept<E> && std::is_final<E>::value;
+
+    template <typename E>
+    concept DispatchableEventConcept = ConcreteEventConcept<E> || CategoryEventConcept<E>;
 
     template <AbstractEventConcept E>
     using AbstractEventHandlerFn = std::function<void(E&)>;
 
-    template <ConcreteEventConcept E>
-    using ConcreteEventHandlerFn = std::function<bool(const E&)>; // Returns true if event was handled
-
-    template <typename E1, typename E2>
-    concept is_base_event_of = AbstractEventConcept<E1> && ConcreteEventConcept<E2>
-        && std::derived_from<E2, E1>;
+    template <DispatchableEventConcept E>
+    using DispatchableEventHandlerFn = std::function<bool(const E&)>; // Returns true if event was handled
 
     template <AbstractEventConcept E1>
     class EventDispatcher
@@ -65,13 +71,12 @@ namespace DrkCraft
           : event(event)
         { }
 
-        // Calls event handler function for events of type E
-        template <ConcreteEventConcept E2> requires is_base_event_of<E1, E2>
-        void dispatch(const ConcreteEventHandlerFn<E2>& handler)
+        template <DispatchableEventConcept E2> requires std::derived_from<E2, E1>
+        void dispatch(const DispatchableEventHandlerFn<E2>& handler)
         {
-            if (event.get_type() == E2::static_type() && !event.handled())
+            if (event == E2::static_type() && !event.handled())
             {
-                bool handled = handler(static_cast<E2&>(event));
+                bool handled = handler(static_cast<const E2&>(event));
                 if (handled)
                     event.set_handled();
             }

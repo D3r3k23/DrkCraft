@@ -3,13 +3,14 @@
 
 #include "BuildSettings.hpp"
 
-#if defined(DRK_EN_PROFILE)
+#if DRK_PROFILING_ENABLED
 
     #include "Base.hpp"
     #include "Timer.hpp"
     #include "Time.hpp"
 
     #include <fstream>
+    #include <mutex>
 
     namespace DrkCraft
     {
@@ -42,6 +43,7 @@
             std::ofstream m_outStream;
             const char* m_name;
             bool m_active;
+            std::mutex m_mutex;
         };
 
         class ProfileTimer

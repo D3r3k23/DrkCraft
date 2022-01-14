@@ -57,10 +57,9 @@ namespace DrkCraft
         void register_event_handler(const AbstractEventHandlerFn<MonitorEvent>& eventHandler);
         void refresh_monitors(void);
 
-        uint get_monitor_number(GLFWmonitor* rawMonitor);
+        uint get_monitor_number(GLFWmonitor* rawMonitor) const;
         Monitor& get_monitor(uint number);
-        Monitor& get_primary_monitor(void);
-        uint get_fullscreen_monitor(void);
+        int get_fullscreen_monitor(void) const;
 
         void activate_fullscreen(const Window& window, uint monitor=0);
         void deactivate_fullscreen(Window& window);
@@ -80,6 +79,7 @@ namespace DrkCraft
         AbstractEventHandlerFn<MonitorEvent> m_eventHandler;
 
         bool m_fullscreen;
+        std::optional<uint> m_fullscreenMonitor;
         std::optional<glm::uvec2> m_savedWindowedSize;
         std::optional<glm::ivec2> m_savedWindowedPos;
     };

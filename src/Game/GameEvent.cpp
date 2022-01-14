@@ -6,14 +6,15 @@
 
 namespace DrkCraft
 {
+    ////////// GameEvent.hpp //////////
+
     std::deque<GameEventSubscriber*> GameEvent::s_subscribers;
 
-    void GameEvent::post(GameEvent& event)
+    void GameEvent::post(const GameEvent& event)
     {
-        DRK_LOG_GAME_INFO("Posting GameEvent");
+        DRK_LOG_GAME_INFO("Posting GameEvent: {}", event.get_name());
         for (auto subscriber : s_subscribers)
-            if (subscriber->subscribed(event))
-                subscriber->on_game_event(event);
+            subscriber->on_game_event(event);
     }
 
     void GameEvent::subscribe(GameEventSubscriber* subscriber)
@@ -29,8 +30,7 @@ namespace DrkCraft
             s_subscribers.erase(it);
     }
 
-    GameEventSubscriber::GameEventSubscriber(GameEventFlags subscriptions)
-      : m_gameEventSubscriptions(subscriptions)
+    GameEventSubscriber::GameEventSubscriber(void)
     {
         GameEvent::subscribe(this);
     }
@@ -40,17 +40,9 @@ namespace DrkCraft
         GameEvent::unsubscribe(this);
     }
 
-    GameEventFlags GameEventSubscriber::game_event_subscriptions(void) const
-    {
-        return m_gameEventSubscriptions;
-    }
+    ////////// GameEvents.hpp //////////
 
-    bool GameEventSubscriber::subscribed(const GameEvent& event) const
-    {
-        if (event.get_type() == game_event_subscriptions())
-            return true;
-        return false;
-    }
+
 
     ////////// GameEventTypes.hpp //////////
 
@@ -59,70 +51,40 @@ namespace DrkCraft
         return static_cast<GameEventFlags>(item);
     }
 
-    bool game_event_flag_contains(GameEventFlags flags, auto item)
+    bool game_event_has_flags(const GameEvent& event, GameEventFlags flags)
     {
-        return to_game_event_flags(item) & flags != 0;
+        GameEventFlags eventTypeFlag = to_game_event_flags(event.get_type());
+        return (eventTypeFlag & flags) == eventTypeFlag;
     }
 
-    bool game_event_flag_equals(GameEventFlags flags, auto item)
+    bool operator==(const GameEvent& event, GameEventFlags flags)
     {
-        GameEventFlags itemFlags = to_game_event_flags(item);
-        return itemFlags & flags == itemFlags;
-    }
-
-    bool game_event_type_is(const GameEvent& event, auto item)
-    {
-        return item == event.get_type();
-    }
-
-    bool operator==(GameEventType type, GameEventFlags flags)
-    {
-        return game_event_flag_contains(flags, type);
-    }
-
-    bool operator==(GameEventCategory cat, GameEventFlags flags)
-    {
-        return game_event_flag_contains(flags, cat);
-    }
-
-    bool operator!=(GameEventType type, GameEventFlags flags)
-    {
-        return !game_event_flag_contains(flags, type);
-    }
-
-    bool operator!=(GameEventCategory cat, GameEventFlags flags)
-    {
-        return !game_event_flag_contains(flags, cat);
-    }
-
-    bool operator==(GameEventFlags flags, GameEventType type)
-    {
-        return game_event_flag_equals(flags, type);
-    }
-
-    bool operator==(GameEventFlags flags, GameEventCategory cat)
-    {
-        return game_event_flag_equals(flags, cat);
-    }
-
-    bool operator!=(GameEventFlags flags, GameEventType type)
-    {
-        return !game_event_flag_equals(flags, type);
-    }
-
-    bool operator!=(GameEventFlags flags, GameEventCategory cat)
-    {
-        return !game_event_flag_equals(flags, cat);
+        return game_event_has_flags(event, flags);
     }
 
     bool operator==(const GameEvent& event, GameEventType type)
     {
-        return game_event_type_is(event, type);
+        return event == to_game_event_flags(type);
     }
 
     bool operator==(const GameEvent& event, GameEventCategory cat)
     {
-        return game_event_type_is(event, cat);
+        return event == to_game_event_flags(cat);
+    }
+
+    bool operator!=(const GameEvent& event, GameEventFlags flags)
+    {
+        return !(event == flags);
+    }
+
+    bool operator!=(const GameEvent& event, GameEventType type)
+    {
+        return !(event == type);
+    }
+
+    bool operator!=(const GameEvent& event, GameEventCategory cat)
+    {
+        return !(event == cat);
     }
 
     GameEventFlags operator|(GameEventFlags flags, GameEventType type)
@@ -145,6 +107,16 @@ namespace DrkCraft
         return flags | cat;
     }
 
+    GameEventFlags operator|(GameEventType type, GameEventCategory cat)
+    {
+        return to_game_event_flags(type) | cat;
+    }
+
+    GameEventFlags operator|(GameEventCategory cat, GameEventType type)
+    {
+        return type | cat;
+    }
+
     GameEventFlags operator|(GameEventType type1, GameEventType type2)
     {
         return to_game_event_flags(type1) | type2;
@@ -164,48 +136,6 @@ namespace DrkCraft
     GameEventFlags operator|=(GameEventFlags flags, GameEventCategory cat)
     {
         flags = flags | cat;
-        return flags;
-    }
-
-    GameEventFlags operator&(GameEventFlags flags, GameEventType type)
-    {
-        return flags & to_game_event_flags(type);
-    }
-
-    GameEventFlags operator&(GameEventFlags flags, GameEventCategory cat)
-    {
-        return flags & to_game_event_flags(cat);
-    }
-
-    GameEventFlags operator&(GameEventType type, GameEventFlags flags)
-    {
-        return flags & type;
-    }
-
-    GameEventFlags operator&(GameEventCategory cat, GameEventFlags flags)
-    {
-        return flags & cat;
-    }
-
-    GameEventFlags operator&(GameEventType type1, GameEventType type2)
-    {
-        return to_game_event_flags(type1) & type2;
-    }
-
-    GameEventFlags operator&(GameEventCategory cat1, GameEventCategory cat2)
-    {
-        return to_game_event_flags(cat1) & cat2;
-    }
-
-    GameEventFlags operator&=(GameEventFlags& flags, GameEventType type)
-    {
-        flags = flags & type;
-        return flags;
-    }
-
-    GameEventFlags operator&=(GameEventFlags& flags, GameEventCategory cat)
-    {
-        flags = flags & cat;
         return flags;
     }
 }

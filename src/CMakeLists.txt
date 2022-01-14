@@ -9,6 +9,7 @@ target_include_directories(DrkCraft
 )
 
 add_subdirectory(Application)
+add_subdirectory(Audio)
 add_subdirectory(Core)
 add_subdirectory(Engine)
 add_subdirectory(Game)

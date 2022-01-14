@@ -6,6 +6,7 @@
 #include "Core/Util.hpp"
 
 #include <yaml-cpp/yaml.h>
+#include <nameof.hpp>
 
 #include <fstream>
 
@@ -15,14 +16,9 @@ namespace DrkCraft
 
     std::string_view game_mode_to_string(GameMode mode)
     {
-        switch (mode)
-        {
-            case GameMode::Dev    : return "dev";
-            case GameMode::Player : return "player";
-            default:
-                DRK_ASSERT_DEBUG(false, "Unknown GameMode");
-                return "";
-        }
+        const auto str = NAMEOF_ENUM(mode);
+        DRK_ASSERT_DEBUG(str.length() > 0, "Unknown GameMode");
+        return str;
     }
 
     CommandLineOptions& CommandLineOptions::get_instance(void)

@@ -2,7 +2,7 @@
 #define DRK_SHADER_HPP
 
 #include "Core/Base.hpp"
-#include "OpenGlObject.hpp"
+#include "GlObject.hpp"
 
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
@@ -32,8 +32,9 @@ namespace DrkCraft
     };
 
     GLenum get_gl_shader_type(ShaderType type);
+    std::string_view shader_type_to_string(ShaderType type);
 
-    class Shader : public OpenGlObject
+    class Shader : public GlObject
     {
     public:
         static Ref<Shader> create(const std::filesystem::path& path, ShaderType type);
@@ -56,7 +57,7 @@ namespace DrkCraft
         static std::unordered_map<std::string, Ref<Shader>> s_shaderCache;
     };
 
-    class ShaderProgram : public OpenGlObject
+    class ShaderProgram : public GlObject
     {
     public:
         ShaderProgram(std::string_view name);

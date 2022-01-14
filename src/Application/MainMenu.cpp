@@ -55,14 +55,16 @@ namespace DrkCraft
 
         if (m_show)
         {
-            ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
             ImGuiTools::BeginFullscreen("Main Menu", ImGuiWindowFlags_NoBackground);
 
             ImGui::Dummy({250, 100});
+            ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
             ImGuiTools::TextCentered("DrkCraft");
+            ImGui::PopFont();
 
             ImGui::Dummy({250, 50});
             ImGui::BeginGroup();
+            ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Button));
 
             if (ImGuiTools::ButtonCentered("Play", {250, 100}))
                 start_game();
@@ -78,9 +80,9 @@ namespace DrkCraft
                 exit();
 
             ImGui::EndGroup();
+            ImGui::PopFont();
 
             ImGui::End();
-            ImGui::PopFont();
         }
     }
 

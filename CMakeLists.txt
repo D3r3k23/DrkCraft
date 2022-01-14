@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 
-# Set DRK_EN_PROFILE
 option(DRK_EN_PROFILE "Enable profiling" OFF)
-
-# Set DRK_EN_DEV_MODE
 option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
-
-# Set DRK_DIST
+option(DRK_EN_TRACE_LOGGING "Enable trace logging in console" OFF)
 option(DRK_DIST "Dist config" OFF)
 
 # Dist Config
@@ -15,6 +12,7 @@ if(${DRK_DIST})
     set(CMAKE_BUILD_TYPE Release)
     set(DRK_EN_PROFILE OFF)
     set(DRK_EN_DEV_MODE OFF)
+    set(DRK_EN_TRACE_LOGGING OFF)
     set(DRK_EN_LOGGING OFF)
     set(DRK_EN_ASSERTS OFF)
 else()
@@ -58,6 +56,9 @@ if(${DRK_EN_PROFILE})
 endif()
 if(${DRK_EN_PROFILE})
     message("- Dev mode enabled")
+endif()
+if (${DRK_EN_TRACE_LOGGING})
+    message("- Trace logging enabled")
 endif()
 if(${DRK_DIST})
     message("- Dist build")
@@ -106,6 +107,9 @@ endif()
 
 if(${DRK_EN_LOGGING})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_LOGGING)
+    if((${DRK_EN_TRACE_LOGGING}) AND (${BUILD_CONFIG} STREQUAL Debug))
+        target_compile_definitions(DrkCraft PUBLIC DRK_EN_TRACE_LOGGING)
+    endif()
 endif()
 
 if(${DRK_EN_ASSERTS})

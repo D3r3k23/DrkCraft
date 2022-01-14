@@ -3,14 +3,24 @@
 
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
-#include "Application/Timestep.hpp"
 #include "Application/Events.hpp"
+#include "Core/Timestep.hpp"
+#include "Core/Util.hpp"
 
 namespace DrkCraft
 {
     class FpsCounter
     {
+    public:
+        FpsCounter(float smoothing=0.9f);
 
+        float update(float frameTime);
+        float get_fps(void) const;
+        float get_avg_frame_time(void) const;
+
+    private:
+        const float m_SMOOTHING;
+        float m_avgFps;
     };
 
     class DebugOverlay : public Layer
@@ -27,11 +37,9 @@ namespace DrkCraft
         virtual void on_event(Event& event) override;
 
     private:
-        void update_fps(float frameTime);
-
-    private:
-        float m_fpsCurrent;
-        float m_fpsAvg;
+        FpsCounter m_currentFps;
+        FpsCounter m_avgFps;
+        IntervalTimer m_fpsAvgTimer;
     };
 }
 

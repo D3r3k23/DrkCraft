@@ -6,6 +6,8 @@
 
 namespace DrkCraft
 {
+    ////////// Event.hpp //////////
+
     Event::Event(void)
       : m_handled(false)
     { }
@@ -29,11 +31,12 @@ namespace DrkCraft
 
         switch (static_cast<EventType>(get_type()))
         {
+            case EventType::MouseMoved:
+                break;
             case EventType::WindowResized:
             case EventType::FramebufferResized:
             case EventType::WindowRefreshed:
             case EventType::WindowMoved:
-            case EventType::MouseMoved:
             case EventType::CharTyped:
             case EventType::KeyHeld:
                 DRK_LOG_EVENT_TRACE(msg);
@@ -82,7 +85,7 @@ namespace DrkCraft
 
     std::string CharTypedEvent::get_details(void) const
     {
-        return fmt::format("char={}", ch);
+        return fmt::format("char='{}'", ch);
     }
 
     std::string MousePosEvent::get_details(void) const
@@ -112,70 +115,40 @@ namespace DrkCraft
         return static_cast<EventFlags>(item);
     }
 
-    bool event_flag_contains(EventFlags flags, auto item)
+    bool event_flags_has_event(const Event& event, EventFlags flags)
     {
-        return to_event_flags(item) & flags != 0;
+        EventFlags eventTypeFlag = to_event_flags(event.get_type());
+        return (eventTypeFlag & flags) == eventTypeFlag;
     }
 
-    bool event_flag_equals(EventFlags flags, auto item)
+    bool operator==(const Event& event, EventFlags flags)
     {
-        EventFlags itemFlags = to_event_flags(item);
-        return itemFlags & flags == itemFlags;
-    }
-
-    bool event_type_is(const Event& event, auto item)
-    {
-        return item == event.get_type();
-    }
-
-    bool operator==(EventType type, EventFlags flags)
-    {
-        return event_flag_contains(flags, type);
-    }
-
-    bool operator==(EventCategory cat, EventFlags flags)
-    {
-        return event_flag_contains(flags, cat);
-    }
-
-    bool operator!=(EventType type, EventFlags flags)
-    {
-        return !event_flag_contains(flags, type);
-    }
-
-    bool operator!=(EventCategory cat, EventFlags flags)
-    {
-        return !event_flag_contains(flags, cat);
-    }
-
-    bool operator==(EventFlags flags, EventType type)
-    {
-        return event_flag_equals(flags, type);
-    }
-
-    bool operator==(EventFlags flags, EventCategory cat)
-    {
-        return event_flag_equals(flags, cat);
-    }
-
-    bool operator!=(EventFlags flags, EventType type)
-    {
-        return !event_flag_equals(flags, type);
-    }
-
-    bool operator!=(EventFlags flags, EventCategory cat)
-    {
-        return !event_flag_equals(flags, cat);
+        return event_flags_has_event(event, flags);
     }
 
     bool operator==(const Event& event, EventType type)
     {
-        return event_type_is(event, type);
+        return event == to_event_flags(type);
     }
 
     bool operator==(const Event& event, EventCategory cat)
     {
-        return event_type_is(event, cat);
+        return event == to_event_flags(cat);
+    }
+
+    bool operator!=(const Event& event, EventFlags flags)
+    {
+        return !(event == flags);
+    }
+
+    bool operator!=(const Event& event, EventType type)
+    {
+        return !(event == type);
+    }
+
+    bool operator!=(const Event& event, EventCategory cat)
+    {
+        return !(event == cat);
     }
 
     EventFlags operator|(EventFlags flags, EventType type)
@@ -198,6 +171,16 @@ namespace DrkCraft
         return flags | cat;
     }
 
+    EventFlags operator|(EventType type, EventCategory cat)
+    {
+        return to_event_flags(type) | cat;
+    }
+
+    EventFlags operator|(EventCategory cat, EventType type)
+    {
+        return type | cat;
+    }
+
     EventFlags operator|(EventType type1, EventType type2)
     {
         return to_event_flags(type1) | type2;
@@ -217,48 +200,6 @@ namespace DrkCraft
     EventFlags operator|=(EventFlags flags, EventCategory cat)
     {
         flags = flags | cat;
-        return flags;
-    }
-
-    EventFlags operator&(EventFlags flags, EventType type)
-    {
-        return flags & to_event_flags(type);
-    }
-
-    EventFlags operator&(EventFlags flags, EventCategory cat)
-    {
-        return flags & to_event_flags(cat);
-    }
-
-    EventFlags operator&(EventType type, EventFlags flags)
-    {
-        return flags & type;
-    }
-
-    EventFlags operator&(EventCategory cat, EventFlags flags)
-    {
-        return flags & cat;
-    }
-
-    EventFlags operator&(EventType type1, EventType type2)
-    {
-        return to_event_flags(type1) & type2;
-    }
-
-    EventFlags operator&(EventCategory cat1, EventCategory cat2)
-    {
-        return to_event_flags(cat1) & cat2;
-    }
-
-    EventFlags operator&=(EventFlags& flags, EventType type)
-    {
-        flags = flags & type;
-        return flags;
-    }
-
-    EventFlags operator&=(EventFlags& flags, EventCategory cat)
-    {
-        flags = flags & cat;
         return flags;
     }
 }

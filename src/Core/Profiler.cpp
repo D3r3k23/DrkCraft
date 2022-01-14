@@ -1,6 +1,6 @@
 #include "Profiler.hpp"
 
-#if defined(DRK_EN_PROFILE)
+#if DRK_PROFILING_ENABLED
 
     #if defined(DRK_PLATFORM_WINDOWS)
         #include <process.h>
@@ -47,6 +47,8 @@
         void Profiler::begin(const char* name, const char* file)
         {
             DRK_ASSERT_DEBUG(!m_active, "Profiler is already active");
+            std::lock_guard lock(m_mutex);
+
             m_active = true;
             m_name = name;
 
@@ -61,6 +63,8 @@
         void Profiler::end(void)
         {
             DRK_ASSERT_DEBUG(m_active, "Profiler is already inactive");
+            std::lock_guard lock(m_mutex);
+
             m_active = false;
 
             DRK_LOG_CORE_INFO("Ending Profiler session: {}", m_name);
@@ -92,6 +96,7 @@
             profile << "\"tid\":"    << std::this_thread::get_id();
             profile << "}";
 
+            std::lock_guard lock(m_mutex);
             m_outStream << profile.str();
             if (FLUSH_ON_WRITE)
                 m_outStream.flush();

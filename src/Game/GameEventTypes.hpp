@@ -7,9 +7,9 @@
 
 namespace DrkCraft
 {
-    class GameEvent;
+    struct GameEvent;
 
-    using GameEventFlags = uint;
+    using GameEventFlags = uint32;
 
     enum class GameEventType : GameEventFlags
     {
@@ -17,9 +17,10 @@ namespace DrkCraft
 
         // Player Events
         PlayerSpawn = 1 << 0,
-        PlayerDeath = 1 << 1
+        PlayerDeath = 1 << 1,
 
         // World Events
+        WorldUpdate = 1 << 2
     };
 
     enum class GameEventCategory : GameEventFlags
@@ -27,54 +28,39 @@ namespace DrkCraft
         None = 0,
 
         Player = (GameEventFlags)GameEventType::PlayerSpawn
-               | (GameEventFlags)GameEventType::PlayerDeath
+               | (GameEventFlags)GameEventType::PlayerDeath,
+
+        World = (GameEventFlags)GameEventType::WorldUpdate,
+
+        GameEvent = (GameEventFlags)Player
+                  | (GameEventFlags)World
     };
 
     GameEventFlags to_game_event_flags(auto item);
+    bool game_event_has_flags(const GameEvent& event, GameEventFlags flags);
 
-    bool game_event_flag_contains(GameEventFlags flags, auto item);
-    bool game_event_flag_equals(GameEventFlags flags, auto item);
-
-    bool game_event_type_is(const GameEvent& event, auto item);
-
-    bool operator==(GameEventType type, GameEventFlags flags);
-    bool operator==(GameEventCategory cat, GameEventFlags flags);
-
-    bool operator!=(GameEventType type, GameEventFlags flags);
-    bool operator!=(GameEventCategory cat, GameEventFlags flags);
-
-    bool operator==(GameEventFlags flags, GameEventType type);
-    bool operator==(GameEventFlags flags, GameEventCategory cat);
-
-    bool operator!=(GameEventFlags flags, GameEventType type);
-    bool operator!=(GameEventFlags flags, GameEventCategory cat);
-
+    bool operator==(const GameEvent& event, GameEventFlags flags);
     bool operator==(const GameEvent& event, GameEventType type);
     bool operator==(const GameEvent& event, GameEventCategory cat);
+
+    bool operator!=(const GameEvent& event, GameEventFlags flags);
+    bool operator!=(const GameEvent& event, GameEventType type);
+    bool operator!=(const GameEvent& event, GameEventCategory cat);
 
     GameEventFlags operator|(GameEventFlags flags, GameEventType type);
     GameEventFlags operator|(GameEventFlags flags, GameEventCategory cat);
 
-    GameEventFlags operator|(GameEventType type, GameEventFlags flags);
+    GameEventFlags operator|(GameEventType type,    GameEventFlags flags);
     GameEventFlags operator|(GameEventCategory cat, GameEventFlags flags);
 
-    GameEventFlags operator|(GameEventType type1, GameEventType type2);
+    GameEventFlags operator|(GameEventType type,    GameEventCategory cat);
+    GameEventFlags operator|(GameEventCategory cat, GameEventType type);
+
+    GameEventFlags operator|(GameEventType type1,    GameEventType type2);
     GameEventFlags operator|(GameEventCategory cat1, GameEventCategory cat2);
 
     GameEventFlags operator|=(GameEventFlags& flags, GameEventType type);
     GameEventFlags operator|=(GameEventFlags& flags, GameEventCategory cat);
-
-    GameEventFlags operator&(GameEventFlags flags, GameEventType type);
-    GameEventFlags operator&(GameEventFlags flags, GameEventCategory cat);
-
-    GameEventFlags operator&(GameEventType type, GameEventFlags flags);
-    GameEventFlags operator&(GameEventCategory cat, GameEventFlags flags);
-
-    GameEventFlags operator&(GameEventType type1, GameEventType type2);
-    GameEventFlags operator&(GameEventCategory cat1, GameEventCategory cat2);
-
-    GameEventFlags operator&=(GameEventFlags& flags, GameEventType type);
-    GameEventFlags operator&=(GameEventFlags& flags, GameEventCategory cat);
 }
 
 #endif // DRK_GAME_EVENT_INFO

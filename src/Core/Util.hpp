@@ -2,14 +2,13 @@
 #define DRK_CORE_UTIL_HPP
 
 #include "Base.hpp"
+#include "Timer.hpp"
 
 #include <string>
 #include <string_view>
 #include <span>
 #include <filesystem>
 #include <random>
-#include <algorithm>
-#include <utility>
 
 namespace DrkCraft
 {
@@ -48,63 +47,29 @@ namespace DrkCraft
         std::uniform_real_distribution<float> dist;
     };
 
-    template <int SIZE>
-    class ByteBuffer
+    class IntervalCounter
     {
     public:
-        ByteBuffer(void)
-        {
-            m_data = new Byte[SIZE];
-        }
+        IntervalCounter(uint interval);
 
-        ByteBuffer(std::span<Byte> data)
-          : ByteBuffer()
-        {
-            DRK_ASSERT_DEBUG_NO_MSG(data.size() <= SIZE);
-            std::copy(data, data + SIZE, m_data);
-        }
-
-        ByteBuffer(const ByteBuffer<SIZE>& other)
-          : ByteBuffer()
-        {
-            std::copy(data, data + SIZE, m_data);
-        }
-
-        ByteBuffer& operator=(const ByteBuffer<SIZE>& other)
-        {
-            std::fill(m_data, m_data + SIZE, 0);
-            std::copy(data, data + SIZE, m_data);
-            return *this;
-        }
-
-        ByteBuffer(ByteBuffer<SIZE>&& other)
-        {
-            m_data = other.m_data;
-            other.m_data = nullptr;
-        }
-
-        ByteBuffer& operator=(ByteBuffer<SIZE>&& other)
-        {
-            m_data = other.m_data;
-            return *this;
-        }
-
-        ~ByteBuffer(void)
-        {
-            delete[] m_data;
-        }
-
-        operator std::span<Byte>(void) const
-            { return { m_data, SIZE }; }
-
-        Byte* data(void)
-            { return m_data; }
-
-        uint size(void) const
-            { return SIZE; }
+        void count(int x=1);
+        bool on_interval(void);
 
     private:
-        Byte* m_data;
+        const uint m_INTERVAL;
+        uint m_count;
+    };
+
+    class IntervalTimer
+    {
+    public:
+        IntervalTimer(int interval);
+
+        bool on_interval(void);
+
+    private:
+        const Time::Milli<int> m_INTERVAL;
+        Timer m_timer;
     };
 }
 

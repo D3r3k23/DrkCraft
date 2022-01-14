@@ -2,20 +2,24 @@
 
 #include "Application/Application.hpp"
 #include "PauseMenu.hpp"
-#include "System/AssetManager.hpp"
 #include "System/Input.hpp"
 #include "Graphics/Transform.hpp"
 #include "Core/Profiler.hpp"
+
+// Temp
+#include <Audio/Audio.hpp>
 
 namespace DrkCraft
 {
     Game::Game(void)
       : Layer("GameLayer", true),
+        m_assetManager(Application::get_assets()),
         flatColorShaderProgram("FlatColorShaderProgram"),
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_GAME_INFO("Starting game");
 
         bool showHud = false;
 
@@ -44,6 +48,8 @@ namespace DrkCraft
         flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
         flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
         flatColorShaderProgram.link();
+
+        song = Audio::load_file(music_asset_path("Alix Perez - Burning Babylon.mp3"));
     }
 
     Game::~Game(void)
@@ -53,6 +59,8 @@ namespace DrkCraft
 
     void Game::on_attach(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         Application::get_instance().add_layer(m_hudLayer);
         Application::get_instance().add_overlay(m_consoleLayer);
         Application::get_instance().add_overlay(m_debugLayer);
@@ -60,6 +68,8 @@ namespace DrkCraft
 
     void Game::on_detach(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         m_debugLayer->detach_layer();
         m_consoleLayer->detach_layer();
         m_hudLayer->detach_layer();
@@ -67,6 +77,8 @@ namespace DrkCraft
 
     void Game::on_update(Timestep timestep)
     {
+        DRK_PROFILE_FUNCTION();
+
         m_player.on_update(timestep);
     }
 
@@ -74,16 +86,13 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        flatColorShaderProgram.bind();
+        GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
         flatColorShaderProgram.upload_uniform_mat4("u_viewProjection", m_player.get_view_projection());
         flatColorShaderProgram.upload_uniform_mat4("u_transform", Transform::Identity());
-
         flatColorShaderProgram.upload_uniform_vec4("u_color", glm::vec4(color, 1.0f));
 
         // Renderer::draw_triangle(vertexArrayObject);
         Renderer::draw_block(0, 0, 0);
-
-        flatColorShaderProgram.unbind();
     }
 
     void Game::on_event(Event& event)
@@ -102,6 +111,10 @@ namespace DrkCraft
             {
                 color = { randomDist(), randomDist(), randomDist() };
                 DRK_LOG_GAME_INFO("Changing color to: ({}, {} {})", color.r, color.g, color.b);
+                if (song->is_playing())
+                    Audio::pause(song);
+                else
+                    Audio::play(song);
                 return true;
             }
             case KeyCode::Escape:

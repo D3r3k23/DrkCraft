@@ -7,15 +7,18 @@
 #include "GameEventTypes.hpp"
 
 #include <deque>
+#include <concepts>
+#include <type_traits>
+#include <functional>
 
 namespace DrkCraft
 {
     struct GameEvent
     {
-    public:
         friend class GameEventSubscriber;
 
-        static void post(GameEvent& event);
+    public:
+        static void post(const GameEvent& event);
 
     private:
         static void subscribe(GameEventSubscriber* subscriber);
@@ -31,10 +34,10 @@ namespace DrkCraft
         GameEvent& operator=(const GameEvent&) = delete;
         GameEvent& operator=(GameEvent&&) = delete;
 
-        virtual const char*    get_name(void) const = 0;
-        virtual GameEventFlags get_type(void) const = 0;
+        virtual const char*   get_name(void) const = 0;
+        virtual GameEventType get_type(void) const = 0;
 
-        static constexpr GameEventFlags static_type(void) { return 0; }
+        static constexpr GameEventCategory static_type(void) { return GameEventCategory::GameEvent; }
 
     private:
         static std::deque<GameEventSubscriber*> s_subscribers;
@@ -43,40 +46,38 @@ namespace DrkCraft
     class GameEventSubscriber
     {
     public:
-        GameEventSubscriber(GameEventFlags subscriptions);
+        GameEventSubscriber(void);
         ~GameEventSubscriber(void);
 
-        virtual void on_game_event(GameEvent& event) = 0;
-
-        GameEventFlags game_event_subscriptions(void) const;
-        bool subscribed(const GameEvent& event) const;
-
-    protected:
-        GameEventFlags m_gameEventSubscriptions;
+        virtual void on_game_event(const GameEvent& event) = 0;
     };
 
     template <typename E>
     concept GameEventConcept = std::derived_from<E, GameEvent>;
 
     template <typename E>
+    concept AbstractGameEventConcept = GameEventConcept<E> && !std::is_final<E>::value;
+
+    template <GameEventConcept E>
     using GameEventHandlerFn = std::function<void(const E&)>;
 
+    template <AbstractGameEventConcept E1>
     class GameEventDispatcher
     {
     public:
-        GameEventDispatcher(const GameEvent& event)
+        GameEventDispatcher(const E1& event)
           : event(event)
         { }
 
-        template <GameEventConcept E>
-        void dispatch(const GameEventHandlerFn<E>& handler)
+        template <GameEventConcept E2> requires std::derived_from<E2, E1>
+        void dispatch(const GameEventHandlerFn<E2>& handler)
         {
-            if (event.get_type() == E::static_type())
-                handler(static_cast<const E&>(event));
+            if (event == E2::static_type())
+                handler(static_cast<const E2&>(event));
         }
 
     private:
-        const GameEvent& event;
+        const E1& event;
     };
 }
 

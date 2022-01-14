@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Graphics/Camera.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include <glm/vec3.hpp>
 

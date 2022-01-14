@@ -12,7 +12,7 @@ namespace DrkCraft
 
     static GLFWwindow* local_get_window(void)
     {
-        return Application::get_instance().get_window().get_raw_window();
+        return Application::get_window().get_raw_window();
     }
 
     bool is_key_pressed(KeyCode key)
@@ -82,35 +82,19 @@ namespace DrkCraft
         return static_cast<KeyModFlags>(mod);
     }
 
-    bool key_mod_flag_contains(KeyModFlags flags, KeyMod mod)
+    bool key_mod_flags_has_mod(KeyModFlags keyModFlag, KeyModFlags flags)
     {
-        return to_key_mod_flags(mod) & flags != 0;
+        return (keyModFlag & flags) == keyModFlag;
     }
 
-    bool key_mod_flag_equals(KeyModFlags flags, KeyMod mod)
+    bool operator==(KeyModFlags keyModFlag, KeyMod mod)
     {
-        KeyModFlags modFlag = to_key_mod_flags(mod);
-        return modFlag & flags == modFlag;
+        return key_mod_flags_has_mod(keyModFlag, to_key_mod_flags(mod));
     }
 
-    bool operator==(KeyMod mod, KeyModFlags flags)
+    bool operator!=(KeyModFlags keyModFlag, KeyMod mod)
     {
-        return key_mod_flag_contains(flags, mod);
-    }
-
-    bool operator!=(KeyModFlags flags, KeyMod mod)
-    {
-        return !key_mod_flag_contains(flags, mod);
-    }
-
-    bool operator==(KeyModFlags flags, KeyMod mod)
-    {
-        return key_mod_flag_equals(flags, mod);
-    }
-
-    bool operator!=(KeyMod mod, KeyModFlags flags)
-    {
-        return !key_mod_flag_equals(flags, mod);
+        return !(keyModFlag == mod);
     }
 
     KeyModFlags operator|(KeyModFlags flags, KeyMod mod)

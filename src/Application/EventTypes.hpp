@@ -7,9 +7,9 @@
 
 namespace DrkCraft
 {
-    class Event;
+    struct Event;
 
-    using EventFlags = uint;
+    using EventFlags = uint32;
 
     enum class EventType : EventFlags
     {
@@ -81,54 +81,38 @@ namespace DrkCraft
               | (EventFlags)Mouse,
 
         Monitor = (EventFlags)EventType::MonitorConnected
-                | (EventFlags)EventType::MonitorDisconnected
+                | (EventFlags)EventType::MonitorDisconnected,
+
+        Event = (EventFlags)Window
+              | (EventFlags)Input
+              | (EventFlags)Monitor
     };
 
     EventFlags to_event_flags(auto item);
+    bool event_flags_has_event(const Event& event, EventFlags flags);
 
-    bool event_flag_contains(EventFlags flags, auto item);
-    bool event_flag_equals(EventFlags flags, auto item);
-
-    bool event_type_is(const Event& event, auto item);
-
-    bool operator==(EventType type, EventFlags flags);
-    bool operator==(EventCategory cat, EventFlags flags);
-
-    bool operator!=(EventType type, EventFlags flags);
-    bool operator!=(EventCategory cat, EventFlags flags);
-
-    bool operator==(EventFlags flags, EventType type);
-    bool operator==(EventFlags flags, EventCategory cat);
-
-    bool operator!=(EventFlags flags, EventType type);
-    bool operator!=(EventFlags flags, EventCategory cat);
-
+    bool operator==(const Event& event, EventFlags flags);
     bool operator==(const Event& event, EventType type);
     bool operator==(const Event& event, EventCategory cat);
+
+    bool operator!=(const Event& event, EventFlags flags);
+    bool operator!=(const Event& event, EventType type);
+    bool operator!=(const Event& event, EventCategory cat);
 
     EventFlags operator|(EventFlags flags, EventType type);
     EventFlags operator|(EventFlags flags, EventCategory cat);
 
-    EventFlags operator|(EventType type, EventFlags flags);
+    EventFlags operator|(EventType type,    EventFlags flags);
     EventFlags operator|(EventCategory cat, EventFlags flags);
 
-    EventFlags operator|(EventType type1, EventType type2);
+    EventFlags operator|(EventType type,    EventCategory cat);
+    EventFlags operator|(EventCategory cat, EventType type);
+
+    EventFlags operator|(EventType type1,    EventType type2);
     EventFlags operator|(EventCategory cat1, EventCategory cat2);
 
     EventFlags operator|=(EventFlags& flags, EventType type);
     EventFlags operator|=(EventFlags& flags, EventCategory cat);
-
-    EventFlags operator&(EventFlags flags, EventType type);
-    EventFlags operator&(EventFlags flags, EventCategory cat);
-
-    EventFlags operator&(EventType type, EventFlags flags);
-    EventFlags operator&(EventCategory cat, EventFlags flags);
-
-    EventFlags operator&(EventType type1, EventType type2);
-    EventFlags operator&(EventCategory cat1, EventCategory cat2);
-
-    EventFlags operator&=(EventFlags& flags, EventType type);
-    EventFlags operator&=(EventFlags& flags, EventCategory cat);
 }
 
 #endif // DRK_EVENT_INFO_HPP

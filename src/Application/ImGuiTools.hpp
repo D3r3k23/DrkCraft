@@ -15,6 +15,7 @@ namespace DrkCraft
     enum class ImGuiFont
     {
         Regular = 0,
+        Button,
         Title
     };
 

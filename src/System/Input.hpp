@@ -26,12 +26,12 @@ namespace DrkCraft
     {
         None = 0,
 
-        Shift    = 0b000001,
-        Ctrl     = 0b000010,
-        Alt      = 0b000100,
-        Super    = 0b001000,
-        CapsLock = 0b010000,
-        NumLock  = 0b100000,
+        Shift    = 1 << 0,
+        Ctrl     = 1 << 1,
+        Alt      = 1 << 2,
+        Super    = 1 << 3,
+        CapsLock = 1 << 4,
+        NumLock  = 1 << 5
     };
 
     bool is_mod_pressed(KeyMod mod);
@@ -39,14 +39,10 @@ namespace DrkCraft
     KeyModFlags to_key_mod_flags(int mods);
     KeyModFlags to_key_mod_flags(KeyMod mod);
 
-    bool key_mod_flag_contains(KeyModFlags flags, KeyMod mod);
-    bool key_mod_flag_equals(KeyModFlags flags, KeyMod mod);
+    bool key_mod_flags_has_mod(KeyModFlags keyModFlag, KeyModFlags flags);
 
-    bool operator==(KeyModFlags flags, KeyMod mod);
-    bool operator!=(KeyModFlags flags, KeyMod mod);
-
-    bool operator==(KeyMod mod, KeyModFlags flags);
-    bool operator!=(KeyMod mod, KeyModFlags flags);
+    bool operator==(KeyModFlags keyModFlag, KeyMod mod);
+    bool operator!=(KeyModFlags keyModFlag, KeyMod mod);
 
     KeyModFlags operator|(KeyModFlags flags, KeyMod mod);
     KeyModFlags operator|(KeyMod mod, KeyModFlags flags);

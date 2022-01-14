@@ -27,6 +27,7 @@ namespace DrkCraft
 
         static std::string_view get_program_name(void);
         static GameMode get_game_mode(void);
+        static bool get_trace_log(void);
 
     private:
         void set_mode(GameMode mode);

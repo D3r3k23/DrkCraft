@@ -1,5 +1,5 @@
-#ifndef DRK_LOG_CORE_HPP
-#define DRK_LOG_CORE_HPP
+#ifndef DRK_LOG_HPP
+#define DRK_LOG_HPP
 
 // Don't include this directly, use Core/Base.hpp instead
 
@@ -13,19 +13,16 @@
 
     namespace DrkCraft
     {
-        class Event;
-
         class Logger
         {
         public:
             static void init(const char* dir);
             static void close(void);
+            static void en_console_trace_logging(void);
 
             static spdlog::logger& get_core_logger(void);
             static spdlog::logger& get_game_logger(void);
             static spdlog::logger& get_event_logger(void);
-
-            static void log_event(const Event& event);
 
         private:
             static std::shared_ptr<spdlog::logger> s_coreLogger;
@@ -34,8 +31,8 @@
         };
     }
 
-    #define DRK_LOGGER_INIT(dir) Logger::init(dir)
-    #define DRK_LOGGER_CLOSE()   Logger::close()
+    #define DRK_LOGGER_INIT(dir)   Logger::init(dir)
+    #define DRK_LOGGER_CLOSE()     Logger::close()
 
     #define DRK_LOG_CORE_TRACE(...)    Logger::get_core_logger().trace(__VA_ARGS__)
     #define DRK_LOG_CORE_DEBUG(...)    Logger::get_core_logger().debug(__VA_ARGS__)

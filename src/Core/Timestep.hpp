@@ -1,8 +1,8 @@
 #ifndef DRK_TIMESTEP_HPP
 #define DRK_TIMESTEP_HPP
 
-#include "Core/Base.hpp"
-#include "Core/Timer.hpp"
+#include "Base.hpp"
+#include "Timer.hpp"
 
 namespace DrkCraft
 {

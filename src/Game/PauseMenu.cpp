@@ -54,7 +54,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
+        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Button));
         ImGuiTools::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
 
         ImGui::Dummy({250, 50});

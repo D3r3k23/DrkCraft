@@ -1,5 +1,5 @@
-#ifndef DRK_OPEN_GL_OBJECT_HPP
-#define DRK_OPEN_GL_OBJECT_HPP
+#ifndef DRK_GL_OBJECT_HPP
+#define DRK_GL_OBJECT_HPP
 
 #include "Core/Base.hpp"
 
@@ -10,18 +10,18 @@ namespace DrkCraft
     using GlObjectID = uint;
 
     template <typename O>
-    concept OpenGlObjectConcept = requires(O object)
+    concept GlObjectConcept = requires(O object)
     {
         { object.get_id() } -> std::convertible_to<GlObjectID>;
         object.bind();
         object.unbind();
     };
 
-    class OpenGlObject
+    class GlObject
     {
     public:
-        OpenGlObject(void) = default;
-        virtual ~OpenGlObject(void) = default;
+        GlObject(void) = default;
+        virtual ~GlObject(void) = default;
 
         virtual void bind(void) { };
         virtual void unbind(void) { };
@@ -33,4 +33,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_OPEN_GL_OBJECT_HPP
+#endif // DRK_GL_OBJECT_HPP

@@ -2,13 +2,11 @@
 
 namespace DrkCraft
 {
-    GameEventSubscriberComponent::GameEventSubscriberComponent(GameEventFlags subscriptions,
-        const GameEventHandlerFn<GameEvent>& eventHandler)
-      : GameEventSubscriber(subscriptions),
-        m_eventHandler(eventHandler)
+    GameEventSubscriberComponent::GameEventSubscriberComponent(const GameEventHandlerFn<GameEvent>& eventHandler)
+      : m_eventHandler(eventHandler)
     { }
 
-    void GameEventSubscriberComponent::on_game_event(GameEvent& event)
+    void GameEventSubscriberComponent::on_game_event(const GameEvent& event)
     {
         m_eventHandler(event);
     }
@@ -16,18 +14,33 @@ namespace DrkCraft
     struct ExampleEntity
     {
         GameEventSubscriberComponent gameEventSubscriber;
+
         ExampleEntity(void)
-          : gameEventSubscriber(to_game_event_flags(GameEventCategory::Player), DRK_BIND_FN(on_event))
+          : gameEventSubscriber(DRK_BIND_FN(on_event))
         { }
+
         void on_event(const GameEvent& event)
         {
             GameEventDispatcher ed(event);
-            ed.dispatch<PlayerSpawnEvent>(DRK_BIND_FN(on_player_spawn));
+            ed.dispatch<PlayerEvent>(DRK_BIND_FN(on_player_event));
         }
+
+        void on_player_event(const PlayerEvent& event)
+        {
+            GameEventDispatcher ed(event);
+            ed.dispatch<PlayerSpawnEvent>(DRK_BIND_FN(on_player_spawn));
+            ed.dispatch<PlayerDeathEvent>(DRK_BIND_FN(on_player_death));
+        }
+
         void on_player_spawn(const PlayerSpawnEvent& event)
         {
             // playerLocation = event.location;
             // walk_to(playerLocation);
+        }
+
+        void on_player_death(const PlayerDeathEvent& event)
+        {
+            // GameEvent::post(PlayerSpawnEvent());
         }
     };
 }

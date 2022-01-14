@@ -14,9 +14,6 @@ namespace DrkCraft
     class Window
     {
     public:
-        static void init_glfw(void);
-        static void shutdown_glfw(void);
-
         Window(std::string_view title);
         ~Window(void);
 

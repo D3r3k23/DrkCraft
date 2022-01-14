@@ -15,10 +15,9 @@ namespace DrkCraft
     struct GameEventSubscriberComponent : public GameEventSubscriber
     {
     public:
-        GameEventSubscriberComponent(GameEventFlags subscriptions,
-          const GameEventHandlerFn<GameEvent>& eventHandler);
+        GameEventSubscriberComponent(const GameEventHandlerFn<GameEvent>& eventHandler);
 
-        virtual void on_game_event(GameEvent& event) override;
+        virtual void on_game_event(const GameEvent& event) override;
 
     private:
         GameEventHandlerFn<GameEvent> m_eventHandler;

@@ -22,7 +22,6 @@ namespace DrkCraft
 
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr; // "data/imgui.ini";
-        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
         auto fontPath = font_asset_path("Kanit-Medium.ttf");
         ImFont* font;
@@ -33,6 +32,10 @@ namespace DrkCraft
         io.FontDefault = font;
 
         font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 40.0f);
+        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
+        s_fonts[ImGuiFont::Button] = font;
+
+        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 64.0f);
         DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
         s_fonts[ImGuiFont::Title] = font;
 

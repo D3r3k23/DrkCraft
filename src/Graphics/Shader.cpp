@@ -22,6 +22,23 @@ namespace DrkCraft
         }
     }
 
+    std::string_view shader_type_to_string(ShaderType type)
+    {
+        switch (type)
+        {
+            case ShaderType::Vertex               : return "vertex shader";
+            case ShaderType::Fragment             : return "fragment shader";
+            case ShaderType::Geometry             : return "geometry shader";
+            case ShaderType::TesselationControl   : return "tesselation control shader";
+            case ShaderType::TesselationEvaluation: return "tesselation evaluation shader";
+            default:
+                DRK_LOG_CORE_WARN("Unknown shader type");
+                return "";
+        }
+    }
+
+    //////// Shader ////////
+
     std::unordered_map<std::string, Ref<Shader>> Shader::s_shaderCache;
 
     Ref<Shader> Shader::create(const std::filesystem::path& path, ShaderType type)
@@ -71,6 +88,7 @@ namespace DrkCraft
     void Shader::compile(std::string_view source)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Compiling {}", shader_type_to_string(m_type));
 
         const char* raw_source = source.data();
         const int length = source.size();
@@ -91,6 +109,8 @@ namespace DrkCraft
             DRK_LOG_CORE_ERROR("Shader compilation failed: {}", shaderLog.data());
         }
     }
+
+    //////// ShaderProgram ////////
 
     ShaderProgram::ShaderProgram(std::string_view name)
       : m_name(name)
@@ -126,6 +146,7 @@ namespace DrkCraft
     void ShaderProgram::link(void)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Linking ShaderProgram: {}", get_name());
 
         glLinkProgram(m_id);
         GLint success = 0;

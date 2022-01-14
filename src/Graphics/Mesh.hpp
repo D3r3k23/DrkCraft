@@ -2,7 +2,7 @@
 #define DRK_MESH_HPP
 
 #include "Core/Base.hpp"
-#include "Buffer.hpp"
+#include "GlBuffer.hpp"
 
 #include <glm/vec3.hpp>
 

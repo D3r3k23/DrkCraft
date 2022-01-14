@@ -19,6 +19,8 @@ namespace DrkCraft
     class AssetManager
     {
     public:
+        AssetManager(void);
+        ~AssetManager(void);
 
     private:
     };
