@@ -7,14 +7,14 @@
 #include "Core/Profiler.hpp"
 
 // Temp
-#include <Audio/Audio.hpp>
+#include "Audio/Audio.hpp"
 #include <array>
 
 namespace DrkCraft
 {
     Game::Game(void)
       : Layer("GameLayer", true),
-        m_assetManager(Application::get_assets()),
+        m_assets(Application::get_assets()),
         flatColorShaderProgram("FlatColorShaderProgram"),
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
@@ -35,22 +35,20 @@ namespace DrkCraft
             -0.5f, -0.5f, 0.0f
         };
 
-        GLuint vertexBufferObject;
-        glGenBuffers(1, &vertexBufferObject);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions.data(), GL_STATIC_DRAW);
+        vertexBuffer = make_ptr<VertexBuffer>(vertexPositions);
 
-        glGenVertexArrays(1, &vertexArrayObject);
-        glBindVertexArray(vertexArrayObject);
-        glEnableVertexAttribArray(0); // First attribute
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+        vertexBuffer->bind();
+        glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        vertexBuffer->unbind();
 
-        flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
-        flatColorShaderProgram.add_shader(Shader::create(shader_asset_path("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
+        flatColorShaderProgram.add_shader(Shader::create(
+            shader_asset_path("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
+        flatColorShaderProgram.add_shader(Shader::create(
+            shader_asset_path("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
         flatColorShaderProgram.link();
 
-        song = Audio::load_file(music_asset_path("Alix Perez - Burning Babylon.mp3"));
+        song = m_assets.get_song("Alix Perez - Burning Babylon.mp3");
     }
 
     Game::~Game(void)
@@ -92,7 +90,7 @@ namespace DrkCraft
         // flatColorShaderProgram.upload_uniform_mat("u_transform", Transform::Identity());
         flatColorShaderProgram.upload_uniform_vec4("u_color", glm::vec4(color, 1.0f));
 
-        Renderer::draw_triangle(vertexArrayObject);
+        Renderer::draw_triangle(*vertexBuffer);
         // Renderer::draw_block(0, 0, 0);
     }
 

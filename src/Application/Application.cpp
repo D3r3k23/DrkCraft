@@ -4,10 +4,16 @@
 #include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
 #include "System/Input.hpp"
+#include "Graphics/Util.hpp"
+#include "Audio/Audio.hpp"
 #include "Core/Profiler.hpp"
+
+#include <thread>
 
 namespace DrkCraft
 {
+    //////// Static ////////
+
     Application* Application::s_instance = nullptr;
 
     void Application::init(void)
@@ -65,10 +71,11 @@ namespace DrkCraft
         return get_instance().m_assetManager;
     }
 
+    //////// Instance ////////
+
     Application::Application(void)
       : m_window("DrkCraft"),
-        m_eventGenerator(m_window.get_raw_window()),
-        m_imGuiManager(m_window.get_raw_window()),
+        m_eventGenerator(m_window),
         m_layerStackForwardView(m_frameLayerStack),
         m_layerStackReverseView(m_frameLayerStack),
         m_exitCode(0),
@@ -77,6 +84,25 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
+        DRK_LOG_CORE_TRACE("Loading monitors");
+        std::thread monitorLoadThread([this]()
+        {
+            m_monitorManager.load_monitors();
+        });
+
+        DRK_LOG_CORE_TRACE("Initializing OpenGL");
+        load_open_gl();
+
+        DRK_LOG_CORE_TRACE("Initializing Audio system");
+        Audio::init();
+
+        DRK_LOG_CORE_TRACE("Loading Application assets");
+        load_assets();
+
+        DRK_LOG_CORE_TRACE("Initializing ImGui");
+        m_imGuiManager = make_ptr<ImGuiManager>(m_window);
+
+        monitorLoadThread.join();
         if (RuntimeSettings::get().fullscreen)
             set_fullscreen();
 
@@ -99,8 +125,15 @@ namespace DrkCraft
         m_frameLayerStack.clear();
         m_layerStack.clear();
 
+        m_assetManager.destroy();
+
+        m_imGuiManager.reset();
+
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
+
+        DRK_LOG_CORE_TRACE("Shutting down Audio system");
+        Audio::shutdown();
     }
 
     void Application::add_layer(const Ref<Layer>& layer)
@@ -173,13 +206,13 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiManager.begin_frame();
+        m_imGuiManager->begin_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
-        m_imGuiManager.end_frame();
+        m_imGuiManager->end_frame();
         Renderer::end_frame();
     }
 
@@ -196,7 +229,7 @@ namespace DrkCraft
 
         // We could redraw the screen on resize/move
 
-        m_imGuiManager.on_event(event);
+        m_imGuiManager->on_event(event);
 
         for (auto& layer : m_layerStackForwardView)
             layer->on_event(event);
@@ -209,7 +242,7 @@ namespace DrkCraft
         #if defined(DRK_CONFIG_DEBUG)
             case KeyCode::F12:
             {
-                m_imGuiManager.toggle_demo_window();
+                m_imGuiManager->toggle_demo_window();
                 return true;
             }
         #endif
@@ -245,6 +278,15 @@ namespace DrkCraft
             set_fullscreen(0);
 
         return false;
+    }
+
+    void Application::load_assets(void)
+    {
+        AssetLoadList assets =
+        {
+            { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
+        };
+        m_assetManager.load_list(assets);
     }
 
     void Application::set_fullscreen(int monitor)

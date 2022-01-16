@@ -39,7 +39,7 @@ namespace DrkCraft
     public:
         static Ref<Shader> create(const std::filesystem::path& path, ShaderType type);
         Shader(ShaderType type); // Required for make_ptr, should not use directly
-        ~Shader(void);
+        virtual ~Shader(void);
 
         Shader(const Shader&) = delete;
         Shader(Shader&&) = delete;
@@ -62,7 +62,7 @@ namespace DrkCraft
     public:
         ShaderProgram(std::string_view name);
         ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders);
-        ~ShaderProgram(void);
+        virtual ~ShaderProgram(void);
 
         ShaderProgram(void) = delete;
         ShaderProgram(const ShaderProgram&) = delete;

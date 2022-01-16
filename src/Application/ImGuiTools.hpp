@@ -2,11 +2,12 @@
 #define DRK_IMGUI_TOOLS_HPP
 
 #include "Core/Base.hpp"
+#include "System/Window.hpp"
 #include "Events.hpp"
 
-#include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
+#include <GLFW/glfw3.h>
 
 #include <unordered_map>
 
@@ -22,7 +23,7 @@ namespace DrkCraft
     class ImGuiManager
     {
     public:
-        ImGuiManager(GLFWwindow* window, bool enable=true);
+        ImGuiManager(Window& window, bool enable=true);
         ~ImGuiManager(void);
 
         void init_impl(GLFWwindow* window);

@@ -17,6 +17,7 @@
 #include "Graphics/Util.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
+#include "Graphics/GlBuffer.hpp"
 #include "Audio/AudioSource.hpp"
 
 namespace DrkCraft
@@ -48,7 +49,7 @@ namespace DrkCraft
         void save(void);
 
     private:
-        AssetManager& m_assetManager;
+        AssetManager& m_assets;
 
         World m_world;
 
@@ -62,7 +63,7 @@ namespace DrkCraft
         bool m_paused;
 
         // Temp
-        GLuint vertexArrayObject;
+        Ptr<VertexBuffer> vertexBuffer;
         ShaderProgram flatColorShaderProgram;
         glm::vec3 color;
         RandomFloatDist randomDist;

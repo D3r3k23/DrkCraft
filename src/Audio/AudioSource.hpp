@@ -32,7 +32,7 @@ namespace DrkCraft
     {
     public:
         AlBuffer(AudioSourceFormat format, int16* data, uint size, uint sampleRate);
-        ~AlBuffer(void);
+        virtual ~AlBuffer(void);
 
     private:
         AudioSourceFormat m_format;
@@ -44,7 +44,7 @@ namespace DrkCraft
 
     public:
         AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, float length);
-        ~AudioSource(void);
+        virtual ~AudioSource(void);
 
         bool is_playing(void) const;
         bool is_paused(void) const;

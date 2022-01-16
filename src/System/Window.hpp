@@ -18,7 +18,7 @@ namespace DrkCraft
         ~Window(void);
 
         void init_raw_window(void);
-        GLFWwindow* get_raw_window(void) const;
+        GLFWwindow* get_raw_window(void);
 
         void poll_events(void);
         void swap_buffers(void);

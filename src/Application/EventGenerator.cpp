@@ -5,8 +5,8 @@
 
 namespace DrkCraft
 {
-    EventGenerator::EventGenerator(GLFWwindow* window)
-      : m_window(window)
+    EventGenerator::EventGenerator(Window& window)
+      : m_window(window.get_raw_window())
     {
         DRK_LOG_CORE_TRACE("Creating EventGenerator");
     }

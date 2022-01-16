@@ -9,35 +9,31 @@
 namespace DrkCraft
 {
 #if DRK_LOGGING_ENABLED
-    void GLAPI gl_message_handler(GLenum source, GLenum type, GLuint id,
+    void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id,
         GLenum severity, GLsizei length, const GLchar* msg, const void* userParam);
 #endif
 
-    OpenGlLoader::OpenGlLoader(void)
-    {
-        DRK_LOG_CORE_TRACE("Initializing OpenGL");
-        load_gl();
-
-        const auto* version = glGetString(GL_VERSION);
-        DRK_LOG_CORE_INFO("OpenGL version: {}", version);
-
-    #if DRK_LOGGING_ENABLED
-        glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(gl_message_handler, nullptr);
-    #endif
-    }
-
-    void OpenGlLoader::load_gl(void)
+    void load_open_gl(void)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Loading Glad OpenGL using GLFW loader function");
+        {
+            DRK_PROFILE_SCOPE("Load GL");
+            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
+        }
+        const auto* version = glGetString(GL_VERSION);
+        DRK_LOG_CORE_INFO("OpenGL version: {}", version);
 
-        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
+        if constexpr(DRK_LOGGING_ENABLED) // Does this work?
+        {
+            glEnable(GL_DEBUG_OUTPUT);
+            glDebugMessageCallback(gl_message_handler, nullptr);
+        }
     }
 
 #if DRK_LOGGING_ENABLED
-    void GLAPI gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
+    void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
     {
         if (id == 131169 || id == 131185 || id == 131218 || 131204)
             return;

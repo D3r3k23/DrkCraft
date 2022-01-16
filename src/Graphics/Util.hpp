@@ -6,11 +6,7 @@
 
 namespace DrkCraft
 {
-    struct OpenGlLoader
-    {
-        OpenGlLoader(void);
-        void load_gl(void);
-    };
+    void load_open_gl(void);
 
     template <GlObjectConcept O>
     class GlObjectHandler

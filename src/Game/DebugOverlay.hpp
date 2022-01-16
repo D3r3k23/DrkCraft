@@ -1,6 +1,8 @@
 #ifndef DRK_DEBUG_OVERLAY_HPP
 #define DRK_DEBUG_OVERLAY_HPP
 
+//// Could remove this entirely from Release builds?
+
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"

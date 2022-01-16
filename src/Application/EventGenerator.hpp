@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Events.hpp"
+#include "System/Window.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -11,7 +12,7 @@ namespace DrkCraft
     class EventGenerator
     {
     public:
-        EventGenerator(GLFWwindow* window);
+        EventGenerator(Window& window);
         ~EventGenerator(void);
 
         void register_event_handler(const AbstractEventHandlerFn<Event>& handler);

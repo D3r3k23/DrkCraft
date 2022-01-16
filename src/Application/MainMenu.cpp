@@ -51,7 +51,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        // Show background
+        // Show background (or in separate layer)
 
         if (m_show)
         {

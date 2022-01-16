@@ -47,8 +47,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_id);
+        bind();
         glBufferData(GL_ARRAY_BUFFER, get_size(), vertices, GL_STATIC_DRAW);
+        unbind();
     }
 
     void VertexBuffer::bind(void)
@@ -72,8 +73,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_id);
-        glBufferData(GL_ARRAY_BUFFER, get_size(), indices, GL_STATIC_DRAW);
+        bind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_size(), indices, GL_STATIC_DRAW);
+        unbind();
     }
 
     void IndexBuffer::bind(void)

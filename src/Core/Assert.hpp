@@ -35,10 +35,8 @@
     #define DRK_ASSERT_CORE_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
 
     #if defined(DRK_CONFIG_DEBUG)
-
         #define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
         #define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
-
     #else
         #define DRK_ASSERT_DEBUG(cond, ...)
         #define DRK_ASSERT_DEBUG_NO_MSG(cond)

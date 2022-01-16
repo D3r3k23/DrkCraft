@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     RuntimeSettings::load("config");
     DRK_LOG_CORE_INFO("Game mode: {}", game_mode_to_string(CommandLineOptions::get_game_mode()));
 
-    if (DRK_TRACE_LOGGING_ENABLED)
+    if constexpr (DRK_TRACE_LOGGING_ENABLED)
         DRK_LOG_CORE_INFO("Trace logging enabled");
 
     DRK_LOG_CORE_TRACE("Initializing Application");

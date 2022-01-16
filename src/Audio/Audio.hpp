@@ -46,6 +46,8 @@ namespace DrkCraft
         void stop_source(Ref<AudioSource> source);
         void stop_all(void);
 
+        void set_gain(float gain);
+
         void refresh(void);
 
     private:
@@ -63,7 +65,7 @@ namespace DrkCraft
         static bool running(void);
         static AudioEngine& get_engine(void);
 
-        static Ref<AudioSource> load_file(const std::filesystem::path& filename, bool spatial=false);
+        static Ref<AudioSource> load_file(const std::filesystem::path& filename);
 
         static void play(Ref<AudioSource> source);
         static void play(void);

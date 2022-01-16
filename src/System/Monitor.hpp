@@ -22,9 +22,17 @@ namespace DrkCraft
 
     class Monitor
     {
-    public:
+        friend class MonitorManager;
+    private:
         Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>& eventHandler);
+
+    public:
         ~Monitor(void);
+
+        Monitor(const Monitor&) = delete;
+        Monitor& operator=(const Monitor&) = delete;
+        Monitor(Monitor&& other);
+        Monitor& operator=(Monitor&& other);
 
         GLFWmonitor* get_raw_monitor(void) const;
         const VidMode& get_vid_mode(void) const;
@@ -43,9 +51,9 @@ namespace DrkCraft
     private:
         // This is invalidated when GLFW monitor configuration changes
         GLFWmonitor* m_monitor;
+        uint m_number;
         VidMode m_vidMode;
         glm::vec2 m_scale;
-        uint m_number;
     };
 
     class MonitorManager
@@ -55,13 +63,14 @@ namespace DrkCraft
         ~MonitorManager(void);
 
         void register_event_handler(const AbstractEventHandlerFn<MonitorEvent>& eventHandler);
+        void load_monitors(void);
         void refresh_monitors(void);
 
         uint get_monitor_number(GLFWmonitor* rawMonitor) const;
         Monitor& get_monitor(uint number);
         int get_fullscreen_monitor(void) const;
 
-        void activate_fullscreen(const Window& window, uint monitor=0);
+        void activate_fullscreen(Window& window, uint monitor=0);
         void deactivate_fullscreen(Window& window);
 
         bool fullscreen_activated(void) const;

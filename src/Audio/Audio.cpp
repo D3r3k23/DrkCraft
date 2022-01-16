@@ -54,7 +54,7 @@ namespace DrkCraft
         alListenerfv(AL_VELOCITY, listenerVel);
         alListenerfv(AL_ORIENTATION, listenerOri);
 
-        alListenerf(AL_GAIN, MASTER_LISTENER_GAIN);
+        set_gain(MASTER_LISTENER_GAIN);
     }
 
     AudioEngine::~AudioEngine(void)
@@ -162,6 +162,11 @@ namespace DrkCraft
             stop_source(source);
     }
 
+    void AudioEngine::set_gain(float gain)
+    {
+        alListenerf(AL_GAIN, gain);
+    }
+
     void AudioEngine::refresh(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -202,7 +207,7 @@ namespace DrkCraft
         return *s_engine;
     }
 
-    Ref<AudioSource> Audio::load_file(const std::filesystem::path& filename, bool spatial)
+    Ref<AudioSource> Audio::load_file(const std::filesystem::path& filename)
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG_NO_MSG(running());
@@ -216,13 +221,12 @@ namespace DrkCraft
         auto extension = filename.extension();
         switch (find_audio_file_format(extension.string()))
         {
-            case AudioFileFormat::Mp3 : source = s_engine->load_mp3(filename); break;
-            case AudioFileFormat::Ogg : source = s_engine->load_ogg(filename); break;
+            case AudioFileFormat::Mp3 : source = get_engine().load_mp3(filename); break;
+            case AudioFileFormat::Ogg : source = get_engine().load_ogg(filename); break;
             default:
                 DRK_ASSERT_DEBUG(false, "File format {} not supported", extension.string());
                 return {};
         }
-        source->set_spatial(spatial);
         return source;
     }
 

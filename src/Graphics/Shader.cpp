@@ -53,7 +53,7 @@ namespace DrkCraft
         {
             DRK_LOG_CORE_INFO("Shader found in cache");
             const auto& shader = s_shaderCache[path.string()];
-            DRK_ASSERT_DEBUG(type == shader->get_type(), "Shader type does not match type in cache");
+            DRK_ASSERT_DEBUG(type == shader->get_type(), "Shader type does not match cached");
             return shader;
         }
         else
@@ -63,6 +63,9 @@ namespace DrkCraft
 
             auto shader = make_ref<Shader>(type);
             shader->compile(source);
+
+            DRK_LOG_CORE_INFO("Adding Shader to cache");
+            s_shaderCache[path.string()] = shader;
             return shader;
         }
     }

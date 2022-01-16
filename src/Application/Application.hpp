@@ -11,7 +11,6 @@
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Core/Timestep.hpp"
-#include "Graphics/Util.hpp"
 
 namespace DrkCraft
 {
@@ -47,6 +46,8 @@ namespace DrkCraft
         bool on_monitor_event(const MonitorEvent& event);
         bool on_monitor_disconnected(const MonitorDisconnectedEvent& event);
 
+        void load_assets(void);
+
     public:
         void set_fullscreen(int monitor=-1);
         void set_windowed(void);
@@ -57,12 +58,12 @@ namespace DrkCraft
         static Application* s_instance;
 
         Window m_window;
-        OpenGlLoader m_openGlLoader;
 
         EventGenerator m_eventGenerator;
         MonitorManager m_monitorManager;
         AssetManager m_assetManager;
-        ImGuiManager m_imGuiManager;
+
+        Ptr<ImGuiManager> m_imGuiManager;
 
         LayerStack m_layerStack;
         LayerStack m_frameLayerStack;

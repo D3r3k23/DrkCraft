@@ -10,7 +10,7 @@ namespace DrkCraft
 {
     std::unordered_map<ImGuiFont, ImFont*> ImGuiManager::s_fonts;
 
-    ImGuiManager::ImGuiManager(GLFWwindow* window, bool enable)
+    ImGuiManager::ImGuiManager(Window& window, bool enable)
       : m_enabled(enable),
         m_blockEvents(true),
         m_showDemoWindow(false)
@@ -40,7 +40,7 @@ namespace DrkCraft
         s_fonts[ImGuiFont::Title] = font;
 
         setup_style();
-        init_impl(window);
+        init_impl(window.get_raw_window());
     }
 
     ImGuiManager::~ImGuiManager(void)

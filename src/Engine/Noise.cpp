@@ -8,7 +8,7 @@ namespace DrkCraft
 {
     static void apply_fast_noise_lite_spec(FastNoiseLite& generator, const NoiseSpec& spec)
     {
-        static std::unordered_map<NoiseSpec::Type, FastNoiseLite::NoiseType> noiseTypeMap
+        static const std::unordered_map<NoiseSpec::Type, FastNoiseLite::NoiseType> noiseTypeMap
         ({
             { NoiseSpec::Type::OpenSimplex2,  FastNoiseLite::NoiseType_OpenSimplex2 },
             { NoiseSpec::Type::OpenSimplex2S, FastNoiseLite::NoiseType_OpenSimplex2S },
@@ -18,7 +18,7 @@ namespace DrkCraft
             { NoiseSpec::Type::Value,         FastNoiseLite::NoiseType_Value }
         });
         DRK_ASSERT_DEBUG(noiseTypeMap.contains(spec.type), "Unkown noise type");
-        generator.SetNoiseType(noiseTypeMap[spec.type]);
+        generator.SetNoiseType(noiseTypeMap.at(spec.type));
     }
 
     Noise::Noise(const NoiseSpec& spec, glm::uvec2 size, int seed)

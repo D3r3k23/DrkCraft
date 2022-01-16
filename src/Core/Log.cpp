@@ -24,13 +24,11 @@
 
     #if defined(DRK_CONFIG_DEBUG)
         constexpr Level STATIC_LOG_LEVEL = Level::trace;
-        #if DRK_TRACE_LOGGING_ENABLED
-            constexpr Level CONSOLE_LOG_LEVEL = Level::trace;
-        #else
-            constexpr Level CONSOLE_LOG_LEVEL = Level::debug;
-        #endif
+        constexpr bool  CONSOLE_LOG_ENABLED = true;
+        constexpr Level CONSOLE_LOG_LEVEL = DRK_TRACE_LOGGING_ENABLED ? Level::trace : Level::debug;
     #else
         constexpr Level STATIC_LOG_LEVEL = Level::info;
+        constexpr bool CONSOLE_LOG_ENABLED = false;
     #endif
         constexpr Level FILE_LOG_LEVEL = STATIC_LOG_LEVEL;
 
@@ -48,12 +46,12 @@
             fileSink->set_level(FILE_LOG_LEVEL);
             sink->add_sink(fileSink);
 
-        #if defined(DRK_CONFIG_DEBUG)
-            auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-            consoleSink->set_level(CONSOLE_LOG_LEVEL);
-            sink->add_sink(consoleSink);
-        #endif
-
+            if constexpr (CONSOLE_LOG_ENABLED)
+            {
+                auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+                consoleSink->set_level(CONSOLE_LOG_LEVEL);
+                sink->add_sink(consoleSink);
+            }
             sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
             sink->set_level(STATIC_LOG_LEVEL);
 

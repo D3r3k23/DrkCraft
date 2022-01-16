@@ -37,6 +37,8 @@ namespace DrkCraft
     using Vertex = glm::vec3;
     using VertexElement = float;
 
+    // upload_data after creation?
+
     class VertexBuffer : public GlBuffer
     {
     public:

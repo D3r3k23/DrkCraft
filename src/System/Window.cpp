@@ -52,7 +52,7 @@ namespace DrkCraft
         // glfwSetWindowIcon(m_window, icon.get());
     }
 
-    GLFWwindow* Window::get_raw_window(void) const
+    GLFWwindow* Window::get_raw_window(void)
     {
         return m_window;
     }

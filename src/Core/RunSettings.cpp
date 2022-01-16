@@ -72,13 +72,14 @@ namespace DrkCraft
         switch (mode)
         {
             case GameMode::Dev:
+            {
             #if DRK_DEV_MODE_ENABLED
                 get_instance().mode = GameMode::Dev;
             #else
                 DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
             #endif
                 break;
-
+            }
             case GameMode::Player:
                 get_instance().mode = GameMode::Player;
                 break;

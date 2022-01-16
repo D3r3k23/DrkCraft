@@ -15,12 +15,13 @@ namespace DrkCraft
             auto status = glfwInit();
             DRK_ASSERT_CORE(status == GLFW_TRUE, "Failed to initialize GLFW");
         }
-    #if DRK_LOGGING_ENABLED
-        glfwSetErrorCallback([](int error, const char* description)
+        if constexpr (DRK_LOGGING_ENABLED)
         {
-            DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
-        });
-    #endif
+            glfwSetErrorCallback([](int error, const char* description)
+            {
+                DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
+            });
+        }
     }
 
     void shutdown_glfw(void)

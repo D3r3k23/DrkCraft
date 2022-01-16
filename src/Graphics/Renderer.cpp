@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include "CubeRenderer.hpp"
+#include "Util.hpp"
 #include "Core/Profiler.hpp"
 
 #include <glad/glad.h>
@@ -13,6 +14,8 @@ namespace DrkCraft
     struct RendererData
     {
         RendererStats stats;
+
+        GlObjectID vao;
 
         Ptr<CubeRenderer> cubeRenderer;
     };
@@ -29,7 +32,10 @@ namespace DrkCraft
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
-        // s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
+        glGenVertexArrays(1, &s_rendererData.vao);
+        glBindVertexArray(s_rendererData.vao);
+
+        s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
     }
 
     void Renderer::shutdown(void)
@@ -57,11 +63,11 @@ namespace DrkCraft
         glDrawElements(GL_TRIANGLES, buffer.get_count(), GL_UNSIGNED_INT, nullptr);
     }
 
-    void Renderer::draw_triangle(GLuint vao)
+    void Renderer::draw_triangle(VertexBuffer& vbo)
     {
         DRK_PROFILE_FUNCTION();
 
-        glBindVertexArray(vao);
+        GlObjectHandler<VertexBuffer> vboHandler(vbo);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 

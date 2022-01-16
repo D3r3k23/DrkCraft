@@ -5,9 +5,6 @@
 #include "Core/BuildSettings.hpp"
 #include "Mesh.hpp"
 
-// Temp?
-#include <glad/glad.h>
-
 namespace DrkCraft
 {
     struct RendererStats
@@ -32,7 +29,7 @@ namespace DrkCraft
 
         static void draw_block(uint x, uint y, uint z);
 
-        static void draw_triangle(GLuint vao);
+        static void draw_triangle(VertexBuffer& vbo);
 
         static void draw_cube_mesh(const CubeMesh& mesh); // ??
 

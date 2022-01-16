@@ -2,7 +2,11 @@
 
 #include "Core/Profiler.hpp"
 
+#include <vector>
 #include <algorithm>
+#include <execution>
+#include <mutex>
+#include <utility>
 
 namespace DrkCraft
 {
@@ -18,7 +22,37 @@ namespace DrkCraft
 
     Monitor::~Monitor(void)
     {
-        glfwSetMonitorUserPointer(m_monitor, nullptr);
+        if (m_monitor)
+            glfwSetMonitorUserPointer(m_monitor, nullptr);
+    }
+
+    Monitor::Monitor(Monitor&& other)
+    {
+        m_monitor = other.m_monitor;
+        m_number  = other.m_number;
+
+        other.m_monitor = nullptr;
+        other.m_number  = 0;
+
+        m_vidMode = other.m_vidMode;
+        m_scale   = other.m_scale;
+    }
+
+    Monitor& Monitor::operator=(Monitor&& other)
+    {
+        if (m_monitor)
+            glfwSetMonitorUserPointer(m_monitor, nullptr);
+
+        m_monitor = other.m_monitor;
+        m_number  = other.m_number;
+
+        other.m_monitor = nullptr;
+        other.m_number  = 0;
+
+        m_vidMode = other.m_vidMode;
+        m_scale   = other.m_scale;
+
+        return *this;
     }
 
     GLFWmonitor* Monitor::get_raw_monitor(void) const
@@ -116,7 +150,6 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Creating MonitorManager");
 
         glfwSetMonitorCallback(monitor_event_callback);
-        refresh_monitors();
     }
 
     MonitorManager::~MonitorManager(void)
@@ -130,25 +163,42 @@ namespace DrkCraft
         m_eventHandler = eventHandler;
     }
 
-    void MonitorManager::refresh_monitors(void)
+    void MonitorManager::load_monitors(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        m_monitors.clear();
-
         int count;
-        GLFWmonitor** glfwMonitors;
+        GLFWmonitor** glfwMonitorsPtr;
         {
             DRK_PROFILE_SCOPE("glfwGetMonitors");
-            glfwMonitors = glfwGetMonitors(&count);
+            glfwMonitorsPtr = glfwGetMonitors(&count);
         }
         DRK_ASSERT_CORE(count > 0, "glfwGetMonitors error");
 
-        for (uint i = 0; i < count; i++) // This is slow
+        std::vector<std::pair<uint, GLFWmonitor*>> glfwMonitors;
+        for (uint i = 0; i < count; i++)
+            glfwMonitors.emplace_back(i, glfwMonitorsPtr[i]);
+
+        std::mutex mutex;
+        // For some reason the ranges:: version of these doesnt work
+        std::for_each(std::execution::par_unseq, glfwMonitors.begin(), glfwMonitors.end(), [this, &mutex](const auto& monitorPair)
         {
-            auto monitor = glfwMonitors[i];
-            m_monitors.emplace_back(monitor, i, m_eventHandler);
-        }
+            const auto& [number, glfwMonitor] = monitorPair;
+            Monitor monitor(glfwMonitor, number, m_eventHandler);
+
+            std::lock_guard lock(mutex);
+            m_monitors.push_back(std::move(monitor));
+        });
+        std::sort(m_monitors.begin(), m_monitors.end(), [](const Monitor& first, const Monitor& second)
+        {
+            return first.get_number() < second.get_number();
+        });
+    }
+
+    void MonitorManager::refresh_monitors(void)
+    {
+        m_monitors.clear();
+        load_monitors();
     }
 
     uint MonitorManager::get_monitor_number(GLFWmonitor* rawMonitor) const
@@ -166,8 +216,9 @@ namespace DrkCraft
         if (number >= num_monitors())
         {
             DRK_LOG_CORE_WARN("Invalid monitor selected. Defaulting to primary");
-            return m_monitors[0];
+            number = 0;
         }
+        DRK_ASSERT_DEBUG_NO_MSG(m_monitors[number].get_number() == number);
         return m_monitors[number];
     }
 
@@ -179,7 +230,7 @@ namespace DrkCraft
             return -1;
     }
 
-    void MonitorManager::activate_fullscreen(const Window& window, uint monitor)
+    void MonitorManager::activate_fullscreen(Window& window, uint monitor)
     {
         if (monitor >= num_monitors())
         {
