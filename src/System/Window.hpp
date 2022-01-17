@@ -17,7 +17,6 @@ namespace DrkCraft
         Window(std::string_view title);
         ~Window(void);
 
-        void init_raw_window(void);
         GLFWwindow* get_raw_window(void);
 
         void set_vsync(bool enable);

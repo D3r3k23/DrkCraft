@@ -31,8 +31,8 @@
         };
     }
 
-    #define DRK_LOGGER_INIT(dir)   Logger::init(dir)
-    #define DRK_LOGGER_CLOSE()     Logger::close()
+    #define DRK_LOGGER_INIT(dir) Logger::init(dir)
+    #define DRK_LOGGER_CLOSE()   Logger::close()
 
     #define DRK_LOG_CORE_TRACE(...)    Logger::get_core_logger().trace(__VA_ARGS__)
     #define DRK_LOG_CORE_DEBUG(...)    Logger::get_core_logger().debug(__VA_ARGS__)

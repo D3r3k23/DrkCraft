@@ -68,7 +68,8 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         ImGui::SetNextWindowPos({0, 0});
-        ImGui::Begin("Debug Overlay", nullptr);
+        ImGui::SetNextWindowSize({250, 200});
+        ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoResize);
 
         ImGui::BeginGroup();
         ImGui::Text("FPS (Current): %.1f", m_currentFps.get_fps());
@@ -95,7 +96,6 @@ namespace DrkCraft
             ImGui::Text("Window: %dx%d", res.x, res.y);
             ImGui::EndGroup();
         }
-
         ImGui::End();
     }
 

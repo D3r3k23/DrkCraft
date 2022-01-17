@@ -17,17 +17,20 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing OpenGL");
-
+        {
+            DRK_PROFILE_SCOPE("glfwMakeContextCurrent");
+            glfwMakeContextCurrent(m_window);
+        }
         DRK_LOG_CORE_TRACE("Loading Glad OpenGL using GLFW loader function");
         {
-            DRK_PROFILE_SCOPE("Load GL");
+            DRK_PROFILE_SCOPE("Load GL Loader");
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
             DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
         }
         const auto* version = glGetString(GL_VERSION);
         DRK_LOG_CORE_INFO("OpenGL version: {}", version);
 
-    #if DRK_LOGGING_ENABLED)
+    #if DRK_LOGGING_ENABLED
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(gl_message_handler, nullptr);
     #endif

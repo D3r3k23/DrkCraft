@@ -27,24 +27,25 @@ echo Copying assets
 xcopy /e assets %package_dir%\assets\
 
 echo Creating config directory
-xcopy /e config %package_dir%\config\default\
+xcopy /e config\default %package_dir%\config\
 
 echo Creating data directory
 xcopy /e /t data %package_dir%\data\
 
 echo Creating tools directory
 mkdir %package_dir%\tools
-copy scripts\clean_logs.py        %package_dir%\tools\
-copy scripts\gen_texture_atlas.py %package_dir%\tools\
+xcopy /q scripts\clean_logs.py        %package_dir%\tools\
+xcopy /q scripts\gen_texture_atlas.py %package_dir%\tools\
 
 echo Creating about directory
 mkdir %package_dir%\about
-copy LICENSE.txt     %package_dir%\about\LICENSE.txt
-copy lib\LICENSE.txt %package_dir%\about\LICENSE_LIB.txt
 
 echo Writing build.txt
 python scripts\write_build_file.py %package_dir%\about\build.txt ^
-    %version% Windows %build_config% %en_profile% %en_dev_mode% %dist%
+    %version% Windows %build_config% %en_profile% %en_dev_mode% %en_trace_log% %dist%
+
+echo Writing LICENSE.txt
+python scripts\write_license_file.py %package_dir%\about\LICENSE.txt LICENSE.txt lib\LICENSE.txt
 
 echo Creating archive %package_zip%
 if exist %package_zip% del /Q %package_zip%

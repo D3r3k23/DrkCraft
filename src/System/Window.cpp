@@ -1,7 +1,6 @@
 #include "Window.hpp"
 
 #include "Graphics/Renderer.hpp"
-#include "Core/RunSettings.hpp"
 #include "Core/Util.hpp"
 #include "Core/Profiler.hpp"
 
@@ -12,23 +11,6 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Creating Window");
-
-        init_raw_window();
-
-        set_vsync(RuntimeSettings::get().vsync);
-    }
-
-    Window::~Window(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_TRACE("Destroying Window");
-
-        glfwDestroyWindow(m_window);
-    }
-
-    void Window::init_raw_window(void)
-    {
-        DRK_PROFILE_FUNCTION();
 
         const auto& config = RuntimeSettings::config();
         int width  = config.init_window_size.width;
@@ -41,15 +23,22 @@ namespace DrkCraft
             DRK_PROFILE_SCOPE("glfwCreateWindow");
             m_window = glfwCreateWindow(width, height, m_title.c_str(), nullptr, nullptr);
             DRK_ASSERT_CORE(m_window, "Failed to create GLFW window");
-        }{
-            DRK_PROFILE_SCOPE("glfwMakeContextCurrent");
-            glfwMakeContextCurrent(m_window);
         }
         glfwSetWindowAspectRatio(m_window, 16, 9);
         glfwSetWindowSizeLimits(m_window, width, height, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
-        // Ptr<GLFWimage> icon = load_image("assets/icons/DrkCraft.jpg");
-        // glfwSetWindowIcon(m_window, icon.get());
+        // GLFWimage icons[1];
+        // icons[0].pixels = stbi_load(get_icon_asset_path("DrkCraft.png").string().c_str(), &icons[0].width, &icons[0].height, 0, 4);
+        // glfwSetWindowIcon(m_window, 1, icons);
+        // stbi_image_free(icons[0].pixels);
+    }
+
+    Window::~Window(void)
+    {
+        DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Destroying Window");
+
+        glfwDestroyWindow(m_window);
     }
 
     GLFWwindow* Window::get_raw_window(void)

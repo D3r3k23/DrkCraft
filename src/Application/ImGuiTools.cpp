@@ -23,7 +23,7 @@ namespace DrkCraft
             m_context = ImGui::CreateContext();
         }
         ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = nullptr; // "data/imgui.ini";
+        io.IniFilename = "data/imgui.ini";
         {
             DRK_PROFILE_SCOPE("ImGui load fonts");
             const auto fontPath = font_asset_path("Kanit-Medium.ttf");

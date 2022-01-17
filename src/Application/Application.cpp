@@ -99,6 +99,8 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Initializing ImGui");
         m_imGuiManager = make_ptr<ImGuiManager>(m_window);
 
+        m_window.set_vsync(RuntimeSettings::get().vsync);
+
         monitorLoadThread.join();
         if (RuntimeSettings::get().fullscreen)
             set_fullscreen();
@@ -185,7 +187,7 @@ namespace DrkCraft
     void Application::exit(int status)
     {
         if (!m_running)
-            DRK_LOG_CORE_WARN("Application is not running");
+            DRK_LOG_CORE_WARN("Application is not running!");
         m_running  = false;
         m_exitCode = status;
     }
