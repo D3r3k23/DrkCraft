@@ -4,14 +4,15 @@
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
+#include <fmt/format.h>
 
 namespace DrkCraft
 {
-    static const uint MAX_PERIODS = 5;
+    static const uint MAX_PERIODS = 10;
 
     LoadingScreen::LoadingScreen(bool activate)
       : Layer("LoadingScreenLayer", activate),
-        m_updateTimer(500),
+        m_updateTimer(250),
         m_numPeriods(0)
     { }
 
@@ -45,9 +46,11 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         ImGuiTools::BeginFullscreen("Loading", ImGuiWindowFlags_NoBackground);
-        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Regular));
+        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Button));
 
-        auto text = fmt::format("Loading{:.>{}}{: >{}}", "", m_numPeriods, "", MAX_PERIODS);
+        ImGui::Dummy({100, 300});
+
+        auto text = fmt::format("Loading{:.>{}}{: >{}}", "", m_numPeriods, "", MAX_PERIODS - m_numPeriods);
         ImGuiTools::TextCentered(text);
 
         ImGui::PopFont();

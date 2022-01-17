@@ -121,5 +121,6 @@ namespace DrkCraft
             }
         }
         m_loading = false;
+        DRK_LOG_CORE_INFO("AssetManager finished loading");
     }
 }

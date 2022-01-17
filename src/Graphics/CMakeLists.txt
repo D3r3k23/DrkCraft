@@ -5,6 +5,7 @@ target_sources(DrkCraft
     GlBuffer.cpp
     GlObject.cpp
     Mesh.cpp
+    OpenGlContext.cpp
     Renderer.cpp
     Shader.cpp
     Texture.cpp

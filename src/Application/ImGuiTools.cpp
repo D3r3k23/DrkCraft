@@ -18,27 +18,30 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         IMGUI_CHECKVERSION();
-        m_context = ImGui::CreateContext();
-
+        {
+            DRK_PROFILE_SCOPE("ImGui::CreateContext");
+            m_context = ImGui::CreateContext();
+        }
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr; // "data/imgui.ini";
+        {
+            DRK_PROFILE_SCOPE("ImGui load fonts");
+            const auto fontPath = font_asset_path("Kanit-Medium.ttf");
+            ImFont* font;
 
-        auto fontPath = font_asset_path("Kanit-Medium.ttf");
-        ImFont* font;
+            font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 16.0f);
+            DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
+            s_fonts[ImGuiFont::Regular] = font;
+            io.FontDefault = font;
 
-        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 16.0f);
-        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
-        s_fonts[ImGuiFont::Regular] = font;
-        io.FontDefault = font;
+            font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 40.0f);
+            DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
+            s_fonts[ImGuiFont::Button] = font;
 
-        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 40.0f);
-        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
-        s_fonts[ImGuiFont::Button] = font;
-
-        font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 64.0f);
-        DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
-        s_fonts[ImGuiFont::Title] = font;
-
+            font = io.Fonts->AddFontFromFileTTF(fontPath.string().c_str(), 64.0f);
+            DRK_ASSERT_DEBUG(font, "Could not load font: {}", fontPath.generic_string());
+            s_fonts[ImGuiFont::Title] = font;
+        }
         setup_style();
         init_impl(window.get_raw_window());
     }

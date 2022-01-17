@@ -5,6 +5,8 @@
 #include "Application/MainMenu.hpp"
 #include "Core/Profiler.hpp"
 
+#include <thread>
+
 using namespace DrkCraft;
 
 int main(int argc, char* argv[])
@@ -25,6 +27,8 @@ int main(int argc, char* argv[])
 
     if constexpr (DRK_TRACE_LOGGING_ENABLED)
         DRK_LOG_CORE_INFO("Trace logging enabled");
+
+    DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
 
     DRK_LOG_CORE_TRACE("Initializing Application");
     Application::init();

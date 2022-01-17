@@ -6,7 +6,6 @@
 #include <AL/alc.h>
 #include <alhelpers/alhelpers.h>
 
-#include <minimp3/minimp3_ex.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <algorithm>
@@ -26,6 +25,53 @@ namespace DrkCraft
     mp3dec_t& Mp3Decoder::get(void)
     {
         return m_decoder;
+    }
+
+    //////// Mp3FileInfo ////////
+
+    Mp3FileInfo::Mp3FileInfo(Mp3Decoder& decoder, const std::filesystem::path& filename)
+    {
+        mp3dec_file_info_t info;
+        {
+            DRK_PROFILE_SCOPE("Decode mp3");
+            int result = mp3dec_load(&decoder.get(), filename.string().c_str(), &info, nullptr, nullptr);
+            DRK_ASSERT_CORE(result == 0, "mp3dec_load may have failed");
+        }
+        m_size   = info.samples * sizeof(mp3d_sample_t);
+        m_length  = m_size / (info.avg_bitrate_kbps * 1024.0f);
+        m_buffer   = info.buffer;
+        m_channels  = info.channels;
+        m_sampleRate = info.hz;
+    }
+
+    Mp3FileInfo::~Mp3FileInfo(void)
+    {
+        free(m_buffer);
+    }
+
+    int16* Mp3FileInfo::get_buffer(void)
+    {
+        return static_cast<int16*>(m_buffer);
+    }
+
+    uint Mp3FileInfo::get_size(void) const
+    {
+        return m_size;
+    }
+
+    float Mp3FileInfo::get_length(void) const
+    {
+        return m_length;
+    }
+
+    uint Mp3FileInfo::get_channels(void) const
+    {
+        return m_channels;
+    }
+
+    uint Mp3FileInfo::get_sample_rate(void) const
+    {
+        return m_sampleRate;
     }
 
     //////// AudioEngine ////////
@@ -74,21 +120,11 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Loading .mp3: \"{}\"", filename.generic_string());
 
-        mp3dec_file_info_t info;
-        {
-            DRK_PROFILE_SCOPE("Decode mp3");
-            int result = mp3dec_load(&m_mp3Decoder.get(), filename.string().c_str(), &info, nullptr, nullptr);
-            DRK_ASSERT_CORE(result == 0, "mp3dec_load may have failed");
-        }
-        uint size   = info.samples * sizeof(mp3d_sample_t);
-        float length = size / (info.avg_bitrate_kbps * 1024.0f); // Seconds
-        int16* buffer = static_cast<int16*>(info.buffer);
-        int sampleRate = info.hz;
+        Mp3FileInfo info(m_mp3Decoder, filename);
+        AudioSourceFormat format = get_audio_source_format(info.get_channels());
 
-        int channels = info.channels;
-        AudioSourceFormat format = get_audio_source_format(channels);
-
-        return make_ref<AudioSource>(format, buffer, size, sampleRate, length);
+        return make_ref<AudioSource>(format,
+            info.get_buffer(), info.get_size(), info.get_sample_rate(), info.get_length());
     }
 
     Ref<AudioSource> AudioEngine::load_ogg(const std::filesystem::path& filename)

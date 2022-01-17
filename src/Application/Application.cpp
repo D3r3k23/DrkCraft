@@ -4,7 +4,6 @@
 #include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
 #include "System/Input.hpp"
-#include "Graphics/Util.hpp"
 #include "Audio/Audio.hpp"
 #include "Core/Profiler.hpp"
 
@@ -75,6 +74,7 @@ namespace DrkCraft
 
     Application::Application(void)
       : m_window("DrkCraft"),
+        m_context(m_window),
         m_eventGenerator(m_window),
         m_layerStackForwardView(m_frameLayerStack),
         m_layerStackReverseView(m_frameLayerStack),
@@ -89,9 +89,6 @@ namespace DrkCraft
         {
             m_monitorManager.load_monitors();
         });
-
-        DRK_LOG_CORE_TRACE("Initializing OpenGL");
-        load_open_gl();
 
         DRK_LOG_CORE_TRACE("Initializing Audio system");
         Audio::init();
@@ -159,14 +156,14 @@ namespace DrkCraft
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
                 DRK_PROFILE_SCOPE("Application core loop");
-                m_window.poll_events();
+                m_eventGenerator.poll_events();
 
                 if (m_running && !m_minimized)
                 {
                     update(timestep);
                     render();
                 }
-                m_window.swap_buffers();
+                m_context.swap_buffers();
             }
 
             m_layerStack.refresh();
@@ -282,7 +279,7 @@ namespace DrkCraft
 
     void Application::load_assets(void)
     {
-        AssetLoadList assets =
+        AssetLoadList assets
         {
             { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
         };

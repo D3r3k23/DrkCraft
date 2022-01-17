@@ -173,7 +173,7 @@ namespace DrkCraft
 
     void AudioSource::detach_buffer(void)
     {
-        alSourcei(m_id, AL_BUFFER, NULL);
+        alSourcei(m_id, AL_BUFFER, 0);
     }
 
     int AudioSource::get_al_state(void) const

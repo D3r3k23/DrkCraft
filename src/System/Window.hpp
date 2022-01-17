@@ -7,7 +7,7 @@
 #include <glm/vec2.hpp>
 
 #include <string>
-#include <optional>
+#include <string_view>
 
 namespace DrkCraft
 {
@@ -19,9 +19,6 @@ namespace DrkCraft
 
         void init_raw_window(void);
         GLFWwindow* get_raw_window(void);
-
-        void poll_events(void);
-        void swap_buffers(void);
 
         void set_vsync(bool enable);
         bool get_vsync(void) const;

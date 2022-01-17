@@ -3,6 +3,7 @@
 #include "Application.hpp"
 #include "ImGuiTools.hpp"
 #include "Game/Game.hpp"
+#include "System/AssetManager.hpp"
 #include "Core/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -12,9 +13,12 @@ namespace DrkCraft
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer", true),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
-        m_show(true)
+        m_loadingScreen(Layer::create<LoadingScreen>()),
+        m_show(true),
+        m_applicationAssetsLoading(true),
+        m_startButtonPushed(false)
     {
-        m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show));
+        m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show_menu));
     }
 
     MainMenu::~MainMenu(void)
@@ -22,12 +26,12 @@ namespace DrkCraft
 
     }
 
-    void MainMenu::show(void)
+    void MainMenu::show_menu(void)
     {
         m_show = true;
     }
 
-    void MainMenu::hide(void)
+    void MainMenu::hide_menu(void)
     {
         m_show = false;
     }
@@ -45,13 +49,21 @@ namespace DrkCraft
     void MainMenu::on_update(Timestep timestep)
     {
         // Animate background?
+
+        if (m_applicationAssetsLoading && !Application::get_assets().busy() && m_startButtonPushed)
+        {
+            m_loadingScreen->detach_layer();
+            start_game();
+        }
+        else
+            m_applicationAssetsLoading = Application::get_assets().busy();
     }
 
     void MainMenu::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        // Show background (or in separate layer)
+        // Show background
 
         if (m_show)
         {
@@ -93,16 +105,26 @@ namespace DrkCraft
 
     void MainMenu::start_game(void)
     {
-        DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
-        Application::get_instance().add_layer(Layer::create<Game>());
-        detach_layer();
+        if (Application::get_assets().busy())
+        {
+            DRK_LOG_CORE_INFO("Waiting for assets to finish loading");
+            Application::get_instance().add_layer(m_loadingScreen);
+            hide_menu();
+            m_startButtonPushed = true;
+        }
+        else
+        {
+            DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
+            Application::get_instance().add_layer(Layer::create<Game>());
+            detach_layer();
+        }
     }
 
     void MainMenu::open_settings(void)
     {
         DRK_LOG_CORE_TRACE("MainMenu: Opening Settings");
         m_settingsMenu->activate_layer();
-        hide();
+        hide_menu();
     }
 
     void MainMenu::exit(void)

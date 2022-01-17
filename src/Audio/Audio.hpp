@@ -5,6 +5,7 @@
 #include "AudioSource.hpp"
 
 #include <minimp3/minimp3.h>
+#include <minimp3/minimp3_ex.h>
 #include <glm/vec3.hpp>
 
 #include <deque>
@@ -23,6 +24,26 @@ namespace DrkCraft
 
     private:
         mp3dec_t m_decoder;
+    };
+
+    class Mp3FileInfo
+    {
+    public:
+        Mp3FileInfo(Mp3Decoder& decoder, const std::filesystem::path& filename);
+        ~Mp3FileInfo(void);
+
+        int16* get_buffer(void);
+        uint get_size(void) const;
+        float get_length(void) const;
+        uint get_channels(void) const;
+        uint get_sample_rate(void) const;
+
+    private:
+        mp3d_sample_t* m_buffer;
+        uint m_size;
+        float m_length; // Seconds
+        uint m_channels;
+        uint m_sampleRate;
     };
 
     class AudioEngine

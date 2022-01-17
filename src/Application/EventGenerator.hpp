@@ -16,6 +16,7 @@ namespace DrkCraft
         ~EventGenerator(void);
 
         void register_event_handler(const AbstractEventHandlerFn<Event>& handler);
+        void poll_events(void);
 
     private:
         void set_window_callbacks(void);

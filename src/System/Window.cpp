@@ -57,18 +57,6 @@ namespace DrkCraft
         return m_window;
     }
 
-    void Window::poll_events(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        glfwPollEvents();
-    }
-
-    void Window::swap_buffers(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        glfwSwapBuffers(m_window);
-    }
-
     void Window::set_vsync(bool enable)
     {
         DRK_PROFILE_FUNCTION();

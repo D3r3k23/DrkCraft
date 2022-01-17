@@ -42,6 +42,12 @@ namespace DrkCraft
         set_window_callbacks();
     }
 
+    void EventGenerator::poll_events(void)
+    {
+        DRK_PROFILE_FUNCTION();
+        glfwPollEvents();
+    }
+
     void EventGenerator::set_window_callbacks(void)
     {
         DRK_PROFILE_FUNCTION();

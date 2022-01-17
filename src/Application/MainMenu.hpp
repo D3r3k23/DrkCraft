@@ -6,6 +6,7 @@
 #include "Events.hpp"
 #include "Core/Timestep.hpp"
 #include "SettingsMenu.hpp"
+#include "LoadingScreen.hpp"
 
 namespace DrkCraft
 {
@@ -15,8 +16,8 @@ namespace DrkCraft
         MainMenu(void);
         virtual ~MainMenu(void);
 
-        void show(void);
-        void hide(void);
+        void show_menu(void);
+        void hide_menu(void);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -32,7 +33,10 @@ namespace DrkCraft
 
     private:
         Ref<SettingsMenu> m_settingsMenu;
+        Ref<LoadingScreen> m_loadingScreen;
         bool m_show;
+        bool m_applicationAssetsLoading;
+        bool m_startButtonPushed;
     };
 }
 

@@ -5,6 +5,7 @@
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
 #include "System/AssetManager.hpp"
+#include "Graphics/OpenGlContext.hpp"
 #include "Events.hpp"
 #include "EventGenerator.hpp"
 #include "ImGuiTools.hpp"
@@ -58,6 +59,7 @@ namespace DrkCraft
         static Application* s_instance;
 
         Window m_window;
+        OpenGlContext m_context;
 
         EventGenerator m_eventGenerator;
         MonitorManager m_monitorManager;
