@@ -2,6 +2,7 @@
 #define DRK_VERSION_HPP
 
 #include <string>
+#include <compare>
 
 namespace DrkCraft
 {
@@ -27,14 +28,7 @@ namespace DrkCraft
         static unsigned int find_minor(std::string ver);
 
     public:
-        friend bool operator==(const Version& v1, const Version& v2);
-        friend bool operator!=(const Version& v1, const Version& v2);
-
-        friend bool operator<(const Version& v1, const Version& v2);
-        friend bool operator>(const Version& v1, const Version& v2);
-
-        friend bool operator<=(const Version& v1, const Version& v2);
-        friend bool operator>=(const Version& v1, const Version& v2);
+        friend std::strong_ordering operator<=>(const Version& v1, const Version& v2);
     };
 }
 

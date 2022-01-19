@@ -45,36 +45,11 @@ namespace DrkCraft
             return 0;
     }
 
-    bool operator==(const Version& v1, const Version& v2)
-    {
-        return v1.m_major == v2.m_major & v1.m_minor == v2.m_minor;
-    }
-
-    bool operator!=(const Version& v1, const Version& v2)
-    {
-        return !(v1 == v2);
-    }
-
-    bool operator<(const Version& v1, const Version& v2)
+    std::strong_ordering operator<=>(const Version& v1, const Version& v2)
     {
         if (v1.m_major == v2.m_major)
-            return v1.m_minor < v2.m_minor;
+            return v1.m_minor <=> v2.m_minor;
         else
-            return v1.m_major < v2.m_major;
-    }
-
-    bool operator>(const Version& v1, const Version& v2)
-    {
-        return v2 < v1;
-    }
-
-    bool operator<=(const Version& v1, const Version& v2)
-    {
-        return v1 < v2 || v1 == v2;
-    }
-
-    bool operator>=(const Version& v1, const Version& v2)
-    {
-        return v1 > v2 || v1 == v2;
+            return v1.m_major <=> v2.m_minor;
     }
 }
