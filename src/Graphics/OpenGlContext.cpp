@@ -4,22 +4,21 @@
 #include "Core/Profiler.hpp"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace DrkCraft
 {
-#if DRK_LOGGING_ENABLED
-    void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id,
+    static void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id,
         GLenum severity, GLsizei length, const GLchar* msg, const void* userParam);
-#endif
 
     OpenGlContext::OpenGlContext(Window& window)
-      : m_window(window.get_raw_window())
+      : m_window(window)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing OpenGL");
         {
             DRK_PROFILE_SCOPE("glfwMakeContextCurrent");
-            glfwMakeContextCurrent(m_window);
+            glfwMakeContextCurrent(m_window.get_raw_window());
         }
         DRK_LOG_CORE_TRACE("Loading Glad OpenGL using GLFW loader function");
         {
@@ -30,10 +29,12 @@ namespace DrkCraft
         const auto* version = glGetString(GL_VERSION);
         DRK_LOG_CORE_INFO("OpenGL version: {}", version);
 
-    #if DRK_LOGGING_ENABLED
-        glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(gl_message_handler, nullptr);
-    #endif
+        if constexpr (DRK_LOGGING_ENABLED)
+        {
+            glEnable(GL_DEBUG_OUTPUT);
+            glDebugMessageCallback(gl_message_handler, nullptr);
+            DRK_LOG_CORE_INFO("Enabled logging OpenGL debug messages");
+        }
     }
 
     OpenGlContext::~OpenGlContext(void)
@@ -44,10 +45,9 @@ namespace DrkCraft
     void OpenGlContext::swap_buffers(void)
     {
         DRK_PROFILE_FUNCTION();
-        glfwSwapBuffers(m_window);
+        glfwSwapBuffers(m_window.get_raw_window());
     }
 
-#if DRK_LOGGING_ENABLED
     void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* userParam)
     {
         if (id == 131169 || id == 131185 || id == 131218 || 131204)
@@ -98,5 +98,4 @@ namespace DrkCraft
                 DRK_LOG_CORE_WARN("[OpenGL message] severity: {0} | source: {1} | type: {2} | msg: {3}", severity, sourceStr, typeStr, msg);
         }
     }
-#endif
 }

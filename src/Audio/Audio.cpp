@@ -80,6 +80,7 @@ namespace DrkCraft
     AudioEngine::AudioEngine(void)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Initializing AudioEngine");
         {
             DRK_PROFILE_SCOPE("InitAL");
             int status = InitAL(nullptr, nullptr);
@@ -219,7 +220,7 @@ namespace DrkCraft
 
     //////// Audio ////////
 
-    AudioEngine* Audio::s_engine;
+    AudioEngine* Audio::s_engine = nullptr;
 
     void Audio::init(void)
     {

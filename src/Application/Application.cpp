@@ -96,6 +96,9 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Loading Application assets");
         load_assets();
 
+        DRK_LOG_CORE_TRACE("Initializing Renderer");
+        Renderer::init(m_context, m_window.get_framebuffer_size());
+
         DRK_LOG_CORE_TRACE("Initializing ImGui");
         m_imGuiManager = make_ptr<ImGuiManager>(m_window);
 
@@ -104,12 +107,6 @@ namespace DrkCraft
         monitorLoadThread.join();
         if (RuntimeSettings::get().fullscreen)
             set_fullscreen();
-
-        DRK_LOG_CORE_TRACE("Initializing Renderer");
-        Renderer::init();
-
-        const auto& viewportSize = m_window.get_framebuffer_size();
-        Renderer::set_viewport(0, 0, viewportSize.x, viewportSize.y);
 
         DRK_LOG_CORE_TRACE("Registering Application event handler");
         m_eventGenerator.register_event_handler(DRK_BIND_FN(handle_event));
@@ -126,10 +123,10 @@ namespace DrkCraft
 
         m_assetManager.destroy();
 
-        m_imGuiManager.reset();
-
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
+
+        m_imGuiManager.reset();
 
         DRK_LOG_CORE_TRACE("Shutting down Audio system");
         Audio::shutdown();

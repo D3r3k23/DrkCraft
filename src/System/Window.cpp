@@ -74,15 +74,14 @@ namespace DrkCraft
         return {x, y};
     }
 
-    glm::uvec2 Window::resize(uint width, uint height)
+    void Window::resize(uint width, uint height)
     {
-        return resize({width, height});
+        glfwSetWindowSize(m_window, width, height);
     }
 
-    glm::uvec2 Window::resize(glm::uvec2 size)
+    void Window::resize(const glm::uvec2& size)
     {
-        glfwSetWindowSize(m_window, size.x, size.y);
-        return size;
+        resize(size.x, size.y);
     }
 
     glm::uvec2 Window::get_size(void) const

@@ -9,7 +9,7 @@ call scripts\get_build_config.bat %1 %2 %3 %4
 
 set /p version=<VERSION.txt
 
-set "package_name=DrkCraft-v%version%-%build_config%-win"
+set "package_name=DrkCraft-v%version%-%build_config%-Win"
 set "package_zip=packages\%package_name%.zip"
 
 echo Building package: %package_name%

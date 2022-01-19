@@ -3,7 +3,11 @@
 
 #include "Core/Base.hpp"
 #include "Core/BuildSettings.hpp"
+#include "OpenGlContext.hpp"
+#include "GlBuffer.hpp"
 #include "Mesh.hpp"
+
+#include <glm/vec2.hpp>
 
 namespace DrkCraft
 {
@@ -17,7 +21,7 @@ namespace DrkCraft
     class Renderer
     {
     public:
-        static void init(void);
+        static void init(OpenGlContext& context, const glm::uvec2& viewportSize);
         static void shutdown(void);
 
         static void begin_frame(void);
@@ -34,6 +38,7 @@ namespace DrkCraft
         static void draw_cube_mesh(const CubeMesh& mesh); // ??
 
         static void set_viewport(int x, int y, uint width, uint height);
+        static void set_viewport(const glm::ivec2& pos, const glm::uvec2& size);
 
         static const RendererStats& get_stats(void);
 

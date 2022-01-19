@@ -21,6 +21,7 @@ namespace DrkCraft
             {
                 DRK_LOG_CORE_ERROR("GLFW Error [{}]: {}", error, description);
             });
+            DRK_LOG_CORE_INFO("Enabled logging GLFW error callbacks");
         }
     }
 

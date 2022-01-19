@@ -26,8 +26,8 @@ namespace DrkCraft
 
         glm::ivec2 get_pos(void) const;
 
-        glm::uvec2 resize(uint width, uint height);
-        glm::uvec2 resize(glm::uvec2 size);
+        void resize(uint width, uint height);
+        void resize(const glm::uvec2& size);
 
         glm::uvec2 get_size(void) const;
         glm::uvec2 get_framebuffer_size(void) const;

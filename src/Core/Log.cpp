@@ -20,37 +20,38 @@
         std::shared_ptr<spdlog::logger> Logger::s_gameLogger;
         std::shared_ptr<spdlog::logger> Logger::s_eventLogger;
 
-        using Level = spdlog::level::level_enum;
+        using LogLevel = spdlog::level::level_enum;
 
     #if defined(DRK_CONFIG_DEBUG)
-        constexpr Level STATIC_LOG_LEVEL = Level::trace;
-        constexpr bool  CONSOLE_LOG_ENABLED = true;
-        constexpr Level CONSOLE_LOG_LEVEL = DRK_TRACE_LOGGING_ENABLED ? Level::trace : Level::debug;
+        constexpr LogLevel STATIC_LOG_LEVEL  = LogLevel::trace;
+        constexpr LogLevel CONSOLE_LOG_LEVEL = DRK_TRACE_LOGGING_ENABLED ?
+                                               LogLevel::trace : LogLevel::debug;
+        constexpr bool CONSOLE_LOG_ENABLED = true;
     #else
-        constexpr Level STATIC_LOG_LEVEL = Level::info;
+        constexpr LogLevel STATIC_LOG_LEVEL  = LogLevel::info;
+        constexpr LogLevel CONSOLE_LOG_LEVEL = LogLevel::off;
         constexpr bool CONSOLE_LOG_ENABLED = false;
     #endif
-        constexpr Level FILE_LOG_LEVEL = STATIC_LOG_LEVEL;
+        constexpr LogLevel FILE_LOG_LEVEL = STATIC_LOG_LEVEL;
 
         void Logger::init(const char* dir)
         {
             using std::filesystem::path;
 
-            auto time = Time::get_system_time();
+            auto time  =  Time::get_system_time();
             auto logName = fmt::format("DrkCraft_{:%Y-%m-%d_%H.%M.%S}.log", fmt::localtime(time));
-            auto file = path(dir) / path(logName);
+            auto file  =  path(dir) / path(logName);
 
             auto sink = std::make_shared<spdlog::sinks::dist_sink_mt>();
-
-            auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(file.string());
-            fileSink->set_level(FILE_LOG_LEVEL);
-            sink->add_sink(fileSink);
-
             if constexpr (CONSOLE_LOG_ENABLED)
             {
                 auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
                 consoleSink->set_level(CONSOLE_LOG_LEVEL);
                 sink->add_sink(consoleSink);
+            }{
+                auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(file.string());
+                fileSink->set_level(FILE_LOG_LEVEL);
+                sink->add_sink(fileSink);
             }
             sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
             sink->set_level(STATIC_LOG_LEVEL);

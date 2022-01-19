@@ -37,6 +37,13 @@ namespace DrkCraft
         Texture
     };
 
+    using AssetLoadInfo = std::pair<AssetType, std::filesystem::path>;
+
+    class AssetLoadQueue
+    {
+
+    };
+
     using AssetLoadList = std::vector<std::pair<AssetType, std::filesystem::path>>;
 
     class AssetManager

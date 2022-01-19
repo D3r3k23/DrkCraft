@@ -22,19 +22,27 @@ namespace DrkCraft
 
     static RendererData s_rendererData;
 
-    void Renderer::init(void)
+    void Renderer::init(OpenGlContext& context, const glm::uvec2& viewportSize)
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto* renderer = glGetString(GL_RENDERER);
-        DRK_LOG_CORE_INFO("Renderer: {}", renderer);
+        const auto* hardware = glGetString(GL_RENDERER);
+        DRK_LOG_CORE_INFO("Renderer hardware: {}", hardware);
+
+        set_viewport({0, 0}, viewportSize);
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
-        glGenVertexArrays(1, &s_rendererData.vao);
-        glBindVertexArray(s_rendererData.vao);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
+        clear();
+        context.swap_buffers();
+        {
+            DRK_PROFILE_SCOPE("Initialize VAO");
+            glGenVertexArrays(1, &s_rendererData.vao);
+            glBindVertexArray(s_rendererData.vao);
+        }
         s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
     }
 
@@ -88,6 +96,11 @@ namespace DrkCraft
     void Renderer::set_viewport(int x, int y, uint width, uint height)
     {
         glViewport(x, y, width, height);
+    }
+
+    void Renderer::set_viewport(const glm::ivec2& pos, const glm::uvec2& size)
+    {
+        set_viewport(pos.x, pos.y, size.x, size.y);
     }
 
     const RendererStats& get_stats(void)
