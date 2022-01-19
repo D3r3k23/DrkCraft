@@ -1,6 +1,13 @@
 #ifndef DRK_BUILD_SETTINGS_HPP
 #define DRK_BUILD_SETTINGS_HPP
 
+#include "Version.hpp"
+
+namespace DrkCraft
+{
+    inline const Version BUILD_VERSION(DRK_VERSION_STRING);
+}
+
 #if defined(DRK_PLATFORM_WINDOWS)
     #define DRK_PLATFORM_NAME "Windows"
 #elif defined(DRK_PLATFORM_LINUX)

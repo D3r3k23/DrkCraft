@@ -9,4 +9,5 @@ target_sources(DrkCraft
     Timer.cpp
     Timestep.cpp
     Util.cpp
+    Version.cpp
 )
