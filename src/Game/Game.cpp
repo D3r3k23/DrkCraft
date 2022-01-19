@@ -1,13 +1,13 @@
 #include "Game.hpp"
 
 #include "Application/Application.hpp"
+#include "Audio/Audio.hpp"
 #include "PauseMenu.hpp"
 #include "System/Input.hpp"
 #include "Graphics/Transform.hpp"
 #include "Core/Profiler.hpp"
 
 // Temp
-#include "Audio/Audio.hpp"
 #include <array>
 
 namespace DrkCraft
@@ -158,6 +158,7 @@ namespace DrkCraft
         m_paused = true;
         deactivate_layer();
         open_pause_menu();
+        Audio::pause();
     }
 
     void Game::unpause(void)
@@ -166,6 +167,7 @@ namespace DrkCraft
 
         m_paused = false;
         activate_layer();
+        Audio::play();
     }
 
     bool Game::is_paused(void) const
@@ -177,7 +179,7 @@ namespace DrkCraft
     {
         auto pauseMenu = Layer::create<PauseMenu>();
         pauseMenu->set_unpause_callback_fn(DRK_BIND_FN(unpause));
-        pauseMenu->set_exit_game_callback_fn([&]
+        pauseMenu->set_exit_game_callback_fn([this]
         {
             detach_layer();
         });

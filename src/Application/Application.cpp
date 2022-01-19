@@ -11,7 +11,9 @@
 
 namespace DrkCraft
 {
+    ////////////////////////
     //////// Static ////////
+    ////////////////////////
 
     Application* Application::s_instance = nullptr;
 
@@ -70,7 +72,9 @@ namespace DrkCraft
         return get_instance().m_assetManager;
     }
 
+    //////////////////////////
     //////// Instance ////////
+    //////////////////////////
 
     Application::Application(void)
       : m_window("DrkCraft"),
@@ -90,8 +94,10 @@ namespace DrkCraft
             m_monitorManager.load_monitors();
         });
 
+        const auto& settings = RuntimeSettings::get();
+
         DRK_LOG_CORE_TRACE("Initializing Audio system");
-        Audio::init();
+        Audio::init(settings.volume);
 
         DRK_LOG_CORE_TRACE("Loading Application assets");
         load_assets();
@@ -102,15 +108,18 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Initializing ImGui");
         m_imGuiManager = make_ptr<ImGuiManager>(m_window);
 
-        m_window.set_vsync(RuntimeSettings::get().vsync);
+        m_window.set_vsync(settings.vsync);
 
         monitorLoadThread.join();
-        if (RuntimeSettings::get().fullscreen)
+        if (settings.fullscreen)
             set_fullscreen();
 
         DRK_LOG_CORE_TRACE("Registering Application event handler");
         m_eventGenerator.register_event_handler(DRK_BIND_FN(handle_event));
         m_monitorManager.register_event_handler(DRK_BIND_FN(handle_event));
+
+        DRK_LOG_CORE_INFO("Application initialized");
+        DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
     }
 
     Application::~Application(void)
@@ -134,14 +143,18 @@ namespace DrkCraft
 
     void Application::add_layer(const Ref<Layer>& layer)
     {
-        layer->attach_layer();
+        DRK_PROFILE_FUNCTION();
+
         m_layerStack.push(layer);
+        layer->attach_layer();
     }
 
     void Application::add_overlay(const Ref<Layer>& layer)
     {
-        layer->attach_layer();
+        DRK_PROFILE_FUNCTION();
+
         m_layerStack.push(layer, true);
+        layer->attach_layer();
     }
 
     void Application::run(void)

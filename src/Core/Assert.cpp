@@ -24,9 +24,8 @@
         {
             auto filename = path(src.file_name()).filename().string();
             DRK_LOG_CORE_CRITICAL("[{0}:{1}] Assert ({2}) failed: {3}", filename, src.line(), cond, msg);
-            if (DRK_PROFILER_ACTIVE())
-                DRK_PROFILER_END();
             DRK_LOGGER_CLOSE();
+            DRK_PROFILER_END();
             DRK_DEBUG_BREAK();
         }
 
@@ -34,8 +33,7 @@
         {
             auto filename = path(src.file_name()).filename().string();
             DRK_LOG_CORE_CRITICAL("[{0}:{1}] Assert ({2}) failed", filename, src.line(), cond);
-            if (DRK_PROFILER_ACTIVE())
-                DRK_PROFILER_END();
+            DRK_PROFILER_END();
             DRK_LOGGER_CLOSE();
             DRK_DEBUG_BREAK();
         }

@@ -4,6 +4,7 @@
 
     #include "Time.hpp"
     #include "Application/Events.hpp"
+    #include "Profiler.hpp"
 
     #include <spdlog/sinks/stdout_color_sinks.h>
     #include <spdlog/sinks/basic_file_sink.h>
@@ -36,6 +37,8 @@
 
         void Logger::init(const char* dir)
         {
+            DRK_PROFILE_FUNCTION();
+
             using std::filesystem::path;
 
             auto time  =  Time::get_system_time();
@@ -73,7 +76,9 @@
 
         void Logger::close(void)
         {
+            DRK_PROFILE_FUNCTION();
             DRK_LOG_CORE_INFO("Closing DrkCraft Logger");
+
             s_coreLogger->flush();
             s_gameLogger->flush();
             s_eventLogger->flush();

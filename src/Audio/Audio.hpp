@@ -76,11 +76,28 @@ namespace DrkCraft
         Mp3Decoder m_mp3Decoder;
     };
 
+    class Volume
+    {
+    public:
+        Volume(float vol=0.0f);
+
+        void set(float vol);
+        float get(void) const;
+
+        void mute(void);
+        void unmute(void);
+        bool muted(void) const;
+
+    private:
+        float m_volume;
+        bool m_muted;
+    };
+
     // Public interface to static AudioEngine singleton
     class Audio
     {
     public:
-        static void init(void);
+        static void init(float volume);
         static void shutdown(void);
 
         static bool running(void);
@@ -97,8 +114,17 @@ namespace DrkCraft
         static void stop(Ref<AudioSource> source);
         static void stop(void);
 
+        static void set_volume(float vol);
+        static float get_volume(void);
+
+        static void mute(void);
+        static void unmute(void);
+        static void toggle_mute(void);
+        static bool is_muted(void);
+
     private:
         static AudioEngine* s_engine;
+        static Volume s_volume;
     };
 }
 

@@ -35,6 +35,8 @@ namespace DrkCraft
 
     void LayerStack::push(const Ref<Layer>& layer, bool overlay)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (overlay)
         {
             DRK_LOG_CORE_TRACE("Pushing overlay Layer: {}", layer->get_layer_name());
@@ -51,6 +53,8 @@ namespace DrkCraft
 
     bool LayerStack::pop(const Ref<Layer>& layer)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (auto it = std::ranges::find(m_layers, layer); it != m_layers.end())
         {
             if (it - m_layers.begin() < m_nOverlays)
@@ -83,6 +87,7 @@ namespace DrkCraft
 
     void LayerStack::clear(void)
     {
+        DRK_PROFILE_FUNCTION();
         m_layers.clear();
     }
 
@@ -90,6 +95,7 @@ namespace DrkCraft
     {
         DRK_ASSERT_DEBUG(!empty(), "LayerStack is empty");
         auto& layer = m_layers.back();
+
         DRK_ASSERT_DEBUG(!layer->is_layer_active(), "Back layer already active");
         layer->activate_layer();
     }

@@ -12,13 +12,16 @@ namespace DrkCraft
 {
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer", true),
-        m_settingsMenu(Layer::create<SettingsMenu>(false)),
-        m_loadingScreen(Layer::create<LoadingScreen>()),
         m_show(true),
         m_applicationAssetsLoading(true),
         m_startButtonPushed(false)
     {
+        DRK_PROFILE_FUNCTION();
+
+        m_settingsMenu = Layer::create<SettingsMenu>(false);
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show_menu));
+
+        m_loadingScreen = Layer::create<LoadingScreen>();
     }
 
     MainMenu::~MainMenu(void)

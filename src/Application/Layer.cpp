@@ -1,5 +1,7 @@
 #include "Layer.hpp"
 
+#include "Core/Profiler.hpp"
+
 namespace DrkCraft
 {
     Layer::Layer(std::string_view name, bool activate)
@@ -19,14 +21,18 @@ namespace DrkCraft
 
     void Layer::attach_layer(void)
     {
+        DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Attaching Layer: {}", get_layer_name());
+
         m_layerAttached = true;
         on_attach();
     }
 
     void Layer::detach_layer(void)
     {
+        DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Detaching Layer: {}", get_layer_name());
+
         m_layerAttached = false;
         on_detach();
     }

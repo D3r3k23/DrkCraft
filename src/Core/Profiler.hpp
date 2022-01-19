@@ -5,7 +5,6 @@
 
 #if DRK_PROFILING_ENABLED
 
-    #include "Base.hpp"
     #include "Timer.hpp"
     #include "Time.hpp"
 
@@ -14,6 +13,23 @@
 
     namespace DrkCraft
     {
+        class Profiler;
+
+        class ProfileTimer
+        {
+        public:
+            ProfileTimer(const char* name, const char* cat);
+            ~ProfileTimer(void);
+
+            void stop(void);
+
+        private:
+            Timer m_timer;
+            const char* m_name;
+            const char* m_cat;
+            bool m_running;
+        };
+
         class Profiler
         {
         public:
@@ -43,26 +59,9 @@
             std::ofstream m_outStream;
             const char* m_name;
             bool m_active;
+
+            ProfileTimer* m_sessionTimer;
             std::mutex m_mutex;
-        };
-
-        class ProfileTimer
-        {
-        public:
-            // Currently only tracks the duration from construction to destruction
-            // of the instance. Could potentially expand the API to allow for an
-            // explicit call to stop()
-            ProfileTimer(const char* name, const char* cat);
-            ~ProfileTimer(void);
-
-        private:
-            void stop(void);
-
-        private:
-            Timer m_timer;
-            const char* m_name;
-            const char* m_cat;
-            bool m_running;
         };
     }
 
@@ -84,7 +83,7 @@
         ProfileTimer scope_profile_timer{name, "scope"}
 
     #define DRK_PROFILE_OBJECT(name) \
-        ProfileTimer object_profile_timer{name, "object"}
+        ProfileTimer object_profile_timer{name, "object"} // This might not be a good idea
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)

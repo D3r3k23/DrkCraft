@@ -16,13 +16,41 @@
     #include <fmt/chrono.h>
 
     #include <sstream>
-    #include <iomanip>
     #include <thread>
 
     const bool FLUSH_ON_WRITE = false;
 
     namespace DrkCraft
     {
+        //////////////////////////////
+        //////// ProfileTimer ////////
+        //////////////////////////////
+
+        ProfileTimer::ProfileTimer(const char* name, const char* cat)
+          : m_name(name),
+            m_cat(cat),
+            m_running(true)
+        { }
+
+        ProfileTimer::~ProfileTimer(void)
+        {
+            if (m_running)
+                stop();
+        }
+
+        void ProfileTimer::stop(void)
+        {
+            auto start = Time::duration_cast<Time::Micro<double>>(m_timer.get_start().time_since_epoch());
+            Profiler::get_instance().write_profile(m_cat, m_name, start.count(), m_timer.elapsed_microseconds());
+            m_running = false;
+        }
+
+        //////////////////////////
+        //////// Profiler ////////
+        //////////////////////////
+
+        // Static
+
         Profiler& Profiler::get_instance(void)
         {
             static Profiler s_instance;
@@ -34,42 +62,50 @@
             return Time::duration_cast<Time::Micro<double>>(time.time_since_epoch()).count();
         }
 
+        // Instance
+
         Profiler::Profiler(void)
           : m_active(false)
         { }
 
         Profiler::~Profiler(void)
         {
-            if (m_active)
+            if (active())
                 end();
         }
 
         void Profiler::begin(const char* name, const char* file)
         {
-            DRK_ASSERT_DEBUG(!m_active, "Profiler is already active");
             std::lock_guard lock(m_mutex);
+            if (!active())
+            {
+                m_active = true;
+                m_name = name;
 
-            m_active = true;
-            m_name = name;
+                m_sessionTimer = new ProfileTimer(m_name, "profile");
 
-            DRK_LOG_CORE_INFO("Beginning Profiler session: {}", m_name);
-            m_outStream.open(file);
+                m_outStream.open(file);
 
-            auto time = Time::get_system_time();
-            double timestamp = get_timestamp(Time::get_global_time());
-            write_header(m_name, DRK_VERSION_STRING, fmt::format("{:%Y-%m-%d %H:%M:%S}", fmt::localtime(time)).c_str(), timestamp);
+                auto time = Time::get_system_time();
+                double timestamp = get_timestamp(Time::get_global_time());
+                write_header(m_name, DRK_VERSION_STRING, fmt::format("{:%Y-%m-%d %H:%M:%S}", fmt::localtime(time)).c_str(), timestamp);
+            }
         }
 
         void Profiler::end(void)
         {
-            DRK_ASSERT_DEBUG(m_active, "Profiler is already inactive");
+            { std::lock_guard lock(m_mutex); } // Wait for unlock
+            if (m_sessionTimer)
+                delete m_sessionTimer;
+
             std::lock_guard lock(m_mutex);
+            if (active())
+            {
+                m_active = false;
 
-            m_active = false;
-
-            DRK_LOG_CORE_INFO("Ending Profiler session: {}", m_name);
-            write_footer();
-            m_outStream.close();
+                write_footer();
+                m_outStream.close();
+            }
         }
 
         bool Profiler::active(void) const
@@ -81,19 +117,15 @@
         // more information about what happened before a crash
         void Profiler::write_profile(const char* cat, const char* name, double start, double duration)
         {
-            DRK_ASSERT_DEBUG(m_active, "Profiler is inactive");
-
             std::stringstream profile;
-            profile << std::fixed << std::setprecision(2);
-            profile << ",\n";
-            profile << "    {";
-            profile << "\"cat\":\""  << cat           << "\",";
-            profile << "\"name\":\"" << name          << "\",";
-            profile << "\"ts\":"     << start         <<   ",";
-            profile << "\"dur\":"    << duration      <<   ",";
-            profile << "\"ph\":\""   << "X"           << "\",";
-            profile << "\"pid\":"    << DRK_GET_PID() <<   ",";
-            profile << "\"tid\":"    << std::this_thread::get_id();
+            profile << ",\n    {";
+            profile << fmt::format("\"cat\":\"{}\",",   cat);
+            profile << fmt::format("\"name\":\"{}\",",  name);
+            profile << fmt::format("\"ts\":{:.2f},",   start);
+            profile << fmt::format("\"dur\":{:.2f},", duration);
+            profile << fmt::format("\"ph\":\"{}\",",  "X");
+            profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
+            profile <<             "\"tid\":" <<  std::this_thread::get_id();
             profile << "}";
 
             std::lock_guard lock(m_mutex);
@@ -121,32 +153,13 @@
 
         void Profiler::write_footer(void)
         {
-            std::stringstream footer;
-            footer << "\n";
-            footer << "  ]\n";
-            footer << "}\n";
+            std::string footer =
+                "\n"
+                "  ]\n"
+                "}\n";
 
-            m_outStream << footer.str();
+            m_outStream << footer;
             m_outStream.flush();
-        }
-
-        ProfileTimer::ProfileTimer(const char* name, const char* cat)
-          : m_name(name),
-            m_cat(cat),
-            m_running(true)
-        { }
-
-        ProfileTimer::~ProfileTimer(void)
-        {
-            if (m_running)
-                stop();
-        }
-
-        void ProfileTimer::stop(void)
-        {
-            auto start = Time::duration_cast<Time::Micro<double>>(m_timer.get_start().time_since_epoch());
-            Profiler::get_instance().write_profile(m_cat, m_name, start.count(), m_timer.elapsed_microseconds());
-            m_running = false;
         }
     }
 

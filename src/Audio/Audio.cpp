@@ -15,7 +15,9 @@ namespace DrkCraft
 {
     static const float MASTER_LISTENER_GAIN = 0.25f; // -> 0.5 after volume ctrl added
 
+    ////////////////////////////
     //////// Mp3Decoder ////////
+    ////////////////////////////
 
     Mp3Decoder::Mp3Decoder(void)
     {
@@ -28,7 +30,9 @@ namespace DrkCraft
         return m_decoder;
     }
 
+    /////////////////////////////
     //////// Mp3FileInfo ////////
+    /////////////////////////////
 
     Mp3FileInfo::Mp3FileInfo(Mp3Decoder& decoder, const std::filesystem::path& filename)
     {
@@ -75,7 +79,9 @@ namespace DrkCraft
         return m_sampleRate;
     }
 
+    /////////////////////////////
     //////// AudioEngine ////////
+    /////////////////////////////
 
     AudioEngine::AudioEngine(void)
     {
@@ -218,14 +224,57 @@ namespace DrkCraft
             stop_source(source);
     }
 
+    ////////////////////////
+    //////// Volume ////////
+    ////////////////////////
+
+    Volume::Volume(float vol)
+      : m_volume(vol),
+        m_muted(false)
+    { }
+
+    void Volume::set(float vol)
+    {
+        m_volume = vol;
+        m_muted = false;
+    }
+
+    float Volume::get(void) const
+    {
+        if (m_muted)
+            return 0.0f;
+        else
+            return m_volume;
+    }
+
+    void Volume::mute(void)
+    {
+        m_muted = true;
+    }
+
+    void Volume::unmute(void)
+    {
+        m_muted = false;
+    }
+
+    bool Volume::muted(void) const
+    {
+        return m_muted;
+    }
+
+    ///////////////////////
     //////// Audio ////////
+    ///////////////////////
 
     AudioEngine* Audio::s_engine = nullptr;
+    Volume Audio::s_volume = 0.0f;
 
-    void Audio::init(void)
+    void Audio::init(float volume)
     {
         DRK_ASSERT_DEBUG(!s_engine, "AudioEngine is already initialized");
+
         s_engine = new AudioEngine;
+        set_volume(volume);
     }
 
     void Audio::shutdown(void)
@@ -296,5 +345,38 @@ namespace DrkCraft
     void Audio::stop(void)
     {
         get_engine().stop_all();
+    }
+
+    void Audio::set_volume(float vol)
+    {
+        s_volume.set(vol);
+    }
+
+    float Audio::get_volume(void)
+    {
+        return s_volume.get();
+    }
+
+    void Audio::mute(void)
+    {
+        s_volume.mute();
+    }
+
+    void Audio::unmute(void)
+    {
+        s_volume.unmute();
+    }
+
+    void Audio::toggle_mute(void)
+    {
+        if (s_volume.muted())
+            s_volume.unmute();
+        else
+            s_volume.mute();
+    }
+
+    bool Audio::is_muted(void)
+    {
+        return s_volume.muted();
     }
 }

@@ -51,9 +51,13 @@ namespace DrkCraft
 
     struct SettingsData
     {
+        // Video
         bool fullscreen = false;
         int fullscreen_monitor = 0;
         bool vsync = true;
+
+        // Audio
+        float volume = 0.5f;
     };
 
     struct ConfigData
