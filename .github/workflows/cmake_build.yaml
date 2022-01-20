@@ -23,8 +23,6 @@ jobs:
       - name: CMake build (release)
         run: scripts\build.bat --release
 
-      - name: CMake build (dist)
-        run: scripts\build.bat --dist
   # Linux:
   #   runs-on: ubuntu-latest
   #   defaults:
@@ -38,4 +36,7 @@ jobs:
   #         submodules: recursive
 
   #     - name: CMake build
-  #       run: scripts/build.sh --debug --profile --dev
+  #       run: scripts/build.sh --debug --profile --dev --trace
+
+  #     - name: CMake build (release)
+  #       run: scripts/build.sh --release

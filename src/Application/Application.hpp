@@ -61,11 +61,11 @@ namespace DrkCraft
         Window m_window;
         OpenGlContext m_context;
 
-        EventGenerator m_eventGenerator;
         MonitorManager m_monitorManager;
-        AssetManager m_assetManager;
+        AssetManager  m_assetManager;
 
         Ptr<ImGuiManager> m_imGuiManager;
+        EventGenerator   m_eventGenerator;
 
         LayerStack m_layerStack;
         LayerStack m_frameLayerStack;

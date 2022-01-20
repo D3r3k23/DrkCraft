@@ -23,6 +23,29 @@ namespace DrkCraft
             return "";
     }
 
+    std::string read_file(const std::filesystem::path& filename)
+    {
+        if (file_exists(filename))
+        {
+            std::ifstream file(filename);
+            std::stringstream contents;
+            contents << file.rdbuf();
+            return contents.str();
+        }
+        else
+            return "";
+    }
+
+    bool file_exists(const std::filesystem::path& filename)
+    {
+        return std::filesystem::is_regular_file(filename);
+    }
+
+    bool dir_exists(const std::filesystem::path& dirname)
+    {
+        return std::filesystem::is_directory(dirname);
+    }
+
     static std::locale currentLocale;
 
     std::string capitalize(std::string_view str)

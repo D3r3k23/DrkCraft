@@ -2,8 +2,8 @@
 #define DRK_ASSET_MANAGER_HPP
 
 #include "Core/Base.hpp"
-#include "System/Image.hpp"
 #include "Audio/AudioSource.hpp"
+#include "System/Image.hpp"
 #include "System/Font.hpp"
 
 #include <string>

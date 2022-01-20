@@ -9,15 +9,30 @@
 #include <span>
 #include <filesystem>
 #include <random>
+#include <functional>
+#include <utility>
 
 namespace DrkCraft
 {
-    std::string read_file(std::filesystem::path path);
+    std::string read_file(const std::filesystem::path& filename);
+
+    bool file_exists(const std::filesystem::path& filename);
+    bool dir_exists(const std::filesystem::path& dirname);
 
     std::string capitalize(std::string_view str);
 
     std::string to_lower(std::string_view str);
     std::string to_upper(std::string_view str);
+
+    template <typename R, typename ... Args>
+    std::function<R(Args...)> add_prefix_function(std::function<R(Args...)> fn, std::function<void(void)> pre)
+    {
+        return [&](auto&& ... args) -> R
+        {
+            pre();
+            fn(std::forward<Args>(args)...);
+        };
+    }
 
     using RandomEngine = std::mt19937;
 

@@ -11,13 +11,6 @@
 
 namespace DrkCraft
 {
-    AudioFileFormat find_audio_file_format(std::string_view extension)
-    {
-        if (extension == ".mp3") return AudioFileFormat::Mp3;
-        if (extension == ".ogg") return AudioFileFormat::Ogg;
-        return AudioFileFormat::None;
-    }
-
     AudioSourceFormat get_audio_source_format(uint channels)
     {
         switch (channels)
@@ -30,7 +23,7 @@ namespace DrkCraft
         }
     }
 
-    int get_al_source_format(AudioSourceFormat format)
+    int to_al_source_format(AudioSourceFormat format)
     {
         switch (format)
         {
@@ -51,7 +44,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         alGenBuffers(1, &m_id);
-        alBufferData(m_id, get_al_source_format(format), data, size, sampleRate);
+        alBufferData(m_id, to_al_source_format(format), data, size, sampleRate);
     }
 
     AlBuffer::~AlBuffer(void)
@@ -64,9 +57,9 @@ namespace DrkCraft
     //       AudioSource       //
     /////////////////////////////
 
-    AudioSource::AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, float length)
+    AudioSource::AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, uint bitRate)
       : m_buffer(format, data, size, sampleRate),
-        m_length(length)
+        m_length(size / (bitRate * 1024.0f))
     {
         DRK_PROFILE_FUNCTION();
 

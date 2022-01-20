@@ -187,16 +187,21 @@ namespace DrkCraft
         // For some reason the ranges:: version of these doesnt work
         std::for_each(std::execution::par_unseq, glfwMonitors.begin(), glfwMonitors.end(), [this, &mutex](const auto& monitorPair)
         {
+            DRK_PROFILE_SCOPE("Monitor load");
+
             const auto& [number, glfwMonitor] = monitorPair;
             Monitor monitor(glfwMonitor, number, m_eventHandler);
 
             std::lock_guard lock(mutex);
             m_monitors.push_back(std::move(monitor));
         });
-        std::sort(m_monitors.begin(), m_monitors.end(), [](const Monitor& first, const Monitor& second)
         {
-            return first.get_number() < second.get_number();
-        });
+            DRK_PROFILE_SCOPE("Sort monitors");
+            std::ranges::sort(m_monitors, [](const Monitor& first, const Monitor& second)
+            {
+                return first.get_number() < second.get_number();
+            });
+        }
     }
 
     void MonitorManager::refresh_monitors(void)

@@ -3,6 +3,7 @@ target_sources(DrkCraft
     AlObject.cpp
     AlTools.cpp
     Audio.cpp
+    AudioEngine.cpp
     AudioSource.cpp
     MusicPlayer.cpp
 )

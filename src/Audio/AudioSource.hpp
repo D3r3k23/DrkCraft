@@ -6,17 +6,8 @@
 
 #include <glm/vec3.hpp>
 
-#include <string_view>
-
 namespace DrkCraft
 {
-    enum class AudioFileFormat
-    {
-        None = 0,
-        Mp3,
-        Ogg
-    };
-
     enum class AudioSourceFormat
     {
         None = 0,
@@ -24,9 +15,8 @@ namespace DrkCraft
         Stereo16
     };
 
-    AudioFileFormat find_audio_file_format(std::string_view extension);
     AudioSourceFormat get_audio_source_format(uint channels);
-    int get_al_source_format(AudioSourceFormat format);
+    int to_al_source_format(AudioSourceFormat format);
 
     class AlBuffer : public AlObject
     {
@@ -43,7 +33,7 @@ namespace DrkCraft
         friend class AudioEngine;
 
     public:
-        AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, float length);
+        AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, uint bitRate);
         virtual ~AudioSource(void);
 
         bool is_playing(void) const;

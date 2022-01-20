@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "GlObject.hpp"
+#include "Shader.hpp"
 
 #include <glm/vec3.hpp>
 
@@ -11,11 +12,6 @@
 
 namespace DrkCraft
 {
-    class GlBufferElement
-    {
-
-    };
-
     class GlBuffer : public GlObject
     {
     public:
@@ -29,7 +25,6 @@ namespace DrkCraft
         uint get_count(void) const;
 
     protected:
-        std::vector<GlBufferElement> m_elements;
         uint m_size;
         uint m_count;
     };
@@ -37,8 +32,21 @@ namespace DrkCraft
     using Vertex = glm::vec3;
     using VertexElement = float;
 
-    // upload_data after creation?
+    struct VertexBufferElement
+    {
 
+    };
+
+    class VertexBufferLayout
+    {
+    public:
+        VertexBufferLayout(void);
+
+    private:
+        std::vector<VertexBufferElement> m_layout;
+    };
+
+    // upload_data after creation?
     class VertexBuffer : public GlBuffer
     {
     public:

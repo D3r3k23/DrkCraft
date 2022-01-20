@@ -41,9 +41,9 @@ namespace DrkCraft
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         vertexBuffer->unbind();
 
-        flatColorShaderProgram.add_shader(Shader::create(
+        flatColorShaderProgram.attach(Shader::create(
             shader_asset_path("flat_color_vertex_shader.glsl"), ShaderType::Vertex));
-        flatColorShaderProgram.add_shader(Shader::create(
+        flatColorShaderProgram.attach(Shader::create(
             shader_asset_path("flat_color_fragment_shader.glsl"), ShaderType::Fragment));
         flatColorShaderProgram.link();
 
@@ -85,9 +85,9 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
-        // flatColorShaderProgram.upload_uniform_mat("u_viewProjection", m_player.get_view_projection());
-        // flatColorShaderProgram.upload_uniform_mat("u_transform", Transform::Identity());
-        flatColorShaderProgram.upload_uniform_vec4("u_color", glm::vec4(color, 1.0f));
+        // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
+        // flatColorShaderProgram.upload_uniform("u_transform", Transform::Identity());
+        flatColorShaderProgram.upload_uniform("u_color", glm::vec4(color, 1.0f));
 
         Renderer::draw_triangle(*vertexBuffer);
         // Renderer::draw_block(0, 0, 0);

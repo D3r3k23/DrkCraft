@@ -4,30 +4,34 @@
 #include <Core/Time.hpp>
 #include "Core/Profiler.hpp"
 
+#include <nameof.hpp>
+
 #include <algorithm>
 
 namespace DrkCraft
 {
-    using std::filesystem::path;
+    const auto LOAD_WORKER_SLEEP_TIME = Time::Milli<int>(10);
 
-    static const path ASSET_DIR = "assets";
-    static const path FONT_ASSET_DIR    = ASSET_DIR / "fonts";
-    static const path ICON_ASSET_DIR    = ASSET_DIR / "icons";
-    static const path IMAGE_ASSET_DIR   = ASSET_DIR / "images";
-    static const path MODEL_ASSET_DIR   = ASSET_DIR / "models";
-    static const path MUSIC_ASSET_DIR   = ASSET_DIR / "music";
-    static const path SHADER_ASSET_DIR  = ASSET_DIR / "shaders";
-    static const path SOUND_ASSET_DIR   = ASSET_DIR / "sounds";
-    static const path TEXTURE_ASSET_DIR = ASSET_DIR / "textures";
+    namespace fs = std::filesystem;
 
-    path font_asset_path(const path& filename)    { return FONT_ASSET_DIR    / filename; }
-    path icon_asset_path(const path& filename)    { return ICON_ASSET_DIR    / filename; }
-    path image_asset_path(const path& filename)   { return IMAGE_ASSET_DIR   / filename; }
-    path model_asset_path(const path& filename)   { return MODEL_ASSET_DIR   / filename; }
-    path music_asset_path(const path& filename)   { return MUSIC_ASSET_DIR   / filename; }
-    path shader_asset_path(const path& filename)  { return SHADER_ASSET_DIR  / filename; }
-    path sound_asset_path(const path& filename)   { return SOUND_ASSET_DIR   / filename; }
-    path texture_asset_path(const path& filename) { return TEXTURE_ASSET_DIR / filename; }
+    static const fs::path ASSET_DIR = "assets";
+    static const fs::path FONT_ASSET_DIR    = ASSET_DIR / "fonts";
+    static const fs::path ICON_ASSET_DIR    = ASSET_DIR / "icons";
+    static const fs::path IMAGE_ASSET_DIR   = ASSET_DIR / "images";
+    static const fs::path MODEL_ASSET_DIR   = ASSET_DIR / "models";
+    static const fs::path MUSIC_ASSET_DIR   = ASSET_DIR / "music";
+    static const fs::path SHADER_ASSET_DIR  = ASSET_DIR / "shaders";
+    static const fs::path SOUND_ASSET_DIR   = ASSET_DIR / "sounds";
+    static const fs::path TEXTURE_ASSET_DIR = ASSET_DIR / "textures";
+
+    fs::path font_asset_path(const fs::path& filename)    { return FONT_ASSET_DIR    / filename; }
+    fs::path icon_asset_path(const fs::path& filename)    { return ICON_ASSET_DIR    / filename; }
+    fs::path image_asset_path(const fs::path& filename)   { return IMAGE_ASSET_DIR   / filename; }
+    fs::path model_asset_path(const fs::path& filename)   { return MODEL_ASSET_DIR   / filename; }
+    fs::path music_asset_path(const fs::path& filename)   { return MUSIC_ASSET_DIR   / filename; }
+    fs::path shader_asset_path(const fs::path& filename)  { return SHADER_ASSET_DIR  / filename; }
+    fs::path sound_asset_path(const fs::path& filename)   { return SOUND_ASSET_DIR   / filename; }
+    fs::path texture_asset_path(const fs::path& filename) { return TEXTURE_ASSET_DIR / filename; }
 
     ////////////////////////////////
     //       AssetLoadQueue       //
@@ -35,13 +39,17 @@ namespace DrkCraft
 
     void AssetManager::AssetLoadQueue::push(const AssetInfo& asset)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_queueMutex);
+
         m_queue.push(asset);
     }
 
     void AssetManager::AssetLoadQueue::push(const AssetList& assets)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_queueMutex);
+
         for (const auto asset : assets)
             m_queue.push(asset);
     }
@@ -49,11 +57,12 @@ namespace DrkCraft
     AssetInfo AssetManager::AssetLoadQueue::pop(void)
     {
         DRK_PROFILE_FUNCTION();
-
         std::lock_guard lock(m_queueMutex);
+
         if (m_queue.empty())
             return {};
 
+        DRK_PROFILE_SCOPE("Pop");
         const auto front = m_queue.front();
         m_queue.pop();
         return front;
@@ -61,6 +70,7 @@ namespace DrkCraft
 
     bool AssetManager::AssetLoadQueue::empty(void)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_queueMutex);
         return m_queue.empty();
     }
@@ -74,6 +84,8 @@ namespace DrkCraft
         m_loading(false)
     {
         DRK_PROFILE_FUNCTION();
+
+        DRK_PROFILE_THREAD_CREATE("Asset load thread");
         m_loadThread = std::thread(DRK_BIND_FN(load_worker));
     }
 
@@ -90,11 +102,19 @@ namespace DrkCraft
 
     void AssetManager::unload_all(void)
     {
-        std::scoped_lock lock(m_imagesMutex, m_soundsMutex, m_songsMutex, m_fontsMutex);
-        m_images.clear();
-        m_sounds.clear();
-        m_songs.clear();
-        m_fonts.clear();
+        {
+            std::lock_guard lock(m_imagesMutex);
+            m_images.clear();
+        }{
+            std::lock_guard lock(m_soundsMutex);
+            m_sounds.clear();
+        }{
+            std::lock_guard lock(m_songsMutex);
+            m_songs.clear();
+        }{
+            std::lock_guard lock(m_fontsMutex);
+            m_fonts.clear();
+        }
     }
 
     void AssetManager::load(const AssetInfo& asset)
@@ -107,26 +127,26 @@ namespace DrkCraft
         m_loadQueue.push(assets);
     }
 
-    bool AssetManager::sound_loaded(const std::filesystem::path& filename)
+    bool AssetManager::sound_loaded(const fs::path& filename)
     {
         std::lock_guard lock(m_soundsMutex);
         return m_sounds.contains(filename.string());
     }
 
-    bool AssetManager::song_loaded(const std::filesystem::path& filename)
+    bool AssetManager::song_loaded(const fs::path& filename)
     {
         std::lock_guard lock(m_songsMutex);
         return m_songs.contains(filename.string());
     }
 
-    Ref<AudioSource> AssetManager::get_sound(const std::filesystem::path& filename)
+    Ref<AudioSource> AssetManager::get_sound(const fs::path& filename)
     {
         std::lock_guard lock(m_soundsMutex);
         DRK_ASSERT_DEBUG(m_sounds.contains(filename.string()), "Sound not loaded");
         return m_sounds[filename.string()];
     }
 
-    Ref<AudioSource> AssetManager::get_song(const std::filesystem::path& filename)
+    Ref<AudioSource> AssetManager::get_song(const fs::path& filename)
     {
         std::lock_guard lock(m_songsMutex);
         DRK_ASSERT_CORE(m_songs.contains(filename.string()), "Song not loaded");
@@ -184,17 +204,15 @@ namespace DrkCraft
 
     void AssetManager::load_worker(void)
     {
+        DRK_PROFILE_THREAD_START("Asset load thread");
         DRK_PROFILE_FUNCTION();
 
         while (m_working)
         {
-            bool ready;
-            {
-                DRK_PROFILE_SCOPE("Check queue");
-                ready = !m_loadQueue.empty();
-            }
+            bool ready = !m_loadQueue.empty();
             if (ready)
             {
+                DRK_PROFILE_EVENT("Load asset");
                 m_loading = true;
                 AssetInfo asset = m_loadQueue.pop();
                 load_impl(asset);
@@ -202,7 +220,8 @@ namespace DrkCraft
             else
             {
                 m_loading = false;
-                std::this_thread::sleep_for(Time::Milli<int>(10));
+                DRK_PROFILE_SCOPE("Sleep");
+                std::this_thread::sleep_for(LOAD_WORKER_SLEEP_TIME);
             }
         }
     }
@@ -212,34 +231,43 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         const auto& [type, filename] = asset;
+        const auto assetTypeName = NAMEOF_ENUM(type);
+        const auto assetName = filename.generic_string();
+
+        DRK_LOG_CORE_INFO("Loading {} asset \"{}\"", assetTypeName, assetName);
         switch (type)
         {
-            case AssetType::Font  : load_font(filename);  break;
             case AssetType::Image : load_image(filename); break;
             case AssetType::Song  : load_song(filename);  break;
             case AssetType::Sound : load_sound(filename); break;
+            case AssetType::Font  : load_font(filename);  break;
         }
+        DRK_LOG_CORE_INFO("{} asset \"{}\" loaded", assetTypeName, assetName);
     }
 
-    void AssetManager::load_image(const std::filesystem::path& filename)
+    void AssetManager::load_image(const fs::path& filename)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_imagesMutex);
     }
 
-    void AssetManager::load_sound(const std::filesystem::path& filename)
+    void AssetManager::load_sound(const fs::path& filename)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_soundsMutex);
         m_sounds[filename.string()] = Audio::load_file(sound_asset_path(filename));
     }
 
-    void AssetManager::load_song(const std::filesystem::path& filename)
+    void AssetManager::load_song(const fs::path& filename)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_songsMutex);
         m_songs[filename.string()] = Audio::load_file(music_asset_path(filename));
     }
 
-    void AssetManager::load_font(const std::filesystem::path& filename)
+    void AssetManager::load_font(const fs::path& filename)
     {
+        DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_fontsMutex);
     }
 

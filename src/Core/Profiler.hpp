@@ -36,6 +36,7 @@
             static Profiler& get_instance(void);
 
             static double get_timestamp(Time::Time time);
+            static double get_current_timestamp(void);
 
         private:
             Profiler(void);
@@ -47,7 +48,13 @@
 
             bool active(void) const;
 
-            void write_profile(const char* cat, const char* name, double start, double duration);
+            void write_dur_profile(const char* cat, const char* name, double start, double duration);
+            void write_inst_profile(const char* cat, const char* name, double ts);
+            void write_flow_profile(const char* ph, const char* cat, const char* name, double ts);
+
+            void create_event_profile(const char* name);
+            void create_flow_begin_profile(const char* cat, const char* name);
+            void create_flow_end_profile(const char* cat, const char* name);
 
         private:
             void write_header(const char* title, const char* version, const char* time, double timestamp);
@@ -85,6 +92,15 @@
     #define DRK_PROFILE_OBJECT(name) \
         ProfileTimer object_profile_timer{name, "object"} // This might not be a good idea
 
+    #define DRK_PROFILE_EVENT(name) \
+        Profiler::get_instance().create_event_profile(name)
+
+    #define DRK_PROFILE_THREAD_CREATE(name) \
+        Profiler::get_instance().create_flow_begin_profile("thread", name); // TID?
+
+    #define DRK_PROFILE_THREAD_START(name) \
+        Profiler::get_instance().create_flow_end_profile("thread", name);
+
 #else
     #define DRK_PROFILER_BEGIN(name, file)
     #define DRK_PROFILER_END()
@@ -93,6 +109,10 @@
     #define DRK_PROFILE_FUNCTION()
     #define DRK_PROFILE_SCOPE(name)
     #define DRK_PROFILE_OBJECT(name)
+
+    #define DRK_PROFILE_EVENT(name)
+    #define DRK_PROFILE_THREAD_CREATE(name)
+    #define DRK_PROFILE_THREAD_START(name)
 #endif
 
 #endif // DRK_PROFILER_HPP

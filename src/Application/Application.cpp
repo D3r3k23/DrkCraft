@@ -89,8 +89,10 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("Loading monitors");
+        DRK_PROFILE_THREAD_CREATE("Monitor load thread");
         std::thread monitorLoadThread([this]()
         {
+            DRK_PROFILE_THREAD_START("Monitor load thread");
             m_monitorManager.load_monitors();
         });
 
@@ -159,6 +161,7 @@ namespace DrkCraft
 
     void Application::run(void)
     {
+        DRK_PROFILE_EVENT("New frame");
         DRK_PROFILE_FUNCTION();
 
         m_running = true;

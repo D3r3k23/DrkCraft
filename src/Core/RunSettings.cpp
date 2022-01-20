@@ -111,19 +111,19 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(fs::is_directory(location), "Invalid config directory");
+        DRK_ASSERT_DEBUG(dir_exists(location), "Invalid config directory");
         auto defaultsLocation = location / "default";
-        bool defaultsFound = fs::is_directory(defaultsLocation);
+        bool defaultsFound = dir_exists(defaultsLocation);
 
         s_configFile   = location / "config.yaml";
         s_settingsFile = location / "settings.yaml";
 
-        if (!fs::is_regular_file(s_configFile))
+        if (!file_exists(s_configFile))
         {
             if (defaultsFound)
             {
                 auto defaultConfigFile = defaultsLocation / "config.yaml";
-                if (fs::is_regular_file(defaultConfigFile))
+                if (file_exists(defaultConfigFile))
                     fs::copy(defaultConfigFile, s_configFile);
                 else
                     save_config();
@@ -133,12 +133,12 @@ namespace DrkCraft
         }
         load_config();
 
-        if (!fs::is_regular_file(s_settingsFile))
+        if (!file_exists(s_settingsFile))
         {
             if (defaultsFound)
             {
                 auto defaultSettingsFile = defaultsLocation / "settings.yaml";
-                if (fs::is_regular_file(defaultSettingsFile))
+                if (file_exists(defaultSettingsFile))
                     fs::copy(defaultSettingsFile, s_settingsFile);
                 else
                     save_settings();
@@ -189,7 +189,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(fs::is_regular_file(s_configFile), "Config file not found");
+        DRK_ASSERT_DEBUG(file_exists(s_configFile), "Config file not found");
         DRK_LOG_CORE_INFO("Loading config from {}", s_configFile.generic_string());
         YAML::Node config;
         try
@@ -231,7 +231,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(fs::is_regular_file(s_settingsFile), "Settings file not found");
+        DRK_ASSERT_DEBUG(file_exists(s_settingsFile), "Settings file not found");
         DRK_LOG_CORE_INFO("Loading settings from {}", s_settingsFile.generic_string());
         YAML::Node settings;
         try

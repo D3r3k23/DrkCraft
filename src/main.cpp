@@ -1,9 +1,9 @@
 #include "Core/Base.hpp"
 #include "Core/BuildSettings.hpp"
 #include "Core/RunSettings.hpp"
+#include "Core/Profiler.hpp"
 #include "Application/Application.hpp"
 #include "Application/MainMenu.hpp"
-#include "Core/Profiler.hpp"
 
 using namespace DrkCraft;
 
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("DrkCraft Build:");
     DRK_LOG_CORE_INFO("Version: v{}", BUILD_VERSION.string());
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
-    DRK_LOG_CORE_INFO("Config: {}", DRK_CONFIG_NAME);
+    DRK_LOG_CORE_INFO("Config: {}",   DRK_CONFIG_NAME);
 
     if (DRK_PROFILER_ACTIVE())
         DRK_LOG_CORE_INFO("Profiler running");
