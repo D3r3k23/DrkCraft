@@ -11,4 +11,5 @@ target_sources(DrkCraft
     Texture.cpp
     Transform.cpp
     Util.cpp
+    VertexArray.cpp
 )

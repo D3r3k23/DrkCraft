@@ -1,10 +1,10 @@
 #include "Audio.hpp"
 
+#include "AlTools.hpp"
 #include "Core/Profiler.hpp"
 
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <alhelpers/alhelpers.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -16,7 +16,7 @@ namespace DrkCraft
     static const float MASTER_LISTENER_GAIN = 0.25f; // -> 0.5 after volume ctrl added
 
     ////////////////////////////
-    //////// Mp3Decoder ////////
+    //       Mp3Decoder       //
     ////////////////////////////
 
     Mp3Decoder::Mp3Decoder(void)
@@ -31,7 +31,7 @@ namespace DrkCraft
     }
 
     /////////////////////////////
-    //////// Mp3FileInfo ////////
+    //       Mp3FileInfo       //
     /////////////////////////////
 
     Mp3FileInfo::Mp3FileInfo(Mp3Decoder& decoder, const std::filesystem::path& filename)
@@ -80,25 +80,16 @@ namespace DrkCraft
     }
 
     /////////////////////////////
-    //////// AudioEngine ////////
+    //       AudioEngine       //
     /////////////////////////////
 
     AudioEngine::AudioEngine(void)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing AudioEngine");
-        {
-            DRK_PROFILE_SCOPE("InitAL");
-            int status = InitAL(nullptr, nullptr);
-            DRK_ASSERT_CORE(status == 0, "Failed to initialize OpenAL");
-        }
-        ALCcontext* ctx = alcGetCurrentContext();
-        DRK_ASSERT_CORE(ctx, "Could not open AL context");
-        ALCdevice* device = alcGetContextsDevice(ctx);
-        DRK_ASSERT_CORE(ctx, "Could not open AL device");
 
-        const auto deviceName = alcGetString(device, ALC_ALL_DEVICES_SPECIFIER);
-        DRK_LOG_CORE_INFO("Audio device: {}", deviceName);
+        int status = init_al();
+        DRK_ASSERT_CORE(status == 0, "Failed to initialize OpenAL");
 
         ALfloat listenerPos[] = { 0.0f, 0.0f, 0.0f };
         ALfloat listenerVel[] = { 0.0f, 0.0f, 0.0f };
@@ -117,10 +108,7 @@ namespace DrkCraft
 
         DRK_LOG_CORE_TRACE("Stopping all playing audio sources");
         stop_all();
-        {
-            DRK_PROFILE_SCOPE("CloseAL");
-            CloseAL();
-        }
+        shutdown_al();
     }
 
     Ref<AudioSource> AudioEngine::load_mp3(const std::filesystem::path& filename)
@@ -225,7 +213,7 @@ namespace DrkCraft
     }
 
     ////////////////////////
-    //////// Volume ////////
+    //       Volume       //
     ////////////////////////
 
     Volume::Volume(float vol)
@@ -263,7 +251,7 @@ namespace DrkCraft
     }
 
     ///////////////////////
-    //////// Audio ////////
+    //       Audio       //
     ///////////////////////
 
     AudioEngine* Audio::s_engine = nullptr;

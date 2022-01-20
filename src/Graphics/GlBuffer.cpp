@@ -7,7 +7,9 @@
 
 namespace DrkCraft
 {
-    //////// GlBuffer ////////
+    //////////////////////////
+    //       GlBuffer       //
+    //////////////////////////
 
     GlBuffer::GlBuffer(uint size, uint count)
       : m_size(size),
@@ -32,7 +34,9 @@ namespace DrkCraft
         return m_count;
     }
 
-    //////// VertexBuffer ////////
+    //////////////////////////////
+    //       VertexBuffer       //
+    //////////////////////////////
 
     VertexBuffer::VertexBuffer(std::span<Vertex> vertices)
       : VertexBuffer(glm::value_ptr(vertices[0]), vertices.size() * 3)
@@ -62,7 +66,9 @@ namespace DrkCraft
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    //////// IndexBuffer ////////
+    /////////////////////////////
+    //       IndexBuffer       //
+    /////////////////////////////
 
     IndexBuffer::IndexBuffer(std::span<Index> indices)
       : IndexBuffer(indices.data(), indices.size())

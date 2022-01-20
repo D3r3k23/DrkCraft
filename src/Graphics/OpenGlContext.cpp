@@ -15,7 +15,7 @@ namespace DrkCraft
       : m_window(window)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_TRACE("Initializing OpenGL");
+        DRK_LOG_CORE_TRACE("Initializing OpenGL context");
         {
             DRK_PROFILE_SCOPE("glfwMakeContextCurrent");
             glfwMakeContextCurrent(m_window.get_raw_window());
@@ -26,6 +26,8 @@ namespace DrkCraft
             int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
             DRK_ASSERT_CORE(status, "Glad failed to initialize OpenGL context");
         }
+        DRK_LOG_CORE_INFO("OpenGL initialized");
+
         const auto* version = glGetString(GL_VERSION);
         DRK_LOG_CORE_INFO("OpenGL version: {}", version);
 

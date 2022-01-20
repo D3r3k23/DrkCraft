@@ -54,7 +54,7 @@ namespace DrkCraft
         ImGuiTools::BeginCentered("Settings", WINDOW_SIZE, ImGuiWindowFlags_NoCollapse);
         ImGui::BeginGroup();
 
-        if (ImGui::Checkbox("Fullscreen", &m_settings.fullscreen))
+        if (ImGui::Checkbox("Fullscreen", &m_settings.fullscreen)) // Can crash if toggled without saving
             m_dirty[Settings_Fullscreen] = true;
 
         const auto& monitors = Application::get_monitors().monitors();

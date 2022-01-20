@@ -14,7 +14,7 @@ set "package_zip=packages\%package_name%.zip"
 
 echo Building package: %package_name%
 
-call scripts\clean.bat
+call scripts\clean.bat --all
 call scripts\build.bat %1 %2 %3 %4
 if NOT %errorlevel% == 0 (
     exit /b 1

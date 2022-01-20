@@ -37,7 +37,9 @@ namespace DrkCraft
         }
     }
 
-    //////// Shader ////////
+    ////////////////////////
+    //       Shader       //
+    ////////////////////////
 
     std::unordered_map<std::string, Ref<Shader>> Shader::s_shaderCache;
 
@@ -115,7 +117,9 @@ namespace DrkCraft
         }
     }
 
-    //////// ShaderProgram ////////
+    ///////////////////////////////
+    //       ShaderProgram       //
+    ///////////////////////////////
 
     ShaderProgram::ShaderProgram(std::string_view name)
       : m_name(name)

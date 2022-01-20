@@ -53,13 +53,13 @@ namespace DrkCraft
     {
         // Animate background?
 
-        if (m_applicationAssetsLoading && !Application::get_assets().busy() && m_startButtonPushed)
+        if (m_applicationAssetsLoading && !Application::get_assets().loading() && m_startButtonPushed)
         {
             m_loadingScreen->detach_layer();
             start_game();
         }
         else
-            m_applicationAssetsLoading = Application::get_assets().busy();
+            m_applicationAssetsLoading = Application::get_assets().loading();
     }
 
     void MainMenu::on_render(void)
@@ -108,7 +108,7 @@ namespace DrkCraft
 
     void MainMenu::start_game(void)
     {
-        if (Application::get_assets().busy())
+        if (Application::get_assets().loading())
         {
             DRK_LOG_CORE_INFO("Waiting for assets to finish loading");
             Application::get_instance().add_layer(m_loadingScreen);

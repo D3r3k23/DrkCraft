@@ -66,7 +66,7 @@ namespace DrkCraft
         glfwSetKeyCallback(m_window,  Callbacks::key_callback);
         glfwSetCharCallback(m_window, Callbacks::char_callback);
 
-        glfwSetCursorPosCallback(m_window,   Callbacks::cursor_pos_callback);
+        // glfwSetCursorPosCallback(m_window,   Callbacks::cursor_pos_callback); // Is this necessary?
         glfwSetMouseButtonCallback(m_window, Callbacks::mouse_button_callback);
         glfwSetScrollCallback(m_window,      Callbacks::scroll_callback);
     }
@@ -81,7 +81,7 @@ namespace DrkCraft
         event.log_event();
     }
 
-    ////////// Window Events //////////
+    // Window Events
 
     void EventGenerator::Callbacks::window_close_callback(GLFWwindow* window)
     {
@@ -161,7 +161,7 @@ namespace DrkCraft
         handle_event(window, event);
     }
 
-    ////////// Keyboard Events //////////
+    // Keyboard Events
 
     void EventGenerator::Callbacks::key_callback(GLFWwindow* window, int key, int scanCode, int action, int mods)
     {
@@ -196,7 +196,7 @@ namespace DrkCraft
         handle_event(window, event);
     }
 
-    ////////// Mouse Events //////////
+    // Mouse Events
 
     void EventGenerator::Callbacks::cursor_pos_callback(GLFWwindow* window, double xPos, double yPos)
     {

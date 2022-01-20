@@ -6,7 +6,9 @@
 
 namespace DrkCraft
 {
-    ////////// Event.hpp //////////
+    ///////////////////////////////
+    //         Event.hpp         //
+    ///////////////////////////////
 
     Event::Event(void)
       : m_handled(false)
@@ -56,7 +58,9 @@ namespace DrkCraft
         m_handled = true;
     }
 
-    ////////// Events.hpp //////////
+    ////////////////////////////////
+    //         Events.hpp         //
+    ////////////////////////////////
 
     std::string WindowResizedEvent::get_details(void) const
     {
@@ -108,7 +112,9 @@ namespace DrkCraft
         return fmt::format("number={}", number);
     }
 
-    ////////// EventTypes.hpp //////////
+    ////////////////////////////////////
+    //         EventTypes.hpp         //
+    ////////////////////////////////////
 
     EventFlags to_event_flags(auto item)
     {

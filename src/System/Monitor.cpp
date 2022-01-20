@@ -10,7 +10,9 @@
 
 namespace DrkCraft
 {
-    ////////// Monitor //////////
+    /////////////////////////
+    //       Monitor       //
+    /////////////////////////
 
     Monitor::Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>& eventHandler)
       : m_monitor(monitor),
@@ -141,7 +143,9 @@ namespace DrkCraft
         return !(*this == other);
     }
 
-    ////////// MonitorManager //////////
+    ////////////////////////////////
+    //       MonitorManager       //
+    ////////////////////////////////
 
     MonitorManager::MonitorManager(void)
       : m_fullscreen(false)

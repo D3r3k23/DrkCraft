@@ -42,7 +42,9 @@ namespace DrkCraft
         }
     }
 
-    //////// AlBuffer ////////
+    //////////////////////////
+    //       AlBuffer       //
+    //////////////////////////
 
     AlBuffer::AlBuffer(AudioSourceFormat format, int16* data, uint size, uint sampleRate)
     {
@@ -58,7 +60,9 @@ namespace DrkCraft
         alDeleteBuffers(1, &m_id);
     }
 
-    //////// AudioSource ////////
+    /////////////////////////////
+    //       AudioSource       //
+    /////////////////////////////
 
     AudioSource::AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, float length)
       : m_buffer(format, data, size, sampleRate),

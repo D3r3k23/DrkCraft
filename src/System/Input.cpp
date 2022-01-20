@@ -8,7 +8,9 @@
 
 namespace DrkCraft
 {
-    ////////// Input Queries //////////
+    ///////////////////////////////////
+    //         Input Queries         //
+    ///////////////////////////////////
 
     static GLFWwindow* local_get_window(void)
     {
@@ -47,7 +49,9 @@ namespace DrkCraft
         return get_mouse_position().y;
     }
 
-    ////////// Input Mods //////////
+    ////////////////////////////////
+    //         Input Mods         //
+    ////////////////////////////////
 
     bool is_mod_pressed(KeyMod mod)
     {
@@ -139,7 +143,9 @@ namespace DrkCraft
         return flags;
     }
 
-    ////////// KeyCodes.hpp //////////
+    //////////////////////////////////
+    //         KeyCodes.hpp         //
+    //////////////////////////////////
 
     KeyCode to_key_code(int key)
     {
@@ -151,7 +157,9 @@ namespace DrkCraft
         return static_cast<int>(key);
     }
 
-    ////////// MouseCodes.hpp //////////
+    ////////////////////////////////////
+    //         MouseCodes.hpp         //
+    ////////////////////////////////////
 
     MouseCode to_mouse_code(int button)
     {

@@ -23,7 +23,7 @@
     namespace DrkCraft
     {
         //////////////////////////////
-        //////// ProfileTimer ////////
+        //       ProfileTimer       //
         //////////////////////////////
 
         ProfileTimer::ProfileTimer(const char* name, const char* cat)
@@ -46,7 +46,7 @@
         }
 
         //////////////////////////
-        //////// Profiler ////////
+        //       Profiler       //
         //////////////////////////
 
         // Static

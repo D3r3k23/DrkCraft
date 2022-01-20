@@ -12,7 +12,7 @@
 namespace DrkCraft
 {
     ////////////////////////
-    //////// Static ////////
+    //       Static       //
     ////////////////////////
 
     Application* Application::s_instance = nullptr;
@@ -73,7 +73,7 @@ namespace DrkCraft
     }
 
     //////////////////////////
-    //////// Instance ////////
+    //       Instance       //
     //////////////////////////
 
     Application::Application(void)
@@ -130,7 +130,7 @@ namespace DrkCraft
         m_frameLayerStack.clear();
         m_layerStack.clear();
 
-        m_assetManager.destroy();
+        m_assetManager.unload_all();
 
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
@@ -291,7 +291,9 @@ namespace DrkCraft
 
     void Application::load_assets(void)
     {
-        AssetLoadList assets
+        DRK_PROFILE_FUNCTION();
+
+        AssetList assets
         {
             { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
         };

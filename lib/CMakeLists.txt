@@ -58,15 +58,11 @@ set(ALSOFT_UTILS OFF)
 set(ALSOFT_EXAMPLES OFF)
 add_subdirectory(openal-soft)
 
-message("Configuring alhelpers")
-add_subdirectory(alhelpers)
-
 message("Configuring Vorbis")
 add_subdirectory(vorbis)
 
 target_link_libraries(DrkCraft
   PUBLIC
-    alhelpers
     entt
     FastNoiseLite
     fmt

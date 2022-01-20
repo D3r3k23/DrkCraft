@@ -6,7 +6,9 @@
 
 namespace DrkCraft
 {
-    ////////// GameEvent.hpp //////////
+    ///////////////////////////////////
+    //         GameEvent.hpp         //
+    ///////////////////////////////////
 
     std::deque<GameEventSubscriber*> GameEvent::s_subscribers;
 
@@ -40,11 +42,15 @@ namespace DrkCraft
         GameEvent::unsubscribe(this);
     }
 
-    ////////// GameEvents.hpp //////////
+    ////////////////////////////////////
+    //         GameEvents.hpp         //
+    ////////////////////////////////////
 
 
 
-    ////////// GameEventTypes.hpp //////////
+    ////////////////////////////////////////
+    //         GameEventTypes.hpp         //
+    ////////////////////////////////////////
 
     GameEventFlags to_game_event_flags(auto item)
     {

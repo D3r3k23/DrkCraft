@@ -14,7 +14,9 @@
 
 namespace DrkCraft
 {
-    //////// CommandLineOptions ////////
+    ////////////////////////////////////
+    //       CommandLineOptions       //
+    ////////////////////////////////////
 
     std::string_view game_mode_to_string(GameMode mode)
     {
@@ -93,7 +95,9 @@ namespace DrkCraft
         }
     }
 
-    //////// RuntimeSettings ////////
+    /////////////////////////////////
+    //       RuntimeSettings       //
+    /////////////////////////////////
 
     namespace fs = std::filesystem;
 
