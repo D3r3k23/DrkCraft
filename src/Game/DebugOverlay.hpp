@@ -7,6 +7,9 @@
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
 #include "Core/Timestep.hpp"
+#include "System/AssetManager.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/CubeRenderer.hpp"
 #include "Core/Util.hpp"
 
 namespace DrkCraft
@@ -28,7 +31,7 @@ namespace DrkCraft
     class DebugOverlay : public Layer
     {
     public:
-        DebugOverlay(bool activate=false);
+        DebugOverlay(const AssetManager& assetManager, bool activate=false);
         virtual ~DebugOverlay(void);
 
         virtual void on_attach(void) override;
@@ -38,10 +41,19 @@ namespace DrkCraft
         virtual void on_render(void) override;
         virtual void on_event(Event& event) override;
 
+        void update_renderer_stats(void);
+
     private:
+        const AssetManager& m_assetManager;
+
         FpsCounter m_currentFps;
         FpsCounter m_avgFps;
+
+        RendererStats m_rendererStats;
+        CubeRendererStats m_cubeRendererStats;
+
         IntervalTimer m_fpsAvgTimer;
+        IntervalTimer m_renderStatsUpdateTimer;
     };
 }
 

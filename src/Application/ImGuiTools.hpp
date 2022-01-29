@@ -20,6 +20,10 @@ namespace DrkCraft
         Title
     };
 
+    // IMfont* to_imgui_font(const Font& font);
+    // void* to_imgui_image(const Texture& texture);
+    // void* to_imgui_image(const Image& image); // to_imgui_image(Texture::create(image));
+
     class ImGuiManager
     {
     public:

@@ -26,11 +26,6 @@ namespace DrkCraft
         }
         glfwSetWindowAspectRatio(m_window, 16, 9);
         glfwSetWindowSizeLimits(m_window, width, height, GLFW_DONT_CARE, GLFW_DONT_CARE);
-
-        // GLFWimage icons[1];
-        // icons[0].pixels = stbi_load(get_icon_asset_path("DrkCraft.png").string().c_str(), &icons[0].width, &icons[0].height, 0, 4);
-        // glfwSetWindowIcon(m_window, 1, icons);
-        // stbi_image_free(icons[0].pixels);
     }
 
     Window::~Window(void)
@@ -65,6 +60,18 @@ namespace DrkCraft
     bool Window::get_vsync(void) const
     {
         return m_vsync;
+    }
+
+    void Window::set_icon(const Icon& icon)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        GLFWimage image = {
+            .width  = icon.get_size().x,
+            .height = icon.get_size().y,
+            .pixels = icon.get_data()
+        };
+        glfwSetWindowIcon(m_window, 1, &image);
     }
 
     glm::ivec2 Window::get_pos(void) const

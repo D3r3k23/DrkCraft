@@ -78,7 +78,7 @@ namespace DrkCraft
     class IntervalTimer
     {
     public:
-        IntervalTimer(int interval);
+        IntervalTimer(int interval); // Milliseconds
 
         bool on_interval(void);
 

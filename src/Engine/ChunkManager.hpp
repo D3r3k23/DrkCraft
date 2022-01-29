@@ -5,16 +5,19 @@
 #include "Chunk.hpp"
 #include "ChunkRenderer.hpp"
 
+#include <deque>
+
 namespace DrkCraft
 {
+    using ChunkContainer = std::deque<Ref<Chunk>>;
+
     class ChunkManager
     {
     public:
 
 
     private:
-        Chunk m_chunk;
-        ChunkRenderer m_renderer;
+        ChunkContainer m_Chunks;
     };
 }
 

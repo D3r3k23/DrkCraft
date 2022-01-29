@@ -4,6 +4,7 @@
 #include "Audio/Audio.hpp"
 #include "PauseMenu.hpp"
 #include "System/Input.hpp"
+#include "Engine/ChunkRenderer.hpp"
 #include "Graphics/Transform.hpp"
 #include "Core/Profiler.hpp"
 
@@ -26,7 +27,7 @@ namespace DrkCraft
 
         m_hudLayer     = Layer::create<Hud>(showHud);
         m_consoleLayer = Layer::create<Console>();
-        m_debugLayer   = Layer::create<DebugOverlay>();
+        m_debugLayer   = Layer::create<DebugOverlay>(m_assets);
 
         std::array<float, 9> vertexPositions
         {
@@ -59,9 +60,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        Application::get_instance().add_layer(m_hudLayer);
-        Application::get_instance().add_overlay(m_consoleLayer);
-        Application::get_instance().add_overlay(m_debugLayer);
+        Application::add_layer(m_hudLayer);
+        Application::add_overlay(m_consoleLayer);
+        Application::add_overlay(m_debugLayer);
     }
 
     void Game::on_detach(void)
@@ -77,12 +78,28 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_player.on_update(timestep);
+        m_player.update(timestep);
+        m_world.update(timestep);
     }
 
     void Game::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
+
+        // Skybox?
+
+        Renderer::begin_scene({
+            m_player.get_camera()
+        });
+
+        m_world.render();
+        m_player.render();
+
+        Renderer::end_scene();
+
+        m_debugLayer->update_renderer_stats();
+
+
 
         GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
         // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
@@ -184,7 +201,7 @@ namespace DrkCraft
             detach_layer();
         });
         pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
-        Application::get_instance().add_layer(pauseMenu);
+        Application::add_layer(pauseMenu);
     }
 
     void Game::save(void)

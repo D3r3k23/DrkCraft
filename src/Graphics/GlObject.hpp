@@ -23,8 +23,11 @@ namespace DrkCraft
         GlObject(void) = default;
         virtual ~GlObject(void) = default;
 
-        virtual void bind(void) { };
-        virtual void unbind(void) { };
+        GlObject(const GlObject&) = delete;
+        GlObject& operator=(const GlObject&) = delete;
+
+        virtual void bind(void) const { };
+        virtual void unbind(void) const { };
 
         GlObjectID get_id(void) const;
 

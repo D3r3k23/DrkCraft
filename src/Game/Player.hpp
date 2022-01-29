@@ -21,8 +21,10 @@ namespace DrkCraft
     public:
         Player(void);
 
-        void on_update(Timestep timestep);
+        void update(Timestep timestep);
+        void render(void);
 
+        const Camera& get_camera(void) const;
         glm::mat4 get_view_projection(void) const;
 
     private:

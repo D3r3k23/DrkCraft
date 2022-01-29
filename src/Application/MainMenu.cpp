@@ -41,7 +41,7 @@ namespace DrkCraft
 
     void MainMenu::on_attach(void)
     {
-        Application::get_instance().add_layer(m_settingsMenu);
+        Application::add_layer(m_settingsMenu);
     }
 
     void MainMenu::on_detach(void)
@@ -111,14 +111,14 @@ namespace DrkCraft
         if (Application::get_assets().loading())
         {
             DRK_LOG_CORE_INFO("Waiting for assets to finish loading");
-            Application::get_instance().add_layer(m_loadingScreen);
+            Application::add_layer(m_loadingScreen);
             hide_menu();
             m_startButtonPushed = true;
         }
         else
         {
             DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
-            Application::get_instance().add_layer(Layer::create<Game>());
+            Application::add_layer(Layer::create<Game>());
             detach_layer();
         }
     }
@@ -133,6 +133,6 @@ namespace DrkCraft
     void MainMenu::exit(void)
     {
         DRK_LOG_CORE_INFO("MainMenu: Exit Application");
-        Application::get_instance().exit();
+        Application::exit();
     }
 }

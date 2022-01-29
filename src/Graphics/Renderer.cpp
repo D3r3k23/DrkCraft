@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include "CubeRenderer.hpp"
+#include "TextureManager.hpp"
 #include "Util.hpp"
 #include "Core/Profiler.hpp"
 
@@ -14,13 +15,11 @@ namespace DrkCraft
     struct RendererData
     {
         RendererStats stats;
-
-        GlObjectID vao;
-
-        Ptr<CubeRenderer> cubeRenderer;
+        Renderer::SceneData sceneData;
+        TextureManager textureSlots;
     };
 
-    static RendererData s_rendererData;
+    static RendererData s_data;
 
     void Renderer::init(OpenGlContext& context, const glm::uvec2& viewportSize)
     {
@@ -34,26 +33,28 @@ namespace DrkCraft
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         clear();
         context.swap_buffers();
-        {
-            DRK_PROFILE_SCOPE("Initialize VAO");
-            glGenVertexArrays(1, &s_rendererData.vao);
-            glBindVertexArray(s_rendererData.vao);
-        }
-        s_rendererData.cubeRenderer = make_ptr<CubeRenderer>();
+
+        CubeRenderer::init();
     }
 
     void Renderer::shutdown(void)
     {
         DRK_PROFILE_FUNCTION();
+
+        CubeRenderer::shutdown();
     }
 
     void Renderer::begin_frame(void)
     {
         clear();
+        reset_stats();
     }
 
     void Renderer::end_frame(void)
@@ -61,14 +62,39 @@ namespace DrkCraft
 
     }
 
+    void Renderer::begin_scene(const SceneData& data)
+    {
+        s_data.sceneData = data;
+    }
+
+    void Renderer::end_scene(void)
+    {
+
+    }
+
+    void Renderer::attach_texture(const Ref<Texture>& texture)
+    {
+        if ()
+        s_data.textureSlots.add(texture);
+    }
+
+    const Camera& Renderer::get_camera(void)
+    {
+        return s_data.sceneData.camera;
+    }
+
     void Renderer::clear(void)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::draw_indexed(const IndexBuffer& buffer)
+    void Renderer::draw_indexed(const Ref<IndexBuffer>& buffer, uint count)
     {
-        glDrawElements(GL_TRIANGLES, buffer.get_count(), GL_UNSIGNED_INT, nullptr);
+        if (count == 0 || count > buffer->get_count())
+            count = buffer->get_count();
+
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+        s_data.stats.drawCalls++;
     }
 
     void Renderer::draw_triangle(VertexBuffer& vbo)
@@ -81,7 +107,7 @@ namespace DrkCraft
 
     void Renderer::draw_block(uint x, uint y, uint z)
     {
-        s_rendererData.cubeRenderer->draw_cube(Transform::Identity());
+        s_data.cubeRenderer->draw_cube(Transform::Identity());
     }
 
     void Renderer::draw_cube_mesh(const CubeMesh& mesh)
@@ -103,8 +129,13 @@ namespace DrkCraft
         set_viewport(pos.x, pos.y, size.x, size.y);
     }
 
-    const RendererStats& get_stats(void)
+    const RendererStats& Renderer::get_stats(void)
     {
-        return s_rendererData.stats;
+        return s_data.stats;
+    }
+
+    void Renderer::reset_stats(void)
+    {
+        s_data.stats = RendererStats{};
     }
 }

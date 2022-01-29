@@ -5,7 +5,15 @@
 
 namespace DrkCraft
 {
+    class Texture
+    {
 
+    };
+
+    class Texture2D : public Texture
+    {
+
+    };
 }
 
 #endif // DRK_TEXTURE_HPP

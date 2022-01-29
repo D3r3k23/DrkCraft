@@ -22,20 +22,26 @@ namespace DrkCraft
         static int shutdown(void);
 
         static Application& get_instance(void);
+
+        static void run(void);
+        static void exit(int status=0);
+
+        static void add_layer(const Ref<Layer>& layer);
+        static void add_overlay(const Ref<Layer>& layer);
+
+        static void post_event(Event& event);
+
         static Window& get_window(void);
         static MonitorManager& get_monitors(void);
         static AssetManager& get_assets(void);
 
+    private:
         Application();
         ~Application();
 
-        void add_layer(const Ref<Layer>& layer);
-        void add_overlay(const Ref<Layer>& layer);
+        void run_internal(void);
+        void exit_internal(int status);
 
-        void run(void);
-        void exit(int status=0);
-
-    private:
         void update(Timestep timestep);
         void render(void);
         void handle_event(Event& event);

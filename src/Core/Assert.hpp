@@ -14,21 +14,34 @@
 
     namespace DrkCraft
     {
-        void assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg);
-        void assert_failure(std::string_view cond, const std::source_location& src);
+        void on_assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg);
     }
 
-    #define DRK_ASSERT_IMPL(cond, ...)                              \
-        do {                                                         \
-            if (!(cond))                                              \
-                assert_failure(#cond, std::source_location::current(), \
-                    fmt::format(__VA_ARGS__));                          \
+    #if defined(DRK_PLATFORM_WINDOWS)
+        #define DRK_DEBUG_BREAK() __debugbreak()
+    #elif defined(DRK_PLATFORM_LINUX)
+        #include <signal.h>
+        #define DRK_DEBUG_BREAK() raise(SIGTRAP)
+    #else
+        #error "Unsupported platform"
+    #endif
+
+    #define DRK_ASSERT_IMPL(cond, ...)  \
+        do { if (!(cond))                  \
+            on_assert_failure(                \
+                #cond,                          \
+                std::source_location::current(), \
+                fmt::format(__VA_ARGS__));      \
+            DRK_DEBUG_BREAK();                 \
         } while (false)
 
-    #define DRK_ASSERT_IMPL_NO_MSG(cond)                             \
-        do {                                                          \
-            if (!(cond))                                               \
-                assert_failure(#cond, std::source_location::current()); \
+    #define DRK_ASSERT_IMPL_NO_MSG(cond) \
+        do { if (!(cond))                  \
+            on_assert_failure(               \
+                #cond,                         \
+                std::source_location::current(), \
+                #cond);                         \
+            DRK_DEBUG_BREAK();                 \
         } while (false)
 
     #define DRK_ASSERT_CORE(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)

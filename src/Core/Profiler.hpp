@@ -50,7 +50,7 @@
 
             void write_dur_profile(const char* cat, const char* name, double start, double duration);
             void write_inst_profile(const char* cat, const char* name, double ts);
-            void write_flow_profile(const char* ph, const char* cat, const char* name, double ts);
+            void write_flow_profile(const char* ph, const char* cat, const char* name, int id, double ts);
 
             void create_event_profile(const char* name);
             void create_flow_begin_profile(const char* cat, const char* name);
@@ -95,11 +95,17 @@
     #define DRK_PROFILE_EVENT(name) \
         Profiler::get_instance().create_event_profile(name)
 
+    #define DRK_PROFILE_FLOW_BEGIN(cat, name) \
+        Profiler::get_instance().create_flow_begin_profile(cat, name);
+
+    #define DRK_PROFILE_FLOW_END(cat, name) \
+        Profiler::get_instance().create_flow_end_profile(cat, name);
+
     #define DRK_PROFILE_THREAD_CREATE(name) \
-        Profiler::get_instance().create_flow_begin_profile("thread", name); // TID?
+        DRK_PROFILE_FLOW_BEGIN("thread", name);
 
     #define DRK_PROFILE_THREAD_START(name) \
-        Profiler::get_instance().create_flow_end_profile("thread", name);
+        DRK_PROFILE_FLOW_END("thread", name);
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)
@@ -111,6 +117,10 @@
     #define DRK_PROFILE_OBJECT(name)
 
     #define DRK_PROFILE_EVENT(name)
+
+    #define DRK_PROFILE_FLOW_BEGIN(cat, name)
+    #define DRK_PROFILE_FLOW_END(cat, name)
+
     #define DRK_PROFILE_THREAD_CREATE(name)
     #define DRK_PROFILE_THREAD_START(name)
 #endif

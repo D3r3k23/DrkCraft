@@ -17,7 +17,7 @@ namespace DrkCraft
         m_speed(1.0f)
     { }
 
-    void Player::on_update(Timestep timestep)
+    void Player::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -52,6 +52,16 @@ namespace DrkCraft
 
             }
         }
+    }
+
+    void Player::render(void)
+    {
+
+    }
+
+    const Camera& Player::get_camera(void) const
+    {
+        return m_camera;
     }
 
     glm::mat4 Player::get_view_projection(void) const

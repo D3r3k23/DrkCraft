@@ -3,8 +3,9 @@
 #include "System/GlfwTools.hpp"
 #include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
-#include "System/Input.hpp"
 #include "Audio/Audio.hpp"
+#include "System/Icon.hpp"
+#include "System/Input.hpp"
 #include "Core/Profiler.hpp"
 
 #include <thread>
@@ -57,6 +58,37 @@ namespace DrkCraft
         return *s_instance;
     }
 
+    void Application::run(void)
+    {
+        get_instance().run_internal();
+    }
+
+    void Application::exit(int status)
+    {
+        get_instance().exit_internal(status);
+    }
+
+    void Application::add_layer(const Ref<Layer>& layer)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        get_instance().m_layerStack.push(layer);
+        layer->attach_layer();
+    }
+
+    void Application::add_overlay(const Ref<Layer>& layer)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        get_instance().m_layerStack.push(layer, true);
+        layer->attach_layer();
+    }
+
+    void Application::post_event(Event& event)
+    {
+        get_instance().handle_event(event);
+    }
+
     Window& Application::get_window(void)
     {
         return get_instance().m_window;
@@ -88,31 +120,37 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_TRACE("Loading monitors");
-        DRK_PROFILE_THREAD_CREATE("Monitor load thread");
-        std::thread monitorLoadThread([this]()
-        {
-            DRK_PROFILE_THREAD_START("Monitor load thread");
-            m_monitorManager.load_monitors();
-        });
-
         const auto& settings = RuntimeSettings::get();
 
-        DRK_LOG_CORE_TRACE("Initializing Audio system");
-        Audio::init(settings.volume);
+        DRK_LOG_CORE_TRACE("Loading monitors");
+        DRK_PROFILE_THREAD_CREATE("Monitor load thread");
+        // Probably should eventually do this on the main thread,
+        // since GLFW calls may not be thread safe
+        {
+            std::jthread monitorLoadThread([this]()
+            {
+                DRK_PROFILE_THREAD_START("Monitor load thread");
+                m_monitorManager.load_monitors();
+            });
 
-        DRK_LOG_CORE_TRACE("Loading Application assets");
-        load_assets();
+            DRK_LOG_CORE_TRACE("Initializing Audio system");
+            Audio::init(settings.volume);
 
-        DRK_LOG_CORE_TRACE("Initializing Renderer");
-        Renderer::init(m_context, m_window.get_framebuffer_size());
+            DRK_LOG_CORE_TRACE("Loading Application assets");
+            load_assets();
 
-        DRK_LOG_CORE_TRACE("Initializing ImGui");
-        m_imGuiManager = make_ptr<ImGuiManager>(m_window);
+            DRK_LOG_CORE_TRACE("Initializing Renderer");
+            Renderer::init(m_context, m_window.get_framebuffer_size());
 
-        m_window.set_vsync(settings.vsync);
+            DRK_LOG_CORE_TRACE("Setting window icon");
+            m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
-        monitorLoadThread.join();
+            DRK_LOG_CORE_TRACE("Initializing ImGui");
+            m_imGuiManager = make_ptr<ImGuiManager>(m_window);
+
+            m_window.set_vsync(settings.vsync);
+        }
+
         if (settings.fullscreen)
             set_fullscreen();
 
@@ -121,7 +159,6 @@ namespace DrkCraft
         m_monitorManager.register_event_handler(DRK_BIND_FN(handle_event));
 
         DRK_LOG_CORE_INFO("Application initialized");
-        DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
     }
 
     Application::~Application(void)
@@ -143,23 +180,7 @@ namespace DrkCraft
         Audio::shutdown();
     }
 
-    void Application::add_layer(const Ref<Layer>& layer)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        m_layerStack.push(layer);
-        layer->attach_layer();
-    }
-
-    void Application::add_overlay(const Ref<Layer>& layer)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        m_layerStack.push(layer, true);
-        layer->attach_layer();
-    }
-
-    void Application::run(void)
+    void Application::run_internal(void)
     {
         DRK_PROFILE_EVENT("New frame");
         DRK_PROFILE_FUNCTION();
@@ -175,12 +196,11 @@ namespace DrkCraft
 
                 if (m_running && !m_minimized)
                 {
-                    update(timestep);
                     render();
+                    update(timestep);
                 }
                 m_context.swap_buffers();
             }
-
             m_layerStack.refresh();
 
             if (m_layerStack.empty())
@@ -197,7 +217,7 @@ namespace DrkCraft
         }
     }
 
-    void Application::exit(int status)
+    void Application::exit_internal(int status)
     {
         if (!m_running)
             DRK_LOG_CORE_WARN("Application is not running!");
@@ -218,14 +238,14 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiManager->begin_frame();
+        m_imGuiManager->end_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
         m_imGuiManager->end_frame();
-        Renderer::end_frame();
+        Renderer::end_scene();
     }
 
     void Application::handle_event(Event& event)

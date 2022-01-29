@@ -5,6 +5,9 @@
 
 namespace DrkCraft
 {
+    constexpr uint CHUNK_WIDTH  = 64;
+    constexpr uint CHUNK_HEIGHT = 128;
+
     class Chunk
     {
 

@@ -26,9 +26,9 @@ namespace DrkCraft
         return AudioFileFormat::None;
     }
 
-    /////////////////////////////
-    //       Mp3FileInfo       //
-    /////////////////////////////
+    /////////////////////////
+    //       Mp3Data       //
+    /////////////////////////
 
     Mp3Data::Mp3Data(const mp3dec_file_info_t& info)
     {

@@ -6,10 +6,12 @@
 
 /config/*.yaml
 
+/data/imgui.ini
 /data/logs/*.log
 /data/profile/*.json
+
 /data/saves/*
-/data/imgui.ini
+!/data/saves/.dev/
 
 /packages/*
 

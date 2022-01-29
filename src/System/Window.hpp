@@ -2,6 +2,7 @@
 #define DRK_WINDOW_HPP
 
 #include "Core/Base.hpp"
+#include "Icon.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
@@ -21,6 +22,8 @@ namespace DrkCraft
 
         void set_vsync(bool enable);
         bool get_vsync(void) const;
+
+        void set_icon(const Icon& icon);
 
         // void show_cursor(bool show);
 

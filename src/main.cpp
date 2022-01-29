@@ -5,6 +5,8 @@
 #include "Application/Application.hpp"
 #include "Application/MainMenu.hpp"
 
+#include <thread>
+
 using namespace DrkCraft;
 
 int main(int argc, char* argv[])
@@ -28,14 +30,16 @@ int main(int argc, char* argv[])
     RuntimeSettings::load("config");
     DRK_LOG_CORE_INFO("Game mode: {}", game_mode_to_string(CommandLineOptions::get_game_mode()));
 
+    DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
+
     DRK_LOG_CORE_TRACE("Initializing Application");
     Application::init();
 
     DRK_LOG_CORE_TRACE("Opening Main Menu");
-    Application::get_instance().add_layer(Layer::create<MainMenu>());
+    Application::add_layer(Layer::create<MainMenu>());
 
     DRK_LOG_CORE_TRACE("Running Application");
-    Application::get_instance().run();
+    Application::run();
 
     DRK_LOG_CORE_TRACE("Shutting down Application");
     int status = Application::shutdown();

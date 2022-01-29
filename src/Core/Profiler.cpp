@@ -159,10 +159,8 @@
                 m_outStream.flush();
         }
 
-        void Profiler::write_flow_profile(const char* ph, const char* cat, const char* name, double ts)
+        void Profiler::write_flow_profile(const char* ph, const char* cat, const char* name, int id, double ts)
         {
-            uint id = std::hash<std::string>{}(name);
-
             std::stringstream profile;
             profile << ",\n    {";
             profile << fmt::format("\"ph\":\"{}\",",    ph);
@@ -187,12 +185,14 @@
 
         void Profiler::create_flow_begin_profile(const char* cat, const char* name)
         {
-            write_flow_profile("s", cat, name, get_current_timestamp());
+            int id = std::hash<std::string>{}(name);
+            write_flow_profile("s", cat, name, id, get_current_timestamp());
         }
 
         void Profiler::create_flow_end_profile(const char* cat, const char* name)
         {
-            write_flow_profile("f", cat, name, get_current_timestamp());
+            int id = std::hash<std::string>{}(name);
+            write_flow_profile("f", cat, name, id, get_current_timestamp());
         }
 
         void Profiler::write_header(const char* title, const char* version, const char* time, double timestamp)

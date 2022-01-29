@@ -1,0 +1,8 @@
+{
+  "version": 0.2,
+  "last_updated": 0,
+  "blocks": [
+    {"group": 262144, "block": 2},
+    {"group": 262144, "block": 1}
+  ]
+}

@@ -3,25 +3,34 @@
 
 #include "Core/Base.hpp"
 #include "ChunkManager.hpp"
-#include "ChunkRenderer.hpp"
 #include "WorldGenerator.hpp"
+#include "Noise.hpp"
+#include "Core/Timestep.hpp"
+#include "Graphics/Camera.hpp"
 
 #include <entt/entt.hpp>
-
-#include <array>
 
 namespace DrkCraft
 {
     class World
     {
     public:
+        World(void);
+        ~World(void);
+
+        void update(Timestep timestep);
+        void render(void);
 
     private:
-        std::array<Ref<ChunkManager>, 25> m_loadedChunks;
-        std::array<Ref<ChunkRenderer>, 16> m_chunkRenderers;
+        void render_chunks(void);
+        void render_entities(void);
 
-        entt::registry m_entities;
+    private:
+        ChunkManager m_chunkManager;
 
+        entt::registry m_entities; // EntityManager
+
+        Noise m_noiseMap;
         WorldGenerator m_generator;
     };
 }

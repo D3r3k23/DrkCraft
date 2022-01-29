@@ -17,7 +17,7 @@
 #include "Graphics/Util.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
-#include "Graphics/GlBuffer.hpp"
+#include "Graphics/Buffer.hpp"
 #include "Audio/AudioSource.hpp"
 
 namespace DrkCraft

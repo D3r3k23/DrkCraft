@@ -36,7 +36,7 @@ namespace DrkCraft
         return this->fn(std::forward<decltype(args)>(args)...); \
     }
 
-    // Alias for lifetime-managed pointer
+    // Alias for lifetime-owning pointer
     template <typename T>
     using Ptr = std::unique_ptr<T>;
 

@@ -80,24 +80,22 @@ namespace DrkCraft
     //////////////////////////////
 
     AssetManager::AssetManager(void)
-      : m_working(true),
-        m_loading(false)
+      : m_loading(false)
     {
         DRK_PROFILE_FUNCTION();
 
         DRK_PROFILE_THREAD_CREATE("Asset load thread");
-        m_loadThread = std::thread(DRK_BIND_FN(load_worker));
+        m_loadThread = std::jthread(DRK_BIND_FN(load_worker));
     }
 
     AssetManager::~AssetManager(void)
     {
-        stop_loading();
+
     }
 
     void AssetManager::stop_loading(void)
     {
-        m_working = false;
-        m_loadThread.join();
+        m_loadThread.request_stop();
     }
 
     void AssetManager::unload_all(void)
@@ -202,12 +200,17 @@ namespace DrkCraft
         return m_loading;
     }
 
-    void AssetManager::load_worker(void)
+    std::string AssetManager::currently_loading(void) const
+    {
+        return m_recentlyLoadedAsset;
+    }
+
+    void AssetManager::load_worker(std::stop_token st)
     {
         DRK_PROFILE_THREAD_START("Asset load thread");
         DRK_PROFILE_FUNCTION();
 
-        while (m_working)
+        while (!st.stop_requested())
         {
             bool ready = !m_loadQueue.empty();
             if (ready)
@@ -215,6 +218,7 @@ namespace DrkCraft
                 DRK_PROFILE_EVENT("Load asset");
                 m_loading = true;
                 AssetInfo asset = m_loadQueue.pop();
+                m_recentlyLoadedAsset = asset.path.generic_string();
                 load_impl(asset);
             }
             else

@@ -1,21 +1,20 @@
 #ifndef DRK_CHUNK_RENDERER_HPP
-#define DRK_CHUNK_RENDERER_HPP // ChunkMesher?
+#define DRK_CHUNK_RENDERER_HPP
 
 #include "Core/Base.hpp"
 #include "Chunk.hpp"
-#include "Graphics/Mesh.hpp"
 
 namespace DrkCraft
 {
     class ChunkRenderer
     {
     public:
-        ChunkRenderer(const Chunk& chunk);
+        ChunkRenderer(void);
+        ~ChunkRenderer(void);
 
-        void render(void) const;
+        void render(const Ref<Chunk>& chunk) const;
 
     private:
-        // CubeMesh m_mesh;
     };
 }
 

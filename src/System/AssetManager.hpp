@@ -40,13 +40,18 @@ namespace DrkCraft
         Texture
     };
 
-    using AssetInfo = std::pair<AssetType, std::filesystem::path>;
+    struct AssetInfo
+    {
+        AssetType type;
+        std::filesystem::path path;
+    };
+
     using AssetList = std::vector<AssetInfo>;
 
     class AssetManager
     {
     private:
-        class AssetLoadQueue
+        class AssetLoadQueue // Thread-safe
         {
         public:
             AssetLoadQueue(void) = default;
@@ -82,9 +87,10 @@ namespace DrkCraft
         void unload_list(const AssetList& assets);
 
         bool loading(void) const;
+        std::string currently_loading(void) const;
 
     private:
-        void load_worker(void);
+        void load_worker(std::stop_token st);
         void load_impl(const AssetInfo& asset);
 
         void load_image(const std::filesystem::path& filename);
@@ -96,9 +102,9 @@ namespace DrkCraft
 
     private:
         AssetLoadQueue m_loadQueue;
-        std::thread m_loadThread;
-        std::atomic<bool> m_working;
+        std::jthread m_loadThread;
         std::atomic<bool> m_loading;
+        std::atomic<std::string> m_recentlyLoadedAsset;
 
         std::unordered_map<std::string, Ref<Image>> m_images;
         std::unordered_map<std::string, Ref<AudioSource>> m_sounds;

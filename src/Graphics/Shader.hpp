@@ -34,26 +34,39 @@ namespace DrkCraft
     GLenum to_gl_shader_type(ShaderType type);
     std::string_view shader_type_to_string(ShaderType type);
 
-    enum class ShaderDataType : uint16
+    enum class ShaderDataBaseType
     {
-        None = 0,
-
-        Bool  = 0b00'001, Int  = 0b01'001, Uint  = 0b10'001, Float  = 0b11'001,
-        Bool2 = 0b00'010, Int2 = 0b01'010, Uint2 = 0b10'010, Float2 = 0b11'010,
-        Bool3 = 0b00'011, Int3 = 0b01'011, Uint3 = 0b10'011, Float3 = 0b11'011,
-        Bool4 = 0b00'100, Int4 = 0b01'100, Uint4 = 0b10'100, Float4 = 0b11'100,
-        Mat3, Mat4
+        Float = 0,
+        Int   = 1,
+        Uint  = 2,
+        Bool  = 3
     };
 
-    uint to_shader_data_type_size(ShaderDataType type);
-    uint to_shader_data_type_count(ShaderDataType type);
+    // Bits [7:0]: num elements | [11:8]: base data type | [12]: matrix
+    enum class ShaderDataType : uint16
+    {
+        None   = 0,
+        Float  = 0x0'0'01, Int  = 0x0'1'01, Uint  = 0x0'2'01, Bool  = 0x0'3'01,
+        Float2 = 0x0'0'02, Int2 = 0x0'1'02, Uint2 = 0x0'2'02, Bool2 = 0x0'3'02,
+        Float3 = 0x0'0'03, Int3 = 0x0'1'03, Uint3 = 0x0'2'03, Bool3 = 0x0'3'03,
+        Float4 = 0x0'0'04, Int4 = 0x0'1'04, Uint4 = 0x0'2'04, Bool4 = 0x0'3'04,
+        Mat2   = 0x1'0'04,
+        Mat3   = 0x1'0'09,
+        Mat4   = 0x1'0'10
+    };
+
+    ShaderDataBaseType to_shader_data_base_type(ShaderDataType type);
+    GLenum to_gl_base_shader_data_type(ShaderDataBaseType baseType);
     GLenum to_gl_base_shader_data_type(ShaderDataType type);
+
+    uint get_shader_data_type_element_count(ShaderDataType type);
+    uint get_shader_data_type_size(ShaderDataType type);
 
     class Shader : public GlObject
     {
     public:
         static Ref<Shader> create(const std::filesystem::path& path, ShaderType type);
-        Shader(ShaderType type); // Required for make_ptr, should not use directly
+        Shader(ShaderType type); // Required for make_ref, should not use directly
         virtual ~Shader(void);
 
         Shader(const Shader&) = delete;
@@ -91,17 +104,25 @@ namespace DrkCraft
 
         std::string_view get_name(void) const;
 
-        void bind(void);
-        void unbind(void);
+        virtual void bind(void) const override;
+        virtual void unbind(void) const override;
 
+    private:
         GLint get_uniform_location(const std::string& name);
 
-        void upload_uniform(const std::string& name, bool data);
-        void upload_uniform(const std::string& name, const glm::bvec2& data);
-        void upload_uniform(const std::string& name, const glm::bvec3& data);
-        void upload_uniform(const std::string& name, const glm::bvec4& data);
-        void upload_uniform(const std::string& name, const std::span<bool> data);
-        void upload_uniform(const std::string& name, const std::vector<bool> data);
+    private:
+        std::string m_name;
+
+        std::vector<Ref<Shader>> m_shaders;
+
+        std::unordered_map<std::string, GLint> m_uniformLocationCache;
+
+    public:
+        void upload_uniform(const std::string& name, float data);
+        void upload_uniform(const std::string& name, const glm::vec2& data);
+        void upload_uniform(const std::string& name, const glm::vec3& data);
+        void upload_uniform(const std::string& name, const glm::vec4& data);
+        void upload_uniform(const std::string& name, const std::span<float> data);
 
         void upload_uniform(const std::string& name, int32 data);
         void upload_uniform(const std::string& name, const glm::ivec2& data);
@@ -115,22 +136,16 @@ namespace DrkCraft
         void upload_uniform(const std::string& name, const glm::uvec4& data);
         void upload_uniform(const std::string& name, const std::span<uint32> data);
 
-        void upload_uniform(const std::string& name, float data);
-        void upload_uniform(const std::string& name, const glm::vec2& data);
-        void upload_uniform(const std::string& name, const glm::vec3& data);
-        void upload_uniform(const std::string& name, const glm::vec4& data);
-        void upload_uniform(const std::string& name, const std::span<float> data);
+        void upload_uniform(const std::string& name, bool data);
+        void upload_uniform(const std::string& name, const glm::bvec2& data);
+        void upload_uniform(const std::string& name, const glm::bvec3& data);
+        void upload_uniform(const std::string& name, const glm::bvec4& data);
+        void upload_uniform(const std::string& name, const std::span<bool> data);
+        void upload_uniform(const std::string& name, const std::vector<bool> data);
 
         void upload_uniform(const std::string& name, const glm::mat2& data);
         void upload_uniform(const std::string& name, const glm::mat3& data);
         void upload_uniform(const std::string& name, const glm::mat4& data);
-
-    private:
-        std::string m_name;
-
-        std::vector<Ref<Shader>> m_shaders;
-
-        std::unordered_map<std::string, GLint> m_uniformLocationCache;
     };
 }
 
