@@ -1,13 +1,14 @@
-#ifndef DRK_ASSET_MANAGER_HPP
-#define DRK_ASSET_MANAGER_HPP
+#ifndef DRK_SYSTEM_ASSET_MANAGER_HPP
+#define DRK_SYSTEM_ASSET_MANAGER_HPP
 
 #include "Core/Base.hpp"
-#include "Audio/AudioSource.hpp"
+#include "System/Audio/AudioSource.hpp"
 #include "System/Image.hpp"
 #include "System/Font.hpp"
 
+#include "lib/fs.hpp"
+
 #include <string>
-#include <filesystem>
 #include <vector>
 #include <queue>
 #include <unordered_map>
@@ -18,14 +19,14 @@
 
 namespace DrkCraft
 {
-    std::filesystem::path font_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path icon_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path image_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path model_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path music_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path shader_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path sound_asset_path(const std::filesystem::path& filename);
-    std::filesystem::path texture_asset_path(const std::filesystem::path& filename);
+    fs::path music_asset_path(const fs::path& filename);
+    fs::path sound_asset_path(const fs::path& filename);
+    fs::path image_asset_path(const fs::path& filename);
+    fs::path icon_asset_path(const fs::path& filename);
+    fs::path texture_asset_path(const fs::path& filename);
+    fs::path font_asset_path(const fs::path& filename);
+    fs::path model_asset_path(const fs::path& filename);
+    fs::path shader_asset_path(const fs::path& filename);
 
     enum class AssetType
     {
@@ -43,7 +44,7 @@ namespace DrkCraft
     struct AssetInfo
     {
         AssetType type;
-        std::filesystem::path path;
+        fs::path path;
     };
 
     using AssetList = std::vector<AssetInfo>;
@@ -77,11 +78,11 @@ namespace DrkCraft
         void load(const AssetInfo& asset);
         void load_list(const AssetList& assets);
 
-        bool sound_loaded(const std::filesystem::path& filename);
-        bool song_loaded(const std::filesystem::path& filename);
+        bool sound_loaded(const fs::path& filename);
+        bool song_loaded(const fs::path& filename);
 
-        Ref<AudioSource> get_sound(const std::filesystem::path& filename);
-        Ref<AudioSource> get_song(const std::filesystem::path& filename);
+        Ref<AudioSource> get_sound(const fs::path& filename);
+        Ref<AudioSource> get_song(const fs::path& filename);
 
         void unload(const AssetInfo& asset);
         void unload_list(const AssetList& assets);
@@ -93,12 +94,12 @@ namespace DrkCraft
         void load_worker(std::stop_token st);
         void load_impl(const AssetInfo& asset);
 
-        void load_image(const std::filesystem::path& filename);
+        void load_image(const fs::path& filename);
 
-        void load_sound(const std::filesystem::path& filename);
-        void load_song(const std::filesystem::path& filename);
+        void load_sound(const fs::path& filename);
+        void load_song(const fs::path& filename);
 
-        void load_font(const std::filesystem::path& filename);
+        void load_font(const fs::path& filename);
 
     private:
         AssetLoadQueue m_loadQueue;
@@ -107,13 +108,11 @@ namespace DrkCraft
         std::atomic<std::string> m_recentlyLoadedAsset;
 
         std::unordered_map<std::string, Ref<Image>> m_images;
-        std::unordered_map<std::string, Ref<AudioSource>> m_sounds;
-        std::unordered_map<std::string, Ref<AudioSource>> m_songs;
-        std::unordered_map<std::string, Font> m_fonts;
+        std::unordered_map<std::string, Ref<AudioSource>> m_audioSources;
+        std::unordered_map<std::string, Ref<Font>> m_fonts;
 
         std::mutex m_imagesMutex;
-        std::mutex m_soundsMutex;
-        std::mutex m_songsMutex;
+        std::mutex m_audioSourcesMutex;
         std::mutex m_fontsMutex;
     };
 
@@ -129,4 +128,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_ASSET_MANAGER_HPP
+#endif // DRK_SYSTEM_ASSET_MANAGER_HPP

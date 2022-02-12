@@ -1,31 +1,40 @@
-#ifndef DRK_GAME_HPP
-#define DRK_GAME_HPP
+#ifndef DRK_GAME_GAME_HPP
+#define DRK_GAME_GAME_HPP
 
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Core/Timestep.hpp"
+#include "Application/Timestep.hpp"
 #include "System/AssetManager.hpp"
-#include "Hud.hpp"
-#include "Console.hpp"
-#include "DebugOverlay.hpp"
-#include "Player.hpp"
-#include "Engine/World.hpp"
+#include "Game/Layers/Hud.hpp"
+#include "Game/Layers/Console.hpp"
+#include "Game/Layers/DebugOverlay.hpp"
+#include "Game/World.hpp"
 
 // Temp
-#include "Core/Util.hpp"
+#include "Util/Random.hpp"
 #include "Graphics/Util.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/Buffer.hpp"
-#include "Audio/AudioSource.hpp"
+#include "System/Audio/AudioSource.hpp"
+
+#include "lib/fs.hpp"
+
+#include <optional>
 
 namespace DrkCraft
 {
     class Game : public Layer
     {
-    public:
+    private:
         Game(void);
+
+    public:
+        Game(const fs::path& saveDir);
+        Game(const WorldGenerator& worldGenerator);
+
+    public:
         virtual ~Game(void);
 
         virtual void on_attach(void) override;
@@ -35,7 +44,6 @@ namespace DrkCraft
         virtual void on_render(void) override;
         virtual void on_event(Event& event) override;
 
-    private:
         virtual bool on_key_pressed(const KeyPressedEvent& event) override;
         virtual bool on_window_focus_lost(const WindowFocusLostEvent& event) override;
         virtual bool on_monitor_event(const MonitorEvent& event) override;
@@ -51,7 +59,8 @@ namespace DrkCraft
     private:
         AssetManager& m_assets;
 
-        World m_world;
+        Ptr<World> m_world;
+        Ptr<WorldGenerator> m_worldGenerator;
 
         Ref<Hud> m_hudLayer;
         Ref<Console> m_consoleLayer;
@@ -65,11 +74,11 @@ namespace DrkCraft
         // Temp
         Ptr<VertexBuffer> vertexBuffer;
         ShaderProgram flatColorShaderProgram;
-        glm::vec3 color;
+        vec3 color;
         RandomFloatDist randomDist;
 
         Ref<AudioSource> song;
     };
 }
 
-#endif // DRK_GAME_HPP
+#endif // DRK_GAME_GAME_HPP

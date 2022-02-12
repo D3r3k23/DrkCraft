@@ -1,8 +1,8 @@
-#ifndef DRK_EVENTS_HPP
-#define DRK_EVENTS_HPP
+#ifndef DRK_APPLICATION_EVENTS_HPP
+#define DRK_APPLICATION_EVENTS_HPP
 
 #include "Core/Base.hpp"
-#include "Event.hpp"
+#include "Application/Event.hpp"
 #include "System/Input.hpp"
 
 #define DRK_EVENT_TYPE_INFO(name)                                             \
@@ -317,4 +317,4 @@ namespace DrkCraft
 
 #undef DRK_EVENT_TYPE_INFO
 
-#endif // DRK_EVENTS_HPP
+#endif // DRK_APPLICATION_EVENTS_HPP

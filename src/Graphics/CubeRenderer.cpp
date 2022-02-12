@@ -1,11 +1,12 @@
 #include "CubeRenderer.hpp"
 
-#include "Renderer.hpp"
-#include "Shader.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Shader.hpp"
+#include "Graphics/detail/VertexArray.hpp"
+#include "Graphics/detail/Buffer.hpp"
+#include "Graphics/detail/Util.hpp"
 #include "System/AssetManager.hpp"
-#include "Core/Profiler.hpp"
-
-#include "Util.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <glad/glad.h>
 
@@ -23,25 +24,29 @@ namespace DrkCraft
 
     struct CubeVertex
     {
-        glm::vec3 position;
-        glm::vec2 texCoord;
-        float     texIndex;
+        vec3 position;
+        vec2 texCoord;
+        uint texIndex;
     };
 
     struct CubeRendererData
     {
+        CubeRendererStats lastStats;
         CubeRendererStats stats;
 
-        ShaderProgram cubeShader{"CubeShader"};
+        ShaderProgram shader{"CubeShader"};
 
-        Ptr<VertexArray> cubeVertexArray;
+        Ptr<VertexArray> vertexArray;
 
-        Ref<VertexBuffer> cubeVertexBuffer;
-        Ref<IndexBuffer>  cubeIndexBuffer;
+        Ref<VertexBuffer> vertexBuffer;
+        Ref<IndexBuffer>  indexBuffer;
 
-        std::vector<CubeVertex> cubeVertexBufferData;
+        std::vector<CubeVertex> vertexBufferData;
 
-        uint nCubeIndices = 0;
+        uint indices = 0;
+
+        vec4 whiteColor;
+        Ref<Texture2D> whiteTexture;
     };
 
     static CubeRendererData s_data;
@@ -54,19 +59,21 @@ namespace DrkCraft
           Shader::create(shader_asset_path("cube_vertex_shader.glsl"), ShaderType::Vertex),
           Shader::create(shader_asset_path("cube_fragment_shader.glsl"), ShaderType::Fragment)
         };
-        s_data.cubeShader.attach(shaders);
-        s_data.cubeShader.link();
+        s_data.shader.attach(shaders);
+        s_data.shader.link();
 
-        s_data.cubeVertexArray  = make_ptr<VertexArray>();
-        s_data.cubeVertexBuffer = make_ref<VertexBuffer>(MAX_CUBE_VERTICES);
-        s_data.cubeIndexBuffer  = make_ref<IndexBuffer>(MAX_CUBE_INDICES);
+        const uint vbSize = MAX_CUBE_VERTICES * sizeof(CubeVertex);
+        const uint ibSize = MAX_CUBE_VERTICES * sizeof(IndexBuffer);
+        s_data.vertexArray  = make_ptr<VertexArray>();
+        s_data.vertexBuffer = make_ref<VertexBuffer>(vbSize, PrimitiveType::Triangles);
+        s_data.indexBuffer  = make_ref<IndexBuffer>(ibSize);
 
-        s_data.cubeVertexBufferData.resize(MAX_CUBE_VERTICES);
+        s_data.vertexBufferData.resize(MAX_CUBE_VERTICES);
 
-        s_data.cubeVertexBuffer->set_layout({
+        s_data.vertexBuffer->set_layout({
             { ShaderDataType::Float3, "a_position" },
             { ShaderDataType::Float2, "a_texCoord" },
-            { ShaderDataType::Float,  "a_texIndex" }
+            { ShaderDataType::Uint,   "a_texIndex" }
         });
 
         Index cubeIndices[NUM_INDICES_IN_CUBE] = {
@@ -83,74 +90,42 @@ namespace DrkCraft
             for (uint i = 0; i < NUM_INDICES_IN_CUBE; i++)
                 cubeIndexBufferData.push_back(cubeIndices[i]);
 
-        s_data.cubeIndexBuffer->set_data(cubeIndexBufferData);
+        s_data.indexBuffer->update(cubeIndexBufferData);
 
-        s_data.cubeVertexArray->set_vertex_buffer(s_data.cubeVertexBuffer);
-        s_data.cubeVertexArray->set_index_buffer(s_data.cubeIndexBuffer);
-
-
-
-        // Triangle strip
-        // glm::vec3 vertices[NUM_VERTICES] = {
-        //     {0.5f, 0.5f, 0.0f},
-        //     {0.0f, 0.5f, 0.0f},
-        //     {0.5f, 0.5f, 0.5f},
-        //     {0.0f, 0.5f, 0.5f},
-        //     {0.5f, 0.0f, 0.0f},
-        //     {0.0f, 0.0f, 0.0f},
-        //     {0.0f, 0.0f, 0.5f},
-        //     {0.5f, 0.0f, 0.5f}
-        // };
-        // Index indices[NUM_INDICES] = { 3, 2, 6, 7, 4, 2, 0, 3, 1, 6, 5, 4, 1, 0 };
-
-        glm::vec3 vertices[] = {
-            {0.0f, 0.0f, 0.5f}, // 0
-            {0.5f, 0.0f, 0.5f}, // 1
-            {0.5f, 0.5f, 0.5f}, // 2
-            {0.0f, 0.5f, 0.5f}, // 3
-            {0.5f, 0.0f, 0.0f}, // 5
-            {0.5f, 0.5f, 0.0f}, // 6
-            {0.0f, 0.0f, 0.0f}, // 4
-            {0.0f, 0.5f, 0.0f}  // 7
-        };
-        Index indices[] = {
-            0, 1, 3,  1, 2, 3, // Front
-            1, 5, 2,  5, 6, 2, // Right
-            5, 4, 6,  4, 7, 6, // Back
-            4, 0, 7,  0, 3, 7, // Left
-            3, 2, 7,  2, 6, 7, // Top
-            4, 5, 0,  5, 1, 0  // Bottom
-        };
-
-        GlObjectHandler<VertexBuffer> vbo(*cubeVertexBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-        // Bind TextureShaderProgram? (if bool textures == true)
+        s_data.vertexArray->set_vertex_buffer(s_data.vertexBuffer);
+        s_data.vertexArray->set_index_buffer(s_data.indexBuffer);
     }
 
     void CubeRenderer::shutdown(void)
     {
-        s_data.cubeVertexArray.reset();
-        s_data.cubeVertexBuffer.reset();
+        s_data.vertexArray.reset();
+        s_data.vertexBuffer.reset();
     }
 
     void CubeRenderer::begin_scene(void)
     {
         const Camera& camera = Renderer::get_camera();
-        s_data.cubeShader.bind();
-        s_data.cubeShader.upload_uniform("u_viewProjection", camera.get_projection_matrix());
+        s_data.shader.bind();
+        s_data.shader.upload_uniform("u_viewProjection", camera.get_view_projection());
+
+        reset_stats();
+
+        s_data.vertexArray->bind();
+        start_batch();
     }
 
     void CubeRenderer::end_scene(void)
     {
         flush();
+
+        s_data.vertexArray->unbind();
     }
 
-    void CubeRenderer::submit(const glm::ivec3& position, const Ref<Texture2D>& texture, const glm::vec4& color)
+    void CubeRenderer::submit(const ivec3& position, const Ref<Texture2D>& texture, const vec4& color)
     {
         DRK_PROFILE_FUNCTION();
 
-        static constexpr glm::vec3 cubeVertexPositions[NUM_VERTICES_IN_CUBE] = {
+        static constexpr vec3 cubeVertexPositions[NUM_VERTICES_IN_CUBE] = {
             {0.0f, 0.0f, 0.5f}, // 0
             {0.5f, 0.0f, 0.5f}, // 1
             {0.5f, 0.5f, 0.5f}, // 2
@@ -161,47 +136,47 @@ namespace DrkCraft
             {0.0f, 0.5f, 0.0f}  // 7
         };
 
-        glm::vec2 texCoord;
+        vec2 texCoord;
         uint texIndex;
 
         for (const auto& cubeVertex : cubeVertexPositions)
         {
-            const glm::vec3 vertexPosition = cubeVertex * glm::vec3(position);
-            s_data.cubeVertexBufferData.push_back({
+            const vec3 vertexPosition = cubeVertex * vec3(position);
+            s_data.vertexBufferData.push_back({
                 vertexPosition,
                 texCoord,
-                texIndex});
+                texIndex
+            });
         }
 
         s_data.stats.cubes++;
-        s_data.stats.triangles += 12;
-        s_data.stats.vertices  += 8;
-        s_data.stats.indices   += 36;
+        s_data.stats.cubeFaces += 6;
     }
 
-    void CubeRenderer::submit(const glm::ivec3& position, const Ref<Texture2D>& texture)
+    void CubeRenderer::submit(const ivec3& position, const Ref<Texture2D>& texture)
     {
         submit(position, texture, s_data.whiteColor);
     }
 
-    void CubeRenderer::submit(const glm::ivec3& position, const glm::vec4& color)
+    void CubeRenderer::submit(const ivec3& position, const vec4& color)
     {
         submit(position, s_data.whiteTexture, color);
     }
 
     const CubeRendererStats& CubeRenderer::get_stats(void)
     {
-        return s_data.stats;
+        return s_data.lastStats;
     }
 
     void CubeRenderer::reset_stats(void)
     {
-        s_data.stats = RendererStats{};
+        s_data.lastStats = s_data.stats;
+        s_data.stats = CubeRendererStats{};
     }
 
     void CubeRenderer::start_batch(void)
     {
-        s_data.nCubeIndices = 0;
+        s_data.indices = 0;
     }
 
     void CubeRenderer::next_batch(void)
@@ -214,19 +189,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_vertexBuffer->set_data(m_vertexBufferData);
-        Renderer::draw(m_vertexArray);
-    }
-
-
-
-
-    void CubeRenderer::draw_cube(const Transform& transform)
-    {
-        GlObjectHandler<VertexBuffer> vbo(*m_cubeVertexBuffer);
-        glEnableVertexAttribArray(0);
-        GlObjectHandler<IndexBuffer> vao(*m_cubeIndexBuffer);
-        Renderer::draw_indexed(*m_cubeIndexBuffer);
-        glDisableVertexAttribArray(0);
+        s_data.vertexArray->get_vertex_buffer()->update<CubeVertex>(s_data.vertexBufferData);
+        Renderer::draw_indexed(s_data.vertexArray->get_index_buffer(), s_data.indices);
     }
 }

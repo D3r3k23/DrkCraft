@@ -1,13 +1,11 @@
-#ifndef DRK_CUBE_RENDERER_HPP
-#define DRK_CUBE_RENDERER_HPP
+#ifndef DRK_GRAPHICS_CUBE_RENDERER_HPP
+#define DRK_GRAPHICS_CUBE_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "VertexArray.hpp"
-#include "Buffer.hpp"
-#include "Transform.hpp"
+#include "Graphics/Texture.hpp"
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#include "lib/glm/vec2.hpp"
+#include "lib/glm/vec3.hpp"
 
 #include <vector>
 
@@ -28,9 +26,9 @@ namespace DrkCraft
         static void begin_scene(void);
         static void end_scene(void);
 
-        static void submit(const glm::ivec3& position, const Ref<Texture2D>& texture, const glm::vec4& color);
-        static void submit(const glm::ivec3& position, const Ref<Texture2D>& texture);
-        static void submit(const glm::ivec3& position, const glm::vec4& color);
+        static void submit(const ivec3& position, const Ref<Texture2D>& texture, const vec4& color);
+        static void submit(const ivec3& position, const Ref<Texture2D>& texture);
+        static void submit(const ivec3& position, const vec4& color);
 
         static const CubeRendererStats& get_stats(void);
         static void reset_stats(void);
@@ -43,4 +41,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_CUBE_RENDERER_HPP
+#endif // DRK_GRAPHICS_CUBE_RENDERER_HPP

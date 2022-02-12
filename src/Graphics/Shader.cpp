@@ -1,17 +1,15 @@
 #include "Shader.hpp"
 
-#include "Core/Util.hpp"
-#include "Core/Profiler.hpp"
+#include "Util/File.hpp"
+#include "Core/Debug/Profiler.hpp"
+
+#include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
 namespace DrkCraft
 {
-    ////////////////////////////
-    //       ShaderType       //
-    ////////////////////////////
-
-    GLenum to_gl_shader_type(ShaderType type)
+    uint to_gl_shader_type(ShaderType type)
     {
         switch (type)
         {
@@ -21,7 +19,7 @@ namespace DrkCraft
             case ShaderType::TesselationControl   : return GL_TESS_CONTROL_SHADER;
             case ShaderType::TesselationEvaluation: return GL_TESS_EVALUATION_SHADER;
             default:
-                DRK_LOG_CORE_WARN("Unknown shader type");
+                DRK_ASSERT_DEBUG(false, "Unknown shader type");
                 return 0;
         }
     }
@@ -36,75 +34,8 @@ namespace DrkCraft
             case ShaderType::TesselationControl   : return "tesselation control shader";
             case ShaderType::TesselationEvaluation: return "tesselation evaluation shader";
             default:
-                DRK_LOG_CORE_WARN("Unknown shader type");
+                DRK_ASSERT_DEBUG(false, "Unknown shader type");
                 return "";
-        }
-    }
-
-    ////////////////////////////////
-    //       ShaderDataType       //
-    ////////////////////////////////
-
-    ShaderDataBaseType to_shader_data_base_type(ShaderDataType type)
-    {
-        uint baseTypeCode = (static_cast<uint>(type) >> 8) & 0xFF;
-        DRK_ASSERT_DEBUG(0 <= baseTypeCode && baseTypeCode <= 3, "Could not find base type");
-
-        return static_cast<ShaderDataBaseType>(baseTypeCode);
-    }
-
-    GLenum to_gl_base_shader_data_type(ShaderDataBaseType baseType)
-    {
-        switch (baseType)
-        {
-            case ShaderDataBaseType::Float : return GL_FLOAT;
-            case ShaderDataBaseType::Int   : return GL_INT;
-            case ShaderDataBaseType::Uint  : return GL_UNSIGNED_INT;
-            case ShaderDataBaseType::Bool  : return GL_INT;
-            default:
-                DRK_ASSERT_DEBUG_NO_MSG(false);
-                return 0;
-        }
-    }
-
-    GLenum to_gl_base_shader_data_type(ShaderDataType type)
-    {
-        ShaderDataBaseType baseType = to_shader_data_base_type(type);
-        return to_gl_base_shader_data_type(baseType);
-    }
-
-    uint get_shader_data_type_element_count(ShaderDataType type)
-    {
-        return static_cast<uint>(type) & 0xF;
-    }
-
-    uint get_shader_data_type_size(ShaderDataType type)
-    {
-        uint count = get_shader_data_type_element_count(type);
-        switch (type)
-        {
-            case ShaderDataType::Float  :
-            case ShaderDataType::Float2 :
-            case ShaderDataType::Float3 :
-            case ShaderDataType::Float4 : return count * sizeof(float);
-            case ShaderDataType::Int    :
-            case ShaderDataType::Int2   :
-            case ShaderDataType::Int3   :
-            case ShaderDataType::Int4   : return count * sizeof(int32);
-            case ShaderDataType::Uint   :
-            case ShaderDataType::Uint2  :
-            case ShaderDataType::Uint3  :
-            case ShaderDataType::Uint4  : return count * sizeof(uint32);
-            case ShaderDataType::Bool   :
-            case ShaderDataType::Bool2  :
-            case ShaderDataType::Bool3  :
-            case ShaderDataType::Bool4  :
-            case ShaderDataType::Mat2   :
-            case ShaderDataType::Mat3   :
-            case ShaderDataType::Mat4   : return count * sizeof(float);
-            default:
-                DRK_ASSERT_DEBUG(false, "Invalid ShaderDataType");
-                return 0;
         }
     }
 
@@ -114,12 +45,12 @@ namespace DrkCraft
 
     std::unordered_map<std::string, Ref<Shader>> Shader::s_shaderCache;
 
-    Ref<Shader> Shader::create(const std::filesystem::path& path, ShaderType type)
+    Ref<Shader> Shader::create(const fs::path& path, ShaderType type)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Creating Shader from file {}", path.string());
 
-        DRK_ASSERT_CORE(file_exists(path), "Shader file does not exist");
+        DRK_ASSERT_CORE(is_file(path), "Shader file does not exist");
         DRK_ASSERT_CORE(type != ShaderType::None, "Unknown shader type");
 
         if (s_shaderCache.contains(path.string()))
@@ -202,11 +133,17 @@ namespace DrkCraft
         DRK_ASSERT_DEBUG(m_id, "glCreateProgram failed");
     }
 
+    ShaderProgram::ShaderProgram(std::string_view name, std::initializer_list<Ref<Shader>> shaders)
+      : ShaderProgram(name)
+    {
+        DRK_PROFILE_FUNCTION();
+        std::ranges::copy(shaders, std::back_inserter(m_shaders));
+    }
+
     ShaderProgram::ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders)
       : ShaderProgram(name)
     {
         DRK_PROFILE_FUNCTION();
-
         attach(shaders);
     }
 
@@ -263,13 +200,13 @@ namespace DrkCraft
         glUseProgram(0);
     }
 
-    GLint ShaderProgram::get_uniform_location(const std::string& name)
+    int ShaderProgram::get_uniform_location(const std::string& name)
     {
         if (m_uniformLocationCache.contains(name))
             return m_uniformLocationCache[name];
         else
         {
-            GLint location = glGetUniformLocation(m_id, name.c_str());
+            int location = glGetUniformLocation(m_id, name.c_str());
             DRK_ASSERT_DEBUG(location != -1, "Uniform \"{}\" does not exist", name);
             m_uniformLocationCache[name] = location;
             return location;
@@ -278,91 +215,91 @@ namespace DrkCraft
 
     void ShaderProgram::upload_uniform(const std::string& name, float data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1f(location, data);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::vec2& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const vec2& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform2f(location, data.x, data.y);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::vec3& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const vec3& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform3f(location, data.x, data.y, data.z);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::vec4& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const vec4& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform4f(location, data.x, data.y, data.z, data.w);
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, const std::span<float> data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1fv(location, data.size(), data.data());
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, int32 data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1i(location, data);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::ivec2& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const ivec2& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform2i(location, data.x, data.y);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::ivec3& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const ivec3& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform3i(location, data.x, data.y, data.z);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::ivec4& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const ivec4& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform4i(location, data.x, data.y, data.z, data.w);
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, const std::span<int32> data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1iv(location, data.size(), data.data());
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, uint32 data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1ui(location, data);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::uvec2& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const uvec2& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform2ui(location, data.x, data.y);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::uvec3& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const uvec3& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform3ui(location, data.x, data.y, data.z);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::uvec4& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const uvec4& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform4ui(location, data.x, data.y, data.z, data.w);
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, const std::span<uint32> data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniform1uiv(location, data.size(), data.data());
     }
 
@@ -371,19 +308,19 @@ namespace DrkCraft
         upload_uniform(name, static_cast<int>(data));
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::bvec2& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const bvec2& data)
     {
-        upload_uniform(name, static_cast<glm::ivec2>(data));
+        upload_uniform(name, static_cast<ivec2>(data));
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::bvec3& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const bvec3& data)
     {
-        upload_uniform(name, static_cast<glm::ivec3>(data));
+        upload_uniform(name, static_cast<ivec3>(data));
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::bvec4& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const bvec4& data)
     {
-        upload_uniform(name, static_cast<glm::ivec4>(data));
+        upload_uniform(name, static_cast<ivec4>(data));
     }
 
     void ShaderProgram::upload_uniform(const std::string& name, const std::span<bool> data)
@@ -398,21 +335,21 @@ namespace DrkCraft
         upload_uniform(name, intData);
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::mat2& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const mat2& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(data));
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::mat3& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const mat3& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(data));
     }
 
-    void ShaderProgram::upload_uniform(const std::string& name, const glm::mat4& data)
+    void ShaderProgram::upload_uniform(const std::string& name, const mat4& data)
     {
-        GLint location = get_uniform_location(name);
+        int location = get_uniform_location(name);
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(data));
     }
 }

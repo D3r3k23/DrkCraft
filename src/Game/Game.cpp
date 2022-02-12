@@ -1,12 +1,12 @@
 #include "Game.hpp"
 
 #include "Application/Application.hpp"
-#include "Audio/Audio.hpp"
-#include "PauseMenu.hpp"
+#include "System/Audio/Audio.hpp"
 #include "System/Input.hpp"
-#include "Engine/ChunkRenderer.hpp"
+#include "Game/Layers/PauseMenu.hpp"
+#include "Game/ChunkRenderer.hpp"
 #include "Graphics/Transform.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 // Temp
 #include <array>
@@ -27,7 +27,9 @@ namespace DrkCraft
 
         m_hudLayer     = Layer::create<Hud>(showHud);
         m_consoleLayer = Layer::create<Console>();
-        m_debugLayer   = Layer::create<DebugOverlay>(m_assets);
+        m_debugLayer   = Layer::create<DebugOverlay>(m_assets, Application::get_imgui());
+
+
 
         std::array<float, 9> vertexPositions
         {
@@ -49,6 +51,18 @@ namespace DrkCraft
         flatColorShaderProgram.link();
 
         song = m_assets.get_song("Alix Perez - Burning Babylon.mp3");
+    }
+
+    Game::Game(const fs::path& saveDir)
+      : Game()
+    {
+        m_world = World::load_save(saveDir);
+    }
+
+    Game::Game(const WorldGenerator& worldGenerator)
+      : Game()
+    {
+        m_world = worldGenerator.generate();
     }
 
     Game::~Game(void)
@@ -78,21 +92,19 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_player.update(timestep);
-        m_world.update(timestep);
     }
 
     void Game::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        // Skybox?
-
         Renderer::begin_scene({
-            m_player.get_camera()
+            m_world->player.get_camera()
         });
 
-        m_world.render();
+        m_world->skybox.render();
+
+        m_chunkRenderer.render(m_world->chunkManager);
         m_player.render();
 
         Renderer::end_scene();
@@ -104,7 +116,7 @@ namespace DrkCraft
         GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
         // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
         // flatColorShaderProgram.upload_uniform("u_transform", Transform::Identity());
-        flatColorShaderProgram.upload_uniform("u_color", glm::vec4(color, 1.0f));
+        flatColorShaderProgram.upload_uniform("u_color", vec4(color, 1.0f));
 
         Renderer::draw_triangle(*vertexBuffer);
         // Renderer::draw_block(0, 0, 0);
@@ -116,6 +128,7 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));
         ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
+        ed.dispatch<InputEvent>([this](const InputEvent& event){ m_player.on_event(event); });
     }
 
     bool Game::on_key_pressed(const KeyPressedEvent& event)

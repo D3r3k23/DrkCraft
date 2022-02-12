@@ -27,6 +27,7 @@ add_subdirectory(spdlog)
 message("Configuring RapidJSON")
 add_library(rapidjson INTERFACE)
 target_include_directories(rapidjson INTERFACE rapidjson/include)
+target_compile_definitions(rapidjson INTERFACE RAPIDJSON_HAS_STDSTRING=1)
 
 message("Configuring yaml-cpp")
 set(YAML_CPP_BUILD_TOOLS OFF)

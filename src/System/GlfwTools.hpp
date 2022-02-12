@@ -1,5 +1,5 @@
-#ifndef DRK_GLFW_TOOLS_HPP
-#define DRK_GLFW_TOOLS_HPP
+#ifndef DRK_SYSTEM_GLFW_TOOLS_HPP
+#define DRK_SYSTEM_GLFW_TOOLS_HPP
 
 #include "Core/Base.hpp"
 
@@ -9,4 +9,4 @@ namespace DrkCraft
     void shutdown_glfw(void);
 }
 
-#endif // DRK_GLFW_TOOLS_HPP
+#endif // DRK_SYSTEM_GLFW_TOOLS_HPP

@@ -1,18 +1,15 @@
 target_sources(DrkCraft
   PRIVATE
-    Buffer.cpp
     Camera.cpp
     CubeRenderer.cpp
-    FontRenderer.cpp
-    GlObject.cpp
     Mesh.cpp
     MeshRenderer.cpp
     OpenGlContext.cpp
     Renderer.cpp
     Shader.cpp
+    TextRenderer.cpp
     Texture.cpp
-    TextureManager.cpp
     Transform.cpp
-    Util.cpp
-    VertexArray.cpp
 )
+
+add_subdirectory(detail)

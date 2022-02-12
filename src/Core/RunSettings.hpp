@@ -1,46 +1,41 @@
-#ifndef DRK_RUN_SETTINGS_HPP
-#define DRK_RUN_SETTINGS_HPP
+#ifndef DRK_CORE_RUN_SETTINGS_HPP
+#define DRK_CORE_RUN_SETTINGS_HPP
+
+#include "Core/Base.hpp"
+
+#include "lib/fs.hpp"
 
 #include <string>
 #include <string_view>
-#include <filesystem>
 
 namespace DrkCraft
 {
-    enum class GameMode
-    {
-        Dev,
-        Player
-    };
-
-    std::string_view game_mode_to_string(GameMode mode);
-
     class CommandLineOptions
     {
     private:
         CommandLineOptions(void) = default;
-        static CommandLineOptions& get_instance(void);
+        static CommandLineOptions& get_data(void);
 
     public:
         static void parse_args(int argc, char* argv[]);
         static std::string_view get_arg(int i);
 
         static std::string_view get_program_name(void);
-        static GameMode get_game_mode(void);
-        static bool get_trace_log(void);
+        static bool dev_mode_activated(void);
 
     private:
-        void set_mode(GameMode mode);
+        void activate_dev_mode(void);
 
     private:
         int argc = 0;
         char** argv = nullptr;
 
+        // Options
         std::string name = "DrkCraft";
-        GameMode mode = GameMode::Player; // Or maybe this should be runtime-enabled with a hotkey
+        bool dev = false; // Or maybe this should be runtime-enabled with a hotkey
     };
 
-    const unsigned int NUM_SETTINGS = 3;
+    const uint NUM_SETTINGS = 3;
 
     enum SettingsEnum
     {
@@ -68,13 +63,13 @@ namespace DrkCraft
             int height = 720;
         } init_window_size;
 
-        std::filesystem::path saves_directory = "data/saves";
+        fs::path saves_directory = "data/saves";
     };
 
     class RuntimeSettings
     {
     public:
-        static void load(const std::filesystem::path& location);
+        static void load(const fs::path& location);
 
         static void save_settings(void);
 
@@ -90,12 +85,12 @@ namespace DrkCraft
         static void save_config(void);
 
     private:
-        static std::filesystem::path s_configFile;
-        static std::filesystem::path s_settingsFile;
+        static fs::path s_configFile;
+        static fs::path s_settingsFile;
 
         static ConfigData s_configData;
         static SettingsData s_settingsData;
     };
 }
 
-#endif // DRK_RUN_SETTINGS_HPP
+#endif // DRK_CORE_RUN_SETTINGS_HPP

@@ -1,27 +1,25 @@
 #include "Renderer.hpp"
 
-#include "CubeRenderer.hpp"
-#include "TextureManager.hpp"
-#include "Util.hpp"
-#include "Core/Profiler.hpp"
+#include "Graphics/CubeRenderer.hpp"
+#include "Graphics/detail/Util.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <glad/glad.h>
-#include <glm/vec3.hpp>
-
-#include <array>
 
 namespace DrkCraft
 {
     struct RendererData
     {
+        RendererStats lastStats;
         RendererStats stats;
-        Renderer::SceneData sceneData;
+
+        std::optional<SceneData> sceneData;
         TextureManager textureSlots;
     };
 
     static RendererData s_data;
 
-    void Renderer::init(OpenGlContext& context, const glm::uvec2& viewportSize)
+    void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -38,8 +36,8 @@ namespace DrkCraft
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        clear();
-        context.swap_buffers();
+        // clear();
+        // context.swap_buffers();
 
         CubeRenderer::init();
     }
@@ -54,7 +52,6 @@ namespace DrkCraft
     void Renderer::begin_frame(void)
     {
         clear();
-        reset_stats();
     }
 
     void Renderer::end_frame(void)
@@ -65,22 +62,23 @@ namespace DrkCraft
     void Renderer::begin_scene(const SceneData& data)
     {
         s_data.sceneData = data;
+        reset_stats();
     }
 
     void Renderer::end_scene(void)
     {
-
+        s_data.lastStats = s_data.stats;
     }
 
     void Renderer::attach_texture(const Ref<Texture>& texture)
     {
-        if ()
+        // if ()
         s_data.textureSlots.add(texture);
     }
 
     const Camera& Renderer::get_camera(void)
     {
-        return s_data.sceneData.camera;
+        return s_data.sceneData->camera;
     }
 
     void Renderer::clear(void)
@@ -88,10 +86,24 @@ namespace DrkCraft
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::draw_indexed(const Ref<IndexBuffer>& buffer, uint count)
+    void Renderer::draw_indexed(const Ref<VertexArray>& vao)
     {
-        if (count == 0 || count > buffer->get_count())
-            count = buffer->get_count();
+        vao->bind();
+        glDrawElements(
+            to_gl_primitive_type(vao->get_vertex_buffer().get_primitive_type()),
+            vao->get_index_buffer().get_count(),
+            GL_UNSIGNED_INT, nullptr
+        );
+        vao->unbind();
+    }
+
+    void Renderer::draw_indexed(const Ref<IndexBuffer>& indexBuffer, std::optional<uint> indexCount)
+    {
+        uint count = (!indexCount || *indexCount > indexBuffer->get_count())
+            ? indexBuffer->get_count()
+            : *indexCount;
+
+        s_data.stats.indices += count;
 
         glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
         s_data.stats.drawCalls++;
@@ -124,18 +136,19 @@ namespace DrkCraft
         glViewport(x, y, width, height);
     }
 
-    void Renderer::set_viewport(const glm::ivec2& pos, const glm::uvec2& size)
+    void Renderer::set_viewport(const ivec2& pos, const uvec2& size)
     {
         set_viewport(pos.x, pos.y, size.x, size.y);
     }
 
     const RendererStats& Renderer::get_stats(void)
     {
-        return s_data.stats;
+        return s_data.lastStats;
     }
 
     void Renderer::reset_stats(void)
     {
+        s_data.lastStats = s_data.stats;
         s_data.stats = RendererStats{};
     }
 }

@@ -1,9 +1,9 @@
-#ifndef DRK_IMGUI_TOOLS_HPP
-#define DRK_IMGUI_TOOLS_HPP
+#ifndef DRK_APPLICATION_IMGUI_TOOLS_HPP
+#define DRK_APPLICATION_IMGUI_TOOLS_HPP
 
 #include "Core/Base.hpp"
 #include "System/Window.hpp"
-#include "Events.hpp"
+#include "Application/Events.hpp"
 
 #include <imgui/imgui.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
@@ -24,6 +24,14 @@ namespace DrkCraft
     // void* to_imgui_image(const Texture& texture);
     // void* to_imgui_image(const Image& image); // to_imgui_image(Texture::create(image));
 
+    struct ImGuiRenderStats
+    {
+        uint drawCmds  = 0;
+        uint drawLists = 0;
+        uint indices   = 0;
+        uint vertices  = 0;
+    };
+
     class ImGuiManager
     {
     public:
@@ -40,6 +48,7 @@ namespace DrkCraft
 
         void enable(void);
         void disable(void);
+        bool enabled(void) const;
 
         void block_events(bool block);
 
@@ -48,18 +57,20 @@ namespace DrkCraft
         void toggle_demo_window(void);
         bool demo_window_enabled(void) const;
 
+        const ImGuiRenderStats& get_stats(void) const;
+
         static ImFont* get_font(ImGuiFont font);
 
     private:
         void setup_style(void);
         bool should_capture_event(const Event& event) const;
 
-        bool on_key_pressed(const KeyPressedEvent& event);
-
     private:
         ImGuiContext* m_context;
         bool m_enabled; // What happens if this is false and we still try and use ImGui?
         bool m_blockEvents;
+
+        ImGuiRenderStats m_stats;
 
         bool m_showDemoWindow;
 
@@ -75,4 +86,4 @@ namespace DrkCraft
     }
 }
 
-#endif // DRK_IMGUI_TOOLS_HPP
+#endif // DRK_APPLICATION_IMGUI_TOOLS_HPP

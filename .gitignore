@@ -1,18 +1,24 @@
 /.vscode/*
 /.VSCodeCounter/*
-/.venv/*
 
 /build/*
+/venv/*
+*/__pycache__/*
 
-/config/*.yaml
+# /assets/images/textures/blockatlas
+
+/config/*
+!/config/default/
 
 /data/imgui.ini
-/data/logs/*.log
-/data/profile/*.json
+/data/logs/*
+
+/data/profile/*
+!/data/profile/README.md
 
 /data/saves/*
 !/data/saves/.dev/
 
 /packages/*
 
-assets/music/Alix Perez - Burning Babylon.mp3
+assets/audio/music/Alix Perez - Burning Babylon.mp3

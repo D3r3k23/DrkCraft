@@ -1,12 +1,13 @@
-#ifndef DRK_MONITOR_HPP
-#define DRK_MONITOR_HPP
+#ifndef DRK_SYSTEM_MONITOR_HPP
+#define DRK_SYSTEM_MONITOR_HPP
 
 #include "Core/Base.hpp"
-#include "Window.hpp"
+#include "System/Window.hpp"
 #include "Application/Events.hpp"
 
+#include "lib/glm/vec2.hpp"
+
 #include <GLFW/glfw3.h>
-#include <glm/vec2.hpp>
 
 #include <vector>
 #include <string>
@@ -40,7 +41,7 @@ namespace DrkCraft
         uint get_number(void) const;
         std::string_view get_name(void) const;
 
-        glm::ivec2 get_resolution(void) const;
+        ivec2 get_resolution(void) const;
         uint get_refresh_rate(void) const;
 
         const VidMode& find_best_vid_mode(void) const;
@@ -53,7 +54,7 @@ namespace DrkCraft
         GLFWmonitor* m_monitor;
         uint m_number;
         VidMode m_vidMode;
-        glm::vec2 m_scale;
+        vec2 m_scale;
     };
 
     class MonitorManager
@@ -89,9 +90,9 @@ namespace DrkCraft
 
         bool m_fullscreen;
         std::optional<uint> m_fullscreenMonitor;
-        std::optional<glm::uvec2> m_savedWindowedSize;
-        std::optional<glm::ivec2> m_savedWindowedPos;
+        std::optional<uvec2> m_savedWindowedSize;
+        std::optional<ivec2> m_savedWindowedPos;
     };
 }
 
-#endif // DRK_MONITOR_HPP
+#endif // DRK_SYSTEM_MONITOR_HPP

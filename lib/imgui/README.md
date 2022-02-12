@@ -2,7 +2,7 @@
 
 ### imgui
 
-* github.com/oronut/imgui Git submodule
+* github.com/ocornut/imgui Git submodule
 
 ### imgui_impl
 

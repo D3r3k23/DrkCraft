@@ -1,10 +1,10 @@
-#ifndef DRK_EVENT_HPP
-#define DRK_EVENT_HPP
+#ifndef DRK_APPLICATION_EVENT_HPP
+#define DRK_APPLICATION_EVENT_HPP
 
 // Probably should not include directly, use Application/Events.hpp instead
 
 #include "Core/Base.hpp"
-#include "EventTypes.hpp"
+#include "Application/EventTypes.hpp"
 
 #include <string>
 #include <concepts>
@@ -57,8 +57,23 @@ namespace DrkCraft
     template <typename E>
     concept DispatchableEventConcept = ConcreteEventConcept<E> || CategoryEventConcept<E>;
 
+    template <EventConcept E>
+    const E& event_cast(const AbstractEventConcept auto& event)
+    {
+    #if defined(DRK_CONFIG_DEBUG)
+        const E* e = dynamic_cast<const E*>(&event);
+        DRK_ASSERT_DEBUG(e, "Invalid Event cast");
+        return *e;
+    #else
+        return static_cast<const E&>(event);
+    #endif
+    }
+
     template <AbstractEventConcept E>
     using AbstractEventHandlerFn = std::function<void(E&)>;
+
+    template <ConcreteEventConcept E>
+    using ConcreteEventHandlerFn = std::function<void(E&)>;
 
     template <DispatchableEventConcept E>
     using DispatchableEventHandlerFn = std::function<bool(const E&)>; // Returns true if event was handled
@@ -76,7 +91,8 @@ namespace DrkCraft
         {
             if (event == E2::static_type() && !event.handled())
             {
-                bool handled = handler(static_cast<const E2&>(event));
+                // bool handled = handler(event_cast<E2>(event));
+                bool handled = handler(event);
                 if (handled)
                     event.set_handled();
             }
@@ -87,4 +103,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_EVENT_HPP
+#endif // DRK_APPLICATION_EVENT_HPP

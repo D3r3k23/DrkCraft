@@ -1,8 +1,10 @@
-#ifndef DRK_OPEN_GL_CONTEXT_HPP
-#define DRK_OPEN_GL_CONTEXT_HPP
+#ifndef DRK_GRAPHICS_OPEN_GL_CONTEXT_HPP
+#define DRK_GRAPHICS_OPEN_GL_CONTEXT_HPP
 
 #include "Core/Base.hpp"
 #include "System/Window.hpp"
+
+#include <GLFW/glfw3.h>
 
 namespace DrkCraft
 {
@@ -13,10 +15,12 @@ namespace DrkCraft
         ~OpenGlContext(void);
 
         void swap_buffers(void);
+        void make_current(void);
+        static void clear_current(void);
 
     private:
-        Window& m_window;
+        GLFWwindow* m_window;
     };
 }
 
-#endif // DRK_OPEN_GL_CONTEXT_HPP
+#endif // DRK_GRAPHICS_OPEN_GL_CONTEXT_HPP

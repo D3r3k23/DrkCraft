@@ -1,34 +1,49 @@
-#ifndef DRK_CAMERA_HPP
-#define DRK_CAMERA_HPP
+#ifndef DRK_GRAPHICS_CAMERA_HPP
+#define DRK_GRAPHICS_CAMERA_HPP
 
 #include "Core/Base.hpp"
 
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
+#include "lib/glm/vec3.hpp"
+#include "lib/glm/mat4.hpp"
 
 namespace DrkCraft
 {
     class Camera
     {
     public:
-        Camera(float fov, float aspectRatio, float nearClip, float farClip);
-        
+        Camera(float fov, float aspectRatio, float nearClip, float farClip,
+            const vec3& position, const vec3& direction);
+
         void set_fov(float fov); // Degrees
         void set_aspect_ratio(float aspectRatio);
         void set_near_plane(float nearPlane);
         void set_far_plane(float farPlane);
 
-        void calculate_projection(void);
-        const glm::mat4& get_projection_matrix(void) const;
+        void set_position(const vec3& position);
+        void set_direction(const vec3& direction);
+
+        void move(const vec3& offset);
+        void rotate(float angle);
+        void tilt(float angle);
+
+        const mat4& get_view_projection(void) const;
 
     private:
-        glm::mat4 m_viewProjection;
+        void calculate_projection(void);
+        void calculate_view_projection(void);
 
+    private:
         float m_fov; // Radians
         float m_aspectRatio;
         float m_nearClip;
         float m_farClip;
+
+        vec3 m_position;
+        vec3 m_direction;
+
+        mat4 m_projection;
+        mat4 m_viewProjection;
     };
 }
 
-#endif // DRK_CAMERA_HPP
+#endif // DRK_GRAPHICS_CAMERA_HPP

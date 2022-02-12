@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_EVENT_INFO
-#define DRK_GAME_EVENT_INFO
+#ifndef DRK_GAME_GAME_EVENT_INFO
+#define DRK_GAME_GAME_EVENT_INFO
 
 // Do not include directly, use Game/GameEvents.hpp instead
 
@@ -63,4 +63,4 @@ namespace DrkCraft
     GameEventFlags operator|=(GameEventFlags& flags, GameEventCategory cat);
 }
 
-#endif // DRK_GAME_EVENT_INFO
+#endif // DRK_GAME_GAME_EVENT_INFO

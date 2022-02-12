@@ -1,8 +1,8 @@
 import argparse
 
-def on_off_to_bool(str):
-    if str == 'ON': return True
-    if str == 'OFF': return False
+def on_off_to_bool(string: str):
+    if string == 'ON': return True
+    if string == 'OFF': return False
     return None
 
 if __name__ == '__main__':

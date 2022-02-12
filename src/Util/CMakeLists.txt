@@ -1,0 +1,9 @@
+target_sources(DrkCraft
+  PRIVATE
+    File.cpp
+    Json.cpp
+    Noise.cpp
+    PeriodicUpdate.cpp
+    Random.cpp
+    String.hpp
+)

@@ -1,8 +1,8 @@
-#ifndef DRK_LAYER_STACK_HPP
-#define DRK_LAYER_STACK_HPP
+#ifndef DRK_APPLICATION_LAYER_STACK_HPP
+#define DRK_APPLICATION_LAYER_STACK_HPP
 
 #include "Core/Base.hpp"
-#include "Layer.hpp"
+#include "Application/Layer.hpp"
 
 #include <deque>
 
@@ -74,4 +74,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_LAYER_STACK_HPP
+#endif // DRK_APPLICATION_LAYER_STACK_HPP

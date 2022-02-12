@@ -1,13 +1,9 @@
 target_sources(DrkCraft
   PRIVATE
-    Assert.cpp
-    Debug.cpp
-    Log.cpp
-    Profiler.cpp
     RunSettings.cpp
     Time.cpp
-    Timer.cpp
-    Timestep.cpp
     Util.cpp
     Version.cpp
 )
+
+add_subdirectory(Debug)

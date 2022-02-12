@@ -2,9 +2,7 @@
 
 [![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml)
 
-Minecraft clone in C++ created using an OpenGL renderer
-
-* Currently only built for Windows
+Minecraft-based game in C++ created using an OpenGL renderer
 
 ### Dependencies
 * C++ 20
@@ -26,8 +24,8 @@ Minecraft clone in C++ created using an OpenGL renderer
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
-### Build Instructions
+### Build Instructions (Windows)
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `cd DrkCraft`
-4. `scripts\build.bat`
-5. `scripts\run.bat`
+4. `scripts\win\build.bat`
+5. `scripts\win\run.bat`

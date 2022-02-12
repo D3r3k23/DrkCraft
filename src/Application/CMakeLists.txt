@@ -6,7 +6,5 @@ target_sources(DrkCraft
     ImGuiTools.cpp
     Layer.cpp
     LayerStack.cpp
-    LoadingScreen.cpp
-    MainMenu.cpp
-    SettingsMenu.cpp
+    Timestep.cpp
 )

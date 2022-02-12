@@ -1,9 +1,8 @@
 #include "Core/Base.hpp"
-#include "Core/BuildSettings.hpp"
+#include "Core/Debug/Profiler.hpp"
 #include "Core/RunSettings.hpp"
-#include "Core/Profiler.hpp"
 #include "Application/Application.hpp"
-#include "Application/MainMenu.hpp"
+#include "Application/Layers/MainMenu.hpp"
 
 #include <thread>
 
@@ -15,7 +14,7 @@ int main(int argc, char* argv[])
     DRK_LOGGER_INIT("data/logs");
 
     DRK_LOG_CORE_INFO("DrkCraft Build:");
-    DRK_LOG_CORE_INFO("Version: v{}", BUILD_VERSION.string());
+    DRK_LOG_CORE_INFO("Version: v{}", DRK_BUILD_VERSION.string());
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
     DRK_LOG_CORE_INFO("Config: {}",   DRK_CONFIG_NAME);
 
@@ -28,7 +27,9 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("Loading settings");
     CommandLineOptions::parse_args(argc, argv);
     RuntimeSettings::load("config");
-    DRK_LOG_CORE_INFO("Game mode: {}", game_mode_to_string(CommandLineOptions::get_game_mode()));
+
+    if (CommandLineOptions::dev_mode_activated())
+        DRK_LOG_CORE_INFO("Dev mode activated");
 
     DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
 

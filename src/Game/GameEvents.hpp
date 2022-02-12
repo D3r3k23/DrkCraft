@@ -1,8 +1,8 @@
-#ifndef DRK_GAME_EVENTS_HPP
-#define DRK_GAME_EVENTS_HPP
+#ifndef DRK_GAME_GAME_EVENTS_HPP
+#define DRK_GAME_GAME_EVENTS_HPP
 
 #include "Core/Base.hpp"
-#include "GameEvent.hpp"
+#include "Game/GameEvent.hpp"
 
 #define DRK_GAME_EVENT_TYPE_INFO(name)                                          \
     virtual const char*   get_name(void) const override { return #name"Event"; } \
@@ -37,4 +37,4 @@ namespace DrkCraft
 
 #undef DRK_GAME_EVENT_TYPE_INFO
 
-#endif // DRK_GAME_EVENTS_HPP
+#endif // DRK_GAME_GAME_EVENTS_HPP

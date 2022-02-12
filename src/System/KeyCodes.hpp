@@ -1,5 +1,5 @@
-#ifndef DRK_KEY_CODES_HPP
-#define DRK_KEY_CODES_HPP
+#ifndef DRK_SYSTEM_KEY_CODES_HPP
+#define DRK_SYSTEM_KEY_CODES_HPP
 
 namespace DrkCraft
 {
@@ -143,4 +143,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_KEY_CODES_HPP
+#endif // DRK_SYSTEM_KEY_CODES_HPP

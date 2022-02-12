@@ -1,12 +1,9 @@
-#ifndef DRK_BUILD_SETTINGS_HPP
-#define DRK_BUILD_SETTINGS_HPP
+#ifndef DRK_CORE_BUILD_SETTINGS_HPP
+#define DRK_CORE_BUILD_SETTINGS_HPP
 
-#include "Version.hpp"
+#include "Core/Version.hpp"
 
-namespace DrkCraft
-{
-    inline const Version BUILD_VERSION(DRK_VERSION_STRING);
-}
+inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 
 #if defined(DRK_PLATFORM_WINDOWS)
     #define DRK_PLATFORM_NAME "Windows"
@@ -54,4 +51,4 @@ namespace DrkCraft
     #define DRK_DEV_MODE_ENABLED false
 #endif
 
-#endif // DRK_BUILD_SETTINGS_HPP
+#endif // DRK_CORE_BUILD_SETTINGS_HPP

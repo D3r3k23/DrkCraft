@@ -1,8 +1,7 @@
 #include "Window.hpp"
 
-#include "Graphics/Renderer.hpp"
-#include "Core/Util.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/RunSettings.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
 {
@@ -74,7 +73,7 @@ namespace DrkCraft
         glfwSetWindowIcon(m_window, 1, &image);
     }
 
-    glm::ivec2 Window::get_pos(void) const
+    ivec2 Window::get_pos(void) const
     {
         int x, y;
         glfwGetWindowPos(m_window, &x, &y);
@@ -86,28 +85,28 @@ namespace DrkCraft
         glfwSetWindowSize(m_window, width, height);
     }
 
-    void Window::resize(const glm::uvec2& size)
+    void Window::resize(const uvec2& size)
     {
         resize(size.x, size.y);
     }
 
-    glm::uvec2 Window::get_size(void) const
+    uvec2 Window::get_size(void) const
     {
         int width, height;
         glfwGetWindowSize(m_window, &width, &height);
         return { (uint)width, (uint)height };
     }
 
-    glm::uvec2 Window::get_framebuffer_size(void) const
+    uvec2 Window::get_framebuffer_size(void) const
     {
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
         return { (uint)width, (uint)height };
     }
 
-    glm::vec2 Window::get_content_scale(void) const
+    vec2 Window::get_content_scale(void) const
     {
-        glm::vec2 scale;
+        vec2 scale;
         glfwGetWindowContentScale(m_window, &scale.x, &scale.y);
         return scale;
     }

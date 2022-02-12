@@ -31,7 +31,7 @@ namespace DrkCraft
         return status == GLFW_PRESS;
     }
 
-    glm::vec2 get_mouse_position(void)
+    vec2 get_mouse_position(void)
     {
         auto window = local_get_window();
         double xPos, yPos;

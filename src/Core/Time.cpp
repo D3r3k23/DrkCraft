@@ -1,16 +1,72 @@
 #include "Time.hpp"
 
-namespace DrkCraft::Time
+namespace DrkCraft
 {
-    static Time s_globalStart = Clock::now();
-
-    Time get_global_time(void)
+    namespace Time
     {
-        return Time(duration_cast<Duration>(Clock::now() - s_globalStart));
+        static Time s_programStart = Clock::now();
+
+        Time get_program_start_time(void)
+        {
+            return s_programStart;
+        }
+
+        Time get_program_time(void)
+        {
+            return Time(duration_cast<Duration>(Clock::now() - s_programStart));
+        }
+
+        SysTime get_system_time(void)
+        {
+            return time_point_cast<Seconds<int>>(std::chrono::system_clock::now());
+        }
+
+        LocalTime get_local_time(void)
+        {
+            return {};
+        }
     }
 
-    SysTime get_system_time(void)
+    Timer::Timer(void)
     {
-        return time_point_cast<Seconds<int>>(std::chrono::system_clock::now());
+        reset();
+    }
+
+    Timer::Timer(double init)
+    {
+        m_start = Time::Time(Time::Duration(init * 1000));
+    }
+
+    void Timer::reset(void)
+    {
+        m_start = Time::get_program_time();
+    }
+
+    Time::Duration Timer::get_elapsed(void) const
+    {
+        return Time::get_program_time() - m_start;
+    }
+
+    Time::Time Timer::get_start(void) const
+    {
+        return m_start;
+    }
+
+    double Timer::elapsed_seconds(void) const
+    {
+        Time::Duration elapsed = get_elapsed();
+        return Time::Seconds<double>(elapsed).count();
+    }
+
+    double Timer::elapsed_milliseconds(void) const
+    {
+        Time::Duration elapsed = get_elapsed();
+        return Time::Milli<double>(elapsed).count();
+    }
+
+    double Timer::elapsed_microseconds(void) const
+    {
+        Time::Duration elapsed = get_elapsed();
+        return Time::Micro<double>(elapsed).count();
     }
 }

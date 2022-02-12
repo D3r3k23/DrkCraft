@@ -1,11 +1,11 @@
-#ifndef DRK_INPUT_HPP
+#ifndef DRK_SYSTEM_SYSTEM_INPUT_HPP
 #define DRK_INPUT_HPP
 
 #include "Core/Base.hpp"
-#include "KeyCodes.hpp"
-#include "MouseCodes.hpp"
+#include "System/KeyCodes.hpp"
+#include "System/MouseCodes.hpp"
 
-#include <glm/vec2.hpp>
+#include "lib/glm/vec2.hpp"
 
 namespace DrkCraft
 {
@@ -14,7 +14,7 @@ namespace DrkCraft
     bool is_key_pressed(KeyCode key);
     bool is_mouse_button_pressed(MouseCode button);
 
-    glm::vec2 get_mouse_position(void);
+    vec2 get_mouse_position(void);
     float get_mouse_x(void);
     float get_mouse_y(void);
 
@@ -55,4 +55,4 @@ namespace DrkCraft
     KeyModFlags operator&=(KeyModFlags& flags, KeyMod mod);
 }
 
-#endif // DRK_INPUT_HPP
+#endif // DRK_SYSTEM_INPUT_HPP

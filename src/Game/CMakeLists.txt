@@ -1,10 +1,16 @@
 target_sources(DrkCraft
   PRIVATE
-    Console.cpp
-    DebugOverlay.cpp
+    Block.cpp
+    Chunk.cpp
+    ChunkManager.cpp
+    ChunkRenderer.cpp
+    Components.cpp
+    Entity.cpp
     Game.cpp
     GameEvent.cpp
-    Hud.cpp
-    PauseMenu.cpp
     Player.cpp
+    World.cpp
+    WorldGenerator.cpp
 )
+
+add_subdirectory(Layers)

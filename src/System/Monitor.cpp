@@ -1,6 +1,6 @@
 #include "Monitor.hpp"
 
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -77,7 +77,7 @@ namespace DrkCraft
         return glfwGetMonitorName(m_monitor);
     }
 
-    glm::ivec2 Monitor::get_resolution(void) const
+    ivec2 Monitor::get_resolution(void) const
     {
         return { m_vidMode.width, m_vidMode.height };
     }
@@ -111,13 +111,14 @@ namespace DrkCraft
                 vidModesPtr[i].refreshRate);
     #endif
 
-        return vidModesPtr[count - 1];
-
-    #if 0
         std::vector<VidMode> vidModes(vidModesPtr, vidModesPtr + count);
-        std::ranges::sort(vidModes, [](VidMode& v1, VidMode& v2)
+        std::partial_sort(vidModes.begin(), vidModes.begin(), vidModes.end(), [](VidMode& v1, VidMode& v2)
         {
-            return v1.width * v1.height > v2.width * v2.height;
+            // Sort first by refresh rate, then by total resolution area
+            if (v1.refreshRate == v2.refreshRate)
+                return v1.width * v1.height > v2.width * v2.height;
+            else
+                return v1.refreshRate > v2.refreshRate;
         });
 
         for (int i = 0; i < count; i++)
@@ -129,8 +130,7 @@ namespace DrkCraft
                 vidModes[i].blueBits,
                 vidModes[i].refreshRate);
 
-        return *vidModes.begin();
-    #endif
+        return *(vidModes.begin());
     }
 
     bool Monitor::operator==(const Monitor& other) const

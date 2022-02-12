@@ -1,5 +1,7 @@
-#ifndef DRK_VERSION_HPP
-#define DRK_VERSION_HPP
+#ifndef DRK_CORE_VERSION_HPP
+#define DRK_CORE_VERSION_HPP
+
+#include "lib/type.hpp"
 
 #include <string>
 #include <compare>
@@ -10,26 +12,26 @@ namespace DrkCraft
     {
     public:
         Version(std::string ver); // ver: "<major>.<minor>"
-        Version(unsigned int major, unsigned int minor);
+        Version(uint major, uint minor);
 
         Version(const Version&) = default;
 
         std::string string(void) const;
 
-        unsigned int major(void) const;
-        unsigned int minor(void) const;
+        uint major(void) const;
+        uint minor(void) const;
 
     private:
-        const unsigned int m_major;
-        const unsigned int m_minor;
+        const uint m_major;
+        const uint m_minor;
 
     private:
-        static unsigned int find_major(std::string ver);
-        static unsigned int find_minor(std::string ver);
+        static uint find_major(std::string ver);
+        static uint find_minor(std::string ver);
 
     public:
         friend std::strong_ordering operator<=>(const Version& v1, const Version& v2);
     };
 }
 
-#endif // DRK_VERSION_HPP
+#endif // DRK_CORE_VERSION_HPP

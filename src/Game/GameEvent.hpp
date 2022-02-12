@@ -1,10 +1,10 @@
-#ifndef DRK_GAME_EVENT_HPP
-#define DRK_GAME_EVENT_HPP
+#ifndef DRK_GAME_GAME_EVENT_HPP
+#define DRK_GAME_GAME_EVENT_HPP
 
 // Do not include directly, use Game/GameEvents.hpp instead
 
 #include "Core/Base.hpp"
-#include "GameEventTypes.hpp"
+#include "Game/GameEventTypes.hpp"
 
 #include <deque>
 #include <concepts>
@@ -81,4 +81,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_EVENT_HPP
+#endif // DRK_GAME_GAME_EVENT_HPP

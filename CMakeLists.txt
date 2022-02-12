@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.19)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 
+# Set DRK_VERSION
+file(READ VERSION.txt VERSION_txt)
+string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
+
+##########################################
+project(DrkCraft VERSION ${DRK_VERSION})
+##########################################
+
 option(DRK_EN_PROFILE "Enable profiling" OFF)
 option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
 option(DRK_EN_TRACE_LOGGING "Enable trace logging in console" OFF)
@@ -19,12 +27,6 @@ else()
     set(DRK_EN_LOGGING ON)
     set(DRK_EN_ASSERTS ON)
 endif()
-
-# Set DRK_VERSION
-file(READ VERSION.txt VERSION_txt)
-string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
-
-project(DrkCraft VERSION ${DRK_VERSION})
 
 # Set PLATFORM
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
@@ -68,9 +70,11 @@ message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 message("- Compiler: ${CMAKE_CXX_COMPILER}")
 message("=======================================")
 
+##########################################
 add_executable(DrkCraft)
 add_subdirectory(src)
 add_subdirectory(lib)
+##########################################
 
 # C++ 20
 set_target_properties(DrkCraft

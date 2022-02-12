@@ -1,9 +1,0 @@
-target_sources(DrkCraft
-  PRIVATE
-    AlObject.cpp
-    AlTools.cpp
-    Audio.cpp
-    AudioEngine.cpp
-    AudioSource.cpp
-    MusicPlayer.cpp
-)

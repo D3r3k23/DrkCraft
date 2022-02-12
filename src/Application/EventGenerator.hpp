@@ -1,8 +1,8 @@
-#ifndef DRK_EVENT_GENERATOR_HPP
-#define DRK_EVENT_GENERATOR_HPP
+#ifndef DRK_APPLICATION_EVENT_GENERATOR_HPP
+#define DRK_APPLICATION_EVENT_GENERATOR_HPP
 
 #include "Core/Base.hpp"
-#include "Events.hpp"
+#include "Application/Events.hpp"
 #include "System/Window.hpp"
 
 #include <GLFW/glfw3.h>
@@ -50,4 +50,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_EVENT_GENERATOR_HPP
+#endif // DRK_APPLICATION_EVENT_GENERATOR_HPP

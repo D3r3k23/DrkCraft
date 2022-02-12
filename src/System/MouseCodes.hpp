@@ -1,5 +1,5 @@
-#ifndef DRK_MOUSE_CODES_HPP
-#define DRK_MOUSE_CODES_HPP
+#ifndef DRK_SYSTEM_MOUSE_CODES_HPP
+#define DRK_SYSTEM_MOUSE_CODES_HPP
 
 namespace DrkCraft
 {
@@ -28,4 +28,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_MOUSE_CODES_HPP
+#endif // DRK_SYSTEM_MOUSE_CODES_HPP

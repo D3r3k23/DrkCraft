@@ -1,6 +1,6 @@
 #include "Layer.hpp"
 
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
 {

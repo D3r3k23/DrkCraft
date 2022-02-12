@@ -1,17 +1,17 @@
-#ifndef DRK_APPLICATION_HPP
-#define DRK_APPLICATION_HPP
+#ifndef DRK_APPLICATION_APPLICATION_HPP
+#define DRK_APPLICATION_APPLICATION_HPP
 
 #include "Core/Base.hpp"
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
 #include "System/AssetManager.hpp"
 #include "Graphics/OpenGlContext.hpp"
-#include "Events.hpp"
-#include "EventGenerator.hpp"
-#include "ImGuiTools.hpp"
-#include "Layer.hpp"
-#include "LayerStack.hpp"
-#include "Core/Timestep.hpp"
+#include "Application/Events.hpp"
+#include "Application/EventGenerator.hpp"
+#include "Application/ImGuiTools.hpp"
+#include "Application/Layer.hpp"
+#include "Application/LayerStack.hpp"
+#include "Application/Timestep.hpp"
 
 namespace DrkCraft
 {
@@ -34,6 +34,7 @@ namespace DrkCraft
         static Window& get_window(void);
         static MonitorManager& get_monitors(void);
         static AssetManager& get_assets(void);
+        static ImGuiManager& get_imgui(void);
 
     private:
         Application();
@@ -62,7 +63,7 @@ namespace DrkCraft
         bool is_windowed(void) const;
 
     private:
-        static Application* s_instance;
+        static Ptr<Application> s_instance;
 
         Window m_window;
         OpenGlContext m_context;
@@ -84,4 +85,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_APPLICATION_HPP
+#endif // DRK_APPLICATION_APPLICATION_HPP

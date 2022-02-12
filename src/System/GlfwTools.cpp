@@ -1,7 +1,6 @@
 #include "GlfwTools.hpp"
 
-#include "Core/BuildSettings.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <GLFW/glfw3.h>
 

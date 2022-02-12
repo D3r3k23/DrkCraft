@@ -1,8 +1,7 @@
 #include "ImGuiTools.hpp"
 
-#include "Core/BuildSettings.hpp"
 #include "System/AssetManager.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <imgui_impl/imgui_impl.h>
 
@@ -76,6 +75,7 @@ namespace DrkCraft
 
         if (m_enabled)
         {
+            m_stats = ImGuiRenderStats{};
             {
                 DRK_PROFILE_SCOPE("imgui_impl newFrame");
                 ImGui_ImplOpenGL3_NewFrame();
@@ -96,9 +96,19 @@ namespace DrkCraft
                 ImGui::ShowDemoWindow(&m_showDemoWindow);
         #endif
             ImGui::Render();
+            ImDrawData* drawData = ImGui::GetDrawData();
+
+            m_stats.drawLists  = drawData->CmdListsCount;
+            m_stats.indices   = drawData->TotalIdxCount;
+            m_stats.vertices = drawData->TotalVtxCount;
+
+            for (uint i = 0; i < drawData->CmdListsCount; i++)
             {
+                const auto& drawList = *drawData->CmdLists[i];
+                m_stats.drawCmds += drawList.CmdBuffer.size();
+            }{
                 DRK_PROFILE_SCOPE("imgui_impl render");
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                ImGui_ImplOpenGL3_RenderDrawData(drawData);
             }
         }
     }
@@ -123,6 +133,11 @@ namespace DrkCraft
     void ImGuiManager::disable(void)
     {
         m_enabled = false;
+    }
+
+    bool ImGuiManager::enabled(void) const
+    {
+        return m_enabled;
     }
 
     void ImGuiManager::block_events(bool block)
@@ -150,6 +165,17 @@ namespace DrkCraft
         return m_showDemoWindow;
     }
 
+    const ImGuiRenderStats& ImGuiManager::get_stats(void) const
+    {
+        return m_stats;
+    }
+
+    ImFont* ImGuiManager::get_font(ImGuiFont font)
+    {
+        DRK_ASSERT_DEBUG(s_fonts.contains(font), "Unknown font");
+        return s_fonts[font];
+    }
+
     void ImGuiManager::setup_style(void)
     {
         ImGui::StyleColorsDark();
@@ -160,12 +186,6 @@ namespace DrkCraft
         ImGuiIO& io = ImGui::GetIO();
         return (event == EventCategory::Mouse    && io.WantCaptureMouse)
             || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
-    }
-
-    ImFont* ImGuiManager::get_font(ImGuiFont font)
-    {
-        DRK_ASSERT_DEBUG(s_fonts.contains(font), "Unknown font");
-        return s_fonts[font];
     }
 
     namespace ImGuiTools

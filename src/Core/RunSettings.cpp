@@ -1,10 +1,10 @@
 #include "RunSettings.hpp"
 
-#include "BuildSettings.hpp"
-#include "Log.hpp"
-#include "Assert.hpp"
+#include "Core/BuildSettings.hpp"
+#include "Core/Log.hpp"
+#include "Core/Assert.hpp"
 #include "Core/Util.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <yaml-cpp/yaml.h>
 #include <nameof.hpp>
@@ -18,17 +18,10 @@ namespace DrkCraft
     //       CommandLineOptions       //
     ////////////////////////////////////
 
-    std::string_view game_mode_to_string(GameMode mode)
+    CommandLineOptions& CommandLineOptions::get_data(void)
     {
-        const auto str = NAMEOF_ENUM(mode);
-        DRK_ASSERT_DEBUG(str.length() > 0, "Unknown GameMode");
-        return str;
-    }
-
-    CommandLineOptions& CommandLineOptions::get_instance(void)
-    {
-        static CommandLineOptions s_commandLineOptions;
-        return s_commandLineOptions;
+        static CommandLineOptions s_instance;
+        return s_instance;
     }
 
     void CommandLineOptions::parse_args(int argc, char* argv[])
@@ -41,65 +34,49 @@ namespace DrkCraft
             switch (i)
             {
                 case 0:
-                    get_instance().name = std::filesystem::path(arg).filename().string();
+                    get_data().name = fs::path(arg).filename().string();
                     break;
 
                 case 1:
                     if (arg == "--dev")
-                        get_instance().set_mode(GameMode::Dev);
+                        get_data().activate_dev_mode();
                     break;
 
                 default:
                     break;
             }
         }
-        get_instance().argc = argc;
-        get_instance().argv = argv;
+        get_data().argc = argc;
+        get_data().argv = argv;
     }
 
     std::string_view CommandLineOptions::get_arg(int i)
     {
-        DRK_ASSERT_DEBUG(i < get_instance().argc, "arg[{}] does not exist", i);
-        return {get_instance().argv[i]};
+        DRK_ASSERT_DEBUG(i < get_data().argc, "arg[{}] does not exist", i);
+        return get_data().argv[i];
     }
 
     std::string_view CommandLineOptions::get_program_name(void)
     {
-        return get_instance().name;
+        return get_data().name;
     }
 
-    GameMode CommandLineOptions::get_game_mode(void)
+    bool CommandLineOptions::dev_mode_activated(void)
     {
-        return get_instance().mode;
+        return get_data().dev;
     }
 
-    void CommandLineOptions::set_mode(GameMode mode)
+    void CommandLineOptions::activate_dev_mode(void)
     {
-        switch (mode)
-        {
-            case GameMode::Dev:
-            {
-            #if DRK_DEV_MODE_ENABLED
-                get_instance().mode = GameMode::Dev;
-            #else
-                DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
-            #endif
-                break;
-            }
-            case GameMode::Player:
-                get_instance().mode = GameMode::Player;
-                break;
-
-            default:
-                DRK_ASSERT_DEBUG(false, "Unknown GameMode");
-        }
+        if constexpr (DRK_DEV_MODE_ENABLED)
+            get_data().dev = true;
+        else
+            DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
     }
 
     /////////////////////////////////
     //       RuntimeSettings       //
     /////////////////////////////////
-
-    namespace fs = std::filesystem;
 
     fs::path RuntimeSettings::s_configFile;
     fs::path RuntimeSettings::s_settingsFile;
@@ -111,19 +88,19 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(dir_exists(location), "Invalid config directory");
+        DRK_ASSERT_DEBUG(is_dir(location), "Invalid config directory");
         auto defaultsLocation = location / "default";
-        bool defaultsFound = dir_exists(defaultsLocation);
+        bool defaultsFound = is_dir(defaultsLocation);
 
         s_configFile   = location / "config.yaml";
         s_settingsFile = location / "settings.yaml";
 
-        if (!file_exists(s_configFile))
+        if (!is_file(s_configFile))
         {
             if (defaultsFound)
             {
                 auto defaultConfigFile = defaultsLocation / "config.yaml";
-                if (file_exists(defaultConfigFile))
+                if (is_file(defaultConfigFile))
                     fs::copy(defaultConfigFile, s_configFile);
                 else
                     save_config();
@@ -133,12 +110,12 @@ namespace DrkCraft
         }
         load_config();
 
-        if (!file_exists(s_settingsFile))
+        if (!is_file(s_settingsFile))
         {
             if (defaultsFound)
             {
                 auto defaultSettingsFile = defaultsLocation / "settings.yaml";
-                if (file_exists(defaultSettingsFile))
+                if (is_file(defaultSettingsFile))
                     fs::copy(defaultSettingsFile, s_settingsFile);
                 else
                     save_settings();
@@ -189,7 +166,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(file_exists(s_configFile), "Config file not found");
+        DRK_ASSERT_DEBUG(is_file(s_configFile), "Config file not found");
         DRK_LOG_CORE_INFO("Loading config from {}", s_configFile.generic_string());
         YAML::Node config;
         try
@@ -231,7 +208,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(file_exists(s_settingsFile), "Settings file not found");
+        DRK_ASSERT_DEBUG(is_file(s_settingsFile), "Settings file not found");
         DRK_LOG_CORE_INFO("Loading settings from {}", s_settingsFile.generic_string());
         YAML::Node settings;
         try

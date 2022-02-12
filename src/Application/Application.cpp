@@ -1,12 +1,13 @@
 #include "Application.hpp"
 
 #include "System/GlfwTools.hpp"
-#include "Core/RunSettings.hpp"
 #include "Graphics/Renderer.hpp"
-#include "Audio/Audio.hpp"
+#include "System/Audio/Audio.hpp"
 #include "System/Icon.hpp"
 #include "System/Input.hpp"
-#include "Core/Profiler.hpp"
+#include "Core/RunSettings.hpp"
+#include "Core/Time.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 #include <thread>
 
@@ -16,7 +17,7 @@ namespace DrkCraft
     //       Static       //
     ////////////////////////
 
-    Application* Application::s_instance = nullptr;
+    Ptr<Application> Application::s_instance = nullptr;
 
     void Application::init(void)
     {
@@ -25,7 +26,10 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Initializing GLFW");
         init_glfw();
 
-        s_instance = new Application;
+        s_instance = make_ptr<Application>();
+
+        const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time()).count();
+        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime);
     }
 
     int Application::shutdown(void)
@@ -35,14 +39,13 @@ namespace DrkCraft
         if (s_instance)
         {
             int exitCode = s_instance->m_exitCode;
-            delete s_instance;
+            s_instance.reset();;
 
             DRK_LOG_CORE_TRACE("Shutting down GLFW");
             shutdown_glfw();
 
             if (exitCode)
                 DRK_LOG_CORE_ERROR("Application stopped with error code {}", exitCode);
-
             return exitCode;
         }
         else
@@ -104,6 +107,11 @@ namespace DrkCraft
         return get_instance().m_assetManager;
     }
 
+    ImGuiManager& Application::get_imgui(void)
+    {
+        return *(get_instance().m_imGuiManager);
+    }
+
     //////////////////////////
     //       Instance       //
     //////////////////////////
@@ -121,17 +129,21 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         const auto& settings = RuntimeSettings::get();
-
-        DRK_LOG_CORE_TRACE("Loading monitors");
-        DRK_PROFILE_THREAD_CREATE("Monitor load thread");
-        // Probably should eventually do this on the main thread,
-        // since GLFW calls may not be thread safe
         {
+            DRK_LOG_CORE_TRACE("Loading monitors");
+            DRK_PROFILE_THREAD_CREATE("Monitor load thread");
+            // Probably should eventually do this on the main thread,
+            // since GLFW calls may not be thread safe
             std::jthread monitorLoadThread([this]()
             {
                 DRK_PROFILE_THREAD_START("Monitor load thread");
                 m_monitorManager.load_monitors();
             });
+
+            // Set up logo splash screen
+
+            DRK_LOG_CORE_TRACE("Setting window icon");
+            m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
             DRK_LOG_CORE_TRACE("Initializing Audio system");
             Audio::init(settings.volume);
@@ -141,9 +153,6 @@ namespace DrkCraft
 
             DRK_LOG_CORE_TRACE("Initializing Renderer");
             Renderer::init(m_context, m_window.get_framebuffer_size());
-
-            DRK_LOG_CORE_TRACE("Setting window icon");
-            m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
             DRK_LOG_CORE_TRACE("Initializing ImGui");
             m_imGuiManager = make_ptr<ImGuiManager>(m_window);
@@ -196,8 +205,8 @@ namespace DrkCraft
 
                 if (m_running && !m_minimized)
                 {
-                    render();
                     update(timestep);
+                    render();
                 }
                 m_context.swap_buffers();
             }
@@ -206,7 +215,7 @@ namespace DrkCraft
             if (m_layerStack.empty())
             {
                 DRK_LOG_CORE_INFO("LayerStack is empty; exiting Application");
-                exit();
+                exit_internal(0);
             }
             else if (m_layerStack.all_layers_inactive())
             {
@@ -238,14 +247,14 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiManager->end_frame();
+        m_imGuiManager->begin_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
         m_imGuiManager->end_frame();
-        Renderer::end_scene();
+        Renderer::end_frame();
     }
 
     void Application::handle_event(Event& event)
@@ -285,7 +294,7 @@ namespace DrkCraft
 
     bool Application::on_window_closed(const WindowClosedEvent& event)
     {
-        exit();
+        exit_internal(0);
         return true;
     }
 

@@ -1,25 +1,25 @@
-#ifndef DRK_ICON_HPP
-#define DRK_ICON_HPP
+#ifndef DRK_SYSTEM_ICON_HPP
+#define DRK_SYSTEM_ICON_HPP
 
 #include "Core/Base.hpp"
-#include "Image.hpp"
+#include "System/Image.hpp"
 
-#include <glm/vec2.hpp>
+#include "lib/glm/vec2.hpp"
 
 namespace DrkCraft
 {
     class Icon
     {
     public:
-        Icon(const std::filesystem::path& filename);
+        Icon(const fs::path& filename);
         ~Icon(void);
 
         uint8* get_data(void) const;
-        const glm::uvec2& get_size(void) const;
+        const uvec2& get_size(void) const;
 
     private:
         Ptr<ImageData> m_image;
     };
 }
 
-#endif // DRK_ICON_HPP
+#endif // DRK_SYSTEM_ICON_HPP

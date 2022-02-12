@@ -9,7 +9,7 @@ namespace DrkCraft
         m_minor(find_minor(ver))
     { }
 
-    Version::Version(unsigned int major, unsigned int minor)
+    Version::Version(uint major, uint minor)
       : m_major(major),
         m_minor(minor)
     { }
@@ -19,27 +19,27 @@ namespace DrkCraft
         return fmt::format("{}.{}", m_major, m_minor);
     }
 
-    unsigned int Version::major(void) const
+    uint Version::major(void) const
     {
         return m_major;
     }
 
-    unsigned int Version::minor(void) const
+    uint Version::minor(void) const
     {
         return m_minor;
     }
 
-    unsigned int Version::find_major(std::string ver)
+    uint Version::find_major(std::string ver)
     {
-        if (int sep = ver.find("."); sep != std::string::npos)
+        if (uint sep = ver.find("."); sep != std::string::npos)
             return std::stoul(ver.substr(0, sep));
         else
             return 0;
     }
 
-    unsigned int Version::find_minor(std::string ver)
+    uint Version::find_minor(std::string ver)
     {
-        if (int sep = ver.find("."); sep != std::string::npos)
+        if (uint sep = ver.find("."); sep != std::string::npos)
             return std::stoul(ver.substr(sep + 1, ver.length() - sep - 1));
         else
             return 0;

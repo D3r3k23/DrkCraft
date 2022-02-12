@@ -1,10 +1,10 @@
 #include "Image.hpp"
 
-#include "Core/Profiler.hpp"
+#include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
 {
-    ImageData::ImageData(uint8* data, const glm::vec2& size, uint channels)
+    ImageData::ImageData(uint8* data, const vec2& size, uint channels)
       : data(data), size(size), channels(channels)
     { }
 
@@ -14,7 +14,7 @@ namespace DrkCraft
         stbi_image_free(data);
     }
 
-    Ptr<ImageData> Image::load(const std::filesystem::path& filename, uint channels)
+    Ref<ImageData> Image::load(const fs::path& filename, uint channels)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -29,7 +29,7 @@ namespace DrkCraft
             channelsPtr = &channelsOut;
 
         ImageData::Data_t* data;
-        glm::uvec2 size;
+        uvec2 size;
         {
             DRK_PROFILE_SCOPE("stbi_load");
             int width, height;
@@ -38,10 +38,10 @@ namespace DrkCraft
             if (channelsPtr)
                 channels = channelsOut;
         }
-        return make_ptr<ImageData>(static_cast<uint8*>(data), size, channels);
+        return make_ref<ImageData>(static_cast<uint8*>(data), size, channels);
     }
 
-    Image::Image(const std::filesystem::path& filename)
+    Image::Image(const fs::path& filename)
       : m_data(load(filename))
     {
         DRK_PROFILE_FUNCTION();

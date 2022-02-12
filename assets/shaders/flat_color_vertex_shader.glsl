@@ -2,8 +2,8 @@
 
 #version 400
 
-// uniform mat4 u_viewProjection;
-// uniform mat4 u_transform;
+uniform mat4 u_viewProjection;
+uniform mat4 u_transform;
 
 layout(location = 0) in vec3 a_position;
 

@@ -1,11 +1,12 @@
-#ifndef DRK_WINDOW_HPP
-#define DRK_WINDOW_HPP
+#ifndef DRK_SYSTEM_SYSTEM_WINDOW_HPP
+#define DRK_SYSTEM_SYSTEM_WINDOW_HPP
 
 #include "Core/Base.hpp"
-#include "Icon.hpp"
+#include "System/Icon.hpp"
+
+#include "lib/glm/vec2.hpp"
 
 #include <GLFW/glfw3.h>
-#include <glm/vec2.hpp>
 
 #include <string>
 #include <string_view>
@@ -27,15 +28,15 @@ namespace DrkCraft
 
         // void show_cursor(bool show);
 
-        glm::ivec2 get_pos(void) const;
+        ivec2 get_pos(void) const;
 
         void resize(uint width, uint height);
-        void resize(const glm::uvec2& size);
+        void resize(const uvec2& size);
 
-        glm::uvec2 get_size(void) const;
-        glm::uvec2 get_framebuffer_size(void) const;
+        uvec2 get_size(void) const;
+        uvec2 get_framebuffer_size(void) const;
 
-        glm::vec2 get_content_scale(void) const;
+        vec2 get_content_scale(void) const;
 
         // Redo this API?
         bool is_focused(void) const;
@@ -55,4 +56,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_WINDOW_HPP
+#endif // DRK_SYSTEM_SYSTEM_WINDOW_HPP

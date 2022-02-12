@@ -1,0 +1,10 @@
+void:
+  bid: 0
+air:
+  bid: 1
+stone:
+  bid: 2
+dirt:
+  bid: 3
+grass:
+  bid': 4

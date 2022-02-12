@@ -1,15 +1,18 @@
-#ifndef DRK_RENDERER_HPP
-#define DRK_RENDERER_HPP
+#ifndef DRK_GRAPHICS_RENDERER_HPP
+#define DRK_GRAPHICS_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Core/BuildSettings.hpp"
-#include "OpenGlContext.hpp"
-#include "VertexArray.hpp"
-#include "Camera.hpp"
-#include "Shader.hpp"
-#include "Texture.hpp"
+#include "Graphics/OpenGlContext.hpp"
+#include "Graphics/detail/VertexArray.hpp"
+#include "Graphics/detail/Buffer.hpp"
+#include "Graphics/Camera.hpp"
+#include "Graphics/Shader.hpp"
+#include "Graphics/Texture.hpp"
 
-#include <glm/vec2.hpp>
+#include "lib/glm/vec.hpp"
+
+#include <vector>
+#include <optional>
 
 namespace DrkCraft
 {
@@ -21,16 +24,27 @@ namespace DrkCraft
         uint textures  = 0;
     };
 
+    struct Light
+    {
+        vec3 position;
+        vec3 direction;
+        vec4 color;
+    };
+
+    struct SceneData
+    {
+        Camera camera;
+        std::vector<Light> lights;
+    };
+
     class Renderer
     {
-    public:
-        static void init(OpenGlContext& context, const glm::uvec2& viewportSize);
-        static void shutdown(void);
+        friend class CubeRenderer;
+        friend class MeshRenderer;
 
-        struct SceneData
-        {
-            Camera camera;
-        };
+    public:
+        static void init(OpenGlContext& context, const uvec2& viewportSize);
+        static void shutdown(void);
 
         static void begin_frame(void);
         static void end_frame(void);
@@ -53,7 +67,7 @@ namespace DrkCraft
         //////////////////////////////////////////////////
 
         static void set_viewport(int x, int y, uint width, uint height);
-        static void set_viewport(const glm::ivec2& pos, const glm::uvec2& size);
+        static void set_viewport(const ivec2& pos, const uvec2& size);
 
         static const RendererStats& get_stats(void);
         static void reset_stats(void);
@@ -62,8 +76,9 @@ namespace DrkCraft
         static void clear(void);
 
         static void draw(const Ref<VertexArray>& vao);
-        static void draw_indexed(const Ref<IndexBuffer>& indexBuffer, uint count=0);
+        static void draw_indexed(const Ref<VertexArray>& vao);
+        static void draw_indexed(const Ref<IndexBuffer>& indexBuffer, std::optional<uint> indexCount=std::nullopt);
     };
 }
 
-#endif // DRK_RENDERER_HPP
+#endif // DRK_GRAPHICS_RENDERER_HPP

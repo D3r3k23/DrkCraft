@@ -1,5 +1,5 @@
-#ifndef DRK_EVENT_INFO_HPP
-#define DRK_EVENT_INFO_HPP
+#ifndef DRK_APPLICATION_EVENT_INFO_HPP
+#define DRK_APPLICATION_EVENT_INFO_HPP
 
 // Do not include directly, use Application/Events.hpp instead
 
@@ -115,4 +115,4 @@ namespace DrkCraft
     EventFlags operator|=(EventFlags& flags, EventCategory cat);
 }
 
-#endif // DRK_EVENT_INFO_HPP
+#endif // DRK_APPLICATION_EVENT_INFO_HPP

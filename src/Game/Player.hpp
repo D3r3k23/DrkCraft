@@ -1,19 +1,21 @@
-#ifndef DRK_PLAYER_HPP
-#define DRK_PLAYER_HPP
+#ifndef DRK_GAME_PLAYER_HPP
+#define DRK_GAME_PLAYER_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/Camera.hpp"
-#include "Core/Timestep.hpp"
+#include "Application/Events.hpp"
+#include "Application/Timestep.hpp"
 
-#include <glm/vec3.hpp>
+#include "lib/glm/vec3.hpp"
 
 namespace DrkCraft
 {
     enum class PlayerState
     {
-        Standing,
-        Jumping,
-        Crouching
+        Normal,
+        Sprinting,
+        Crouching,
+        Flying
     };
 
     class Player
@@ -22,22 +24,29 @@ namespace DrkCraft
         Player(void);
 
         void update(Timestep timestep);
+        bool on_event(const InputEvent& event);
         void render(void);
 
+        void jump(void);
+
+        bool flying(void) const;
+
         const Camera& get_camera(void) const;
-        glm::mat4 get_view_projection(void) const;
 
     private:
-        glm::vec3 m_position;
-        glm::vec3 m_direction;
-        glm::vec3 m_viewpointOffset;
+        void jump(void);
+        void toggle_flying(void);
 
-        bool m_flying;
+    private:
+        vec3 m_position;
+        vec3 m_direction; // Horizontal
+        PlayerState m_state;
 
-        float m_speed;
+        float m_distanceAboveGround;
 
         Camera m_camera;
+        vec3 m_cameraOffset;
     };
 }
 
-#endif // DRK_PLAYER_HPP
+#endif // DRK_GAME_PLAYER_HPP
