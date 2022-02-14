@@ -23,8 +23,7 @@ namespace DrkCraft
         ~AudioEngine(void);
 
     private:
-        Ref<AudioSource> load_mp3(const fs::path& filename);
-        Ref<AudioSource> load_ogg(const fs::path& filename);
+        Ref<AudioSource> load_source(const fs::path& filename, AudioFileFormat format=AudioFileFormat::None);
 
         void play_source(const Ref<AudioSource>& source);
         void unpause_source(const Ref<AudioSource>& source);

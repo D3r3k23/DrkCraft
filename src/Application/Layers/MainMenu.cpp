@@ -1,7 +1,7 @@
 #include "MainMenu.hpp"
 
 #include "Application/Application.hpp"
-#include "Application/ImGuiTools.hpp"
+#include "Util/ImGui.hpp"
 #include "Core/RunSettings.hpp"
 #include "Game/Layers/GameLayer.hpp"
 #include "System/AssetManager.hpp"
@@ -50,19 +50,6 @@ namespace DrkCraft
         m_settingsMenu->detach_layer();
     }
 
-    void MainMenu::on_update(Timestep timestep)
-    {
-        // Animate background?
-
-        if (m_applicationAssetsLoading && !Application::get_assets().loading() && m_startButtonPushed)
-        {
-            m_loadingScreen->detach_layer();
-            start_game();
-        }
-        else
-            m_applicationAssetsLoading = Application::get_assets().loading();
-    }
-
     void MainMenu::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -102,6 +89,19 @@ namespace DrkCraft
         }
     }
 
+    void MainMenu::on_update(Timestep timestep)
+    {
+        // Animate background?
+
+        if (m_applicationAssetsLoading && !Application::get_assets().loading() && m_startButtonPushed)
+        {
+            m_loadingScreen->detach_layer();
+            start_game();
+        }
+        else
+            m_applicationAssetsLoading = Application::get_assets().loading();
+    }
+
     void MainMenu::on_event(Event& event)
     {
         EventDispatcher ed(event);
@@ -124,11 +124,11 @@ namespace DrkCraft
             Ref<GameLayer> gameLayer;
             if (0) // load save
             {
-                const fs::path saveDir(RuntimeSettings::config().saves_directory);
+                fs::path selectedSave = "data/saves/.dev/test_world";
 
                 // Get save from menu
 
-                gameLayer = Layer::create<GameLayer>(saveDir);
+                gameLayer = Layer::create<GameLayer>(selectedSave);
             }
             else
             {

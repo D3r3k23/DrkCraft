@@ -23,9 +23,9 @@ namespace DrkCraft
     public:
         Player(void);
 
-        void update(Timestep timestep);
         void render(void);
-        void on_event(Event& event);
+        void update(Timestep timestep);
+        void on_event(InputEvent& event);
 
         bool on_mouse_moved(const MouseMovedEvent& event);
         bool on_mouse_button_pressed(const MouseButtonPressedEvent& event);

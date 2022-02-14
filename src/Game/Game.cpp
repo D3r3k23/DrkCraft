@@ -14,12 +14,11 @@
 
 namespace DrkCraft
 {
-    Game::Game(Ptr<World> world, AssetManager& assets, Ref<DebugOverlay> debugLayer)
+    Game::Game(Ptr<World> world, AssetManager& assets)
       : m_assets(assets),
         m_world(std::move(world)),
         m_running(true),
         m_paused(false),
-        m_debugOverlay(std::move(debugLayer)),
         flatColorShaderProgram("FlatColorShaderProgram"),
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
@@ -54,13 +53,6 @@ namespace DrkCraft
 
     }
 
-    void Game::update(Timestep timestep)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        m_player.update(timestep);
-    }
-
     void Game::render(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -76,9 +68,6 @@ namespace DrkCraft
 
         Renderer::end_scene();
 
-        m_debugOverlay->update_renderer_stats();
-
-
 
         GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
         // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
@@ -89,7 +78,14 @@ namespace DrkCraft
         // Renderer::draw_block(0, 0, 0);
     }
 
-    void Game::on_event(Event& event)
+    void Game::update(Timestep timestep)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        m_player.update(timestep);
+    }
+
+    void Game::on_event(InputEvent& event)
     {
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
@@ -141,6 +137,11 @@ namespace DrkCraft
     bool Game::is_paused(void) const
     {
         return m_paused;
+    }
+
+    const Player& Game::get_player(void) const
+    {
+        return m_player;
     }
 
     void Game::save(void)

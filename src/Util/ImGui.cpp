@@ -1,4 +1,4 @@
-#include "ImGuiTools.hpp"
+#include "ImGui.hpp"
 
 #include "System/AssetManager.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -75,7 +75,7 @@ namespace DrkCraft
 
         if (m_enabled)
         {
-            m_stats = ImGuiRenderStats{};
+            reset_stats();
             {
                 DRK_PROFILE_SCOPE("imgui_impl newFrame");
                 ImGui_ImplOpenGL3_NewFrame();
@@ -113,16 +113,30 @@ namespace DrkCraft
         }
     }
 
-    void ImGuiManager::on_event(Event& event)
+    void ImGuiManager::on_event(InputEvent& event)
     {
         if (m_enabled)
         {
-            if (m_blockEvents)
-            {
-                if (should_capture_event(event))
-                    event.set_handled();
-            }
+            if (should_capture_event(event))
+                event.set_handled();
         }
+    }
+
+    bool ImGuiManager::should_capture_event(const InputEvent& event) const
+    {
+        if (!m_enabled || !m_blockEvents)
+            return false;
+        else
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            return (event == EventCategory::Mouse    && io.WantCaptureMouse)
+                || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
+        }
+    }
+
+    void ImGuiManager::block_events(bool block)
+    {
+        m_blockEvents = block;
     }
 
     void ImGuiManager::enable(void)
@@ -138,11 +152,6 @@ namespace DrkCraft
     bool ImGuiManager::enabled(void) const
     {
         return m_enabled;
-    }
-
-    void ImGuiManager::block_events(bool block)
-    {
-        m_blockEvents = block;
     }
 
     void ImGuiManager::enable_demo_window(void)
@@ -165,9 +174,9 @@ namespace DrkCraft
         return m_showDemoWindow;
     }
 
-    const ImGuiRenderStats& ImGuiManager::get_stats(void) const
+    const ImGuiRendererStats& ImGuiManager::get_renderer_stats(void) const
     {
-        return m_stats;
+        return m_lastStats;
     }
 
     ImFont* ImGuiManager::get_font(ImGuiFont font)
@@ -181,11 +190,10 @@ namespace DrkCraft
         ImGui::StyleColorsDark();
     }
 
-    bool ImGuiManager::should_capture_event(const Event& event) const
+    void ImGuiManager::reset_stats(void)
     {
-        ImGuiIO& io = ImGui::GetIO();
-        return (event == EventCategory::Mouse    && io.WantCaptureMouse)
-            || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
+        m_lastStats = m_stats;
+        m_stats = ImGuiRendererStats{};
     }
 
     namespace ImGuiTools

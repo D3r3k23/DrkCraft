@@ -5,7 +5,6 @@
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 #include "System/AssetManager.hpp"
-#include "Game/Layers/DebugOverlay.hpp"
 #include "Game/World.hpp"
 #include "Game/Player.hpp"
 
@@ -24,18 +23,20 @@ namespace DrkCraft
     class Game
     {
     public:
-        Game(Ptr<World> world, AssetManager& assets, Ref<DebugOverlay> debugLayer);
+        Game(Ptr<World> world, AssetManager& assets);
         ~Game(void);
 
-        void update(Timestep timestep);
         void render(void);
-        void on_event(Event& event);
+        void update(Timestep timestep);
+        void on_event(InputEvent& event);
 
         bool on_key_pressed(const KeyPressedEvent& event);
 
         void pause(void);
         void unpause(void);
         bool is_paused(void) const;
+
+        const Player& get_player(void) const;
 
         void save(void);
 

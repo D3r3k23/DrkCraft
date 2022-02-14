@@ -155,7 +155,7 @@ namespace DrkCraft
     namespace
     {
         template <typename T, typename RepT=T>
-        using SettingTransform = std::function<T(RepT)>
+        using SettingTransform = std::function<T(RepT)>;
 
         template <typename T, typename RepT=T>
         void assign_if_setting_is_valid(const YAML::Node& node, std::string_view key, T& value,
@@ -171,40 +171,51 @@ namespace DrkCraft
         }
 
         template <typename T>
-        inline SettingTransform<T> setting_range(T min, T max)
+        const SettingTransform<T>& setting_range(T min, T max)
         {
-            return [min, max](T value) -> T
+            static const auto fn = [min, max](T value) -> T
             {
-                std::clamp(value, min, max);
+                return std::clamp(value, min, max);
             };
+            return fn;
         }
 
         template <typename T>
-        inline SettingTransform<T> setting_min(T min)
+        const SettingTransform<T>& setting_min(T min)
         {
-            return [min](T value) -> T
+            static const auto fn = [min](T value) -> T
             {
-                std::max(value, min);
+                return std::max(value, min);
             }
+            return fn;
         }
 
         template <typename T>
-        inline SettingTransform<T> setting_max(T max)
+        const SettingTransform<T>& setting_max(T max)
         {
-            return [max](T value) -> T
+            static const auto fn = [max](T value) -> T
             {
-                std::min(value, max);
+                return std::min(value, max);
             }
+            return fn;
         }
 
-        inline KeyCode name_to_key_code(std::string name) // string_view?
+        const SettingTransform<KeyCode, std::string>& key_code_converter(void) // string_view?
         {
-            return to_key_code(name);
+            static const auto fn = [](std::string name) -> KeyCode
+            {
+                return to_key_code(name);
+            };
+            return fn;
         }
 
-        inline MouseCode name_to_mouse_code(std::string name) // string_view?
+        const SettingTransform<MouseCode, std::string>& mouse_code_converter(void) // string_view?
         {
-            return to_mouse_code(name);
+            static const auto fn = [](std::string name) -> MouseCode
+            {
+                return to_mouse_code(name);
+            };
+            return fn;
         }
     }
 
@@ -277,24 +288,24 @@ namespace DrkCraft
         {
             auto& movementKeybinds = s_keybindsData.player_movement;
 
-            assign_if_setting_is_valid(keybinds["player_movement"], "forward", movementKeybinds.forward, name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_movement"], "back",    movementKeybinds.back,    name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_movement"], "left",    movementKeybinds.left,    name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_movement"], "right",   movementKeybinds.right,   name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "forward", movementKeybinds.forward, key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_movement"], "back",    movementKeybinds.back,    key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_movement"], "left",    movementKeybinds.left,    key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_movement"], "right",   movementKeybinds.right,   key_code_converter());
 
-            assign_if_setting_is_valid(keybinds["player_movement"], "sprint", movementKeybinds.sprint, name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_movement"], "crouch", movementKeybinds.crouch, name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_movement"], "jump",   movementKeybinds.jump,   name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "sprint", movementKeybinds.sprint, key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_movement"], "crouch", movementKeybinds.crouch, key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_movement"], "jump",   movementKeybinds.jump,   key_code_converter());
         }
         if (Yaml::check_map(keybinds, "player_actions"))
         {
-            auto& movementKeybinds = s_keybindsData.player_movement;
+            auto& actionKeybinds = s_keybindsData.player_actions;
 
-            assign_if_setting_is_valid(keybinds["player_actions"], "use",    movementKeybinds.use,    name_to_mouse_code);
-            assign_if_setting_is_valid(keybinds["player_actions"], "place",   movementKeybinds.place, name_to_mouse_code);
-            assign_if_setting_is_valid(keybinds["player_actions"], "interact", movementKeybinds.interact,   name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_actions"], "inventory", movementKeybinds.inventory, name_to_key_code);
-            assign_if_setting_is_valid(keybinds["player_actions"], "fly",        movementKeybinds.fly,      name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_actions"], "use",    actionKeybinds.use,    mouse_code_converter());
+            assign_if_setting_is_valid(keybinds["player_actions"], "place",   actionKeybinds.place, mouse_code_converter());
+            assign_if_setting_is_valid(keybinds["player_actions"], "interact", actionKeybinds.interact,   key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_actions"], "inventory", actionKeybinds.inventory, key_code_converter());
+            assign_if_setting_is_valid(keybinds["player_actions"], "fly",        actionKeybinds.fly,      key_code_converter());
         }
     }
 
@@ -310,7 +321,7 @@ namespace DrkCraft
         config     << YAML::Key << "width"  << YAML::Value << s_configData.init_window_size.width;
         config     << YAML::Key << "height" << YAML::Value << s_configData.init_window_size.height;
         config   << YAML::EndMap;
-        config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory.generic_string();
+        config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory;
         config << YAML::EndMap;
 
         write_file(filename, config.c_str());

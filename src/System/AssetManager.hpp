@@ -9,6 +9,7 @@
 #include "lib/fs.hpp"
 
 #include <string>
+#include <optional>
 #include <vector>
 #include <queue>
 #include <unordered_map>
@@ -88,7 +89,7 @@ namespace DrkCraft
         void unload_list(const AssetList& assets);
 
         bool loading(void) const;
-        std::string currently_loading(void) const;
+        std::optional<std::string> currently_loading(void) const;
 
     private:
         void load_worker(std::stop_token st);

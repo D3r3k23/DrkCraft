@@ -6,8 +6,10 @@
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 
+#include "Game/Game.hpp"
 #include "System/AssetManager.hpp"
-#include "Application/ImGuiTools.hpp"
+#include "Util/ImGui.hpp"
+#include "Graphics/OpenGlContext.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/CubeRenderer.hpp"
 
@@ -30,33 +32,38 @@ namespace DrkCraft
     class DebugOverlay : public Layer
     {
     public:
-        DebugOverlay(const AssetManager& assetManager, ImGuiManager& imguiManager, bool activate=false);
+        DebugOverlay(bool activate=false);
+
         virtual ~DebugOverlay(void);
+
+        void attach_game(Ref<Game> game);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
 
-        virtual void on_update(Timestep timestep) override;
         virtual void on_render(void) override;
+        virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
 
+    private:
         void update_renderer_stats(void);
-        void upload_imgui_stats(const ImGuiRenderStats& stats);
 
     private:
         const AssetManager& m_assetManager;
-        ImGuiManager& m_imguiManager;
+        const ImGuiManager& m_imGuiManager;
+        const OpenGlContext& m_glContext;
+        Ref<Game> m_game;
 
         FpsCounter m_currentFps;
         FpsCounter m_avgFps;
 
-        RendererStats m_rendererStats;
+        RendererStats      m_rendererStats;
         CubeRendererStats m_cubeRendererStats;
-        ImGuiRenderStats m_imguiRenderStats;
+        ImGuiRendererStats m_imGuiRendererStats;
 
         IntervalTimer m_fpsAvgTimer;
         IntervalTimer m_renderStatsUpdateTimer;
-        IntervalTimer m_imguiStatsUpdateTimer;
+        IntervalTimer m_imGuiStatsUpdateTimer;
     };
 }
 

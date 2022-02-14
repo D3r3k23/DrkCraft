@@ -112,6 +112,11 @@ namespace DrkCraft
         return *(get_instance().m_imGuiManager);
     }
 
+    OpenGlContext& Application::get_gl_context(void)
+    {
+        return get_instance().m_context;
+    }
+
     //////////////////////////
     //       Instance       //
     //////////////////////////
@@ -128,7 +133,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto& settings = RuntimeSettings::get();
+        const auto& settings = RuntimeSettings::settings();
         {
             DRK_LOG_CORE_TRACE("Loading monitors");
             DRK_PROFILE_THREAD_CREATE("monitor_load");
@@ -237,14 +242,6 @@ namespace DrkCraft
         m_exitCode = status;
     }
 
-    void Application::update(Timestep timestep)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        for (auto& layer : m_layerStackReverseView)
-            layer->on_update(timestep);
-    }
-
     void Application::render(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -260,6 +257,14 @@ namespace DrkCraft
         Renderer::end_frame();
     }
 
+    void Application::update(Timestep timestep)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        for (auto& layer : m_layerStackReverseView)
+            layer->on_update(timestep);
+    }
+
     void Application::handle_event(Event& event)
     {
         DRK_PROFILE_FUNCTION();
@@ -273,7 +278,8 @@ namespace DrkCraft
 
         // We could redraw the screen on resize/move
 
-        m_imGuiManager->on_event(event);
+        if (event == EventCategory::Input)
+            m_imGuiManager->on_event(event_cast<InputEvent>(event));
 
         for (auto& layer : m_layerStackForwardView)
             layer->on_event(event);
@@ -315,8 +321,9 @@ namespace DrkCraft
 
     bool Application::on_monitor_disconnected(const MonitorDisconnectedEvent& event)
     {
-        RuntimeSettings::get().fullscreen_monitor = 0;
-        RuntimeSettings::save_settings();
+        auto settings = RuntimeSettings::settings();
+        settings.video.fullscreen_monitor = 0;
+        RuntimeSettings::set_settings(settings);
 
         if (is_fullscreen())
             set_fullscreen(0);
@@ -340,7 +347,7 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Setting Application to fullscreen");
 
         if (monitor < 0)
-            monitor = RuntimeSettings::get().fullscreen_monitor;
+            monitor = RuntimeSettings::settings().video.fullscreen_monitor;
 
         m_monitorManager.activate_fullscreen(m_window, monitor);
         DRK_LOG_CORE_INFO("Fullscreen monitor: {}", m_monitorManager.get_monitor(monitor).get_name());

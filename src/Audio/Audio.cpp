@@ -49,33 +49,33 @@ namespace DrkCraft
     //       Audio       //
     ///////////////////////
 
-    static Ptr<AudioEngine> s_engine = nullptr;
+    static Ptr<AudioEngine> s_audioEngine = nullptr;
 
     static AudioEngine& get_audio_engine(void)
     {
-        DRK_ASSERT_DEBUG(s_engine, "AudioEngine is not running");
-        return *s_engine;
+        DRK_ASSERT_DEBUG(s_audioEngine, "AudioEngine is not running");
+        return *s_audioEngine;
     }
 
     Volume Audio::s_volume;
 
     void Audio::init(float volume)
     {
-        DRK_ASSERT_DEBUG(!s_engine, "AudioEngine is already initialized");
+        DRK_ASSERT_DEBUG(!s_audioEngine, "AudioEngine is already initialized");
 
-        s_engine = make_ptr<AudioEngine>();
+        s_audioEngine = make_ptr<AudioEngine>();
         set_volume(volume);
     }
 
     void Audio::shutdown(void)
     {
-        DRK_ASSERT_DEBUG(s_engine, "AudioEngine is already shutdown");
-        s_engine.reset();
+        DRK_ASSERT_DEBUG(s_audioEngine, "AudioEngine is already shutdown");
+        s_audioEngine.reset();
     }
 
     bool Audio::running(void)
     {
-        return static_cast<bool>(s_engine);
+        return static_cast<bool>(s_audioEngine);
     }
 
     Ref<AudioSource> Audio::load_file(const fs::path& filename)
@@ -86,18 +86,7 @@ namespace DrkCraft
         if (is_file(filename))
         {
             DRK_LOG_CORE_TRACE("Loading Audio file: \"{}\"", filename.generic_string());
-
-            Ref<AudioSource> source;
-            auto extension = filename.extension().string();
-            switch (ext_to_audio_file_format(extension))
-            {
-                case AudioFileFormat::Mp3 : source = get_audio_engine().load_mp3(filename); break;
-                case AudioFileFormat::Ogg : source = get_audio_engine().load_ogg(filename); break;
-                default:
-                    DRK_ASSERT_DEBUG(false, "File format {} not supported", extension);
-                    return {};
-            }
-            return source;
+            return get_audio_engine().load_source(filename);
         }
         else
         {

@@ -5,10 +5,10 @@
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
 #include "System/AssetManager.hpp"
+#include "Util/ImGui.hpp"
 #include "Graphics/OpenGlContext.hpp"
 #include "Application/Events.hpp"
 #include "Application/EventGenerator.hpp"
-#include "Application/ImGuiTools.hpp"
 #include "Application/Layer.hpp"
 #include "Application/LayerStack.hpp"
 #include "Application/Timestep.hpp"
@@ -35,6 +35,7 @@ namespace DrkCraft
         static MonitorManager& get_monitors(void);
         static AssetManager& get_assets(void);
         static ImGuiManager& get_imgui(void);
+        static OpenGlContext& get_gl_context(void);
 
     private:
         Application();
@@ -43,8 +44,8 @@ namespace DrkCraft
         void run_internal(void);
         void exit_internal(int status);
 
-        void update(Timestep timestep);
         void render(void);
+        void update(Timestep timestep);
         void handle_event(Event& event);
 
         bool on_key_pressed(const KeyPressedEvent& event);

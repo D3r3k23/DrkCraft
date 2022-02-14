@@ -39,10 +39,11 @@ namespace DrkCraft
     //       DebugOverlay       //
     //////////////////////////////
 
-    DebugOverlay::DebugOverlay(const AssetManager& assetManager, ImGuiManager& imguiManager, bool activate)
+    DebugOverlay::DebugOverlay(bool activate)
       : Layer("DebugOverlayLayer", activate),
-        m_assetManager(assetManager),
-        m_imguiManager(imguiManager),
+        m_assetManager(Application::get_assets()),
+        m_imGuiManager(Application::get_imgui()),
+        m_glContext(Application::get_gl_context()),
         m_currentFps(0.995f),
         m_avgFps(0.75f)
     {
@@ -54,6 +55,11 @@ namespace DrkCraft
 
     }
 
+    void DebugOverlay::attach_game(Ref<Game> game)
+    {
+        m_game = std::move(game);
+    }
+
     void DebugOverlay::on_attach(void)
     {
 
@@ -62,13 +68,6 @@ namespace DrkCraft
     void DebugOverlay::on_detach(void)
     {
 
-    }
-
-    void DebugOverlay::on_update(Timestep timestep)
-    {
-        m_currentFps.update(timestep);
-        if (m_fpsAvgTimer.on_interval<1000>())
-            m_avgFps.update(m_currentFps.get_avg_frame_time());
     }
 
     void DebugOverlay::on_render(void)
@@ -109,6 +108,12 @@ namespace DrkCraft
         }
         ImGui::EndGroup();
 
+        // Hardware renderer info
+        ImGui::BeginGroup();
+        {
+
+        }
+
         // Audio info
         ImGui::BeginGroup();
         {
@@ -134,27 +139,44 @@ namespace DrkCraft
 
             ImGui::Text("ImGui:");
             ImGui::BeginGroup();
-            ImGui::Text("Draw commands: %u", m_imguiRenderStats.drawCmds);
-            ImGui::Text("Draw lists:   %u", m_imguiRenderStats.drawLists);
-            ImGui::Text("Indices:    %u", m_imguiRenderStats.indices);
-            ImGui::Text("Vertices: %u", m_imguiRenderStats.vertices);
+            ImGui::Text("Draw commands: %u", m_imGuiRendererStats.drawCmds);
+            ImGui::Text("Draw lists:   %u", m_imGuiRendererStats.drawLists);
+            ImGui::Text("Indices:    %u", m_imGuiRendererStats.indices);
+            ImGui::Text("Vertices: %u", m_imGuiRendererStats.vertices);
             ImGui::EndGroup();
         }
         ImGui::EndGroup();
 
         // Asset loading status
-        if (m_assetManager.loading())
+        if (const auto asset = m_assetManager.currently_loading(); asset)
         {
             ImGui::BeginGroup();
-            ImGui::Text("Loading asset: %s", m_assetManager.currently_loading());
+            ImGui::Text("Loading asset: %s", *asset);
             ImGui::EndGroup();
         }
 
         // World loading status
 
-        // Player location
+        // Player info
+        ImGui::BeginGroup();
+        {
+
+        }
+        ImGui::EndGroup();
 
         ImGui::End();
+    }
+
+    void DebugOverlay::on_update(Timestep timestep)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        m_currentFps.update(timestep);
+        if (m_fpsAvgTimer.on_interval<1000>())
+            m_avgFps.update(m_currentFps.get_avg_frame_time());
+
+        if (m_renderStatsUpdateTimer.on_interval<1000>())
+            update_renderer_stats();
     }
 
     void DebugOverlay::on_event(Event& event)
@@ -164,18 +186,8 @@ namespace DrkCraft
 
     void DebugOverlay::update_renderer_stats(void)
     {
-        if (m_renderStatsUpdateTimer.on_interval<1000>())
-        {
-            m_rendererStats = Renderer::get_stats();
-            m_cubeRendererStats = CubeRenderer::get_stats();
-        }
-    }
-
-    void DebugOverlay::upload_imgui_stats(const ImGuiRenderStats& stats)
-    {
-        if (m_imguiStatsUpdateTimer.on_interval<2000>())
-        {
-            m_imguiRenderStats = stats;
-        }
+        m_rendererStats  = Renderer::get_stats();
+        m_cubeRendererStats = CubeRenderer::get_stats();
+        m_imGuiRendererStats  = m_imGuiManager.get_renderer_stats();
     }
 }

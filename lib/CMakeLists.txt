@@ -46,8 +46,8 @@ target_include_directories(FastNoiseLite INTERFACE FastNoiseLite/Cpp)
 message("Configuring ImGui")
 add_subdirectory(imgui)
 
-message("Configuring nameof")
-add_subdirectory(nameof)
+message("Configuring magic_enum")
+add_subdirectory(magic_enum)
 
 message("Configuring minimp3")
 add_subdirectory(minimp3)
@@ -74,7 +74,7 @@ target_link_libraries(DrkCraft
     imgui
     imgui_impl
     minimp3
-    nameof
+    magic_enum
     ogg
     OpenAL
     rapidjson

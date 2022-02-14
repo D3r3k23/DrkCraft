@@ -43,8 +43,8 @@ namespace DrkCraft
         virtual void on_attach(void) { }
         virtual void on_detach(void) { }
 
-        virtual void on_update(Timestep timestep) = 0;
         virtual void on_render(void) = 0;
+        virtual void on_update(Timestep timestep) = 0;
         virtual void on_event(Event& e) = 0;
 
         void attach_layer(void);

@@ -46,26 +46,32 @@ namespace DrkCraft
         AlContext::clear_current();
     }
 
-    Ref<AudioSource> AudioEngine::load_mp3(const fs::path& filename)
+    Ref<AudioSource> AudioEngine::load_source(const fs::path& filename, AudioFileFormat format)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_TRACE("Loading AudioSource from file: \"{}\"", filename.generic_string());
 
-        DRK_LOG_CORE_TRACE("Loading .mp3: \"{}\"", filename.generic_string());
-        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Mp3);
+        if (format == AudioFileFormat::None)
+            format = find_audio_file_format(filename);
 
-        auto data = m_mp3Decoder.decode(filename);
-        return make_ref<AudioSource>(*data);
-    }
-
-    Ref<AudioSource> AudioEngine::load_ogg(const fs::path& filename)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        DRK_LOG_CORE_TRACE("Loading .ogg: \"{}\"", filename.generic_string());
-        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Ogg);
-
-        auto data = OggDecoder::decode(filename);
-        return make_ref<AudioSource>(*data);
+        switch (format)
+        {
+            case AudioFileFormat::Mp3:
+            {
+                auto data = m_mp3Decoder.decode(filename);
+                return make_ref<AudioSource>(*data);
+                break;
+            }
+            case AudioFileFormat::Ogg:
+            {
+                auto data = OggDecoder::decode(filename);
+                return make_ref<AudioSource>(*data);
+                break;
+            }
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown audio file format \"{}\"", filename.extension().string());
+                return {};
+        }
     }
 
     void AudioEngine::play_source(const Ref<AudioSource>& source)

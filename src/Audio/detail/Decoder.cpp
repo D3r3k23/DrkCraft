@@ -15,18 +15,14 @@
 
 namespace DrkCraft
 {
-    /////////////////////////
-    //       Mp3Data       //
-    /////////////////////////
+    ////////////////////////////
+    //       Mp3Decoder       //
+    ////////////////////////////
 
     // Ensure that buffer can be stored as int16*
     using SampleBuffer_t = mp3d_sample_t;
     static_assert(std::signed_integral<SampleBuffer_t>);
     static_assert(sizeof(int16) == sizeof(SampleBuffer_t));
-
-    ////////////////////////////
-    //       Mp3Decoder       //
-    ////////////////////////////
 
     static mp3dec_t s_mp3Decoder;
     static std::mutex s_mp3DecoderMutex;
@@ -52,7 +48,7 @@ namespace DrkCraft
         }
         auto data = new AudioSourceData<int16>(static_cast<int16*>(info.buffer), [](int16* buffer){ std::free(buffer); });
 
-        data->size       = info.samples * sizeof(mp3d_sample_t);
+        data->size       = info.samples * sizeof(int16);
         data->channels   = static_cast<uint>(info.channels);
         data->sampleRate = static_cast<uint>(info.hz);
         data->bitRate    = static_cast<uint>(info.avg_bitrate_kbps);

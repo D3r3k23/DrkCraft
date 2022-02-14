@@ -20,7 +20,6 @@
 
 namespace DrkCraft
 {
-
     class GameLayer : public Layer
     {
         using GameStartCallbackFn = std::function<void(void)>;
@@ -32,7 +31,6 @@ namespace DrkCraft
         GameLayer(const fs::path& saveDir);
         GameLayer(const WorldGeneratorSpec& worldGeneratorSpec);
 
-    public:
         virtual ~GameLayer(void);
 
         void set_game_start_callback_fn(const GameStartCallbackFn& fn);
@@ -40,8 +38,8 @@ namespace DrkCraft
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
 
-        virtual void on_update(Timestep timestep) override;
         virtual void on_render(void) override;
+        virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
 
     private:
@@ -61,12 +59,12 @@ namespace DrkCraft
         void toggle_debug_overlay(void);
 
     private:
-        Ptr<Game> m_game;
+        Ref<Game> m_game;
 
         Ref<LoadingScreen> m_loadingScreen;
 
-        Ref<Hud> m_hudLayer;
-        Ref<Console> m_consoleLayer;
+        Ref<Hud>    m_hudLayer;
+        Ref<Console>   m_consoleLayer;
         Ref<DebugOverlay> m_debugLayer;
 
         std::jthread m_worldLoadThread;

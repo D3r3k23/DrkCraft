@@ -68,16 +68,14 @@ namespace DrkCraft
         } controls;
     };
 
-    const uint NUM_SETTINGS = 6;
-
-    enum SettingsEnum
+    enum class Setting
     {
-        Settings_Fullscreen,
-        Settings_FullscreenMonitor,
-        Settings_VSync,
-        Settings_Volume,
-        Settings_Music,
-        Settings_Sensitivity
+        Fullscreen,
+        FullscreenMonitor,
+        VSync,
+        Volume,
+        Music,
+        Sensitivity
     };
 
     struct KeyBinds

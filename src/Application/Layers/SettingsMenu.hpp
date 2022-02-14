@@ -8,7 +8,9 @@
 
 #include "Core/RunSettings.hpp"
 
-#include <array>
+#include <magic_enum.hpp>
+
+#include <vector>
 #include <functional>
 
 namespace DrkCraft
@@ -26,8 +28,8 @@ namespace DrkCraft
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
 
-        virtual void on_update(Timestep timestep) override;
         virtual void on_render(void) override;
+        virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
 
     private:
@@ -37,9 +39,15 @@ namespace DrkCraft
         void apply(void);
         void close(void);
 
+        void make_dirty(Setting setting);
+        bool dirty(Setting setting) const;
+
     private:
         SettingsData m_settings;
-        std::array<bool, NUM_SETTINGS> m_dirty;
+        std::vector<bool> m_dirty;
+
+        KeyBinds m_keybinds;
+        bool m_keybindsDirty;
 
         CloseCallbackFn m_onClose;
     };

@@ -1,6 +1,6 @@
 #include "LoadingScreen.hpp"
 
-#include "Application/ImGuiTools.hpp"
+#include "Util/ImGui.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -31,16 +31,6 @@ namespace DrkCraft
 
     }
 
-    void LoadingScreen::on_update(Timestep timestep)
-    {
-        if (m_updateTimer.on_interval())
-        {
-            m_numPeriods++;
-            if (m_numPeriods > MAX_PERIODS)
-                m_numPeriods = 0;
-        }
-    }
-
     void LoadingScreen::on_render(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -55,6 +45,16 @@ namespace DrkCraft
 
         ImGui::PopFont();
         ImGui::End();
+    }
+
+    void LoadingScreen::on_update(Timestep timestep)
+    {
+        if (m_updateTimer.on_interval())
+        {
+            m_numPeriods++;
+            if (m_numPeriods > MAX_PERIODS)
+                m_numPeriods = 0;
+        }
     }
 
     void LoadingScreen::on_event(Event& event)

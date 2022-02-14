@@ -60,13 +60,19 @@ namespace DrkCraft
     template <EventConcept E>
     const E& event_cast(const AbstractEventConcept auto& event)
     {
-    #if defined(DRK_CONFIG_DEBUG)
+        return static_cast<const E&>(event);
+
+    #if 0 // defined(DRK_CONFIG_DEBUG)
         const E* e = dynamic_cast<const E*>(&event);
         DRK_ASSERT_DEBUG(e, "Invalid Event cast");
         return *e;
-    #else
-        return static_cast<const E&>(event);
     #endif
+    }
+
+    template <EventConcept E>
+    E& event_cast(AbstractEventConcept auto& event)
+    {
+        return static_cast<E&>(event);
     }
 
     template <AbstractEventConcept E>
@@ -91,8 +97,7 @@ namespace DrkCraft
         {
             if (event == E2::static_type() && !event.handled())
             {
-                // bool handled = handler(event_cast<E2>(event));
-                bool handled = handler(event);
+                bool handled = handler(event_cast<E2>(event));
                 if (handled)
                     event.set_handled();
             }

@@ -1,7 +1,14 @@
-forward: W
-left: A
-back: S
-right: D
-sprint: Shift
-jump: Space
-crouch: Ctrl
+player_movement:
+  forward: W
+  left: A
+  back: S
+  right: D
+  sprint: LeftShift
+  crouch: LeftCtrl
+  jump: Space
+player_actions:
+  use: Button0
+  place: Button1
+  interact: E
+  inventory: T
+  fly: F

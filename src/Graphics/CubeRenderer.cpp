@@ -57,6 +57,7 @@ namespace DrkCraft
     void CubeRenderer::init(void)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_INFO("Initializing CubeRenderer");
 
         std::vector<Ref<Shader>> shaders = {
           Shader::create(shader_asset_path("cube_vertex_shader.glsl"), ShaderType::Vertex),

@@ -60,8 +60,9 @@ namespace DrkCraft
         AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, uint bitRate);
 
     public:
-        AudioSource(const AudioSourceData<auto>& data)
-          : AudioSource(data.format, data.buffer, data.size, data.sampleRate, data.bitRate)
+        template <typename B>
+        AudioSource(const AudioSourceData<B>& data)
+          : AudioSource(data.format, static_cast<void*>data.buffer, data.size, data.sampleRate, data.bitRate)
         { }
 
         virtual ~AudioSource(void);

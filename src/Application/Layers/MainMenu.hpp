@@ -23,8 +23,8 @@ namespace DrkCraft
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
 
-        virtual void on_update(Timestep timestep) override;
         virtual void on_render(void) override;
+        virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
 
     private:

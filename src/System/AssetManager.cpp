@@ -197,9 +197,9 @@ namespace DrkCraft
         return m_loading;
     }
 
-    std::string AssetManager::currently_loading(void) const
+    std::optional<std::string> AssetManager::currently_loading(void) const
     {
-        return m_recentlyLoadedAsset;
+        return m_loading ? m_recentlyLoadedAsset : {};
     }
 
     void AssetManager::load_worker(std::stop_token st)

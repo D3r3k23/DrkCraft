@@ -24,7 +24,7 @@ Images
 * [GLFW](https://github.com/glfw/glfw)
 * [GLM](https://github.com/g-truc/glm)
 * [minimp3](https://github.com/lieff/minimp3)
-* [Nameof](https://github.com/Neargye/nameof)
+* [Magic Enum](https://github.com/Neargye/magic_enum)
 * [Ogg](https://gitlab.xiph.org/xiph/ogg)
 * [OpenAL Soft](https://github.com/kcat/openal-soft)
 * [RapidJSON](https://github.com/Tencent/rapidjson)

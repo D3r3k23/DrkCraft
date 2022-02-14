@@ -1,5 +1,6 @@
 #include "OpenGlContext.hpp"
 
+#include "System/Window.hpp"
 #include "Graphics/detail/GlTools.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -20,10 +21,9 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Loading Glad OpenGL using GLFW loader function");
         load_opengl();
 
+        get_context_info();
         DRK_LOG_CORE_INFO("OpenGL initialized");
-
-        const auto* version = glGetString(GL_VERSION);
-        DRK_LOG_CORE_INFO("OpenGL version: {}", version);
+        DRK_LOG_CORE_INFO("OpenGL version: {}", m_glVersion);
 
         if constexpr (DRK_LOGGING_ENABLED)
         {
@@ -53,5 +53,24 @@ namespace DrkCraft
     void OpenGlContext::clear_current(void)
     {
         glfwMakeContextCurrent(nullptr);
+    }
+
+    std::string_view OpenGlContext::get_gl_version(void) const
+    {
+        return m_glVersion;
+    }
+
+    std::string_view OpenGlContext::get_renderer_info(void) const
+    {
+        return m_rendererHardware;
+    }
+
+    void OpenGlContext::get_context_info(void)
+    {
+        const auto* version = glGetString(GL_VERSION);
+        m_glVersion = (const char*)version;
+
+        const auto* renderer = glGetString(GL_RENDERER);
+        m_rendererHardware = (const char*)renderer;
     }
 }

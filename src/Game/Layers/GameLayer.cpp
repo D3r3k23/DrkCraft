@@ -16,7 +16,7 @@ namespace DrkCraft
         m_loadingScreen(Layer::create<LoadingScreen>()),
         m_hudLayer(Layer::create<Hud>()),
         m_consoleLayer(Layer::create<Console>()),
-        m_debugLayer(Layer::create<DebugOverlay>(Application::get_assets(), Application::get_imgui())),
+        m_debugLayer(Layer::create<DebugOverlay>()),
         m_startPaused(false)
     {
         Application::add_overlay(m_loadingScreen);
@@ -115,8 +115,8 @@ namespace DrkCraft
         ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));
         ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
 
-        if (m_game)
-            m_game->on_event(event);
+        if (m_game && event == EventCategory::Input)
+            m_game->on_event(event_cast<InputEvent>(event));
     }
 
     bool GameLayer::on_key_pressed(const KeyPressedEvent& event)
@@ -157,7 +157,8 @@ namespace DrkCraft
 
         m_loadingScreen->detach_layer();
 
-        m_game = make_ptr<Game>(std::move(m_loadedWorld), Application::get_assets());
+        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_assets());
+        m_debugLayer->attach_game(m_game);
 
         if (m_startPaused)
             pause_game();

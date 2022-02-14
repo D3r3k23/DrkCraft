@@ -24,9 +24,9 @@ namespace DrkCraft
     void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
     {
         DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_INFO("Initializing core Renderer");
 
-        const auto* hardware = glGetString(GL_RENDERER);
-        DRK_LOG_CORE_INFO("Renderer hardware: {}", hardware);
+        DRK_LOG_CORE_INFO("Renderer hardware: {}", context.get_renderer_info());
 
         set_viewport({0, 0}, viewportSize);
 

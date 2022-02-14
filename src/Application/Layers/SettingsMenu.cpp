@@ -1,9 +1,9 @@
 #include "SettingsMenu.hpp"
 
 #include "Application/Application.hpp"
+#include "Util/ImGui.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Monitor.hpp"
-#include "Application/ImGuiTools.hpp"
 #include "System/Input.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -16,10 +16,14 @@
 
 namespace DrkCraft
 {
+    static constexpr uint NUM_SETTINGS = magic_enum::enum_count<Setting>();
+
     SettingsMenu::SettingsMenu(bool activate)
       : Layer("SettingsMenuLayer", activate),
         m_settings(RuntimeSettings::settings()),
-        m_dirty({false})
+        m_dirty(NUM_SETTINGS, false),
+        m_keybinds(RuntimeSettings::keybinds()),
+        m_keybindsDirty(false)
     { }
 
     SettingsMenu::~SettingsMenu(void)
@@ -42,11 +46,6 @@ namespace DrkCraft
 
     }
 
-    void SettingsMenu::on_update(Timestep timestep)
-    {
-
-    }
-
     static vec2 WINDOW_SIZE(400, 600);
 
     void SettingsMenu::on_render(void)
@@ -59,7 +58,7 @@ namespace DrkCraft
         if (ImGui::TreeNode("Video"))
         {
             if (ImGui::Checkbox("Fullscreen", &m_settings.video.fullscreen)) // Can crash if toggled without saving
-                m_dirty[Settings_Fullscreen] = true;
+                make_dirty(Setting::Fullscreen);
 
             const auto& monitors = Application::get_monitors().monitors();
             std::vector<std::string> monitorStrings;
@@ -81,8 +80,8 @@ namespace DrkCraft
 
                     if (selected)
                     {
-                        m_settings.video.ullscreen_monitor = i;
-                        m_dirty[Settings_FullscreenMonitor] = true;
+                        m_settings.video.fullscreen_monitor = i;
+                        make_dirty(Setting::FullscreenMonitor);
                         ImGui::SetItemDefaultFocus();
                     }
                     i++;
@@ -90,22 +89,22 @@ namespace DrkCraft
                 ImGui::EndCombo();
             }
             if (ImGui::Checkbox("VSync", &m_settings.video.vsync))
-                m_dirty[Settings_VSync] = true;
+                make_dirty(Setting::VSync);
         }
 
         if (ImGui::TreeNode("Audio"))
         {
             if (ImGui::DragFloat("Volume", &m_settings.audio.volume))
-                m_dirty[Settings_Volume] = true;
+                make_dirty(Setting::Volume);
 
             if (ImGui::Checkbox("Music", &m_settings.audio.music))
-                m_dirty[Settings_Music] = true;
+                make_dirty(Setting::Music);
         }
 
         if (ImGui::TreeNode("Controls"))
         {
-            if (ImGui::DragFloat("Mouse Sensitivity", &m_settings.controls.sensitivity))
-                m_dirty[Settings_Sensitivity] = true;
+            if (ImGui::DragInt("Mouse Sensitivity", &m_settings.controls.sensitivity, 1.0f, 0, 100))
+                make_dirty(Setting::Sensitivity);
         }
 
         ImGui::EndGroup();
@@ -126,6 +125,11 @@ namespace DrkCraft
 
         ImGui::EndGroup();
         ImGui::End();
+    }
+
+    void SettingsMenu::on_update(Timestep timestep)
+    {
+
     }
 
     void SettingsMenu::on_event(Event& event)
@@ -160,8 +164,12 @@ namespace DrkCraft
             apply();
             RuntimeSettings::set_settings(m_settings);
 
-            for (uint i = 0; i < NUM_SETTINGS; i++)
+            for (uint i = 0; i < m_dirty.size(); i++)
                 m_dirty[i] = false;
+        }
+        if (m_keybindsDirty)
+        {
+            RuntimeSettings::set_keybinds(m_keybinds);
         }
         DRK_LOG_CORE_TRACE("SettingsMenu: Saved");
     }
@@ -171,31 +179,31 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         auto& app = Application::get_instance();
-        if (m_dirty[Settings_Fullscreen])
+        if (dirty(Setting::Fullscreen))
         {
             if (m_settings.video.fullscreen)
                 app.set_fullscreen(m_settings.video.fullscreen_monitor);
             else
                 app.set_windowed();
         }
-        if (m_dirty[Settings_FullscreenMonitor])
+        if (dirty(Setting::FullscreenMonitor))
         {
-            if (m_settings.video.fullscreen && !m_dirty[Settings_Fullscreen])
+            if (m_settings.video.fullscreen && !dirty(Setting::Fullscreen))
                 app.set_fullscreen(m_settings.video.fullscreen_monitor);
         }
-        if (m_dirty[Settings_VSync])
+        if (dirty(Setting::VSync))
         {
             app.get_window().set_vsync(m_settings.video.vsync);
         }
-        if (m_dirty[Settings_Volume])
+        if (dirty(Setting::Volume))
         {
             Audio::set_volume(m_settings.audio.volume);
         }
-        if (m_dirty[Settings_Music])
+        if (dirty(Setting::Music))
         {
 
         }
-        if (m_dirty[Settings_Sensitivity])
+        if (dirty(Setting::Sensitivity))
         {
 
         }
@@ -206,5 +214,15 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("SettingsMenu closed");
         m_onClose();
         deactivate_layer();
+    }
+
+    void SettingsMenu::make_dirty(Setting setting)
+    {
+        m_dirty[magic_enum::enum_integer(setting)] = true;
+    }
+
+    bool SettingsMenu::dirty(Setting setting) const
+    {
+        return m_dirty[magic_enum::enum_integer(setting)];
     }
 }
