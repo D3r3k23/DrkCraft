@@ -11,9 +11,13 @@
 
 namespace DrkCraft
 {
-    AudioSource::AudioSource(AudioSourceFormat format, int16* data, uint size, uint sampleRate, uint bitRate)
+    /////////////////////////////
+    //       AudioSource       //
+    /////////////////////////////
+
+    AudioSource::AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, uint bitRate)
       : m_buffer(format, data, size, sampleRate),
-        m_length(size / (bitRate * 1024.0f))
+        m_length(size / (bitRate * 1000.0f))
     {
         DRK_PROFILE_FUNCTION();
 

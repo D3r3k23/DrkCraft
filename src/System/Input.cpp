@@ -5,6 +5,7 @@
 #include "Application/Application.hpp"
 
 #include <GLFW/glfw3.h>
+#include <magic_enum.hpp>
 
 namespace DrkCraft
 {
@@ -157,6 +158,16 @@ namespace DrkCraft
         return static_cast<int>(key);
     }
 
+    KeyCode to_key_code(std::string_view str)
+    {
+        return magic_enum::enum_cast<KeyCode>(str).value_or(KeyCode::None);
+    }
+
+    std::string key_code_name(KeyCode key)
+    {
+        return magic_enum::enum_name(key);
+    }
+
     ////////////////////////////////////
     //         MouseCodes.hpp         //
     ////////////////////////////////////
@@ -169,5 +180,15 @@ namespace DrkCraft
     int from_mouse_code(MouseCode button)
     {
         return static_cast<int>(button);
+    }
+
+    MouseCode to_mouse_code(std::string_view str)
+    {
+        return magic_enum::enum_cast<MouseCode>(str);
+    }
+
+    std::string mouse_code_name(MouseCode button)
+    {
+        return magic_enum::enum_name(button).value_or(MouseCode::None);
     }
 }

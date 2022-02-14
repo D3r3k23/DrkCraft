@@ -17,12 +17,13 @@ namespace DrkCraft
             { NoiseSpec::Type::ValueCubic,    FastNoiseLite::NoiseType_ValueCubic },
             { NoiseSpec::Type::Value,         FastNoiseLite::NoiseType_Value }
         });
-        DRK_ASSERT_DEBUG(noiseTypeMap.contains(spec.type), "Unkown noise type");
+        DRK_ASSERT_DEBUG(noiseTypeMap.contains(spec.type), "Unknown noise type");
         generator.SetNoiseType(noiseTypeMap.at(spec.type));
     }
 
     Noise::Noise(const NoiseSpec& spec, const uvec2& size, int seed)
-      : m_size(size)
+      : m_spec(spec),
+        m_size(size)
     {
         m_data = new float[size.x * size.y];
 
@@ -69,6 +70,11 @@ namespace DrkCraft
     float Noise::get(uint x, uint y)
     {
         return m_data[data_index(x, y)];
+    }
+
+    const NoiseSpec& Noise::info(void) const
+    {
+        return m_spec;
     }
 
     uint Noise::data_index(uint x, uint y)

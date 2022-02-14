@@ -1,12 +1,17 @@
 #ifndef DRK_SYSTEM_MOUSE_CODES_HPP
 #define DRK_SYSTEM_MOUSE_CODES_HPP
 
+#include <string_view>
+
 namespace DrkCraft
 {
     enum class MouseCode;
 
     MouseCode to_mouse_code(int button);
     int from_mouse_code(MouseCode button);
+
+    MouseCode to_mouse_code(std::string_view str);
+    std::string mouse_code_name(MouseCode button);
 
     // From glfw3.h, same codes as in imgui_impl_glfw.cpp
     enum class MouseCode

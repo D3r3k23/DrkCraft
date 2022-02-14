@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM_AUDIO_DETAIL_AL_TOOLS_HPP
-#define DRK_SYSTEM_AUDIO_DETAIL_AL_TOOLS_HPP
+#ifndef DRK_AUDIO_DETAIL_AL_TOOLS_HPP
+#define DRK_AUDIO_DETAIL_AL_TOOLS_HPP
 
 #include "Core/Base.hpp"
 
@@ -46,4 +46,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_AUDIO_DETAIL_AL_TOOLS_HPP
+#endif // DRK_AUDIO_DETAIL_AL_TOOLS_HPP

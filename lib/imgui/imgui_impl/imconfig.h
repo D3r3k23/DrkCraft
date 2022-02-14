@@ -1,30 +1,9 @@
-//-----------------------------------------------------------------------------
-// COMPILE-TIME OPTIONS FOR DEAR IMGUI
-// Runtime options (clipboard callbacks, enabling various features, etc.) can generally be set via the ImGuiIO structure.
-// You can use ImGui::SetAllocatorFunctions() before calling ImGui::CreateContext() to rewire memory allocation functions.
-//-----------------------------------------------------------------------------
-// A) You may edit imconfig.h (and not overwrite it when updating Dear ImGui, or maintain a patch/rebased branch with your modifications to it)
-// B) or '#define IMGUI_USER_CONFIG "my_imgui_config.h"' in your project and then add directives in your own file without touching this template.
-//-----------------------------------------------------------------------------
-// You need to make sure that configuration settings are defined consistently _everywhere_ Dear ImGui is used, which include the imgui*.cpp
-// files but also _any_ of your code that uses Dear ImGui. This is because some compile-time options have an affect on data structures.
-// Defining those options in imconfig.h will ensure every compilation unit gets to see the same data structure layouts.
-// Call IMGUI_CHECKVERSION() from your .cpp files to verify that the data structures your files are using are matching the ones imgui.cpp is using.
-//-----------------------------------------------------------------------------
-
 #pragma once
 
 //---- Define assertion handler. Defaults to calling assert().
 // If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
 //#define IM_ASSERT(_EXPR)  ((void)(_EXPR))     // Disable asserts
-
-//---- Define attributes of all API symbols declarations, e.g. for DLL under Windows
-// Using Dear ImGui via a shared library is not recommended, because of function call overhead and because we don't guarantee backward nor forward ABI compatibility.
-// DLL users: heaps and globals are not shared across DLL boundaries! You will need to call SetCurrentContext() + SetAllocatorFunctions()
-// for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for more details.
-//#define IMGUI_API __declspec( dllexport )
-//#define IMGUI_API __declspec( dllimport )
 
 //---- Don't define obsolete functions/enums/behaviors. Consider enabling from time to time after updating to avoid using soon-to-be obsolete function/names.
 #define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
@@ -48,22 +27,11 @@
 //#define IMGUI_DISABLE_DEFAULT_ALLOCATORS                  // Don't implement default allocators calling malloc()/free() to avoid linking with them. You will need to call ImGui::SetAllocatorFunctions().
 //#define IMGUI_DISABLE_SSE                                 // Disable use of SSE intrinsics even if available
 
-//---- Include imgui_user.h at the end of imgui.h as a convenience
-//#define IMGUI_INCLUDE_IMGUI_USER_H
-
-//---- Pack colors to BGRA8 instead of RGBA8 (to avoid converting from one to another)
-//#define IMGUI_USE_BGRA_PACKED_COLOR
-
-//---- Use 32-bit for ImWchar (default is 16-bit) to support unicode planes 1-16. (e.g. point beyond 0xFFFF like emoticons, dingbats, symbols, shapes, ancient languages, etc...)
-//#define IMGUI_USE_WCHAR32
-
 //---- Avoid multiple STB libraries implementations, or redefine path/filenames to prioritize another version
 // By default the embedded implementations are declared static and not available outside of Dear ImGui sources files.
 
-// For some reason use stb_truetype causes an exception
-
-// #define IMGUI_STB_TRUETYPE_FILENAME   "stb/stb_truetype.h"
-// #define IMGUI_STB_RECT_PACK_FILENAME  "stb/stb_rect_pack.h"
+#define IMGUI_STB_TRUETYPE_FILENAME  "stb/stb_truetype.h" // Will this cause an exception?
+#define IMGUI_STB_RECT_PACK_FILENAME "stb/stb_rect_pack.h"
 // #define IMGUI_DISABLE_STB_TRUETYPE_IMPLEMENTATION
 // #define IMGUI_DISABLE_STB_RECT_PACK_IMPLEMENTATION
 
@@ -85,25 +53,19 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
-#define IM_VEC2_CLASS_EXTRA                                                 \
-        ImVec2(const glm::vec2& f) { x = f.x; y = f.y; }                    \
-        operator glm::vec2() const { return glm::vec2(x,y); }
+#define IM_VEC2_CLASS_EXTRA                                  \
+    constexpr ImVec2(const glm::vec2& f) : x(f.x), y(f.y) {} \
+    operator glm::vec2() const { return glm::vec2(x,y); }
 
-#define IM_VEC4_CLASS_EXTRA                                                 \
-        ImVec4(const glm::vec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }  \
-        operator glm::vec4() const { return glm::vec4(x,y,z,w); }
+#define IM_VEC4_CLASS_EXTRA                                                  \
+    constexpr ImVec4(const glm::vec4& f) : x(f.x), y(f.y), z(f.z), w(f.w) {} \
+    operator glm::vec4() const { return glm::vec4(x,y,z,w); }
 
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
 // Your renderer backend will need to support it (most example renderer backends support both 16/32-bit indices).
 // Another way to allow large meshes while keeping 16-bit indices is to handle ImDrawCmd::VtxOffset in your renderer.
 // Read about ImGuiBackendFlags_RendererHasVtxOffset for details.
 //#define ImDrawIdx unsigned int
-
-//---- Override ImDrawCallback signature (will need to modify renderer backends accordingly)
-//struct ImDrawList;
-//struct ImDrawCmd;
-//typedef void (*MyImDrawCallback)(const ImDrawList* draw_list, const ImDrawCmd* cmd, void* my_renderer_user_data);
-//#define ImDrawCallback MyImDrawCallback
 
 //---- Debug Tools: Macro to break in Debugger
 // (use 'Metrics->Tools->Item Picker' to pick widgets with the mouse and break into them for easy debugging.)
@@ -117,11 +79,3 @@
 
 //---- Debug Tools: Enable slower asserts
 //#define IMGUI_DEBUG_PARANOID
-
-//---- Tip: You can add extra functions within the ImGui:: namespace, here or in your own headers files.
-/*
-namespace ImGui
-{
-    void MyFunction(const char* name, const MyMatrix44& v);
-}
-*/

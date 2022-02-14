@@ -34,9 +34,9 @@ namespace DrkCraft
 
         MeshRenderer::begin_scene();
         EntityRegistry& entities = m_entityManager.get_entities();
-        auto group = entities.group<TransformComponent>(entt::get<MeshComponent>);
 
-        for (auto entity : group)
+        for (auto group = entities.group<TransformComponent>(entt::get<MeshComponent>);
+            auto entity : group)
         {
             auto [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
             MeshRenderer::submit(mesh, transform);

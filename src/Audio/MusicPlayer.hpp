@@ -1,8 +1,8 @@
-#ifndef DRK_SYSTEM_AUDIO_MUSIC_PLAYER_HPP
-#define DRK_SYSTEM_AUDIO_MUSIC_PLAYER_HPP
+#ifndef DRK_AUDIO_MUSIC_PLAYER_HPP
+#define DRK_AUDIO_MUSIC_PLAYER_HPP
 
 #include "Core/Base.hpp"
-#include "System/Audio/AudioSource.hpp"
+#include "Audio/AudioSource.hpp"
 
 #include <deque>
 
@@ -34,4 +34,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_AUDIO_MUSIC_PLAYER_HPP
+#endif // DRK_AUDIO_MUSIC_PLAYER_HPP

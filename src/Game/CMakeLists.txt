@@ -9,6 +9,7 @@ target_sources(DrkCraft
     Game.cpp
     GameEvent.cpp
     Player.cpp
+    SavedWorldLoader.cpp
     World.cpp
     WorldGenerator.cpp
 )

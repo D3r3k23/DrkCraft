@@ -36,7 +36,9 @@ namespace DrkCraft
                   | (GameEventFlags)World
     };
 
-    GameEventFlags to_game_event_flags(auto item);
+    GameEventFlags to_game_event_flags(GameEventType type);
+    GameEventFlags to_game_event_flags(GameEventCategory cat);
+
     bool game_event_has_flags(const GameEvent& event, GameEventFlags flags);
 
     bool operator==(const GameEvent& event, GameEventFlags flags);

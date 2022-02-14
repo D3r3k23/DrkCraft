@@ -1,6 +1,7 @@
 #include "PauseMenu.hpp"
 
 #include "Application/Application.hpp"
+#include "Application/Layers/MainMenu.hpp"
 #include "System/Input.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -10,7 +11,16 @@ namespace DrkCraft
 {
     PauseMenu::PauseMenu(bool activate)
       : Layer("PauseMenuLayer", activate),
-        m_settingsMenu(Layer::create<SettingsMenu>(false))
+        m_settingsMenu(Layer::create<SettingsMenu>(false)),
+        m_options(
+        {
+            { "Unpause",      DRK_BIND_FN(unpause)       },
+            { "Settings",     DRK_BIND_FN(open_settings) },
+            { "Save Game",    DRK_BIND_FN(save_game)     },
+            { "Exit Game",    DRK_BIND_FN(exit_game)     },
+            { "Quit to Menu", DRK_BIND_FN(quit_to_menu)  },
+            { "Unpause",      DRK_BIND_FN(unpause)       }
+        })
     {
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(activate_layer));
     }
@@ -20,17 +30,17 @@ namespace DrkCraft
 
     }
 
-    void PauseMenu::set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn)
+    void PauseMenu::set_unpause_callback_fn(const UnpauseCallbackFn& fn)
     {
         m_onUnpause = fn;
     }
 
-    void PauseMenu::set_exit_game_callback_fn(const PauseMenuExitGameCallbackFn& fn)
+    void PauseMenu::set_exit_game_callback_fn(const ExitGameCallbackFn& fn)
     {
         m_onExitGame = fn;
     }
 
-    void PauseMenu::set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn)
+    void PauseMenu::set_save_game_callback_fn(const SaveGameCallbackFn& fn)
     {
         m_onSaveGame = fn;
     }
@@ -57,27 +67,15 @@ namespace DrkCraft
         ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Button));
         ImGuiTools::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
 
-        ImGui::Dummy({250, 50});
         ImGui::BeginGroup();
+        for (const auto& option : m_options)
+        {
+            ImGui::Dummy({250, 50});
 
-        if (ImGuiTools::ButtonCentered("Unpause", {250, 100}))
-            unpause();
-
-        ImGui::Dummy({250, 50});
-
-        if (ImGuiTools::ButtonCentered("Settings", {250, 100}))
-            open_settings();
-
-        ImGui::Dummy({250, 50});
-
-        if (ImGuiTools::ButtonCentered("Save Game", {250, 100}))
-            save_game();
-
-        ImGui::Dummy({250, 50});
-
-        if (ImGuiTools::ButtonCentered("Exit", {250, 100}))
-            exit_game();
-
+            const auto& [str, action] = option;
+            if (ImGuiTools::ButtonCentered(str, {250, 100}))
+                action();
+        }
         ImGui::EndGroup();
 
         ImGui::End();
@@ -130,5 +128,12 @@ namespace DrkCraft
         // If not saved: pop up box
         m_onExitGame();
         detach_layer();
+    }
+
+    void PauseMenu::quit_to_menu(void)
+    {
+        DRK_LOG_CORE_TRACE("PauseMenu: Quitting to Menu");
+        exit_game();
+        Application::add_layer(Layer::create<MainMenu>());
     }
 }

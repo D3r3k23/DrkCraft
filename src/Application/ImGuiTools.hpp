@@ -7,9 +7,10 @@
 
 #include <imgui/imgui.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
-#include <GLFW/glfw3.h>
 
 #include <unordered_map>
+
+struct GLFWwindow;
 
 namespace DrkCraft
 {

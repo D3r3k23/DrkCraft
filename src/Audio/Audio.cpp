@@ -1,7 +1,8 @@
 #include "Audio.hpp"
 
-#include "System/Audio/detail/AudioEngine.hpp"
-#include "System/Audio/detail/AlTools.hpp"
+#include "Audio/detail/AudioEngine.hpp"
+#include "Audio/detail/AlTools.hpp"
+#include "Util/File.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
@@ -77,21 +78,21 @@ namespace DrkCraft
         return static_cast<bool>(s_engine);
     }
 
-    Ref<AudioSource> Audio::load_file(const fs::path& path)
+    Ref<AudioSource> Audio::load_file(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG_NO_MSG(running());
 
-        if (fs::is_regular_file(path))
+        if (is_file(filename))
         {
-            DRK_LOG_CORE_TRACE("Loading Audio file: \"{}\"", path.generic_string());
+            DRK_LOG_CORE_TRACE("Loading Audio file: \"{}\"", filename.generic_string());
 
             Ref<AudioSource> source;
-            auto extension = path.extension().string();
+            auto extension = filename.extension().string();
             switch (ext_to_audio_file_format(extension))
             {
-                case AudioFileFormat::Mp3 : source = get_audio_engine().load_mp3(path); break;
-                case AudioFileFormat::Ogg : source = get_audio_engine().load_ogg(path); break;
+                case AudioFileFormat::Mp3 : source = get_audio_engine().load_mp3(filename); break;
+                case AudioFileFormat::Ogg : source = get_audio_engine().load_ogg(filename); break;
                 default:
                     DRK_ASSERT_DEBUG(false, "File format {} not supported", extension);
                     return {};
@@ -100,7 +101,7 @@ namespace DrkCraft
         }
         else
         {
-            DRK_LOG_CORE_ERROR("Audio file \"{}\" not found", path.generic_string());
+            DRK_LOG_CORE_ERROR("Audio file \"{}\" not found", filename.generic_string());
             return {};
         }
     }

@@ -4,7 +4,6 @@
 #include "Core/Base.hpp"
 #include "Game/ChunkManager.hpp"
 #include "Game/WorldGenerator.hpp"
-#include "Game/Player.hpp"
 #include "Application/Timestep.hpp"
 #include "Util/Noise.hpp"
 
@@ -17,14 +16,12 @@ namespace DrkCraft
     struct World
     {
     public:
-        static Ptr<World> load_save(const fs::path& saveDir);
+        World(void) = default;
 
         void render(void);
 
         void render_chunks(void);
         void render_entities(void);
-
-        Player player;
 
         ChunkManager chunkManager;
 

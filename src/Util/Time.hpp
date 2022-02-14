@@ -1,5 +1,5 @@
-#ifndef DRK_CORE_TIME_HPP
-#define DRK_CORE_TIME_HPP
+#ifndef DRK_UTIL_TIME_HPP
+#define DRK_UTIL_TIME_HPP
 
 #include "Core/Base.hpp"
 
@@ -64,4 +64,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_CORE_TIME_HPP
+#endif // DRK_UTIL_TIME_HPP

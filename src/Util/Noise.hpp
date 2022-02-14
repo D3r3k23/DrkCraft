@@ -38,10 +38,13 @@ namespace DrkCraft
         float get(const uvec2& point);
         float get(uint x, uint y);
 
+        const NoiseSpec& info(void) const;
+
     private:
         uint data_index(uint x, uint y);
 
     private:
+        const NoiseSpec m_spec;
         uvec2 m_size;
         float* m_data;
     };

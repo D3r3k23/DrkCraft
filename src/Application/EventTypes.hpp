@@ -88,7 +88,9 @@ namespace DrkCraft
               | (EventFlags)Monitor
     };
 
-    EventFlags to_event_flags(auto item);
+    EventFlags to_event_flags(EventType type);
+    EventFlags to_event_flags(EventCategory cat);
+
     bool event_flags_has_event(const Event& event, EventFlags flags);
 
     bool operator==(const Event& event, EventFlags flags);

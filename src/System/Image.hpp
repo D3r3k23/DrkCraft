@@ -6,19 +6,10 @@
 #include "lib/fs.hpp"
 #include "lib/glm/vec2.hpp"
 
-#include <stb/stb_image.h>
-
-#include <concepts>
-
 namespace DrkCraft
 {
     struct ImageData
     {
-        using Data_t = stbi_uc;
-        // Ensure that data can be stored as uint8*
-        static_assert(std::unsigned_integral<Data_t>);
-        static_assert(sizeof(uint8) == sizeof(Data_t));
-
         ImageData(uint8* data, const vec2& size, uint channels);
         ~ImageData(void);
 
@@ -30,8 +21,9 @@ namespace DrkCraft
     class Image
     {
     public:
-        static Ref<ImageData> load(const fs::path& filename, uint channels=0);
+        static Ref<Image> load_file(const fs::path& filename, uint channels=0);
 
+        Image(ImageData);
         Image(const fs::path& filename);
 
     private:

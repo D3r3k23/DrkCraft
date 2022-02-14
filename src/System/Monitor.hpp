@@ -7,7 +7,7 @@
 
 #include "lib/glm/vec2.hpp"
 
-#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h> // Move to .cpp and use forward declarations
 
 #include <vector>
 #include <string>
@@ -19,7 +19,7 @@
 
 namespace DrkCraft
 {
-    using VidMode = GLFWvidmode;
+    using VidMode = GLFWvidmode; // Create own VideoMode class
 
     class Monitor
     {

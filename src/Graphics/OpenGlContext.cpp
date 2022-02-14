@@ -4,11 +4,12 @@
 #include "Core/Debug/Profiler.hpp"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace DrkCraft
 {
     OpenGlContext::OpenGlContext(Window& window)
-      : m_window(window.get_raw_window())
+      : m_window(window)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing OpenGL context");
@@ -40,13 +41,13 @@ namespace DrkCraft
     void OpenGlContext::swap_buffers(void)
     {
         DRK_PROFILE_FUNCTION();
-        glfwSwapBuffers(m_window);
+        glfwSwapBuffers(m_window.get_raw_window());
     }
 
     void OpenGlContext::make_current(void)
     {
         DRK_PROFILE_FUNCTION();
-        glfwMakeContextCurrent(m_window);
+        glfwMakeContextCurrent(m_window.get_raw_window());
     }
 
     void OpenGlContext::clear_current(void)

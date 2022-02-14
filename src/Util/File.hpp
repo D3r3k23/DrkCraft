@@ -28,7 +28,7 @@ namespace DrkCraft
     std::string read_file(const fs::path& filename);
     void write_file(const fs::path& filename, std::string_view text);
 
-    void ensure_parent_dir_exists(const fs::path& path);
+    void ensure_dir_exists(const fs::path& dirname);
 
     bool is_file(const fs::path& filename);
     bool is_dir(const fs::path& dirname);

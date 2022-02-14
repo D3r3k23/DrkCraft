@@ -10,7 +10,7 @@ namespace DrkCraft
 {
     void load_opengl(void);
 
-    void GLAPIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id,
+    void DRK_APIENTRY gl_message_handler(GLenum source, GLenum type, GLuint id,
         GLenum severity, GLsizei length, const GLchar* msg, const void* userParam);
 
     template <typename O>

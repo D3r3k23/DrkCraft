@@ -10,6 +10,7 @@ add_subdirectory(glad)
 
 message("Configuring GLFW")
 set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
 add_subdirectory(glfw)
 target_compile_definitions(glfw INTERFACE GLFW_INCLUDE_NONE) # Don't need GLFW to include OpenGL header
 
@@ -82,7 +83,6 @@ target_link_libraries(DrkCraft
     stb_rect_pack
     stb_truetype
     vorbis
-    vorbisenc
     vorbisfile
     yaml-cpp
 )

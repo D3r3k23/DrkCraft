@@ -1,8 +1,17 @@
-# DrkCraft
+Title image
 
 [![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml)
 
 Minecraft-based game in C++ created using an OpenGL renderer
+
+* Minecraft<sup>2</sup>
+
+[Videos](https://www.youtube.com/playlist?list=PLD41ILT9lDJa0fnwzflIxxq_wivyyBtYb)
+
+### Manual
+[manual.md](doc/manual.md)
+
+Images
 
 ### Dependencies
 * C++ 20

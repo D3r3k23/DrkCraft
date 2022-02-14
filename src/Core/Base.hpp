@@ -16,6 +16,16 @@
 #define DRK_CONCAT(a, b) DRK_CONCAT_IMPL(a, b)
 #define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
+#if defined(DRK_PLATFORM_WINDOWS)
+#   ifdef APIENTRY
+#       define __stdcall
+#   endif
+#   define DRK_APIENTRY APIENTRY
+#   ifndef NOMINMAX
+#       define NOMINMAX
+#   endif
+#endif
+
 namespace DrkCraft
 {
     enum ResultType

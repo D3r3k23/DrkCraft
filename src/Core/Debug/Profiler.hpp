@@ -5,7 +5,7 @@
 
 #if DRK_PROFILING_ENABLED
 
-    #include "Core/Time.hpp"
+    #include "Util/Time.hpp"
 
     #include <fstream>
     #include <mutex>
@@ -97,10 +97,12 @@
         Profiler::get_instance().create_flow_end_profile(cat, name)
 
     #define DRK_PROFILE_THREAD_CREATE(name) \
-        DRK_PROFILE_FLOW_BEGIN("thread", name)
+        DRK_PROFILE_FLOW_BEGIN("thread", DRK_CONCAT(name, "_thread_flow"))
 
+    // NOTE: Is two statements
     #define DRK_PROFILE_THREAD_START(name) \
-        DRK_PROFILE_FLOW_END("thread", name)
+        DRK_PROFILE_FLOW_END("thread", DRK_CONCAT(name, "_thread_flow")); \
+        DRK_PROFILE_SCOPE(DRK_CONCAT(name, "_thread"))
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)

@@ -4,8 +4,6 @@
 #include "Core/Base.hpp"
 #include "System/Window.hpp"
 
-#include <GLFW/glfw3.h>
-
 namespace DrkCraft
 {
     class OpenGlContext
@@ -19,7 +17,7 @@ namespace DrkCraft
         static void clear_current(void);
 
     private:
-        GLFWwindow* m_window;
+        Window& m_window;
     };
 }
 

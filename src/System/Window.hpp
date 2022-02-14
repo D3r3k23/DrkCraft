@@ -6,10 +6,10 @@
 
 #include "lib/glm/vec2.hpp"
 
-#include <GLFW/glfw3.h>
-
 #include <string>
 #include <string_view>
+
+struct GLFWwindow;
 
 namespace DrkCraft
 {

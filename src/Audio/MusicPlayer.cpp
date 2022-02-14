@@ -1,6 +1,6 @@
 #include "MusicPlayer.hpp"
 
-#include "System/Audio/Audio.hpp"
+#include "Audio/Audio.hpp"
 
 #include <algorithm>
 

@@ -5,10 +5,10 @@
 
 namespace DrkCraft
 {
-    using vec3  = glm::vec3;
-    using ivec3 = glm::ivec3;
-    using uvec3 = glm::uvec3;
-    using bvec3 = glm::bvec3;
+    using glm::vec3;
+    using glm::ivec3;
+    using glm::uvec3;
+    using glm::bvec3;
 }
 
 #endif // DRK_LIB_GLM_VEC3_HPP

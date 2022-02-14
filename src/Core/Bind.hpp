@@ -4,9 +4,9 @@
 #include <utility>
 
 // Bind member function to lambda
-#define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto   \
-{                                                          \
-    return this->fn(std::forward<decltype(args)>(args)...); \
+#define DRK_BIND_FN(fn) [this](auto&& ... args) -> auto \
+{                                                      \
+    return fn(std::forward<decltype(args)>(args)...); \
 }
 
 #endif // DRK_CORE_BIND_HPP

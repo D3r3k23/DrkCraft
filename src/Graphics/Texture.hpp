@@ -40,7 +40,7 @@ namespace DrkCraft
     private:
     };
 
-    class TextureAtlas : public Texture2D
+    class TextureAtlas : public Texture2D // ?
     {
     public:
         TextureAtlas(void);
@@ -48,6 +48,11 @@ namespace DrkCraft
         virtual uvec2 get_coordinates(uint s, uint t) override;
 
     private:
+    };
+
+    class SubTexture : public Texture2D
+    {
+
     };
 
     class TextureManager

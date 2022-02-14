@@ -9,5 +9,3 @@ target_sources(DrkCraft
     Monitor.cpp
     Window.cpp
 )
-
-add_subdirectory(Audio)

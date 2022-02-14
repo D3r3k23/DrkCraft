@@ -3,6 +3,8 @@
 #include "Core/RunSettings.hpp"
 #include "Core/Debug/Profiler.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace DrkCraft
 {
     Window::Window(std::string_view title)

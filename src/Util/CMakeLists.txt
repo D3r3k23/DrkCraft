@@ -6,4 +6,5 @@ target_sources(DrkCraft
     PeriodicUpdate.cpp
     Random.cpp
     String.hpp
+    Time.hpp
 )

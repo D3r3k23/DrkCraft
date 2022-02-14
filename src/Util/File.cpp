@@ -30,22 +30,14 @@ namespace DrkCraft
         file << text;
     }
 
-    void ensure_parent_dir_exists(const fs::path& path)
+    void ensure_dir_exists(const fs::path& dirname)
     {
-        if (path_exists(path))
+        if (is_dir(dirname))
             return;
 
-        const auto parent = path.parent_path();
-        if (is_dir(parent))
-            return;
+        DRK_ASSERT_CORE(!path_exists(dirname), "Directory \"{}\" already exists and is not a directory", dirname.generic_string());
 
-        DRK_ASSERT_CORE(!path_exists(parent),
-            "Parent directory for file in path \"{}\" already exists and is not a directory",
-                        path.generic_string());
-        DRK_LOG_CORE_WARN("Parent directory for file in path \"{}\" does not exist",
-                        path.generic_string());
-
-        fs::create_directories(parent);
+        fs::create_directories(dirname);
     }
 
     bool is_file(const fs::path& filename)

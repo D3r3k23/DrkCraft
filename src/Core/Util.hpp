@@ -8,6 +8,16 @@
 #include <functional>
 #include <utility>
 
+#if defined(DRK_PLATFORM_WINDOWS)
+    #include <process.h>
+    #define DRK_GET_PID() _getpid()
+#elif defined(DRK_PLATFORM_LINUX)
+    #include <unistd.h>
+    #define DRK_GET_PID() getpid()
+#else
+    #error "Unsupported platform"
+#endif
+
 namespace DrkCraft
 {
     enum class Direction

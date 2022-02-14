@@ -8,6 +8,7 @@
 
 namespace DrkCraft
 {
+    // Set message / progress
     class LoadingScreen : public Layer
     {
     public:

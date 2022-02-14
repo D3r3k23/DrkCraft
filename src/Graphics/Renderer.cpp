@@ -8,15 +8,17 @@
 
 namespace DrkCraft
 {
-    struct RendererData
+    namespace
     {
-        RendererStats lastStats;
-        RendererStats stats;
+        struct RendererData
+        {
+            RendererStats lastStats;
+            RendererStats stats;
 
-        std::optional<SceneData> sceneData;
-        TextureManager textureSlots;
-    };
-
+            std::optional<SceneData> sceneData;
+            TextureManager textureSlots;
+        };
+    }
     static RendererData s_data;
 
     void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)

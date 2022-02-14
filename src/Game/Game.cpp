@@ -1,35 +1,31 @@
 #include "Game.hpp"
 
 #include "Application/Application.hpp"
-#include "System/Audio/Audio.hpp"
+#include "Audio/Audio.hpp"
 #include "System/Input.hpp"
-#include "Game/Layers/PauseMenu.hpp"
 #include "Game/ChunkRenderer.hpp"
-#include "Graphics/Transform.hpp"
 #include "Core/Debug/Profiler.hpp"
+
+#include <utility>
 
 // Temp
 #include <array>
+#include <glad/glad.h>
 
 namespace DrkCraft
 {
-    Game::Game(void)
-      : Layer("GameLayer", true),
-        m_assets(Application::get_assets()),
+    Game::Game(Ptr<World> world, AssetManager& assets, Ref<DebugOverlay> debugLayer)
+      : m_assets(assets),
+        m_world(std::move(world)),
+        m_running(true),
+        m_paused(false),
+        m_debugOverlay(std::move(debugLayer)),
         flatColorShaderProgram("FlatColorShaderProgram"),
         color(0.5f, 0.5f, 0.5f),
         randomDist(0.0f, 1.0f)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_GAME_INFO("Starting game");
-
-        bool showHud = false;
-
-        m_hudLayer     = Layer::create<Hud>(showHud);
-        m_consoleLayer = Layer::create<Console>();
-        m_debugLayer   = Layer::create<DebugOverlay>(m_assets, Application::get_imgui());
-
-
 
         std::array<float, 9> vertexPositions
         {
@@ -53,53 +49,24 @@ namespace DrkCraft
         song = m_assets.get_song("Alix Perez - Burning Babylon.mp3");
     }
 
-    Game::Game(const fs::path& saveDir)
-      : Game()
-    {
-        m_world = World::load_save(saveDir);
-    }
-
-    Game::Game(const WorldGenerator& worldGenerator)
-      : Game()
-    {
-        m_world = worldGenerator.generate();
-    }
-
     Game::~Game(void)
     {
 
     }
 
-    void Game::on_attach(void)
+    void Game::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
-        Application::add_layer(m_hudLayer);
-        Application::add_overlay(m_consoleLayer);
-        Application::add_overlay(m_debugLayer);
+        m_player.update(timestep);
     }
 
-    void Game::on_detach(void)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        m_debugLayer->detach_layer();
-        m_consoleLayer->detach_layer();
-        m_hudLayer->detach_layer();
-    }
-
-    void Game::on_update(Timestep timestep)
-    {
-        DRK_PROFILE_FUNCTION();
-
-    }
-
-    void Game::on_render(void)
+    void Game::render(void)
     {
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_scene({
-            m_world->player.get_camera()
+            m_player.get_camera()
         });
 
         m_world->skybox.render();
@@ -109,7 +76,7 @@ namespace DrkCraft
 
         Renderer::end_scene();
 
-        m_debugLayer->update_renderer_stats();
+        m_debugOverlay->update_renderer_stats();
 
 
 
@@ -126,9 +93,8 @@ namespace DrkCraft
     {
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
-        ed.dispatch<WindowFocusLostEvent>(DRK_BIND_FN(on_window_focus_lost));
-        ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
-        ed.dispatch<InputEvent>([this](const InputEvent& event){ m_player.on_event(event); });
+
+        m_player.on_event(event);
     }
 
     bool Game::on_key_pressed(const KeyPressedEvent& event)
@@ -151,34 +117,9 @@ namespace DrkCraft
                 }
                 return true;
             }
-            case KeyCode::Escape:
-            {
-                pause();
-                return true;
-            }
-            case KeyCode::F11:
-            {
-                if (!m_debugLayer->is_layer_active())
-                    m_debugLayer->activate_layer();
-                else
-                    m_debugLayer->deactivate_layer();
-                return true;
-            }
             default:
                 return false;
         }
-    }
-
-    bool Game::on_window_focus_lost(const WindowFocusLostEvent& event)
-    {
-        pause();
-        return true;
-    }
-
-    bool Game::on_monitor_event(const MonitorEvent& event)
-    {
-        pause();
-        return false;
     }
 
     void Game::pause(void)
@@ -186,8 +127,6 @@ namespace DrkCraft
         DRK_LOG_GAME_INFO("Paused");
 
         m_paused = true;
-        deactivate_layer();
-        open_pause_menu();
         Audio::pause();
     }
 
@@ -196,25 +135,12 @@ namespace DrkCraft
         DRK_LOG_GAME_INFO("Unpaused");
 
         m_paused = false;
-        activate_layer();
         Audio::play();
     }
 
     bool Game::is_paused(void) const
     {
         return m_paused;
-    }
-
-    void Game::open_pause_menu(void)
-    {
-        auto pauseMenu = Layer::create<PauseMenu>();
-        pauseMenu->set_unpause_callback_fn(DRK_BIND_FN(unpause));
-        pauseMenu->set_exit_game_callback_fn([this]
-        {
-            detach_layer();
-        });
-        pauseMenu->set_save_game_callback_fn(DRK_BIND_FN(save));
-        Application::add_layer(pauseMenu);
     }
 
     void Game::save(void)

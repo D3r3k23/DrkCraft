@@ -28,43 +28,44 @@ namespace DrkCraft
 
         float speed = 1.0f;
 
+        using enum PlayerState;
         switch (m_state)
         {
-            case PlayerState::Normal:
+            case Normal:
             {
                 if (is_mod_pressed(KeyMod::Shift))
                 {
-                    m_state = PlayerState::Sprinting;
+                    m_state = Sprinting;
                 }
                 else if (is_mod_pressed(KeyMod::Ctrl))
                 {
-                    m_state = PlayerState::Crouching;
+                    m_state = Crouching;
                 }
                 break;
             }
-            case PlayerState::Sprinting:
+            case Sprinting:
             {
                 if (!is_mod_pressed(KeyMod::Shift))
                 {
-                    m_state = PlayerState::Normal;
+                    m_state = Normal;
                 }
                 else if (is_mod_pressed(KeyMod::Ctrl))
                 {
-                    m_state = PlayerState::Crouching;
+                    m_state = Crouching;
                 }
                 speed *= 1.5;
                 break;
             }
-            case PlayerState::Crouching:
+            case Crouching:
             {
                 if (!is_mod_pressed(KeyMod::Ctrl))
                 {
-                    m_state = PlayerState::Normal;
+                    m_state = Normal;
                 }
                 speed *= 0.5;
                 break;
             }
-            case PlayerState::Flying:
+            case Flying:
             {
                 if (is_key_pressed(KeyCode::Space))
                 {
@@ -79,7 +80,7 @@ namespace DrkCraft
             default:
             {
                 DRK_ASSERT_DEBUG(false, "Unknown PlayerState");
-                m_state = PlayerState::Normal;
+                m_state = Normal;
             }
         }
         if (is_key_pressed(KeyCode::W)) m_position += speed * delta * horizontalDirection;
@@ -91,67 +92,68 @@ namespace DrkCraft
         m_camera.set_position(m_position + m_cameraOffset);
     }
 
-    bool Player::on_event(const InputEvent& event)
+    void Player::render(void)
     {
-        switch (event.get_type())
+
+    }
+
+    void Player::on_event(Event& event)
+    {
+        EventDispatcher ed(event);
+        ed.dispatch<MouseMovedEvent>(DRK_BIND_FN(on_mouse_moved));
+        ed.dispatch<MouseButtonPressedEvent>(DRK_BIND_FN(on_mouse_button_pressed));
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+    }
+
+    bool Player::on_mouse_moved(const MouseMovedEvent& event)
+    {
+        // m_direction
+
+        m_camera.set_direction(m_direction);
+        return false;
+    }
+
+    bool Player::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
+    {
+        switch (event.button)
         {
-            case EventType::MouseMoved:
+            case MouseCode::Left:
             {
-                // m_direction
-                m_camera.set_direction(m_direction);
-                return false;
+                // Hit block / attack
+                return true;
             }
-            case EventType::MouseButtonPressed:
+            case MouseCode::Right:
             {
-                const auto& e = event_cast<MouseButtonEvent>(event);
-                switch (e.button)
-                {
-                    case MouseCode::Left:
-                    {
-                        // Hit block / attack
-                        return true;
-                    }
-                    case MouseCode::Right:
-                    {
-                        // Place block / use
-                        return true;
-                    }
-                    default:
-                        return false;
-                }
-            }
-            case EventType::KeyPressed:
-            {
-                const auto& e = event_cast<KeyEvent>(event);
-                switch (e.key)
-                {
-                    case KeyCode::Space:
-                    {
-                        jump();
-                        return true;
-                    }
-                    case KeyCode::F:
-                    {
-                        if (CommandLineOptions::dev_mode_activated())
-                        {
-                            toggle_flying();
-                            return true;
-                        }
-                        else
-                            return false;
-                    }
-                    default:
-                        return false;
-                }
+                // Place block / use
+                return true;
             }
             default:
                 return false;
         }
     }
 
-    void Player::render(void)
+    bool Player::on_key_pressed(const KeyPressedEvent& event)
     {
-
+        switch (event.key)
+        {
+            case KeyCode::Space:
+            {
+                jump();
+                return true;
+            }
+            case KeyCode::F:
+            {
+                if (CommandLineOptions::dev_mode_activated())
+                {
+                    toggle_flying();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            default:
+                return false;
+        }
     }
 
     bool Player::flying(void) const

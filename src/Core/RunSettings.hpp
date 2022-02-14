@@ -2,6 +2,7 @@
 #define DRK_CORE_RUN_SETTINGS_HPP
 
 #include "Core/Base.hpp"
+#include "System/Input.hpp"
 
 #include "lib/fs.hpp"
 
@@ -35,26 +36,6 @@ namespace DrkCraft
         bool dev = false; // Or maybe this should be runtime-enabled with a hotkey
     };
 
-    const uint NUM_SETTINGS = 3;
-
-    enum SettingsEnum
-    {
-        Settings_Fullscreen,
-        Settings_FullscreenMonitor,
-        Settings_VSync
-    };
-
-    struct SettingsData
-    {
-        // Video
-        bool fullscreen = false;
-        int fullscreen_monitor = 0;
-        bool vsync = true;
-
-        // Audio
-        float volume = 0.5f;
-    };
-
     struct ConfigData
     {
         struct
@@ -63,33 +44,98 @@ namespace DrkCraft
             int height = 720;
         } init_window_size;
 
-        fs::path saves_directory = "data/saves";
+        std::string saves_directory = "data/saves";
+    };
+
+    struct SettingsData
+    {
+        struct Video
+        {
+            bool fullscreen = false;
+            int fullscreen_monitor = 0;
+            bool vsync = true;
+        } video;
+
+        struct Audio
+        {
+            float volume = 0.5f;
+            bool music = true;
+        } audio;
+
+        struct Controls
+        {
+            int sensitivity = 0.5f;
+        } controls;
+    };
+
+    const uint NUM_SETTINGS = 6;
+
+    enum SettingsEnum
+    {
+        Settings_Fullscreen,
+        Settings_FullscreenMonitor,
+        Settings_VSync,
+        Settings_Volume,
+        Settings_Music,
+        Settings_Sensitivity
+    };
+
+    struct KeyBinds
+    {
+        struct PlayerMovement
+        {
+            KeyCode forward = KeyCode::W;
+            KeyCode back    = KeyCode::S;
+            KeyCode left    = KeyCode::A;
+            KeyCode right   = KeyCode::D;
+
+            KeyCode sprint = KeyCode::LeftShift;
+            KeyCode crouch = KeyCode::LeftCtrl;
+            KeyCode jump   = KeyCode::Space;
+
+        } player_movement;
+
+        struct PlayerActions
+        {
+            MouseCode use   = MouseCode::Button0; // Item: Weapon -> attack, Tool -> use, Block/other -> nothing
+            MouseCode place = MouseCode::Button1; // Item: Weapon -> secondary, Tool -> nothing, Block/other -> place
+
+            KeyCode interact  = KeyCode::E;
+            KeyCode inventory = KeyCode::T;
+            KeyCode fly       = KeyCode::F;
+        } player_actions;
     };
 
     class RuntimeSettings
     {
     public:
         static void load(const fs::path& location);
-
-        static void save_settings(void);
+        static void save(void);
 
         static const ConfigData& config(void);
+        static const SettingsData& settings(void);
+        static const KeyBinds& keybinds(void);
 
-        static SettingsData& get(void);
-        static void set(const SettingsData& settings);
+        static void set_settings(const SettingsData& settings);
+        static void set_keybinds(const KeyBinds& keybinds);
 
     private:
-        static void load_config(void);
-        static void load_settings(void);
+        static void load_config_file(const fs::path& filename);
+        static void load_settings_file(const fs::path& filename);
+        static void load_keybinds_file(const fs::path& filename);
 
-        static void save_config(void);
+        static void save_config_file(const fs::path& filename);
+        static void save_settings_file(const fs::path& filename);
+        static void save_keybinds_file(const fs::path& filename);
 
     private:
         static fs::path s_configFile;
         static fs::path s_settingsFile;
+        static fs::path s_keybindsFile;
 
-        static ConfigData s_configData;
+        static ConfigData  s_configData;
         static SettingsData s_settingsData;
+        static KeyBinds    s_keybindsData;
     };
 }
 

@@ -61,4 +61,4 @@ if "%1" == "" (
 )
 
 set "build_dir=build"
-set "exe=%build_dir%\%build_config%\DrkCraft.exe"
+set "exe=%build_dir%\bin\%build_config%\DrkCraft.exe"

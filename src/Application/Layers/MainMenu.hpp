@@ -5,6 +5,7 @@
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
+
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 
@@ -34,6 +35,7 @@ namespace DrkCraft
     private:
         Ref<SettingsMenu> m_settingsMenu;
         Ref<LoadingScreen> m_loadingScreen;
+
         bool m_show;
         bool m_applicationAssetsLoading;
         bool m_startButtonPushed;

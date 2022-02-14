@@ -1,10 +1,8 @@
 #include "AssetManager.hpp"
 
-#include "System/Audio/Audio.hpp"
-#include "Core/Time.hpp"
+#include "Audio/Audio.hpp"
+#include "Util/Time.hpp"
 #include "Core/Debug/Profiler.hpp"
-
-#include <nameof.hpp>
 
 #include <algorithm>
 
@@ -60,17 +58,20 @@ namespace DrkCraft
 
         if (m_queue.empty())
             return {};
-
-        DRK_PROFILE_SCOPE("Pop");
-        const auto front = m_queue.front();
-        m_queue.pop();
-        return front;
+        else
+        {
+            DRK_PROFILE_SCOPE("Pop");
+            const auto front = m_queue.front();
+            m_queue.pop();
+            return front;
+        }
     }
 
     bool AssetManager::AssetLoadQueue::empty(void)
     {
         DRK_PROFILE_FUNCTION();
         std::lock_guard lock(m_queueMutex);
+
         return m_queue.empty();
     }
 
@@ -83,7 +84,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_PROFILE_THREAD_CREATE("Asset load thread");
+        DRK_PROFILE_THREAD_CREATE("asset_load");
         m_loadThread = std::jthread(DRK_BIND_FN(load_worker));
     }
 
@@ -203,7 +204,7 @@ namespace DrkCraft
 
     void AssetManager::load_worker(std::stop_token st)
     {
-        DRK_PROFILE_THREAD_START("Asset load thread");
+        DRK_PROFILE_THREAD_START("asset_load");
         DRK_PROFILE_FUNCTION();
 
         while (!st.stop_requested())

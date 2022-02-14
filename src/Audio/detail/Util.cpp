@@ -16,24 +16,31 @@ namespace DrkCraft
         return AudioFileFormat::None;
     }
 
-    AudioSourceFormat get_audio_source_format(uint channels)
+    AudioSourceFormat get_audio_source_format(uint channels, uint bitDepth)
     {
-        switch (channels)
+        using enum AudioSourceFormat;
+        if (channels == 1)
         {
-            case 1: return AudioSourceFormat::Mono16;
-            case 2: return AudioSourceFormat::Stereo16;
-            default:
-                DRK_ASSERT_DEBUG(false, "Unknown AudioSourceFormat");
-                return AudioSourceFormat::None;
+            if (bitDepth == 8)  return Mono8;
+            if (bitDepth == 16) return Mono16;
         }
+        if (channels == 2)
+        {
+            if (bitDepth == 8)  return Stereo8;
+            if (bitDepth == 16) return Stereo16;
+        }
+        return AudioSourceFormat::None;
     }
 
     uint to_al_source_format(AudioSourceFormat format)
     {
+        using enum AudioSourceFormat;
         switch (format)
         {
-            case AudioSourceFormat::Mono16   : return AL_FORMAT_MONO16;
-            case AudioSourceFormat::Stereo16 : return AL_FORMAT_STEREO16;
+            case Mono8    :    return AL_FORMAT_MONO8;
+            case Mono16   :   return AL_FORMAT_MONO16;
+            case Stereo8  :  return AL_FORMAT_STEREO8;
+            case Stereo16 : return AL_FORMAT_STEREO16;
             default:
                 DRK_ASSERT_DEBUG(false, "Unknown OpenAL format");
                 return 0;

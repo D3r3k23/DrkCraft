@@ -2,7 +2,7 @@
 #define DRK_UTIL_PERIODIC_UPDATE_HPP
 
 #include "Core/Base.hpp"
-#include "Core/Time.hpp"
+#include "Util/Time.hpp"
 
 namespace DrkCraft
 {

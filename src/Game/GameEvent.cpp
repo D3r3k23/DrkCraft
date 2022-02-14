@@ -52,9 +52,14 @@ namespace DrkCraft
     //         GameEventTypes.hpp         //
     ////////////////////////////////////////
 
-    GameEventFlags to_game_event_flags(auto item)
+    GameEventFlags to_game_event_flags(GameEventType type)
     {
-        return static_cast<GameEventFlags>(item);
+        return static_cast<GameEventFlags>(type);
+    }
+
+    GameEventFlags to_game_event_flags(GameEventCategory cat)
+    {
+        return static_cast<GameEventFlags>(cat);
     }
 
     bool game_event_has_flags(const GameEvent& event, GameEventFlags flags)

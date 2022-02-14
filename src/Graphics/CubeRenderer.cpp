@@ -22,32 +22,35 @@ namespace DrkCraft
     static constexpr uint MAX_CUBE_VERTICES = MAX_CUBES * NUM_VERTICES_IN_CUBE;
     static constexpr uint MAX_CUBE_INDICES  = MAX_CUBES * NUM_INDICES_IN_CUBE;
 
-    struct CubeVertex
+    namespace
     {
-        vec3 position;
-        vec2 texCoord;
-        uint texIndex;
-    };
+        struct CubeVertex
+        {
+            vec3 position;
+            vec2 texCoord;
+            uint texIndex;
+        };
 
-    struct CubeRendererData
-    {
-        CubeRendererStats lastStats;
-        CubeRendererStats stats;
+        struct CubeRendererData
+        {
+            CubeRendererStats lastStats;
+            CubeRendererStats stats;
 
-        ShaderProgram shader{"CubeShader"};
+            ShaderProgram shader{"CubeShader"};
 
-        Ptr<VertexArray> vertexArray;
+            Ptr<VertexArray> vertexArray;
 
-        Ref<VertexBuffer> vertexBuffer;
-        Ref<IndexBuffer>  indexBuffer;
+            Ref<VertexBuffer> vertexBuffer;
+            Ref<IndexBuffer>  indexBuffer;
 
-        std::vector<CubeVertex> vertexBufferData;
+            std::vector<CubeVertex> vertexBufferData;
 
-        uint indices = 0;
+            uint indices = 0;
 
-        vec4 whiteColor;
-        Ref<Texture2D> whiteTexture;
-    };
+            vec4 whiteColor;
+            Ref<Texture2D> whiteTexture;
+        };
+    }
 
     static CubeRendererData s_data;
 

@@ -1,16 +1,13 @@
 #include "RunSettings.hpp"
 
-#include "Core/BuildSettings.hpp"
-#include "Core/Log.hpp"
-#include "Core/Assert.hpp"
-#include "Core/Util.hpp"
+#include "Util/Yaml.hpp"
+#include "Util/File.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <yaml-cpp/yaml.h>
-#include <nameof.hpp>
 
-#include <fstream>
 #include <algorithm>
+#include <functional>
 
 namespace DrkCraft
 {
@@ -80,71 +77,54 @@ namespace DrkCraft
 
     fs::path RuntimeSettings::s_configFile;
     fs::path RuntimeSettings::s_settingsFile;
+    fs::path RuntimeSettings::s_keybindsFile;
 
     ConfigData   RuntimeSettings::s_configData;
     SettingsData RuntimeSettings::s_settingsData;
+    KeyBinds     RuntimeSettings::s_keybindsData;
 
     void RuntimeSettings::load(const fs::path& location)
     {
         DRK_PROFILE_FUNCTION();
 
         DRK_ASSERT_DEBUG(is_dir(location), "Invalid config directory");
-        auto defaultsLocation = location / "default";
-        bool defaultsFound = is_dir(defaultsLocation);
 
         s_configFile   = location / "config.yaml";
         s_settingsFile = location / "settings.yaml";
+        s_keybindsFile = location / "keybinds.yaml";
 
-        if (!is_file(s_configFile))
-        {
-            if (defaultsFound)
-            {
-                auto defaultConfigFile = defaultsLocation / "config.yaml";
-                if (is_file(defaultConfigFile))
-                    fs::copy(defaultConfigFile, s_configFile);
-                else
-                    save_config();
-            }
-            else
-                save_config();
-        }
-        load_config();
+        const auto defaultsLocation = location / "default";
 
-        if (!is_file(s_settingsFile))
+        // For settings, config, & keybinds:
+        // If file not found: Copy default file if it exists
+        const char* settings_config_keybinds[] {
+            "config.yaml",
+            "settings.yaml",
+            "keybinds.yaml",
+        };
+        for (const char* filename : settings_config_keybinds)
         {
-            if (defaultsFound)
+            if (!is_file(location / filename))
             {
-                auto defaultSettingsFile = defaultsLocation / "settings.yaml";
-                if (is_file(defaultSettingsFile))
-                    fs::copy(defaultSettingsFile, s_settingsFile);
-                else
-                    save_settings();
+                auto defaultFilename = defaultsLocation / filename;
+                if (is_file(defaultFilename))
+                    fs::copy(defaultFilename, filename);
             }
-            else
-                save_settings();
         }
-        load_settings();
+        if (!is_file(s_configFile)) // Save defaults, since this is not modified or saved later
+            save_config_file(s_configFile);
+
+        load_config_file(s_configFile);
+        load_settings_file(s_settingsFile);
+        load_keybinds_file(s_keybindsFile);
     }
 
-    void RuntimeSettings::save_settings(void)
+    void RuntimeSettings::save(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Saving settings to {}", s_settingsFile.generic_string());
 
-        YAML::Emitter settings;
-        settings << YAML::BeginMap;
-        settings   << YAML::Key << "video" << YAML::BeginMap;
-        settings     << YAML::Key << "fullscreen"         << YAML::Value << s_settingsData.fullscreen;
-        settings     << YAML::Key << "fullscreen_monitor" << YAML::Value << s_settingsData.fullscreen_monitor;
-        settings     << YAML::Key << "vsync"              << YAML::Value << s_settingsData.vsync;
-        settings   << YAML::EndMap;
-        settings   << YAML::Key << "audio" << YAML::BeginMap;
-        settings     << YAML::Key << "volume" << YAML::Value << s_settingsData.volume;
-        settings   << YAML::EndMap;
-        settings << YAML::EndMap;
-
-        std::ofstream outfile(s_settingsFile);
-        outfile << settings.c_str();
+        save_settings_file(s_settingsFile);
+        save_keybinds_file(s_keybindsFile);
     }
 
     const ConfigData& RuntimeSettings::config(void)
@@ -152,127 +132,251 @@ namespace DrkCraft
         return s_configData;
     }
 
-    SettingsData& RuntimeSettings::get(void)
+    const SettingsData& RuntimeSettings::settings(void)
     {
         return s_settingsData;
     }
 
-    void RuntimeSettings::set(const SettingsData& settings)
+    const KeyBinds& RuntimeSettings::keybinds(void)
+    {
+        return s_keybindsData;
+    }
+
+    void RuntimeSettings::set_settings(const SettingsData& settings)
     {
         s_settingsData = settings;
     }
 
-    void RuntimeSettings::load_config(void)
+    void RuntimeSettings::set_keybinds(const KeyBinds& keybinds)
     {
-        DRK_PROFILE_FUNCTION();
+        s_keybindsData = keybinds;
+    }
 
-        DRK_ASSERT_DEBUG(is_file(s_configFile), "Config file not found");
-        DRK_LOG_CORE_INFO("Loading config from {}", s_configFile.generic_string());
-        YAML::Node config;
-        try
-        {
-            config = YAML::LoadFile(s_configFile.string());
-        }
-        catch (const YAML::ParserException& e)
-        {
-            DRK_LOG_CORE_ERROR("Could not load config file");
-            return;
-        }
-        if (!config.IsMap())
-            DRK_LOG_CORE_WARN("Invalid config.yaml format");
-        else
-        {
-            if (config["init_window_size"] && config["init_window_size"].IsMap())
-            {
-                auto initWindowSize = config["init_window_size"];
-                if (initWindowSize["width"])
-                {
-                    s_configData.init_window_size.width  = initWindowSize["width"].as<int>(1280);
-                }
-                if (initWindowSize["height"])
-                {
-                    s_configData.init_window_size.height = initWindowSize["height"].as<int>(720);
-                }
-            }
-            else
-                DRK_LOG_CORE_WARN("Invalid config.yaml format \"init_window_size\"");
+    namespace
+    {
+        template <typename T, typename RepT=T>
+        using SettingTransform = std::function<T(RepT)>
 
-            if (config["saves_directory"])
+        template <typename T, typename RepT=T>
+        void assign_if_setting_is_valid(const YAML::Node& node, std::string_view key, T& value,
+            const SettingTransform<T, RepT>& transform={})
+        {
+            if (node[key])
             {
-                s_configData.saves_directory = config["saves_directory"].as<std::string>("data/saves");
+                if (transform)
+                    value = transform(node[key].as<RepT>(value));
+                else
+                    value = node[key].as<RepT>(value);
             }
+        }
+
+        template <typename T>
+        inline SettingTransform<T> setting_range(T min, T max)
+        {
+            return [min, max](T value) -> T
+            {
+                std::clamp(value, min, max);
+            };
+        }
+
+        template <typename T>
+        inline SettingTransform<T> setting_min(T min)
+        {
+            return [min](T value) -> T
+            {
+                std::max(value, min);
+            }
+        }
+
+        template <typename T>
+        inline SettingTransform<T> setting_max(T max)
+        {
+            return [max](T value) -> T
+            {
+                std::min(value, max);
+            }
+        }
+
+        inline KeyCode name_to_key_code(std::string name) // string_view?
+        {
+            return to_key_code(name);
+        }
+
+        inline MouseCode name_to_mouse_code(std::string name) // string_view?
+        {
+            return to_mouse_code(name);
         }
     }
 
-    void RuntimeSettings::load_settings(void)
+    void RuntimeSettings::load_config_file(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(is_file(s_settingsFile), "Settings file not found");
-        DRK_LOG_CORE_INFO("Loading settings from {}", s_settingsFile.generic_string());
-        YAML::Node settings;
-        try
-        {
-            settings = YAML::LoadFile(s_settingsFile.string());
-        }
-        catch (const YAML::ParserException& e)
-        {
-            DRK_LOG_CORE_ERROR("Could not load settings file");
+        DRK_LOG_CORE_INFO("Loading config from {}", filename.generic_string());
+        auto document = Yaml::load(filename);
+        if (!document)
             return;
-        }
-        if (!settings.IsMap())
-            DRK_LOG_CORE_ERROR("Invalid settings.yaml format \".\"");
-        else
-        {
-            if (settings["video"] && settings["video"].IsMap())
-            {
-                auto videoSettings = settings["video"];
-                if (videoSettings["fullscreen"])
-                {
-                    s_settingsData.fullscreen = videoSettings["fullscreen"].as<bool>(false);
-                }
-                if (videoSettings["fullscreen_monitor"])
-                {
-                    if (int monitor = videoSettings["fullscreen_monitor"].as<int>(0); monitor >= 0)
-                        s_settingsData.fullscreen_monitor = monitor;
-                }
-                if (videoSettings["vsync"])
-                {
-                    s_settingsData.vsync = videoSettings["vsync"].as<bool>(true);
-                }
-            }
-            else
-                DRK_LOG_CORE_WARN("Invalid settings.yaml format \"video\"");
+        auto config = *document;
 
-            if (settings["audio"] && settings["audio"].IsMap())
-            {
-                auto audioSettings = settings["audio"];
-                if (audioSettings["volume"])
-                {
-                    s_settingsData.volume = std::clamp(audioSettings["volume"].as<float>(0.5f), 0.0f, 1.0f);
-                }
-            }
-            else
-                DRK_LOG_CORE_ERROR("Invalid settings.yaml format \"video\"");
+        if (Yaml::check_map(config, "init_window_size"))
+        {
+            auto& initWindowSize = s_configData.init_window_size;
+
+            assign_if_setting_is_valid(config["init_window_size"], "width",  initWindowSize.width,  setting_min(0));
+            assign_if_setting_is_valid(config["init_window_size"], "height", initWindowSize.height, setting_min(0));
+        }
+        assign_if_setting_is_valid(config, "saves_directory", s_configData.saves_directory);
+
+        ensure_dir_exists(s_configData.saves_directory);
+    }
+
+    void RuntimeSettings::load_settings_file(const fs::path& filename)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        DRK_LOG_CORE_INFO("Loading settings from {}", filename.generic_string());
+        auto document = Yaml::load(filename);
+        if (!document)
+            return;
+        auto settings = *document;
+
+        if (Yaml::check_map(settings, "video"))
+        {
+            auto& videoSettings = s_settingsData.video;
+
+            assign_if_setting_is_valid(settings["video"], "fullscreen",         videoSettings.fullscreen);
+            assign_if_setting_is_valid(settings["video"], "fullscreen_monitor", videoSettings.fullscreen_monitor, setting_min(0));
+            assign_if_setting_is_valid(settings["video"], "vsync",              videoSettings.vsync);
+        }
+        if (Yaml::check_map(settings, "audio"))
+        {
+            auto& audioSettings = s_settingsData.audio;
+
+            assign_if_setting_is_valid(settings["audio"], "volume", audioSettings.volume, setting_range(0.0f, 1.0f));
+            assign_if_setting_is_valid(settings["audio"], "music",  audioSettings.music);
+        }
+        if (Yaml::check_map(settings, "controls"))
+        {
+            auto& controlsSettings = s_settingsData.controls;
+
+            assign_if_setting_is_valid(settings["controls"], "sensitivity", controlsSettings.sensitivity, setting_range(0, 100));
         }
     }
 
-    void RuntimeSettings::save_config(void)
+    void RuntimeSettings::load_keybinds_file(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Saving config to {}", s_configFile.generic_string());
+
+        DRK_LOG_CORE_INFO("Loading keybinds from {}", filename.generic_string());
+        auto document = Yaml::load(filename);
+        if (!document)
+            return;
+        auto keybinds = *document;
+
+        if (Yaml::check_map(keybinds, "player_movement"))
+        {
+            auto& movementKeybinds = s_keybindsData.player_movement;
+
+            assign_if_setting_is_valid(keybinds["player_movement"], "forward", movementKeybinds.forward, name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "back",    movementKeybinds.back,    name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "left",    movementKeybinds.left,    name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "right",   movementKeybinds.right,   name_to_key_code);
+
+            assign_if_setting_is_valid(keybinds["player_movement"], "sprint", movementKeybinds.sprint, name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "crouch", movementKeybinds.crouch, name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_movement"], "jump",   movementKeybinds.jump,   name_to_key_code);
+        }
+        if (Yaml::check_map(keybinds, "player_actions"))
+        {
+            auto& movementKeybinds = s_keybindsData.player_movement;
+
+            assign_if_setting_is_valid(keybinds["player_actions"], "use",    movementKeybinds.use,    name_to_mouse_code);
+            assign_if_setting_is_valid(keybinds["player_actions"], "place",   movementKeybinds.place, name_to_mouse_code);
+            assign_if_setting_is_valid(keybinds["player_actions"], "interact", movementKeybinds.interact,   name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_actions"], "inventory", movementKeybinds.inventory, name_to_key_code);
+            assign_if_setting_is_valid(keybinds["player_actions"], "fly",        movementKeybinds.fly,      name_to_key_code);
+        }
+    }
+
+    void RuntimeSettings::save_config_file(const fs::path& filename)
+    {
+        DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_INFO("Saving config to {}", filename.generic_string());
 
         YAML::Emitter config;
         config << YAML::BeginMap;
         config   << YAML::Key << "init_window_size";
         config   << YAML::BeginMap;
         config     << YAML::Key << "width"  << YAML::Value << s_configData.init_window_size.width;
-        config     << YAML::Key << "height" << YAML::Value << s_settingsData.fullscreen_monitor;
+        config     << YAML::Key << "height" << YAML::Value << s_configData.init_window_size.height;
         config   << YAML::EndMap;
         config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory.generic_string();
         config << YAML::EndMap;
 
-        std::ofstream outfile(s_configFile);
-        outfile << config.c_str();
+        write_file(filename, config.c_str());
+    }
+
+    void RuntimeSettings::save_settings_file(const fs::path& filename)
+    {
+        DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_INFO("Saving settings to {}", filename.generic_string());
+
+        const auto& video  = s_settingsData.video;
+        const auto& audio   = s_settingsData.audio;
+        const auto& controls = s_settingsData.controls;
+
+        YAML::Emitter settings;
+        settings << YAML::BeginMap;
+        settings   << YAML::Key << "video";
+        settings   << YAML::BeginMap;
+        settings     << YAML::Key << "fullscreen"         << YAML::Value << video.fullscreen;
+        settings     << YAML::Key << "fullscreen_monitor" << YAML::Value << video.fullscreen_monitor;
+        settings     << YAML::Key << "vsync"              << YAML::Value << video.vsync;
+        settings   << YAML::EndMap;
+        settings   << YAML::Key << "audio";
+        settings   << YAML::BeginMap;
+        settings     << YAML::Key << "volume" << YAML::Value << audio.volume;
+        settings     << YAML::Key << "music"  << YAML::Value << audio.music;
+        settings   << YAML::EndMap;
+        settings   << YAML::Key << "controls";
+        settings   << YAML::BeginMap;
+        settings     << YAML::Key << "sensitivity" << YAML::Value << controls.sensitivity;
+        settings   << YAML::EndMap;
+        settings << YAML::EndMap;
+
+        write_file(filename, settings.c_str());
+    }
+
+    void RuntimeSettings::save_keybinds_file(const fs::path& filename)
+    {
+        DRK_PROFILE_FUNCTION();
+        DRK_LOG_CORE_INFO("Saving keybinds to {}", filename.generic_string());
+
+        const auto& movement = s_keybindsData.player_movement;
+        const auto& actions  = s_keybindsData.player_actions;
+
+        YAML::Emitter keybinds;
+        keybinds << YAML::BeginMap;
+        keybinds   << YAML::Key << "player_movement";
+        keybinds   << YAML::BeginMap;
+        keybinds     << YAML::Key << "forward" << YAML::Value << key_code_name(movement.forward);
+        keybinds     << YAML::Key << "back"    << YAML::Value << key_code_name(movement.back);
+        keybinds     << YAML::Key << "left"    << YAML::Value << key_code_name(movement.left);
+        keybinds     << YAML::Key << "right"   << YAML::Value << key_code_name(movement.right);
+        keybinds     << YAML::Key << "sprint"  << YAML::Value << key_code_name(movement.sprint);
+        keybinds     << YAML::Key << "crouch"  << YAML::Value << key_code_name(movement.crouch);
+        keybinds     << YAML::Key << "jump"    << YAML::Value << key_code_name(movement.jump);
+        keybinds   << YAML::EndMap;
+        keybinds   << YAML::Key << "player_actions";
+        keybinds   << YAML::BeginMap;
+        keybinds     << YAML::Key << "use"       << YAML::Value << mouse_code_name(actions.use);
+        keybinds     << YAML::Key << "place"     << YAML::Value << mouse_code_name(actions.place);
+        keybinds     << YAML::Key << "interact"  << YAML::Value << key_code_name(actions.interact);
+        keybinds     << YAML::Key << "inventory" << YAML::Value << key_code_name(actions.inventory);
+        keybinds     << YAML::Key << "fly"       << YAML::Value << key_code_name(actions.fly);
+        keybinds   << YAML::EndMap;
+        keybinds << YAML::EndMap;
+
+        write_file(filename, keybinds.c_str());
     }
 }

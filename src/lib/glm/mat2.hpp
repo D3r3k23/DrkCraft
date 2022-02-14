@@ -3,9 +3,11 @@
 
 #include <glm/mat2x2.hpp>
 
+#include <string>
+
 namespace DrkCraft
 {
-    using mat2 = glm::mat2;
+    using glm::mat2;
 }
 
 #endif // DRK_LIB_GLM_MAT2_HPP

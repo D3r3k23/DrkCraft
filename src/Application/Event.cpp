@@ -116,9 +116,14 @@ namespace DrkCraft
     //         EventTypes.hpp         //
     ////////////////////////////////////
 
-    EventFlags to_event_flags(auto item)
+    EventFlags to_event_flags(EventType type)
     {
-        return static_cast<EventFlags>(item);
+        return static_cast<EventFlags>(type);
+    }
+
+    EventFlags to_event_flags(EventCategory cat)
+    {
+        return static_cast<EventFlags>(cat);
     }
 
     bool event_flags_has_event(const Event& event, EventFlags flags)

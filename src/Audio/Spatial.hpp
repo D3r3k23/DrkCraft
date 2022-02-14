@@ -1,13 +1,13 @@
-#ifndef DRK_SYSTEM_AUDIO_SPATIAL_HPP
-#define DRK_SYSTEM_AUDIO_SPATIAL_HPP
+#ifndef DRK_AUDIO_SPATIAL_HPP
+#define DRK_AUDIO_SPATIAL_HPP
 
 #include "Core/Base.hpp"
-#include "System/Audio/AudioSource.hpp"
+#include "Audio/AudioSource.hpp"
 #include "Core/Util.hpp"
 
 namespace DrkCraft
 {
-    class SpatialAudioController
+    class SpatialAudioController // Maybe not necessary
     {
     public:
         SpatialAudioController(Ref<AudioSource> source, Direction direction=Direction::None, float distance=1.0f);
@@ -31,4 +31,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_AUDIO_SPATIAL_HPP
+#endif // DRK_AUDIO_SPATIAL_HPP

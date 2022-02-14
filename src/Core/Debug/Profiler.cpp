@@ -3,6 +3,9 @@
 #if DRK_PROFILING_ENABLED
 
     #include "Util/File.hpp"
+    #include "Core/Util.hpp"
+
+    #include "lib/fs.hpp"
 
     #include <fmt/format.h>
     #include <fmt/chrono.h>
@@ -10,16 +13,6 @@
     #include <string>
     #include <sstream>
     #include <thread>
-
-    #if defined(DRK_PLATFORM_WINDOWS)
-        #include <process.h>
-        #define DRK_GET_PID() _getpid()
-    #elif defined(DRK_PLATFORM_LINUX)
-        #include <unistd.h>
-        #define DRK_GET_PID() getpid()
-    #else
-        #error "Unsupported platform"
-    #endif
 
     const bool FLUSH_ON_WRITE = false;
 
@@ -105,7 +98,7 @@
                 m_active = true;
                 m_name = name;
 
-                ensure_parent_dir_exists(file);
+                ensure_dir_exists(fs::path(file).parent_path());
                 m_outStream.open(file);
 
                 auto time = Time::get_system_time();

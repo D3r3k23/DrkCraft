@@ -1,10 +1,10 @@
-#ifndef DRK_SYSTEM_AUDIO_DETAIL_AUDIO_ENGINE_HPP
-#define DRK_SYSTEM_AUDIO_DETAIL_AUDIO_ENGINE_HPP
+#ifndef DRK_AUDIO_DETAIL_AUDIO_ENGINE_HPP
+#define DRK_AUDIO_DETAIL_AUDIO_ENGINE_HPP
 
 #include "Core/Base.hpp"
-#include "System/Audio/AudioSource.hpp"
-#include "System/Audio/detail/AlTools.hpp"
-#include "System/Audio/detail/Mp3Decoder.hpp"
+#include "Audio/AudioSource.hpp"
+#include "Audio/detail/AlTools.hpp"
+#include "Audio/detail/Decoder.hpp"
 
 #include "lib/fs.hpp"
 
@@ -19,10 +19,12 @@ namespace DrkCraft
 
     private:
         AudioEngine(void);
+    public:
         ~AudioEngine(void);
 
-        Ref<AudioSource> load_mp3(const fs::path& path);
-        Ref<AudioSource> load_ogg(const fs::path& path);
+    private:
+        Ref<AudioSource> load_mp3(const fs::path& filename);
+        Ref<AudioSource> load_ogg(const fs::path& filename);
 
         void play_source(const Ref<AudioSource>& source);
         void unpause_source(const Ref<AudioSource>& source);
@@ -51,4 +53,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_AUDIO_DETAIL_AUDIO_ENGINE_HPP
+#endif // DRK_AUDIO_DETAIL_AUDIO_ENGINE_HPP

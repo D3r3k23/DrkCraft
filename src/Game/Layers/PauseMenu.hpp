@@ -5,25 +5,28 @@
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
+
 #include "Application/Layers/SettingsMenu.hpp"
 
+#include <unordered_map>
 #include <functional>
 
 namespace DrkCraft
 {
-    using PauseMenuUnpauseCallbackFn  = std::function<void(void)>;
-    using PauseMenuExitGameCallbackFn = std::function<void(void)>;
-    using PauseMenuSaveGameCallbackFn = std::function<void(void)>;
 
     class PauseMenu : public Layer
     {
+        using UnpauseCallbackFn  = std::function<void(void)>;
+        using ExitGameCallbackFn = std::function<void(void)>;
+        using SaveGameCallbackFn = std::function<void(void)>;
+
     public:
         PauseMenu(bool activate=true);
         virtual ~PauseMenu(void);
 
-        void set_unpause_callback_fn(const PauseMenuUnpauseCallbackFn& fn);
-        void set_exit_game_callback_fn(const PauseMenuUnpauseCallbackFn& fn);
-        void set_save_game_callback_fn(const PauseMenuSaveGameCallbackFn& fn);
+        void set_unpause_callback_fn(const UnpauseCallbackFn& fn);
+        void set_exit_game_callback_fn(const UnpauseCallbackFn& fn);
+        void set_save_game_callback_fn(const SaveGameCallbackFn& fn);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -39,13 +42,15 @@ namespace DrkCraft
         void save_game(void);
         void unpause(void);
         void exit_game(void);
+        void quit_to_menu(void);
 
     private:
+        const std::unordered_map<const char*, std::function<void(void)>> m_options;
         Ref<SettingsMenu> m_settingsMenu;
 
-        PauseMenuUnpauseCallbackFn  m_onUnpause;
-        PauseMenuExitGameCallbackFn m_onExitGame;
-        PauseMenuSaveGameCallbackFn m_onSaveGame;
+        UnpauseCallbackFn  m_onUnpause;
+        ExitGameCallbackFn m_onExitGame;
+        SaveGameCallbackFn m_onSaveGame;
     };
 }
 

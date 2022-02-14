@@ -3,7 +3,7 @@
 #include "Application/Application.hpp"
 #include "Application/ImGuiTools.hpp"
 #include "Core/RunSettings.hpp"
-#include "Game/Game.hpp"
+#include "Game/Layers/GameLayer.hpp"
 #include "System/AssetManager.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -121,19 +121,25 @@ namespace DrkCraft
             DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
 
             // Either load save from file or create new world
-            Ref<Game> game;
+            Ref<GameLayer> gameLayer;
             if (0) // load save
             {
                 const fs::path saveDir(RuntimeSettings::config().saves_directory);
-                game = Layer::create<Game>(saveDir);
+
+                // Get save from menu
+
+                gameLayer = Layer::create<GameLayer>(saveDir);
             }
-            else // Open menu to configure world options
+            else
             {
-                // WorldGenerator worldGenerator(options);
-                // game = Layer::create<Game>(worldGenerator);
+                WorldGeneratorSpec spec;
+
+                // Get spec from menu
+
+                gameLayer = Layer::create<GameLayer>(spec);
             }
-            Application::add_layer(game);
-            detach_layer();
+            gameLayer->set_game_start_callback_fn(DRK_BIND_FN(detach_layer));
+            Application::add_layer(gameLayer);
         }
     }
 

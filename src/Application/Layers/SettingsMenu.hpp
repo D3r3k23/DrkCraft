@@ -5,6 +5,7 @@
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
+
 #include "Core/RunSettings.hpp"
 
 #include <array>
@@ -12,15 +13,15 @@
 
 namespace DrkCraft
 {
-    using SettingsMenuCloseCallbackFn = std::function<void(void)>;
-
     class SettingsMenu : public Layer
     {
+        using CloseCallbackFn = std::function<void(void)>;
+
     public:
         SettingsMenu(bool activate=true);
         virtual ~SettingsMenu(void);
 
-        void set_close_callback_fn(const SettingsMenuCloseCallbackFn& fn);
+        void set_close_callback_fn(const CloseCallbackFn& fn);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -40,7 +41,7 @@ namespace DrkCraft
         SettingsData m_settings;
         std::array<bool, NUM_SETTINGS> m_dirty;
 
-        SettingsMenuCloseCallbackFn m_onClose;
+        CloseCallbackFn m_onClose;
     };
 }
 

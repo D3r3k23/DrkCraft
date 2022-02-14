@@ -1,8 +1,8 @@
-#ifndef DRK_SYSTEM_AUDIO_AUDIO_HPP
-#define DRK_SYSTEM_AUDIO_AUDIO_HPP
+#ifndef DRK_AUDIO_AUDIO_HPP
+#define DRK_AUDIO_AUDIO_HPP
 
 #include "Core/Base.hpp"
-#include "System/Audio/AudioSource.hpp"
+#include "Audio/AudioSource.hpp"
 
 #include "lib/fs.hpp"
 
@@ -36,7 +36,7 @@ namespace DrkCraft
 
         static bool running(void);
 
-        static Ref<AudioSource> load_file(const fs::path& path);
+        static Ref<AudioSource> load_file(const fs::path& filename);
 
         static void play(Ref<AudioSource> source);
         static void play(void);
@@ -62,4 +62,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_AUDIO_AUDIO_HPP
+#endif // DRK_AUDIO_AUDIO_HPP

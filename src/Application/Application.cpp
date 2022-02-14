@@ -2,11 +2,11 @@
 
 #include "System/GlfwTools.hpp"
 #include "Graphics/Renderer.hpp"
-#include "System/Audio/Audio.hpp"
+#include "Audio/Audio.hpp"
 #include "System/Icon.hpp"
 #include "System/Input.hpp"
 #include "Core/RunSettings.hpp"
-#include "Core/Time.hpp"
+#include "Util/Time.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <thread>
@@ -131,12 +131,12 @@ namespace DrkCraft
         const auto& settings = RuntimeSettings::get();
         {
             DRK_LOG_CORE_TRACE("Loading monitors");
-            DRK_PROFILE_THREAD_CREATE("Monitor load thread");
+            DRK_PROFILE_THREAD_CREATE("monitor_load");
             // Probably should eventually do this on the main thread,
             // since GLFW calls may not be thread safe
             std::jthread monitorLoadThread([this]()
             {
-                DRK_PROFILE_THREAD_START("Monitor load thread");
+                DRK_PROFILE_THREAD_START("monitor_load");
                 m_monitorManager.load_monitors();
             });
 
@@ -146,7 +146,7 @@ namespace DrkCraft
             m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
             DRK_LOG_CORE_TRACE("Initializing Audio system");
-            Audio::init(settings.volume);
+            Audio::init(settings.audio.volume);
 
             DRK_LOG_CORE_TRACE("Loading Application assets");
             load_assets();
@@ -157,10 +157,10 @@ namespace DrkCraft
             DRK_LOG_CORE_TRACE("Initializing ImGui");
             m_imGuiManager = make_ptr<ImGuiManager>(m_window);
 
-            m_window.set_vsync(settings.vsync);
+            m_window.set_vsync(settings.video.vsync);
         }
 
-        if (settings.fullscreen)
+        if (settings.video.fullscreen)
             set_fullscreen();
 
         DRK_LOG_CORE_TRACE("Registering Application event handler");
@@ -179,6 +179,9 @@ namespace DrkCraft
         m_layerStack.clear();
 
         m_assetManager.unload_all();
+
+        DRK_LOG_CORE_TRACE("Saving Settings");
+        RuntimeSettings::save();
 
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
@@ -281,7 +284,7 @@ namespace DrkCraft
         switch (event.key)
         {
         #if defined(DRK_CONFIG_DEBUG)
-            case KeyCode::F12:
+            case KeyCode::F7:
             {
                 m_imGuiManager->toggle_demo_window();
                 return true;

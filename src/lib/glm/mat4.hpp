@@ -5,7 +5,7 @@
 
 namespace DrkCraft
 {
-    using mat4 = glm::mat4;
+    using glm::mat4;
 }
 
 #endif // DRK_LIB_GLM_MAT4_HPP

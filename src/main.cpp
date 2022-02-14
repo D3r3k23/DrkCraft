@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
     DRK_LOGGER_INIT("data/logs");
 
     DRK_LOG_CORE_INFO("DrkCraft Build:");
-    DRK_LOG_CORE_INFO("Version: v{}", DRK_BUILD_VERSION.string());
+    DRK_LOG_CORE_INFO("Version: v{}", DRK_VERSION_STRING);
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
     DRK_LOG_CORE_INFO("Config: {}",   DRK_CONFIG_NAME);
 

@@ -1,12 +1,11 @@
 #include "AudioEngine.hpp"
 
-#include "System/Audio/detail/Util.hpp"
+#include "Audio/detail/Util.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <AL/al.h>
 
 #include <algorithm>
-#include <cstdlib>
 
 namespace DrkCraft
 {
@@ -47,29 +46,26 @@ namespace DrkCraft
         AlContext::clear_current();
     }
 
-    Ref<AudioSource> AudioEngine::load_mp3(const fs::path& path)
+    Ref<AudioSource> AudioEngine::load_mp3(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_TRACE("Loading .mp3: \"{}\"", path.generic_string());
-        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(path) == AudioFileFormat::Mp3);
+        DRK_LOG_CORE_TRACE("Loading .mp3: \"{}\"", filename.generic_string());
+        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Mp3);
 
-        auto data = m_mp3Decoder.load_file(path);
-
-        return make_ref<AudioSource>(data->format, data->buffer, data->size,
-            data->sampleRate, data->bitRate);
+        auto data = m_mp3Decoder.decode(filename);
+        return make_ref<AudioSource>(*data);
     }
 
-    Ref<AudioSource> AudioEngine::load_ogg(const fs::path& path)
+    Ref<AudioSource> AudioEngine::load_ogg(const fs::path& filename)
     {
-    #if 0
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_TRACE("Loading .ogg: \"{}\"", path.generic_string());
-        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(path) == AudioFileFormat::Ogg);
-    #endif
-        DRK_ASSERT_DEBUG(false, ".ogg is currently unimplemented");
-        return {};
+        DRK_LOG_CORE_TRACE("Loading .ogg: \"{}\"", filename.generic_string());
+        DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Ogg);
+
+        auto data = OggDecoder::decode(filename);
+        return make_ref<AudioSource>(*data);
     }
 
     void AudioEngine::play_source(const Ref<AudioSource>& source)

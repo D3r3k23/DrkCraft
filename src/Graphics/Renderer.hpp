@@ -24,7 +24,7 @@ namespace DrkCraft
         uint textures  = 0;
     };
 
-    struct Light
+    struct Light // Somewhere else
     {
         vec3 position;
         vec3 direction;

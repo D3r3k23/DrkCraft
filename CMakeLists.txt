@@ -31,6 +31,9 @@ endif()
 # Set PLATFORM
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     set(PLATFORM Windows)
+    if(NOT ${MSVC})
+        message("Warning: Using non-VS generator on Windows")
+    endif()
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
     set(PLATFORM Linux)
 else()
@@ -83,16 +86,6 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
-# Disable console window for Release builds
-if(${BUILD_CONFIG} STREQUAL Release)
-    if(${PLATFORM} STREQUAL Windows)
-        target_link_options(DrkCraft PUBLIC /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
-    elseif(${PLATFORM} STREQUAL Linux)
-        message("TODO: Disable console on Linux build?")
-    endif()
-endif()
-
-# Compiler definitions
 string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
 string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
 
@@ -103,9 +96,9 @@ target_compile_definitions(DrkCraft
     ${DRK_BUILD_CONFIG}
 )
 
-if(${PLATFORM} STREQUAL Debug)
+if(${DRK_BUILD_CONFIG} STREQUAL Debug)
     target_compile_definitions(DrkCraft PUBLIC _DEBUG)
-elseif(${BUILD_CONFIG} STREQUAL Release)
+else()
     target_compile_definitions(DrkCraft PUBLIC NDEBUG)
 endif()
 
@@ -126,4 +119,18 @@ endif()
 
 if(${DRK_EN_DEV_MODE})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_DEV_MODE)
+endif()
+
+set_target_properties(DrkCraft
+  PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<1:${CMAKE_BUILD_TYPE}>"
+)
+
+# Disable console window for Release builds
+if(${BUILD_CONFIG} STREQUAL Release)
+    if(${PLATFORM} STREQUAL Windows)
+        target_link_options(DrkCraft PUBLIC /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+    elseif(${PLATFORM} STREQUAL Linux)
+        message("TODO: Disable console on Linux build?")
+    endif()
 endif()

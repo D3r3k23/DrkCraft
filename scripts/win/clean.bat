@@ -6,6 +6,6 @@ if exist build (
         rmdir /s /q build
     ) else (
         echo Removing DrkCraft build files
-        rmdir /s /q build\DrkCraft.dir
+        rmdir /s /q build\bin
     )
 )

@@ -18,12 +18,12 @@
     }
 
     #if defined(DRK_PLATFORM_WINDOWS)
-        #define DRK_DEBUG_BREAK() __debugbreak()
+    #   define DRK_DEBUG_BREAK() __debugbreak()
     #elif defined(DRK_PLATFORM_LINUX)
-        #include <signal.h>
-        #define DRK_DEBUG_BREAK() raise(SIGTRAP)
+    #   include <signal.h>
+    #   define DRK_DEBUG_BREAK() raise(SIGTRAP)
     #else
-        #error "Unsupported platform"
+    #   error "Unsupported platform"
     #endif
 
     #define DRK_ASSERT_IMPL(cond, ...)   \
@@ -47,11 +47,11 @@
     #define DRK_ASSERT_CORE_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
 
     #if defined(DRK_CONFIG_DEBUG)
-        #define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
-        #define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
+    #   define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
+    #   define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
     #else
-        #define DRK_ASSERT_DEBUG(cond, ...)
-        #define DRK_ASSERT_DEBUG_NO_MSG(cond)
+    #   define DRK_ASSERT_DEBUG(cond, ...)
+    #   define DRK_ASSERT_DEBUG_NO_MSG(cond)
     #endif
 
 #else

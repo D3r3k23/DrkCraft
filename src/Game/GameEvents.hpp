@@ -21,12 +21,12 @@ namespace DrkCraft
 
     struct PlayerSpawnEvent final : PlayerEvent
     {
-        DRK_GAME_EVENT_TYPE_INFO( PlayerSpawn)
+        DRK_GAME_EVENT_TYPE_INFO(PlayerSpawn)
     };
 
     struct PlayerDeathEvent final : PlayerEvent
     {
-        DRK_GAME_EVENT_TYPE_INFO( PlayerDeath)
+        DRK_GAME_EVENT_TYPE_INFO(PlayerDeath)
     };
 
     struct WorldEvent final : GameEvent
