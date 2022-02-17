@@ -43,3 +43,6 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "lib/tinyobjloader/tintyobjloader"]
+	path = lib/tinyobjloader/tintyobjloader
+	url = ../../tinyobjloader/tinyobjloader.git
