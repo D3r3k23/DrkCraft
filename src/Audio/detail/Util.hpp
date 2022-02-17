@@ -28,7 +28,7 @@ namespace DrkCraft
         Stereo16
     };
 
-    AudioSourceFormat get_audio_source_format(uint channels, uint bitDepth);
+    AudioSourceFormat get_audio_source_format(uint channels);
     uint to_al_source_format(AudioSourceFormat format);
 }
 

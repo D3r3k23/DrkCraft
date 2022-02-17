@@ -17,6 +17,8 @@
 
     namespace DrkCraft
     {
+        const char* Logger::s_name = nullptr;
+
         Ref<spdlog::logger> Logger::s_coreLogger;
         Ref<spdlog::logger> Logger::s_gameLogger;
         Ref<spdlog::logger> Logger::s_eventLogger;
@@ -34,12 +36,14 @@
     #endif
         constexpr LogLevel FILE_LOG_LEVEL = STATIC_LOG_LEVEL;
 
-        void Logger::init(const char* dir)
+        void Logger::init(const char* name, const char* dir)
         {
             DRK_PROFILE_FUNCTION();
 
+            s_name = name;
+
             auto time = Time::get_system_time();
-            auto name = fmt::format("DrkCraft_{:%Y-%m-%d_%H.%M.%S}.log", fmt::localtime(time));
+            auto name = fmt::format("{}_{:%Y-%m-%d_%H.%M.%S}.log", name, fmt::localtime(time));
             auto file = fs::path(dir) / fs::path(name);
 
             auto sink = make_ref<spdlog::sinks::dist_sink_mt>();
@@ -68,13 +72,21 @@
             s_eventLogger->flush_on(spdlog::level::err);
             s_eventLogger->set_level(STATIC_LOG_LEVEL);
 
-            DRK_LOG_CORE_INFO("DrkCraft Logger initialized");
+            DRK_LOG_CORE_INFO("{} Logger initialized", name);
         }
 
         void Logger::close(void)
         {
             DRK_PROFILE_FUNCTION();
-            DRK_LOG_CORE_INFO("Closing DrkCraft Logger");
+            DRK_LOG_CORE_INFO("Closing {} Logger", s_name);
+
+            flush();
+        }
+
+        void Logger::flush(void)
+        {
+            DRK_PROFILE_FUNCTION();
+            DRK_LOG_CORE_TRACE("Flushing Logger");
 
             s_coreLogger->flush();
             s_gameLogger->flush();

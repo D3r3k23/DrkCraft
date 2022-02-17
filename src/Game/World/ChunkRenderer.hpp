@@ -1,8 +1,8 @@
-#ifndef DRK_GAME_CHUNK_RENDERER_HPP
-#define DRK_GAME_CHUNK_RENDERER_HPP
+#ifndef DRK_GAME_WORLD_CHUNK_RENDERER_HPP
+#define DRK_GAME_WORLD_CHUNK_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Game/Chunk.hpp"
+#include "Game/World/Chunk.hpp"
 
 namespace DrkCraft
 {
@@ -18,4 +18,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_CHUNK_RENDERER_HPP
+#endif // DRK_GAME_WORLD_CHUNK_RENDERER_HPP

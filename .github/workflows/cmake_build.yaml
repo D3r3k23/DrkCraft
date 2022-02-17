@@ -17,11 +17,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: CMake build (debug)
-        run: scripts\build.bat --debug --profile --dev --trace
+      - name: CMake build (Debug)
+        run: scripts\win\build.bat --debug --profile --dev --trace
 
-      - name: CMake build (release)
-        run: scripts\build.bat --release
+      - name: CMake build (Release)
+        run: scripts\win\build.bat --release
 
   # Linux:
   #   runs-on: ubuntu-latest
@@ -35,8 +35,8 @@ jobs:
   #       with:
   #         submodules: recursive
 
-  #     - name: CMake build
-  #       run: scripts/build.sh --debug --profile --dev --trace
+  #     - name: CMake build (Debug)
+  #       run: scripts/lin/build.sh --debug --profile --dev --trace
 
-  #     - name: CMake build (release)
-  #       run: scripts/build.sh --release
+  #     - name: CMake build (Release)
+  #       run: scripts/lin/build.sh --release

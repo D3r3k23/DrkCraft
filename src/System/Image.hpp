@@ -13,21 +13,27 @@ namespace DrkCraft
         ImageData(uint8* data, const vec2& size, uint channels);
         ~ImageData(void);
 
-        uint8* data;
-        uvec2 size;
-        uint channels;
+        ImageData(ImageData&& other);
+        ImageData& operator=(ImageData&& other);
+
+        ImageData(const ImageData&) = delete;
+        ImageData& operator=(const ImageData&) = delete;
+
+        void destroy(void);
+        operator bool(void) const;
     };
 
     class Image
     {
     public:
-        static Ref<Image> load_file(const fs::path& filename, uint channels=0);
+        static Ptr<Image> load_file(const fs::path& filename, uint channels=0);
 
-        Image(ImageData);
-        Image(const fs::path& filename);
+        Image(uint8* data, const uvec2& size, uint channels);
+        ~Image(void);
 
-    private:
-        Ptr<ImageData> m_data;
+        uint8* data;
+        const uvec2 size;
+        const uint channels;
     };
 }
 

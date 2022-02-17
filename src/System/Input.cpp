@@ -9,27 +9,71 @@
 
 namespace DrkCraft
 {
+    ///////////////////////////////
+    //         InputCode         //
+    ///////////////////////////////
+
+    namespace
+    {
+        struct InputCodeNameVisitor
+        {
+            std::string_view operator()(KeyCode key)
+                { return key_code_name(key); }
+
+            std::string_view operator()(MouseCode button)
+                { return mouse_code_name(button); }
+        };
+    }
+
+    InputCode to_input_code(std::string_view str)
+    {
+        if (KeyCode key = to_key_code(str); key != KeyCode::None)
+            return key;
+
+        if (MouseCode button = to_mouse_code(str); button != MouseCode::None)
+            return button;
+
+        return MouseCode::None;
+    }
+
+    std::string_view input_code_name(InputCode code)
+    {
+        return std::visit(InputCodeNameVisitor{}, code);
+    }
+
     ///////////////////////////////////
     //         Input Queries         //
     ///////////////////////////////////
 
-    static GLFWwindow* local_get_window(void)
-    {
-        return Application::get_window().get_raw_window();
-    }
-
     bool is_key_pressed(KeyCode key)
     {
-        auto window = local_get_window();
+        auto window = Application::get_window().get_raw_window();
         auto status = glfwGetKey(window, from_key_code(key));
         return status == GLFW_PRESS || status == GLFW_REPEAT;
     }
 
     bool is_mouse_button_pressed(MouseCode button)
     {
-        auto window = local_get_window();
+        auto window = Application::get_window().get_raw_window();
         auto status = glfwGetMouseButton(window, from_mouse_code(button));
         return status == GLFW_PRESS;
+    }
+
+    namespace
+    {
+        struct IsInputPressedVisitor
+        {
+            bool operator()(KeyCode key)
+                { return is_key_pressed(key); }
+
+            bool operator()(MouseCode button)
+                { return is_mouse_button_pressed(button); }
+        };
+    }
+
+    bool is_pressed(InputCode code)
+    {
+        return std::visit(IsInputPressedVisitor{}, code);
     }
 
     vec2 get_mouse_position(void)
@@ -50,9 +94,9 @@ namespace DrkCraft
         return get_mouse_position().y;
     }
 
-    ////////////////////////////////
-    //         Input Mods         //
-    ////////////////////////////////
+    //////////////////////////////
+    //         Key Mods         //
+    //////////////////////////////
 
     bool is_mod_pressed(KeyMod mod)
     {
@@ -163,7 +207,7 @@ namespace DrkCraft
         return magic_enum::enum_cast<KeyCode>(str).value_or(KeyCode::None);
     }
 
-    std::string key_code_name(KeyCode key)
+    std::string_view key_code_name(KeyCode key)
     {
         return magic_enum::enum_name(key);
     }
@@ -187,7 +231,7 @@ namespace DrkCraft
         return magic_enum::enum_cast<MouseCode>(str);
     }
 
-    std::string mouse_code_name(MouseCode button)
+    std::string_view mouse_code_name(MouseCode button)
     {
         return magic_enum::enum_name(button).value_or(MouseCode::None);
     }

@@ -33,18 +33,18 @@ namespace DrkCraft
 
         float speed = 1.0f;
 
-        const KeyBinds keybinds = RuntimeSettings::keybinds();
+        const KeyBinds keybinds = RuntimeSettings::get_keybinds();
 
         using enum PlayerState;
         switch (m_state)
         {
             case Normal:
             {
-                if (is_key_pressed(keybinds.player_movement.sprint))
+                if (is_pressed(keybinds.player_movement.sprint))
                 {
                     m_state = Sprinting;
                 }
-                else if (is_key_pressed(keybinds.player_movement.crouch))
+                else if (is_pressed(keybinds.player_movement.crouch))
                 {
                     m_state = Crouching;
                 }
@@ -52,11 +52,11 @@ namespace DrkCraft
             }
             case Sprinting:
             {
-                if (!is_key_pressed(keybinds.player_movement.sprint))
+                if (!is_pressed(keybinds.player_movement.sprint))
                 {
                     m_state = Normal;
                 }
-                else if (is_key_pressed(keybinds.player_movement.crouch))
+                else if (is_pressed(keybinds.player_movement.crouch))
                 {
                     m_state = Crouching;
                 }
@@ -65,7 +65,7 @@ namespace DrkCraft
             }
             case Crouching:
             {
-                if (!is_key_pressed(keybinds.player_movement.crouch))
+                if (!is_pressed(keybinds.player_movement.crouch))
                 {
                     m_state = Normal;
                 }
@@ -74,11 +74,11 @@ namespace DrkCraft
             }
             case Flying:
             {
-                if (is_key_pressed(keybinds.player_movement.jump))
+                if (is_pressed(keybinds.player_movement.jump))
                 {
                     m_position.y += FLYING_SPEED * delta;
                 }
-                if (is_key_pressed(keybinds.player_movement.crouch))
+                if (is_pressed(keybinds.player_movement.crouch))
                 {
                     m_position.y -= FLYING_SPEED * delta;
                 }
@@ -90,10 +90,10 @@ namespace DrkCraft
                 m_state = Normal;
             }
         }
-        if (is_key_pressed(keybinds.player_movement.forward)) m_position += speed * delta * horizontalDirection;
-        if (is_key_pressed(keybinds.player_movement.back))    m_position -= speed * delta * horizontalDirection;
-        if (is_key_pressed(keybinds.player_movement.left))    m_position -= speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
-        if (is_key_pressed(keybinds.player_movement.right))   m_position += speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
+        if (is_pressed(keybinds.player_movement.forward)) m_position += speed * delta * horizontalDirection;
+        if (is_pressed(keybinds.player_movement.back))    m_position -= speed * delta * horizontalDirection;
+        if (is_pressed(keybinds.player_movement.left))    m_position -= speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
+        if (is_pressed(keybinds.player_movement.right))   m_position += speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
 
         if (flying());
 
@@ -118,41 +118,58 @@ namespace DrkCraft
 
     bool Player::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
     {
-        const KeyBinds keybinds = RuntimeSettings::keybinds();
+        if (on_mouse_or_key_pressed(event))
+            return true;
 
-        if (event.button == keybinds.player_actions.use)
-        {
-            return true;
-        }
-        else if (event.button == keybinds.player_actions.place)
-        {
-            return true;
-        }
-        else
-            return false;
+        return false;
     }
 
     bool Player::on_key_pressed(const KeyPressedEvent& event)
     {
-        const KeyBinds keybinds = RuntimeSettings::keybinds();
+        if (on_mouse_or_key_pressed(event))
+            return true;
 
-        if (event.key == keybinds.player_movement.jump)
+        return false;
+    }
+
+    bool Player::on_mouse_or_key_pressed(const InputEvent& event)
+    {
+        const auto eventCode = [&]() -> InputCode
+        {
+            if (event == EventType::KeyPressed)
+                return event_cast<KeyPressedEvent>(event).key;
+            else if (event == EventType::MouseButtonPressed)
+                return event_cast<MouseButtonPressedEvent>(event).button;
+            else
+                return KeyCode::None;
+        }();
+        const auto& keybinds = RuntimeSettings::get_keybinds();
+
+        if (eventCode == keybinds.player_actions.use)
+        {
+            return true;
+        }
+        else if (eventCode == keybinds.player_actions.place)
+        {
+            return true;
+        }
+        else if (eventCode == keybinds.player_movement.jump)
         {
             jump();
             return true;
         }
-        else if (event.key == keybinds.player_actions.interact)
+        else if (eventCode == keybinds.player_actions.interact)
         {
             if (1)
                 return true;
             else
                 return false;
         }
-        else if (event.key == keybinds.player_actions.inventory)
+        else if (eventCode == keybinds.player_actions.inventory)
         {
             return true;
         }
-        else if (event.key == keybinds.player_actions.fly)
+        else if (eventCode == keybinds.player_actions.fly)
         {
             if (CommandLineOptions::dev_mode_activated())
             {

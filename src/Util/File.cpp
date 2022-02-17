@@ -30,6 +30,16 @@ namespace DrkCraft
         file << text;
     }
 
+    void make_dir(const fs::path& dirname)
+    {
+        fs::create_directory(dirname);
+    }
+
+    void make_dirs(const fs::path& dirname)
+    {
+        fs::create_directories(dirname);
+    }
+
     void ensure_dir_exists(const fs::path& dirname)
     {
         if (is_dir(dirname))
@@ -37,7 +47,7 @@ namespace DrkCraft
 
         DRK_ASSERT_CORE(!path_exists(dirname), "Directory \"{}\" already exists and is not a directory", dirname.generic_string());
 
-        fs::create_directories(dirname);
+        make_dirs(dirname);
     }
 
     bool is_file(const fs::path& filename)

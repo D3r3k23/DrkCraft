@@ -3,12 +3,12 @@
 namespace DrkCraft
 {
     Icon::Icon(const fs::path& filename)
-      : m_image(Image::load(filename, 4))
+      : m_image(Image::load_file(filename, 4))
     { }
 
-    Icon::~Icon(void)
+    bool Icon::valid(void) const
     {
-
+        return static_cast<bool>(m_image);
     }
 
     uint8* Icon::get_data(void) const

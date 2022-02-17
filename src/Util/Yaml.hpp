@@ -16,6 +16,9 @@ namespace DrkCraft::Yaml
 
     bool check_map(const YAML::Node& node, std::string_view key);
     bool check_scalar(const YAML::Node& node, std::string_view key);
+
+    std::optional<YAML::Node> get_map(const YAML::Node& node, std::string_view key);
+    std::optional<YAML::Node> get_scalar(const YAML::Node& node, std::string_view key);
 }
 
 #endif // DRK_UTIL_YAML_HPP

@@ -1,9 +1,9 @@
-#ifndef DRK_GAME_WORLD_HPP
-#define DRK_GAME_WORLD_HPP
+#ifndef DRK_GAME_WORLD_WORLD_HPP
+#define DRK_GAME_WORLD_WORLD_HPP
 
 #include "Core/Base.hpp"
-#include "Game/ChunkManager.hpp"
-#include "Game/WorldGenerator.hpp"
+#include "Game/World/ChunkManager.hpp"
+#include "Game/World/WorldGenerator.hpp"
 #include "Application/Timestep.hpp"
 #include "Util/Noise.hpp"
 
@@ -32,4 +32,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_WORLD_HPP
+#endif // DRK_GAME_WORLD_WORLD_HPP

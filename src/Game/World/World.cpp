@@ -1,16 +1,12 @@
 #include "World.hpp"
 
-#include "Game/ChunkRenderer.hpp"
-#include "Graphics/MeshRenderer.hpp"
+#include "Game/World/ChunkRenderer.hpp"
+#include "Game/Entity/Components.hpp"
+#include "Graphics/Renderer/MeshRenderer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
 {
-    Ptr<World> World::load_save(const fs::path& saveDir)
-    {
-        return {};
-    }
-
     void World::render(void)
     {
         DRK_PROFILE_FUNCTION();

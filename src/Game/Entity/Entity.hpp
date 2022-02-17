@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_ENTITY_HPP
-#define DRK_GAME_ENTITY_HPP
+#ifndef DRK_GAME_ENTITY_ENTITY_HPP
+#define DRK_GAME_ENTITY_ENTITY_HPP
 
 #include <entt/entt.hpp>
 
@@ -21,4 +21,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_ENTITY_HPP
+#endif // DRK_GAME_ENTITY_ENTITY_HPP

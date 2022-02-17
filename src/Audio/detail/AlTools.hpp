@@ -3,10 +3,11 @@
 
 #include "Core/Base.hpp"
 
-#include <al/alc.h>
-
 #include <string>
 #include <string_view>
+
+struct ALCdevice;
+struct ALCcontext;
 
 namespace DrkCraft
 {

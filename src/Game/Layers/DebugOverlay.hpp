@@ -10,8 +10,9 @@
 #include "System/AssetManager.hpp"
 #include "Util/ImGui.hpp"
 #include "Graphics/OpenGlContext.hpp"
-#include "Graphics/Renderer.hpp"
-#include "Graphics/CubeRenderer.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
+#include "Graphics/Renderer/CubeRenderer.hpp"
+#include "Util/PeriodicUpdate.hpp"
 
 namespace DrkCraft
 {
@@ -63,7 +64,6 @@ namespace DrkCraft
 
         IntervalTimer m_fpsAvgTimer;
         IntervalTimer m_renderStatsUpdateTimer;
-        IntervalTimer m_imGuiStatsUpdateTimer;
     };
 }
 

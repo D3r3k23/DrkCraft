@@ -16,7 +16,6 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
-#include <utility>
 
 namespace DrkCraft
 {
@@ -79,11 +78,13 @@ namespace DrkCraft
         void load(const AssetInfo& asset);
         void load_list(const AssetList& assets);
 
-        bool sound_loaded(const fs::path& filename);
-        bool song_loaded(const fs::path& filename);
+        bool texture_loaded(const fs::path& filename) const;
+        Ref<Texture> get_texture(const fs::path& filename) const;
 
-        Ref<AudioSource> get_sound(const fs::path& filename);
-        Ref<AudioSource> get_song(const fs::path& filename);
+        bool sound_loaded(const fs::path& filename) const;
+        bool song_loaded(const fs::path& filename) const;
+        Ref<AudioSource> get_sound(const fs::path& filename) const;
+        Ref<AudioSource> get_song(const fs::path& filename) const;
 
         void unload(const AssetInfo& asset);
         void unload_list(const AssetList& assets);
@@ -95,12 +96,10 @@ namespace DrkCraft
         void load_worker(std::stop_token st);
         void load_impl(const AssetInfo& asset);
 
-        void load_image(const fs::path& filename);
+        void load_texture(const fs::path& filename);
 
         void load_sound(const fs::path& filename);
         void load_song(const fs::path& filename);
-
-        void load_font(const fs::path& filename);
 
     private:
         AssetLoadQueue m_loadQueue;
@@ -108,13 +107,11 @@ namespace DrkCraft
         std::atomic<bool> m_loading;
         std::atomic<std::string> m_recentlyLoadedAsset;
 
-        std::unordered_map<std::string, Ref<Image>> m_images;
+        std::unordered_map<std::string, Ref<Image>> m_textures;
         std::unordered_map<std::string, Ref<AudioSource>> m_audioSources;
-        std::unordered_map<std::string, Ref<Font>> m_fonts;
 
-        std::mutex m_imagesMutex;
+        std::mutex m_texturesMutex;
         std::mutex m_audioSourcesMutex;
-        std::mutex m_fontsMutex;
     };
 
     class AssetLoader

@@ -1,13 +1,13 @@
-#ifndef DRK_GRAPHICS_RENDERER_HPP
-#define DRK_GRAPHICS_RENDERER_HPP
+#ifndef DRK_GRAPHICS_RENDERER_RENDERER_HPP
+#define DRK_GRAPHICS_RENDERER_RENDERER_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/OpenGlContext.hpp"
 #include "Graphics/detail/VertexArray.hpp"
 #include "Graphics/detail/Buffer.hpp"
-#include "Graphics/Camera.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/Texture.hpp"
+#include "Graphics/Camera.hpp"
 
 #include "lib/glm/vec.hpp"
 
@@ -24,7 +24,7 @@ namespace DrkCraft
         uint textures  = 0;
     };
 
-    struct Light // Somewhere else
+    struct LightSource // Somewhere else
     {
         vec3 position;
         vec3 direction;
@@ -34,14 +34,11 @@ namespace DrkCraft
     struct SceneData
     {
         Camera camera;
-        std::vector<Light> lights;
+        std::vector<LightSource> lights;
     };
 
     class Renderer
     {
-        friend class CubeRenderer;
-        friend class MeshRenderer;
-
     public:
         static void init(OpenGlContext& context, const uvec2& viewportSize);
         static void shutdown(void);
@@ -52,33 +49,37 @@ namespace DrkCraft
         static void begin_scene(const SceneData& data);
         static void end_scene(void);
 
-        static void attach_texture(const Ref<Texture>& texture);
-
         static const Camera& get_camera(void);
-
-        //////////////////////////////////////////////
-
-        // static void draw_block(uint x, uint y, uint z);
-
-        static void draw_triangle(VertexBuffer& vbo);
-
-        // static void draw_cube_mesh(const CubeMesh& mesh); // ??
-
-        //////////////////////////////////////////////////
 
         static void set_viewport(int x, int y, uint width, uint height);
         static void set_viewport(const ivec2& pos, const uvec2& size);
 
         static const RendererStats& get_stats(void);
-        static void reset_stats(void);
 
     private:
+        static void reset_stats(void);
         static void clear(void);
 
-        static void draw(const Ref<VertexArray>& vao);
-        static void draw_indexed(const Ref<VertexArray>& vao);
-        static void draw_indexed(const Ref<IndexBuffer>& indexBuffer, std::optional<uint> indexCount=std::nullopt);
+    public:
+        class Passkey
+        {
+        private:
+            Passkey(void) = default;
+            friend class Renderer;
+            friend class CubeRenderer;
+            friend class MeshRenderer;
+            friend class TextRenderer;
+        };
+
+        static void bind_shader(Passkey, const ShaderProgram& shader);
+        static void unbind_shader(Passkey, const ShaderProgram& shader);
+
+        static void attach_texture(Passkey, const Texture& texture);
+        static void detach_texture(Passkey, const Texture& texture);
+
+        static void draw_indexed(Passkey, const VertexArray& vao);
+        static void draw_triangles(Passkey, const IndexBuffer& indexBuffer, std::optional<uint> count=std::nullopt);
     };
 }
 
-#endif // DRK_GRAPHICS_RENDERER_HPP
+#endif // DRK_GRAPHICS_RENDERER_RENDERER_HPP

@@ -24,6 +24,8 @@ namespace DrkCraft
         m_context = make_ptr<AlContext>(*m_device);
         m_context->make_current();
 
+        // Eventually should provide API for moving / multiple listeners
+
         ALfloat listenerPos[] = { 0.0f, 0.0f, 0.0f };
         ALfloat listenerVel[] = { 0.0f, 0.0f, 0.0f };
         ALfloat listenerOri[] = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f }; // Forward
@@ -58,15 +60,17 @@ namespace DrkCraft
         {
             case AudioFileFormat::Mp3:
             {
-                auto data = m_mp3Decoder.decode(filename);
-                return make_ref<AudioSource>(*data);
-                break;
+                if (const auto data = m_mp3Decoder.decode(filename); data)
+                    return make_ref<AudioSource>(*data);
+                else
+                    return {};
             }
             case AudioFileFormat::Ogg:
             {
-                auto data = OggDecoder::decode(filename);
-                return make_ref<AudioSource>(*data);
-                break;
+                if (const auto data = OggDecoder::decode(filename); data)
+                    return make_ref<AudioSource>(*data);
+                else
+                    return {};
             }
             default:
                 DRK_ASSERT_DEBUG(false, "Unknown audio file format \"{}\"", filename.extension().string());

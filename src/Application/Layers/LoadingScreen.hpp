@@ -6,6 +6,8 @@
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 
+#include "Util/PeriodicUpdate.hpp"
+
 namespace DrkCraft
 {
     // Set message / progress

@@ -75,13 +75,13 @@ namespace DrkCraft
     //       RuntimeSettings       //
     /////////////////////////////////
 
-    fs::path RuntimeSettings::s_configFile;
-    fs::path RuntimeSettings::s_settingsFile;
-    fs::path RuntimeSettings::s_keybindsFile;
+    ////// Static //////
 
-    ConfigData   RuntimeSettings::s_configData;
-    SettingsData RuntimeSettings::s_settingsData;
-    KeyBinds     RuntimeSettings::s_keybindsData;
+    RuntimeSettings& RuntimeSettings::get_instance(void)
+    {
+        static RuntimeSettings s_instance;
+        return s_instance;
+    }
 
     void RuntimeSettings::load(const fs::path& location)
     {
@@ -89,9 +89,9 @@ namespace DrkCraft
 
         DRK_ASSERT_DEBUG(is_dir(location), "Invalid config directory");
 
-        s_configFile   = location / "config.yaml";
-        s_settingsFile = location / "settings.yaml";
-        s_keybindsFile = location / "keybinds.yaml";
+        get_instance().m_configFile   = location / "config.yaml";
+        get_instance().m_settingsFile = location / "settings.yaml";
+        get_instance().m_keybindsFile = location / "keybinds.yaml";
 
         const auto defaultsLocation = location / "default";
 
@@ -111,238 +111,237 @@ namespace DrkCraft
                     fs::copy(defaultFilename, filename);
             }
         }
-        if (!is_file(s_configFile)) // Save defaults, since this is not modified or saved later
-            save_config_file(s_configFile);
+        if (!is_file(get_instance().m_configFile)) // Save defaults, since this is not modified or saved later
+            get_instance().save_config_file();
+        else
+            get_instance().load_config_file();
 
-        load_config_file(s_configFile);
-        load_settings_file(s_settingsFile);
-        load_keybinds_file(s_keybindsFile);
+        get_instance().load_settings_file();
+        get_instance().load_keybinds_file();
     }
 
     void RuntimeSettings::save(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        save_settings_file(s_settingsFile);
-        save_keybinds_file(s_keybindsFile);
+        get_instance().save_settings_file();
+        get_instance().save_keybinds_file();
     }
 
-    const ConfigData& RuntimeSettings::config(void)
+    const ConfigData& RuntimeSettings::get_config(void)
     {
-        return s_configData;
+        return get_instance().m_configData;
     }
 
-    const SettingsData& RuntimeSettings::settings(void)
+    const SettingsData& RuntimeSettings::get_settings(void)
     {
-        return s_settingsData;
+        return get_instance().m_settingsData;
     }
 
-    const KeyBinds& RuntimeSettings::keybinds(void)
+    const KeyBinds& RuntimeSettings::get_keybinds(void)
     {
-        return s_keybindsData;
+        return get_instance().m_keybindsData;
+    }
+
+    SettingsData& RuntimeSettings::settings(void)
+    {
+        return get_instance().m_settingsData;
     }
 
     void RuntimeSettings::set_settings(const SettingsData& settings)
     {
-        s_settingsData = settings;
+        get_instance().m_settingsData = settings;
     }
 
     void RuntimeSettings::set_keybinds(const KeyBinds& keybinds)
     {
-        s_keybindsData = keybinds;
+        get_instance().m_keybindsData = keybinds;
     }
+
+    ////// Instance //////
 
     namespace
     {
         template <typename T, typename RepT=T>
         using SettingTransform = std::function<T(RepT)>;
 
-        template <typename T, typename RepT=T>
-        void assign_if_setting_is_valid(const YAML::Node& node, std::string_view key, T& value,
-            const SettingTransform<T, RepT>& transform={})
-        {
-            if (node[key])
-            {
-                if (transform)
-                    value = transform(node[key].as<RepT>(value));
-                else
-                    value = node[key].as<RepT>(value);
-            }
-        }
-
         template <typename T>
-        const SettingTransform<T>& setting_range(T min, T max)
+        SettingTransform<T> apply_range(T min, T max)
         {
-            static const auto fn = [min, max](T value) -> T
+            return [min, max](T value) -> T
             {
                 return std::clamp(value, min, max);
             };
-            return fn;
         }
 
         template <typename T>
-        const SettingTransform<T>& setting_min(T min)
+        SettingTransform<T> apply_min(T min)
         {
-            static const auto fn = [min](T value) -> T
+            return [min](T value) -> T
             {
                 return std::max(value, min);
             }
-            return fn;
         }
 
         template <typename T>
-        const SettingTransform<T>& setting_max(T max)
+        SettingTransform<T> apply_max(T max)
         {
-            static const auto fn = [max](T value) -> T
+            return [max](T value) -> T
             {
                 return std::min(value, max);
             }
-            return fn;
         }
 
-        const SettingTransform<KeyCode, std::string>& key_code_converter(void) // string_view?
+        static SettingTransform<InputCode, std::string> keybind_converter = [](std::string name) -> InputCode
         {
-            static const auto fn = [](std::string name) -> KeyCode
-            {
-                return to_key_code(name);
-            };
-            return fn;
+            return to_input_code(name);
+        };
+
+        static SettingTransform<KeyCode, std::string> key_code_converter = [](std::string name) -> KeyCode
+        {
+            return to_key_code(name);
+        };
+
+        static SettingTransform<MouseCode, std::string> mouse_code_converter = [](std::string name) -> MouseCode
+        {
+            return to_mouse_code(name);
+        };
+
+        template <typename T>
+        void load_setting(const YAML::Node& parent, std::string_view key, T& value)
+        {
+            if (const auto setting = YAML::get_scalar(parent, key); value.has_value())
+                value = setting->as<T>(value);
         }
 
-        const SettingTransform<MouseCode, std::string>& mouse_code_converter(void) // string_view?
+        template <typename T, typename RepT=T>
+        void load_setting(const YAML::Node& parent, std::string_view key, T& value,
+            const SettingTransform<T, RepT>& transform)
         {
-            static const auto fn = [](std::string name) -> MouseCode
-            {
-                return to_mouse_code(name);
-            };
-            return fn;
+            if (const auto setting = Yaml::get_scalar(parent, key); setting.has_value())
+                value = transform(setting->as<RepT>(value));
         }
     }
 
-    void RuntimeSettings::load_config_file(const fs::path& filename)
+    void RuntimeSettings::load_config_file(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_INFO("Loading config from {}", filename.generic_string());
-        auto document = Yaml::load(filename);
+        DRK_LOG_CORE_INFO("Loading config from {}", m_configFile.generic_string());
+        auto document = Yaml::load(m_configFile);
         if (!document)
             return;
         auto config = *document;
 
-        if (Yaml::check_map(config, "init_window_size"))
+        if (const auto map = Yaml::get_map(config, "init_window_size"); map.has_value())
         {
-            auto& initWindowSize = s_configData.init_window_size;
-
-            assign_if_setting_is_valid(config["init_window_size"], "width",  initWindowSize.width,  setting_min(0));
-            assign_if_setting_is_valid(config["init_window_size"], "height", initWindowSize.height, setting_min(0));
+            auto& initWindowSizeSetting = m_configData.init_window_size;
+            load_setting(*map, "width",  initWindowSizeSetting.width,  apply_min(0));
+            load_setting(*map, "height", initWindowSizeSetting.height, apply_min(0));
         }
-        assign_if_setting_is_valid(config, "saves_directory", s_configData.saves_directory);
+        load_setting(config, "saves_directory", m_configData.saves_directory);
 
-        ensure_dir_exists(s_configData.saves_directory);
+        ensure_dir_exists(m_configData.saves_directory);
     }
 
-    void RuntimeSettings::load_settings_file(const fs::path& filename)
+    void RuntimeSettings::load_settings_file(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_INFO("Loading settings from {}", filename.generic_string());
-        auto document = Yaml::load(filename);
+        DRK_LOG_CORE_INFO("Loading settings from {}", m_settingsFile.generic_string());
+        auto document = Yaml::load(m_settingsFile);
         if (!document)
             return;
         auto settings = *document;
 
-        if (Yaml::check_map(settings, "video"))
+        if (const auto map = Yaml::get_map(settings, "video"); map.has_value())
         {
-            auto& videoSettings = s_settingsData.video;
-
-            assign_if_setting_is_valid(settings["video"], "fullscreen",         videoSettings.fullscreen);
-            assign_if_setting_is_valid(settings["video"], "fullscreen_monitor", videoSettings.fullscreen_monitor, setting_min(0));
-            assign_if_setting_is_valid(settings["video"], "vsync",              videoSettings.vsync);
+            auto& videoSettings = m_settingsData.video;
+            load_setting(*map, "fullscreen", videoSettings.fullscreen);
+            load_setting(*map, "fs_monitor", videoSettings.fs_monitor, apply_min(0));
+            load_setting(*map, "vsync",      videoSettings.vsync);
+            load_setting(*map, "fov",        videoSettings.fov, apply_range(0, 100));
         }
-        if (Yaml::check_map(settings, "audio"))
+        if (const auto map = Yaml::get_map(settings, "audio"); map.has_value())
         {
-            auto& audioSettings = s_settingsData.audio;
-
-            assign_if_setting_is_valid(settings["audio"], "volume", audioSettings.volume, setting_range(0.0f, 1.0f));
-            assign_if_setting_is_valid(settings["audio"], "music",  audioSettings.music);
+            auto& audioSettings = m_settingsData.audio;
+            load_setting(*map, "volume", audioSettings.volume, apply_range(0, 100));
+            load_setting(*map, "music",  audioSettings.music);
         }
-        if (Yaml::check_map(settings, "controls"))
+        if (const auto map = Yaml::get_map(settings, "controls"); map.has_value())
         {
-            auto& controlsSettings = s_settingsData.controls;
-
-            assign_if_setting_is_valid(settings["controls"], "sensitivity", controlsSettings.sensitivity, setting_range(0, 100));
+            auto& controlsSettings = m_settingsData.controls;
+            load_setting(*map, "sensitivity", controlsSettings.sensitivity, apply_range(0, 100));
         }
     }
 
-    void RuntimeSettings::load_keybinds_file(const fs::path& filename)
+    void RuntimeSettings::load_keybinds_file(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_LOG_CORE_INFO("Loading keybinds from {}", filename.generic_string());
-        auto document = Yaml::load(filename);
+        DRK_LOG_CORE_INFO("Loading keybinds from {}", m_keybindsFile.generic_string());
+        auto document = Yaml::load(m_keybindsFile);
         if (!document)
             return;
         auto keybinds = *document;
 
-        if (Yaml::check_map(keybinds, "player_movement"))
+        if (const auto map = Yaml::get_map(keybinds, "player_movement"); map.has_value())
         {
-            auto& movementKeybinds = s_keybindsData.player_movement;
-
-            assign_if_setting_is_valid(keybinds["player_movement"], "forward", movementKeybinds.forward, key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_movement"], "back",    movementKeybinds.back,    key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_movement"], "left",    movementKeybinds.left,    key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_movement"], "right",   movementKeybinds.right,   key_code_converter());
-
-            assign_if_setting_is_valid(keybinds["player_movement"], "sprint", movementKeybinds.sprint, key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_movement"], "crouch", movementKeybinds.crouch, key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_movement"], "jump",   movementKeybinds.jump,   key_code_converter());
+            auto& movementKeybinds = m_keybindsData.player_movement;
+            load_setting(*map, "forward", movementKeybinds.forward, keybind_converter);
+            load_setting(*map, "back",    movementKeybinds.back,   keybind_converter);
+            load_setting(*map, "left",    movementKeybinds.left,  keybind_converter);
+            load_setting(*map, "right",   movementKeybinds.right,  keybind_converter);
+            load_setting(*map, "sprint",  movementKeybinds.sprint,  keybind_converter);
+            load_setting(*map, "crouch",  movementKeybinds.crouch, keybind_converter);
+            load_setting(*map, "jump",    movementKeybinds.jump,  keybind_converter);
         }
-        if (Yaml::check_map(keybinds, "player_actions"))
+        if (const auto map = Yaml::get_map(keybinds, "player_actions"); map.has_value())
         {
-            auto& actionKeybinds = s_keybindsData.player_actions;
-
-            assign_if_setting_is_valid(keybinds["player_actions"], "use",    actionKeybinds.use,    mouse_code_converter());
-            assign_if_setting_is_valid(keybinds["player_actions"], "place",   actionKeybinds.place, mouse_code_converter());
-            assign_if_setting_is_valid(keybinds["player_actions"], "interact", actionKeybinds.interact,   key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_actions"], "inventory", actionKeybinds.inventory, key_code_converter());
-            assign_if_setting_is_valid(keybinds["player_actions"], "fly",        actionKeybinds.fly,      key_code_converter());
+            auto& actionKeybinds = m_keybindsData.player_actions;
+            load_setting(*map, "use",    actionKeybinds.use,     keybind_converter);
+            load_setting(*map, "place",   actionKeybinds.place,    keybind_converter);
+            load_setting(*map, "interact", actionKeybinds.interact,  keybind_converter);
+            load_setting(*map, "inventory", actionKeybinds.inventory, keybind_converter);
+            load_setting(*map, "fly",        actionKeybinds.fly,      keybind_converter);
         }
     }
 
-    void RuntimeSettings::save_config_file(const fs::path& filename)
+    void RuntimeSettings::save_config_file(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Saving config to {}", filename.generic_string());
+        DRK_LOG_CORE_INFO("Saving config to {}", m_configFile.generic_string());
 
         YAML::Emitter config;
         config << YAML::BeginMap;
         config   << YAML::Key << "init_window_size";
         config   << YAML::BeginMap;
-        config     << YAML::Key << "width"  << YAML::Value << s_configData.init_window_size.width;
-        config     << YAML::Key << "height" << YAML::Value << s_configData.init_window_size.height;
+        config     << YAML::Key << "width"  << YAML::Value << m_configData.init_window_size.width;
+        config     << YAML::Key << "height" << YAML::Value << m_configData.init_window_size.height;
         config   << YAML::EndMap;
-        config   << YAML::Key << "saves_directory" << YAML::Value << s_configData.saves_directory;
+        config   << YAML::Key << "saves_directory" << YAML::Value << m_configData.saves_directory;
         config << YAML::EndMap;
 
-        write_file(filename, config.c_str());
+        write_file(m_configFile, config.c_str());
     }
 
-    void RuntimeSettings::save_settings_file(const fs::path& filename)
+    void RuntimeSettings::save_settings_file(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Saving settings to {}", filename.generic_string());
+        DRK_LOG_CORE_INFO("Saving settings to {}", m_settingsFile.generic_string());
 
-        const auto& video  = s_settingsData.video;
-        const auto& audio   = s_settingsData.audio;
-        const auto& controls = s_settingsData.controls;
+        const auto& video  = m_settingsData.video;
+        const auto& audio   = m_settingsData.audio;
+        const auto& controls = m_settingsData.controls;
 
         YAML::Emitter settings;
         settings << YAML::BeginMap;
         settings   << YAML::Key << "video";
         settings   << YAML::BeginMap;
-        settings     << YAML::Key << "fullscreen"         << YAML::Value << video.fullscreen;
-        settings     << YAML::Key << "fullscreen_monitor" << YAML::Value << video.fullscreen_monitor;
-        settings     << YAML::Key << "vsync"              << YAML::Value << video.vsync;
+        settings     << YAML::Key << "fullscreen" << YAML::Value << video.fullscreen;
+        settings     << YAML::Key << "fs_monitor" << YAML::Value << video.fs_monitor;
+        settings     << YAML::Key << "vsync"      << YAML::Value << video.vsync;
+        settings     << YAML::Key << "fov"        << YAML::Value << video.fov;
         settings   << YAML::EndMap;
         settings   << YAML::Key << "audio";
         settings   << YAML::BeginMap;
@@ -355,39 +354,39 @@ namespace DrkCraft
         settings   << YAML::EndMap;
         settings << YAML::EndMap;
 
-        write_file(filename, settings.c_str());
+        write_file(m_settingsFile, settings.c_str());
     }
 
-    void RuntimeSettings::save_keybinds_file(const fs::path& filename)
+    void RuntimeSettings::save_keybinds_file(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Saving keybinds to {}", filename.generic_string());
+        DRK_LOG_CORE_INFO("Saving keybinds to {}", m_keybindsFile.generic_string());
 
-        const auto& movement = s_keybindsData.player_movement;
-        const auto& actions  = s_keybindsData.player_actions;
+        const auto& movement = m_keybindsData.player_movement;
+        const auto& actions  = m_keybindsData.player_actions;
 
         YAML::Emitter keybinds;
         keybinds << YAML::BeginMap;
         keybinds   << YAML::Key << "player_movement";
         keybinds   << YAML::BeginMap;
-        keybinds     << YAML::Key << "forward" << YAML::Value << key_code_name(movement.forward);
-        keybinds     << YAML::Key << "back"    << YAML::Value << key_code_name(movement.back);
-        keybinds     << YAML::Key << "left"    << YAML::Value << key_code_name(movement.left);
-        keybinds     << YAML::Key << "right"   << YAML::Value << key_code_name(movement.right);
-        keybinds     << YAML::Key << "sprint"  << YAML::Value << key_code_name(movement.sprint);
-        keybinds     << YAML::Key << "crouch"  << YAML::Value << key_code_name(movement.crouch);
-        keybinds     << YAML::Key << "jump"    << YAML::Value << key_code_name(movement.jump);
+        keybinds     << YAML::Key << "forward" << YAML::Value << input_code_name(movement.forward).data();
+        keybinds     << YAML::Key << "back"    << YAML::Value << input_code_name(movement.back).data();
+        keybinds     << YAML::Key << "left"    << YAML::Value << input_code_name(movement.left).data();
+        keybinds     << YAML::Key << "right"   << YAML::Value << input_code_name(movement.right).data();
+        keybinds     << YAML::Key << "sprint"  << YAML::Value << input_code_name(movement.sprint).data();
+        keybinds     << YAML::Key << "crouch"  << YAML::Value << input_code_name(movement.crouch).data();
+        keybinds     << YAML::Key << "jump"    << YAML::Value << input_code_name(movement.jump).data();
         keybinds   << YAML::EndMap;
         keybinds   << YAML::Key << "player_actions";
         keybinds   << YAML::BeginMap;
-        keybinds     << YAML::Key << "use"       << YAML::Value << mouse_code_name(actions.use);
-        keybinds     << YAML::Key << "place"     << YAML::Value << mouse_code_name(actions.place);
-        keybinds     << YAML::Key << "interact"  << YAML::Value << key_code_name(actions.interact);
-        keybinds     << YAML::Key << "inventory" << YAML::Value << key_code_name(actions.inventory);
-        keybinds     << YAML::Key << "fly"       << YAML::Value << key_code_name(actions.fly);
+        keybinds     << YAML::Key << "use"       << YAML::Value << input_code_name(actions.use).data();
+        keybinds     << YAML::Key << "place"     << YAML::Value << input_code_name(actions.place).data();
+        keybinds     << YAML::Key << "interact"  << YAML::Value << input_code_name(actions.interact).data();
+        keybinds     << YAML::Key << "inventory" << YAML::Value << input_code_name(actions.inventory).data();
+        keybinds     << YAML::Key << "fly"       << YAML::Value << input_code_name(actions.fly).data();
         keybinds   << YAML::EndMap;
         keybinds << YAML::EndMap;
 
-        write_file(filename, keybinds.c_str());
+        write_file(m_keybindsFile, keybinds.c_str());
     }
 }

@@ -5,13 +5,13 @@
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 #include "System/AssetManager.hpp"
-#include "Game/World.hpp"
+#include "Game/World/World.hpp"
 #include "Game/Player.hpp"
 
 // Temp
 #include "Util/Random.hpp"
 #include "Graphics/detail/Util.hpp"
-#include "Graphics/Renderer.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/detail/Buffer.hpp"
 #include "Audio/AudioSource.hpp"
@@ -23,6 +23,8 @@ namespace DrkCraft
     class Game
     {
     public:
+        static const AssetList& get_asset_list(void);
+
         Game(Ptr<World> world, AssetManager& assets);
         ~Game(void);
 

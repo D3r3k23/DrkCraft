@@ -13,12 +13,14 @@
 #include "Application/LayerStack.hpp"
 #include "Application/Timestep.hpp"
 
+#include <string_view>
+
 namespace DrkCraft
 {
     class Application
     {
     public:
-        static void init(void);
+        static void init(std::string_view title);
         static int shutdown(void);
 
         static Application& get_instance(void);
@@ -38,8 +40,8 @@ namespace DrkCraft
         static OpenGlContext& get_gl_context(void);
 
     private:
-        Application();
-        ~Application();
+        Application(std::string_view title);
+        ~Application(void);
 
         void run_internal(void);
         void exit_internal(int status);

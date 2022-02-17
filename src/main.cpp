@@ -11,7 +11,7 @@ using namespace DrkCraft;
 int main(int argc, char* argv[])
 {
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
-    DRK_LOGGER_INIT("data/logs");
+    DRK_LOGGER_INIT("DrkCraft", "data/logs");
 
     DRK_LOG_CORE_INFO("DrkCraft Build:");
     DRK_LOG_CORE_INFO("Version: v{}", DRK_VERSION_STRING);
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
 
     DRK_LOG_CORE_TRACE("Initializing Application");
-    Application::init();
+    Application::init("DrkCraft");
 
     DRK_LOG_CORE_TRACE("Opening Main Menu");
     Application::add_layer(Layer::create<MainMenu>());

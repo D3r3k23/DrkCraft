@@ -57,7 +57,7 @@
         //       Profiler       //
         //////////////////////////
 
-        // Static
+        ////// Static //////
 
         Profiler& Profiler::get_instance(void)
         {
@@ -75,7 +75,7 @@
             return get_timestamp(Time::get_program_time());
         }
 
-        // Instance
+        ////// Instance //////
 
         Profiler::Profiler(void)
           : m_active(false)
@@ -137,59 +137,71 @@
         // more information about what happened before a crash
         void Profiler::write_dur_profile(const char* cat, const char* name, double start, double duration)
         {
-            std::stringstream profile;
-            profile << ",\n    {";
-            profile << fmt::format("\"ph\":\"{}\",", "X");
-            profile << fmt::format("\"cat\":\"{}\",", cat);
-            profile << fmt::format("\"name\":\"{}\",", name);
-            profile << fmt::format("\"ts\":{:.2f},",   start);
-            profile << fmt::format("\"dur\":{:.2f},", duration);
-            profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
-            profile <<             "\"tid\":" <<  std::this_thread::get_id();
-            profile << "}";
+            if (active())
+            {
+                std::stringstream profile;
+                profile << ",\n    {";
+                profile << fmt::format("\"ph\":\"{}\",", "X");
+                profile << fmt::format("\"cat\":\"{}\",", cat);
+                profile << fmt::format("\"name\":\"{}\",", name);
+                profile << fmt::format("\"ts\":{:.2f},",   start);
+                profile << fmt::format("\"dur\":{:.2f},", duration);
+                profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
+                profile <<             "\"tid\":" <<  std::this_thread::get_id();
+                profile << "}";
 
-            std::lock_guard lock(m_mutex);
-            m_outStream << profile.str();
-            if (FLUSH_ON_WRITE)
-                m_outStream.flush();
+                std::lock_guard lock(m_mutex);
+                m_outStream << profile.str();
+
+                if (FLUSH_ON_WRITE)
+                    m_outStream.flush();
+            }
         }
 
         void Profiler::write_inst_profile(const char* cat, const char* name, double ts)
         {
-            std::stringstream profile;
-            profile << ",\n    {";
-            profile << fmt::format("\"ph\":\"{}\",", "i");
-            profile << fmt::format("\"cat\":\"{}\",",  cat);
-            profile << fmt::format("\"name\":\"{}\",", name);
-            profile << fmt::format("\"ts\":{:.2f},",   ts);
-            profile << fmt::format("\"s\":\"{}\",",  "t");
-            profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
-            profile <<             "\"tid\":" <<  std::this_thread::get_id();
-            profile << "}";
+            if (active())
+            {
+                std::stringstream profile;
+                profile << ",\n    {";
+                profile << fmt::format("\"ph\":\"{}\",", "i");
+                profile << fmt::format("\"cat\":\"{}\",",  cat);
+                profile << fmt::format("\"name\":\"{}\",", name);
+                profile << fmt::format("\"ts\":{:.2f},",   ts);
+                profile << fmt::format("\"s\":\"{}\",",  "t");
+                profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
+                profile <<             "\"tid\":" <<  std::this_thread::get_id();
+                profile << "}";
 
-            std::lock_guard lock(m_mutex);
-            m_outStream << profile.str();
-            if (FLUSH_ON_WRITE)
-                m_outStream.flush();
+                std::lock_guard lock(m_mutex);
+                m_outStream << profile.str();
+
+                if (FLUSH_ON_WRITE)
+                    m_outStream.flush();
+            }
         }
 
         void Profiler::write_flow_profile(const char* ph, const char* cat, const char* name, int id, double ts)
         {
-            std::stringstream profile;
-            profile << ",\n    {";
-            profile << fmt::format("\"ph\":\"{}\",",    ph);
-            profile << fmt::format("\"cat\":\"{}\",",   cat);
-            profile << fmt::format("\"name\":\"{}\",", name);
-            profile << fmt::format("\"id\":\"{}\",",   id);
-            profile << fmt::format("\"ts\":{:.2f},",  ts);
-            profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
-            profile <<             "\"tid\":" <<  std::this_thread::get_id();
-            profile << "}";
+            if (active())
+            {
+                std::stringstream profile;
+                profile << ",\n    {";
+                profile << fmt::format("\"ph\":\"{}\",",    ph);
+                profile << fmt::format("\"cat\":\"{}\",",   cat);
+                profile << fmt::format("\"name\":\"{}\",", name);
+                profile << fmt::format("\"id\":\"{}\",",   id);
+                profile << fmt::format("\"ts\":{:.2f},",  ts);
+                profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
+                profile <<             "\"tid\":" <<  std::this_thread::get_id();
+                profile << "}";
 
-            std::lock_guard lock(m_mutex);
-            m_outStream << profile.str();
-            if (FLUSH_ON_WRITE)
-                m_outStream.flush();
+                std::lock_guard lock(m_mutex);
+                m_outStream << profile.str();
+
+                if (FLUSH_ON_WRITE)
+                    m_outStream.flush();
+            }
         }
 
         void Profiler::create_event_profile(const char* name)

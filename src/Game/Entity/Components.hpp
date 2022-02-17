@@ -1,32 +1,40 @@
-#ifndef DRK_GAME_COMPONENETS_HPP
-#define DRK_GAME_COMPONENETS_HPP
+#ifndef DRK_GAME_ENTITY_COMPONENETS_HPP
+#define DRK_GAME_ENTITY_COMPONENETS_HPP
 
 #include "Core/Base.hpp"
+#include "Game/Entity/Component.hpp"
 #include "Graphics/Transform.hpp"
 #include "Game/GameEvents.hpp"
 
 namespace DrkCraft
 {
-    struct MeshComponent
+    struct TransformComponent : Component
     {
 
     };
 
-    struct TransformComponent
+    struct MeshComponent : Component
     {
 
     };
 
-    struct HitboxComponent
+    struct TextureComponent : Component
     {
 
     };
 
-    struct LightComponent
+    struct HitboxComponent : Component
     {
 
     };
 
+    struct LightComponent : Component
+    {
+
+    };
+
+    // Uses pointers
+    // Could use entt systems instead
     struct GameEventSubscriberComponent : public GameEventSubscriber
     {
     public:
@@ -39,4 +47,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_COMPONENTS_HPP
+#endif // DRK_GAME_ENTITY_COMPONENTS_HPP

@@ -36,13 +36,15 @@ namespace DrkCraft
     {
     public:
         static Ref<Shader> create(const fs::path& path, ShaderType type);
-        Shader(ShaderType type); // Required for make_ref, should not use directly
+
+    private:
+        Shader(ShaderType type);
+
+    public:
         virtual ~Shader(void);
 
         ShaderType get_type(void) const;
-
-    private:
-        void compile(std::string_view source);
+        ResultStatus compile(std::string_view source);
 
     private:
         ShaderType m_type = ShaderType::None;
@@ -60,7 +62,7 @@ namespace DrkCraft
 
         void attach(Ref<Shader> shader);
         void attach(std::span<Ref<Shader>> shaders);
-        void link(void);
+        ResultStatus link(void);
 
         std::string_view get_name(void) const;
 

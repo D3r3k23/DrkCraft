@@ -20,9 +20,9 @@ namespace DrkCraft
 
     SettingsMenu::SettingsMenu(bool activate)
       : Layer("SettingsMenuLayer", activate),
-        m_settings(RuntimeSettings::settings()),
+        m_settings(RuntimeSettings::get_settings()),
         m_dirty(NUM_SETTINGS, false),
-        m_keybinds(RuntimeSettings::keybinds()),
+        m_keybinds(RuntimeSettings::get_keybinds()),
         m_keybindsDirty(false)
     { }
 
@@ -70,18 +70,18 @@ namespace DrkCraft
                 monitorStrings.push_back(fmt::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name));
                 i++;
             }
-            if (ImGui::BeginCombo("Fullscreen Monitor", monitorStrings[m_settings.video.fullscreen_monitor].c_str()))
+            if (ImGui::BeginCombo("Fullscreen Monitor", monitorStrings[m_settings.video.fs_monitor].c_str()))
             {
                 for (int i = 0; const auto& monitor : monitors)
                 {
                     // Is this right??
-                    bool selected = (i == m_settings.video.fullscreen_monitor);
+                    bool selected = (i == m_settings.video.fs_monitor);
                     ImGui::Selectable(monitorStrings[i].c_str(), &selected);
 
                     if (selected)
                     {
-                        m_settings.video.fullscreen_monitor = i;
-                        make_dirty(Setting::FullscreenMonitor);
+                        m_settings.video.fs_monitor = i;
+                        make_dirty(Setting::FsMonitor);
                         ImGui::SetItemDefaultFocus();
                     }
                     i++;
@@ -90,11 +90,14 @@ namespace DrkCraft
             }
             if (ImGui::Checkbox("VSync", &m_settings.video.vsync))
                 make_dirty(Setting::VSync);
+
+            if (ImGui::DragInt("Field of View", &m_settings.video.fov, 1.0f, 0, 100))
+                make_dirty(Setting::Fov);
         }
 
         if (ImGui::TreeNode("Audio"))
         {
-            if (ImGui::DragFloat("Volume", &m_settings.audio.volume))
+            if (ImGui::DragInt("Volume", &m_settings.audio.volume, 1.0f, 0, 100))
                 make_dirty(Setting::Volume);
 
             if (ImGui::Checkbox("Music", &m_settings.audio.music))
@@ -182,18 +185,22 @@ namespace DrkCraft
         if (dirty(Setting::Fullscreen))
         {
             if (m_settings.video.fullscreen)
-                app.set_fullscreen(m_settings.video.fullscreen_monitor);
+                app.set_fullscreen(m_settings.video.fs_monitor);
             else
                 app.set_windowed();
         }
-        if (dirty(Setting::FullscreenMonitor))
+        if (dirty(Setting::FsMonitor))
         {
             if (m_settings.video.fullscreen && !dirty(Setting::Fullscreen))
-                app.set_fullscreen(m_settings.video.fullscreen_monitor);
+                app.set_fullscreen(m_settings.video.fs_monitor);
         }
         if (dirty(Setting::VSync))
         {
             app.get_window().set_vsync(m_settings.video.vsync);
+        }
+        if (dirty(Setting::Fov))
+        {
+
         }
         if (dirty(Setting::Volume))
         {

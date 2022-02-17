@@ -11,11 +11,6 @@ namespace DrkCraft
     public:
         IntervalCounter(void) = default;
 
-        void count(int x=1)
-        {
-            m_count += x;
-        }
-
         template <uint INTERVAL>
         bool on_interval(void)
         {
@@ -25,7 +20,10 @@ namespace DrkCraft
                 return true;
             }
             else
+            {
+                m_count++;
                 return false;
+            }
         }
 
     private:
@@ -40,7 +38,7 @@ namespace DrkCraft
         template <uint INTERVAL> // Milliseconds
         bool on_interval(void)
         {
-            constexpr Time::Milli<uint> intervalTime;
+            constexpr Time::Milli<uint> intervalTime(INTERVAL);
             if (m_timer.get_elapsed() >= intervalTime)
             {
                 m_timer.reset();

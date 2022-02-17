@@ -1,4 +1,4 @@
-#include "SavedWorldLoaded.hpp"
+#include "SavedWorldLoader.hpp"
 
 #include "Core/Debug/Profiler.hpp"
 
@@ -14,6 +14,6 @@ namespace DrkCraft
 
         m_world = make_ptr<World>();
 
-        return std::move(m_world);
+        return move(m_world);
     }
 }

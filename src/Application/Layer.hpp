@@ -32,12 +32,15 @@ namespace DrkCraft
     {
     public:
         template<ConcreteLayerConcept L, typename ... Args>
-        constexpr static Ref<L> create(Args&& ... args)
+        static constexpr Ref<L> create(Args&& ... args)
         {
-            return make_ptr<L>(std::forward<Args>(args)...);
+            return Ref<L>(new L(std::forward<Args>(args)...));
         }
 
+    protected:
         Layer(std::string_view name, bool activate=true);
+
+    public:
         virtual ~Layer(void);
 
         virtual void on_attach(void) { }

@@ -7,18 +7,30 @@
 
 #include "lib/glm/vec2.hpp"
 
+#include <string_view>
+#include <variant>
+
 namespace DrkCraft
 {
-    ////////// Input Queries //////////
+    ////// InputCode //////
+
+    using InputCode = std::variant<KeyCode, MouseCode>;
+
+    InputCode to_input_code(std::string_view str);
+
+    std::string_view input_code_name(InputCode code);
+
+    ////// Input Queries //////
 
     bool is_key_pressed(KeyCode key);
     bool is_mouse_button_pressed(MouseCode button);
+    bool is_pressed(InputCode code);
 
     vec2 get_mouse_position(void);
     float get_mouse_x(void);
     float get_mouse_y(void);
 
-    ////////// Key Mods //////////
+    ////// Key Mods //////
 
     using KeyModFlags = uint;
 

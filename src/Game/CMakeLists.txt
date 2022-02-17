@@ -1,17 +1,12 @@
 target_sources(DrkCraft
   PRIVATE
-    Block.cpp
-    Chunk.cpp
-    ChunkManager.cpp
-    ChunkRenderer.cpp
-    Components.cpp
-    Entity.cpp
     Game.cpp
     GameEvent.cpp
     Player.cpp
-    SavedWorldLoader.cpp
-    World.cpp
-    WorldGenerator.cpp
+    System.cpp
 )
 
+add_subdirectory(Entity)
 add_subdirectory(Layers)
+add_subdirectory(Systems)
+add_subdirectory(World)

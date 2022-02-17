@@ -1,11 +1,13 @@
 /.vscode/*
 /.VSCodeCounter/*
+/.vs/*
+
+/.sourcetrail/*
+/.venv/*
+
+**/__pycache__/**
 
 /build/*
-/venv/*
-*/__pycache__/*
-
-# /assets/images/textures/blockatlas
 
 /config/*
 !/config/default/

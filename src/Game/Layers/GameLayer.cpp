@@ -1,13 +1,12 @@
 #include "GameLayer.hpp"
 
+#include "Graphics/Renderer/CubeRenderer.hpp"
 #include "Application/Application.hpp"
-#include "Game/SavedWorldLoader.hpp"
+#include "Game/World/SavedWorldLoader.hpp"
 #include "Game/Layers/PauseMenu.hpp"
 #include "System/Input.hpp"
 #include "Util/File.hpp"
 #include "Core/Debug/Profiler.hpp"
-
-#include <utility>
 
 namespace DrkCraft
 {
@@ -17,9 +16,14 @@ namespace DrkCraft
         m_hudLayer(Layer::create<Hud>()),
         m_consoleLayer(Layer::create<Console>()),
         m_debugLayer(Layer::create<DebugOverlay>()),
+        m_worldLoaded(false),
         m_startPaused(false)
     {
         Application::add_overlay(m_loadingScreen);
+        const auto& assets = Application::get_assets();
+
+        const auto& blockAtlasTexture = assets.get_texture("blockatlas.png");
+        CubeRenderer::set_texture_atlas(TextureAtlas(blockAtlasTexture));
     }
 
     GameLayer::GameLayer(const fs::path& saveDir)
@@ -33,10 +37,11 @@ namespace DrkCraft
         auto savedWorldLoader = make_ptr<SavedWorldLoader>(saveDir);
 
         DRK_PROFILE_THREAD_CREATE("saved_world_load");
-        m_worldLoadThread = std::jthread([this, loader=std::move(savedWorldLoader)]
+        m_worldLoadThread = std::jthread([this, loader=move(savedWorldLoader)]
         {
             DRK_PROFILE_THREAD_START("saved_world_load");
             m_loadedWorld = loader->load();
+            m_worldLoaded = true;
         });
     }
 
@@ -49,10 +54,11 @@ namespace DrkCraft
         auto worldGenerator = make_ptr<WorldGenerator>(worldGeneratorSpec);
 
         DRK_PROFILE_THREAD_CREATE("world_generation");
-        m_worldLoadThread = std::jthread([this, generator=std::move(worldGenerator)]
+        m_worldLoadThread = std::jthread([this, generator=move(worldGenerator)]
         {
             DRK_PROFILE_THREAD_START("world_generation");
             m_loadedWorld = generator->generate();
+            m_worldLoaded = true;
         });
 
         // For now: Entire world will be in memory
@@ -84,6 +90,12 @@ namespace DrkCraft
         m_hudLayer->detach_layer();
     }
 
+    void GameLayer::on_render(void)
+    {
+        if (m_game)
+            m_game->render();
+    }
+
     void GameLayer::on_update(Timestep timestep)
     {
         if (m_game)
@@ -98,12 +110,6 @@ namespace DrkCraft
                 start_game();
             }
         }
-    }
-
-    void GameLayer::on_render(void)
-    {
-        if (m_game)
-            m_game->render();
     }
 
     void GameLayer::on_event(Event& event)
@@ -157,7 +163,7 @@ namespace DrkCraft
 
         m_loadingScreen->detach_layer();
 
-        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_assets());
+        m_game = make_ref<Game>(move(m_loadedWorld), Application::get_assets());
         m_debugLayer->attach_game(m_game);
 
         if (m_startPaused)

@@ -3,7 +3,6 @@ target_sources(DrkCraft
     Audio.cpp
     AudioSource.cpp
     MusicPlayer.cpp
-    Spatial.hpp
 )
 
 add_subdirectory(detail)

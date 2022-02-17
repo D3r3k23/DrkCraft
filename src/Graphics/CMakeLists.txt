@@ -13,3 +13,4 @@ target_sources(DrkCraft
 )
 
 add_subdirectory(detail)
+add_subdirectory(Renderer)

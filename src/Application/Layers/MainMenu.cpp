@@ -4,13 +4,22 @@
 #include "Util/ImGui.hpp"
 #include "Core/RunSettings.hpp"
 #include "Game/Layers/GameLayer.hpp"
-#include "System/AssetManager.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <imgui/imgui.h>
 
 namespace DrkCraft
 {
+    static const AssetList s_REQUIRED_ASSETS
+    {
+
+    };
+
+    const AssetList& MainMenu::get_asset_list(void)
+    {
+        return s_REQUIRED_ASSETS;
+    }
+
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer", true),
         m_show(true),

@@ -16,23 +16,26 @@
         class Logger
         {
         public:
-            static void init(const char* dir);
+            static void init(const char* name, const char* dir);
             static void close(void);
-            static void en_console_trace_logging(void);
+            static void flush(void);
 
             static spdlog::logger& get_core_logger(void);
             static spdlog::logger& get_game_logger(void);
             static spdlog::logger& get_event_logger(void);
 
         private:
+            static const char* s_name;
+
             static Ref<spdlog::logger> s_coreLogger;
             static Ref<spdlog::logger> s_gameLogger;
             static Ref<spdlog::logger> s_eventLogger;
         };
     }
 
-    #define DRK_LOGGER_INIT(dir) Logger::init(dir)
-    #define DRK_LOGGER_CLOSE()   Logger::close()
+    #define DRK_LOGGER_INIT(name, dir) Logger::init(name, dir)
+    #define DRK_LOGGER_CLOSE()         Logger::close()
+    #define DRK_LOGGER_FLUSH()         Logger::flush()
 
     #define DRK_LOG_CORE_TRACE(...)    Logger::get_core_logger().trace(__VA_ARGS__)
     #define DRK_LOG_CORE_DEBUG(...)    Logger::get_core_logger().debug(__VA_ARGS__)

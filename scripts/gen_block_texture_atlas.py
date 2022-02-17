@@ -22,8 +22,6 @@ def make_box(upperleft: Vec2) -> Box:
 def make_box(upperleft: Vec2, bottomright: Vec2) -> Box:
     return (upperleft.x, upperleft.y, bottomright.x, bottomright.y)
 
-TEXTURE_PATH = os.path.join('assets', 'images', 'textures')
-TEXTURE_EXT  = '.png'
 TEXTURE_MODE = 'RGBA'
 
 BLOCK_TEXTURE_SIZE = 16
@@ -34,28 +32,56 @@ NUM_TEXTURES_PER_BLOCK = 3
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('blocks_yaml', type=str, default=os.path.join('data', 'blocks.yaml'))
+    parser.add_argument('texture_dir', type=str, default=os.path.join('assets', 'images', 'textures'))
     parser.add_argument('atlas',       type=str, default='blockatlas.png')
     args = parser.parse_args()
 
-    gen_block_texture_atlas(args.blocks_yaml, args.atlas)
+    gen_block_texture_atlas(args.blocks_yaml, args.texture_dir, args.atlas)
 
-def gen_block_texture_atlas(blocksyaml_fn: str, atlasname: str):
-    print(f'Loading "{blocksyaml_fn}"')
-    blocks = load_yaml(blocksyaml_fn)
+def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: str):
+    print(f'Loading "{blocks_yaml_fn}"')
+    blocks = load_yaml(blocks_yaml_fn)
     if blocks is None:
-        print(f'Error: Could not open blocks YAML "{blocksyaml_fn}"')
+        print(f'Error: Could not open blocks YAML "{blocks_yaml_fn}"')
         return
 
     print('Loading textures')
-    blocktextures = [ get_block_texture_filename(block) for block in blocks.keys() ]
-    textures = load_textures(blocktextures)
+    texture_names = blocks.keys()
+    textures = load_textures(texture_dir, texture_names, '.png')
     print(f'{len(textures)} textures loaded')
 
     print('Generating texture atlas')
-    atlas = create_block_texture_atlas_image(textures)
+    atlas = create_block_texture_atlas_image(texture_dir, textures)
 
-    print(f'Saving texture atlas to "{atlasname}"')
-    atlas.save(os.path.join(TEXTURE_PATH, atlasname))
+    print(f'Saving texture atlas to "{atlas_name}"')
+    atlas.save(os.path.join(texture_dir, atlas_name))
+
+def load_textures(texture_dir: str, texture_names: List[str], f_ext: str) -> List[Texture]:
+    texture_files = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
+    textures: List[Texture] = []
+    for filename in texture_files:
+        try:
+            f = open(filename, 'rb')
+        except (OSError, IOError):
+            print(f'Error: could not open texture file "{filename}"')
+        else:
+            try:
+                image = PIL.Image.open(f)
+            except PIL.UnidentifiedImageError:
+                print(f'Error: missing texture file: "{filename}"')
+            else:
+                blocktextures = get_block_textures(image)
+                textures.append(blocktextures)
+            f.close()
+    return textures
+
+def get_block_textures(image: Texture) -> List[Texture]:
+    def get_block_face_box(faceindex: int) -> Box:
+        upperleft   = Vec2(BLOCK_TEXTURE_SIZE * faceindex, 0)
+        bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
+        return make_box(upperleft, bottomright)
+
+    return [ image.crop(get_block_face_box(i)) for i in range(NUM_TEXTURES_PER_BLOCK) ]
 
 def create_block_texture_atlas_image(textures: List[Texture]) -> Texture:
     size = find_texture_atlas_size(textures)
@@ -72,35 +98,6 @@ def create_block_texture_atlas_image(textures: List[Texture]) -> Texture:
         atlas.paste(texture, get_atlas_texture_box(i))
 
     return atlas
-
-def load_textures(texturefiles: List[str]) -> List[Texture]:
-    textures: List[Texture] = []
-    for filename in texturefiles:
-        try:
-            f = open(filename, 'rb')
-        except (OSError, IOError):
-            print(f'Error: could not open texture file "{filename}"')
-        else:
-            try:
-                image = PIL.Image.open(f)
-            except PIL.UnidentifiedImageError:
-                print(f'Error: invalid image file "{filename}"')
-            else:
-                blocktextures = get_block_textures(image)
-                textures.append(blocktextures)
-            f.close()
-    return textures
-
-def get_block_texture_filename(blockname: str) -> str:
-    return os.path.join(TEXTURE_PATH, blockname + TEXTURE_EXT)
-
-def get_block_textures(image: Texture) -> List[Texture]:
-    def get_block_face_box(faceindex: int) -> Box:
-        upperleft   = Vec2(BLOCK_TEXTURE_SIZE * faceindex, 0)
-        bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
-        return make_box(upperleft, bottomright)
-
-    return [ image.crop(get_block_face_box(i)) for i in range(NUM_TEXTURES_PER_BLOCK) ]
 
 def find_texture_atlas_size(textures: List[Texture]) -> Vec2:
     count = len(textures)

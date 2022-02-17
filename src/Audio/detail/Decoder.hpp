@@ -23,7 +23,7 @@ namespace DrkCraft
     class OggDecoder
     {
     public:
-        static Ptr<const AudioSourceData<uint8>> decode(const fs::path& filename);
+        static Ptr<const AudioSourceData<Byte>> decode(const fs::path& filename);
     };
 }
 

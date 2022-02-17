@@ -1,13 +1,12 @@
 #include "Monitor.hpp"
 
+#include "Core/RunSettings.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <vector>
 #include <algorithm>
 #include <execution>
 #include <mutex>
-#include <utility>
-
 namespace DrkCraft
 {
     /////////////////////////
@@ -193,7 +192,7 @@ namespace DrkCraft
             Monitor monitor(glfwMonitor, number, m_eventHandler);
 
             std::lock_guard lock(mutex);
-            m_monitors.push_back(std::move(monitor));
+            m_monitors.push_back(move(monitor));
         });
         {
             DRK_PROFILE_SCOPE("Sort monitors");
@@ -262,15 +261,12 @@ namespace DrkCraft
 
     void MonitorManager::deactivate_fullscreen(Window& window)
     {
+        const auto& defaultSize = RuntimeSettings::get_config().init_window_size;
+        const auto& size = m_savedWindowedSize.value_or(defaultSize);
+        const auto& pos  = m_savedWindowedPos.value_or(ivec2(0, 0));
+
         m_fullscreen = false;
-        const auto& size = *m_savedWindowedSize;
-        const auto& pos  = *m_savedWindowedPos;
-
         glfwSetWindowMonitor(window.get_raw_window(), nullptr, pos.x, pos.y, size.x, size.y, 0);
-
-        m_fullscreenMonitor.reset();
-        m_savedWindowedSize.reset();
-        m_savedWindowedPos.reset();
     }
 
     bool MonitorManager::fullscreen_activated(void) const

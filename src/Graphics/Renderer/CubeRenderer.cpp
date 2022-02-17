@@ -1,6 +1,6 @@
 #include "CubeRenderer.hpp"
 
-#include "Graphics/Renderer.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/detail/VertexArray.hpp"
 #include "Graphics/detail/Buffer.hpp"
@@ -48,16 +48,21 @@ namespace DrkCraft
             uint indices = 0;
 
             vec4 whiteColor;
-            Ref<Texture2D> whiteTexture;
+            Ref<Texture> whiteTexture;
+
+            uint textureAtlasTextureindex;
         };
     }
 
     static CubeRendererData s_data;
+    static TextureManager* s_textureSlots;
 
-    void CubeRenderer::init(void)
+    void CubeRenderer::init(const Ptr<TextureManager>& textureSlots)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Initializing CubeRenderer");
+
+        s_textureSlots = textureSlots.get();
 
         std::vector<Ref<Shader>> shaders = {
           Shader::create(shader_asset_path("cube_vertex_shader.glsl"), ShaderType::Vertex),
@@ -98,12 +103,19 @@ namespace DrkCraft
 
         s_data.vertexArray->set_vertex_buffer(s_data.vertexBuffer);
         s_data.vertexArray->set_index_buffer(s_data.indexBuffer);
+
+        s_data.textureAtlasTextureindex = s_textureSlots->reserve();
     }
 
     void CubeRenderer::shutdown(void)
     {
         s_data.vertexArray.reset();
         s_data.vertexBuffer.reset();
+    }
+
+    void CubeRenderer::set_texture_atlas(const TextureAtlas& atlas)
+    {
+        s_textureSlots->emplace(s_data.textureAtlasTextureindex, atlas.get_texture());
     }
 
     void CubeRenderer::begin_scene(void)
@@ -125,7 +137,7 @@ namespace DrkCraft
         s_data.vertexArray->unbind();
     }
 
-    void CubeRenderer::submit(const ivec3& position, const Ref<Texture2D>& texture, const vec4& color)
+    void CubeRenderer::submit(const ivec3& position, const Ref<Texture>& texture, const vec4& color)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -157,7 +169,7 @@ namespace DrkCraft
         s_data.stats.cubeFaces += 6;
     }
 
-    void CubeRenderer::submit(const ivec3& position, const Ref<Texture2D>& texture)
+    void CubeRenderer::submit(const ivec3& position, const Ref<Texture>& texture)
     {
         submit(position, texture, s_data.whiteColor);
     }
@@ -194,6 +206,6 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         s_data.vertexArray->get_vertex_buffer()->update<CubeVertex>(s_data.vertexBufferData);
-        Renderer::draw_indexed(s_data.vertexArray->get_index_buffer(), s_data.indices);
+        Renderer::draw_triangles(Renderer::Passkey(), *s_data.vertexArray->get_index_buffer(), s_data.indices);
     }
 }

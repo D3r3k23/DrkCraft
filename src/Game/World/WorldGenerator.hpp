@@ -1,8 +1,8 @@
-#ifndef WORLD_GAME_WORLD_GENERATOR_HPP
-#define WORLD_GAME_WORLD_GENERATOR_HPP
+#ifndef DRK_GAME_WORLD_WORLD_GENERATOR_HPP
+#define DRK_GAME_WORLD_WORLD_GENERATOR_HPP
 
 #include "Core/Base.hpp"
-#include "Game/World.hpp"
+#include "Game/World/World.hpp"
 
 namespace DrkCraft
 {
@@ -27,4 +27,4 @@ namespace DrkCraft
     };
 }
 
-#endif // WORLD_GAME_WORLD_GENERATOR_HPP
+#endif // DRK_GAME_WORLD_WORLD_GENERATOR_HPP

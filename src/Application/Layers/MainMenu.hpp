@@ -8,12 +8,23 @@
 
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
+#include "System/AssetManager.hpp"
 
 namespace DrkCraft
 {
+    enum class MainMenuState
+    {
+        Init = 0,
+        Loading,
+        ReadyToPlay,
+        PlaySelected
+    };
+
     class MainMenu : public Layer
     {
     public:
+        static const AssetList& get_asset_list(void);
+
         MainMenu(void);
         virtual ~MainMenu(void);
 

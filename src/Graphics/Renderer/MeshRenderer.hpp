@@ -1,0 +1,11 @@
+#ifndef DRK_GRAPHICS_RENDERER_MESH_RENDERER
+#define DRK_GRAPHICS_RENDERER_MESH_RENDERER
+
+#include "Core/Base.hpp"
+
+namespace DrkCraft
+{
+
+}
+
+#endif // DRK_GRAPHICS_RENDERER_MESH_RENDERER

@@ -1,9 +1,9 @@
-#ifndef DRK_GAME_CHUNK_MANAGER_HPP
-#define DRK_GAME_CHUNK_MANAGER_HPP
+#ifndef DRK_GAME_WORLD_CHUNK_MANAGER_HPP
+#define DRK_GAME_WORLD_CHUNK_MANAGER_HPP
 
 #include "Core/Base.hpp"
-#include "Game/Chunk.hpp"
-#include "Game/ChunkRenderer.hpp"
+#include "Game/World/Chunk.hpp"
+#include "Game/World/ChunkRenderer.hpp"
 
 #include <deque>
 
@@ -21,4 +21,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_CHUNK_MANAGER_HPP
+#endif // DRK_GAME_WORLD_CHUNK_MANAGER_HPP

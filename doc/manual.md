@@ -4,22 +4,20 @@
 
 [Defaults](config/default/)
 
-|------Key------|--Mouse--|---------------------------------------|
-| Forward Back <br> Left Right |   | Move                         |
-|    Sprint     |         | Sprint                                |
-|    Crouch     |         | Crouch or descend while flying        |
-|     Jump      |         | Jump or ascend while flying           |
-|---------------|---------|---------------------------------------|
-|               |   Use   | Use tool or weapon                    |
-|               |  Place  | Place block or secondary attack       |
-|   Interact    |         | Interact with item                    |
-|   Inventory   |         | Open/close inventory                  |
-|      Fly      |         | Toggle flying (Dev mode only)         |
-|---------------|---------|---------------------------------------|
-|    Console    |         | Toggle console                        |
-|      Esc      |         | Pause/Unpause                         |
-|      F8       |         | Toggle debug overlay                  |
-|      F7       |         | Toggle ImGui demo window (Debug only) |
+| Control   | Action                                |
+| :-------: | ------------------------------------- |
+| Up Down <br> Left Right | Move                    |
+| Crouch    | Crouch or descend while flying        |
+| Jump      | Jump or ascend while flying           |
+| Use       | Use tool or weapon                    |
+| Place     | Place block or secondary attack       |
+| Interact  | Interact with item                    |
+| Inventory | Open/close inventory                  |
+| Fly       | Toggle flying (Dev mode only)         |
+| Console   | Toggle console                        |
+| Esc       | Pause/Unpause                         |
+| F8        | Toggle debug overlay                  |
+| F7        | Toggle ImGui demo window (Debug only) |
 
 ## Getting Started
 

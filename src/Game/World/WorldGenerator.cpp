@@ -4,8 +4,6 @@
 
 #include <FastNoiseLite.h>
 
-#include <utility>
-
 namespace DrkCraft
 {
     WorldGenerator::WorldGenerator(const WorldGeneratorSpec& spec)
@@ -20,7 +18,7 @@ namespace DrkCraft
 
         m_world = make_ptr<World>();
 
-        return std::move(m_world);
+        return move(m_world);
     }
 
     const WorldGeneratorSpec& WorldGenerator::info(void) const

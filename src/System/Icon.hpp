@@ -4,6 +4,7 @@
 #include "Core/Base.hpp"
 #include "System/Image.hpp"
 
+#include "lib/fs.hpp"
 #include "lib/glm/vec2.hpp"
 
 namespace DrkCraft
@@ -12,13 +13,14 @@ namespace DrkCraft
     {
     public:
         Icon(const fs::path& filename);
-        ~Icon(void);
+
+        bool valid(void) const;
 
         uint8* get_data(void) const;
         const uvec2& get_size(void) const;
 
     private:
-        Ptr<ImageData> m_image;
+        const Ptr<Image> m_image;
     };
 }
 

@@ -16,11 +16,16 @@
 #define DRK_CONCAT(a, b) DRK_CONCAT_IMPL(a, b)
 #define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
-#if defined(DRK_PLATFORM_WINDOWS)
-#   ifdef APIENTRY
-#       define __stdcall
+#ifndef APIENTRY
+#   if defined(DRK_PLATFORM_WINDOWS)
+#       define APIENTRY __stdcall
+#   else
+#       define APIENTRY
 #   endif
-#   define DRK_APIENTRY APIENTRY
+#endif
+#define DRK_APIENTRY APIENTRY
+
+#if defined(DRK_PLATFORM_WINDOWS)
 #   ifndef NOMINMAX
 #       define NOMINMAX
 #   endif
@@ -28,10 +33,10 @@
 
 namespace DrkCraft
 {
-    enum ResultType
+    enum ResultStatus
     {
-        ResultSuccess = 0,
-        ResultFailure = 1
+        ResultFailure = 0,
+        ResultSuccess = 1
     };
 }
 

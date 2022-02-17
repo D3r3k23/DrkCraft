@@ -16,6 +16,9 @@
 [submodule "lib/imgui/imgui"]
 	path = lib/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "lib/magic_enum"]
+	path = lib/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
 [submodule "lib/minimp3/minimp3"]
 	path = lib/minimp3/minimp3
 	url = https://github.com/lieff/minimp3.git
@@ -40,6 +43,3 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "lib/magic_enum"]
-	path = lib/magic_enum
-	url = https://github.com/Neargye/magic_enum.git

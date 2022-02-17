@@ -8,22 +8,16 @@
 
 namespace DrkCraft
 {
+    ///////////////////////
+    //       Image       //
+    ///////////////////////
+
     using Data_t = stbi_uc;
     // Ensure that data can be stored as uint8*
     static_assert(std::unsigned_integral<Data_t>);
     static_assert(sizeof(uint8) == sizeof(Data_t));
 
-    ImageData::ImageData(uint8* data, const vec2& size, uint channels)
-      : data(data), size(size), channels(channels)
-    { }
-
-    ImageData::~ImageData(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        stbi_image_free(data);
-    }
-
-    Ref<ImageData> Image::load_file(const fs::path& filename, uint channels)
+    Ptr<Image> Image::load_file(const fs::path& filename, uint channels)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -37,22 +31,33 @@ namespace DrkCraft
         else
             channelsPtr = &channelsOut;
 
-        ImageData::Data_t* data;
+        uint8* data;
         uvec2 size;
         {
             DRK_PROFILE_SCOPE("stbi_load");
             int width, height;
-            data = stbi_load(filename.string().c_str(), &width, &height, channelsPtr, channels);
+            data = (uint8*)stbi_load(filename.string().c_str(), &width, &height, channelsPtr, channels);
+
             size = { width, height };
-            if (channelsPtr)
+            if (channels == 0)
                 channels = channelsOut;
         }
-        return make_ref<ImageData>(static_cast<uint8*>(data), size, channels);
+        if (!data)
+        {
+            DRK_ASSERT_DEBUG(false, "Failed to load image file \"{}\"", filename.generic_string());
+            return {};
+        }
+        return make_ptr<Image>(static_cast<uint8*>(data), size, channels);
     }
 
-    Image::Image(const fs::path& filename)
-      : m_data(load(filename))
+    Image::Image(uint8* data, const uvec2& size, uint channels)
+      : data(data),
+        size(size),
+        channels(channels)
+    { }
+
+    Image::~Image(void)
     {
-        DRK_PROFILE_FUNCTION();
+        stbi_image_free(data);
     }
 }

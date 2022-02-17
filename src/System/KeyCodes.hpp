@@ -11,7 +11,7 @@ namespace DrkCraft
     int from_key_code(KeyCode key);
 
     KeyCode to_key_code(std::string_view str);
-    std::string key_code_name(KeyCode key);
+    std::string_view key_code_name(KeyCode key);
 
     // From glfw3.h, same codes as in imgui_impl_glfw.cpp
     enum class KeyCode

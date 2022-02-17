@@ -57,7 +57,7 @@ namespace DrkCraft
 
     void DebugOverlay::attach_game(Ref<Game> game)
     {
-        m_game = std::move(game);
+        m_game = move(game);
     }
 
     void DebugOverlay::on_attach(void)
@@ -158,6 +158,13 @@ namespace DrkCraft
         // World loading status
 
         // Player info
+        ImGui::BeginGroup();
+        {
+
+        }
+        ImGui::EndGroup();
+
+        // Block info
         ImGui::BeginGroup();
         {
 

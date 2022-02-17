@@ -12,30 +12,38 @@ namespace DrkCraft
     //       Texture       //
     /////////////////////////
 
+    /////////////////////////
+    //       Texture       //
+    /////////////////////////
+
+    Texture::Texture(void)
+    {
+        DRK_PROFILE_FUNCTION();
+        glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
+    }
+
     Texture::~Texture(void)
     {
         DRK_PROFILE_FUNCTION();
         glDeleteTextures(1, &m_id);
     }
 
-    ///////////////////////////
-    //       Texture2D       //
-    ///////////////////////////
-
-    Texture2D::Texture2D(void)
+    void Texture::attach(uint slot) const
     {
-        DRK_PROFILE_FUNCTION();
-        glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
+        DRK_ASSERT_DEBUG(!attached(), "Texture is already attached");
+        m_slot = slot;
+        glBindTextureUnit(m_id, slot);
     }
 
-    void Texture2D::bind(void) const
+    void Texture::detach(void) const
     {
-        glBindTexture(GL_TEXTURE_2D);
+        if (m_slot)
+            glBindTextureUnit(0, *m_slot);
     }
 
-    void Texture2D::unbind(void) const
+    bool Texture::attached(void) const
     {
-        glBindTexture(0);
+        return m_slot.has_value();
     }
 
     ////////////////////////////////
@@ -43,8 +51,49 @@ namespace DrkCraft
     ////////////////////////////////
 
     TextureManager::TextureManager(void)
-      : m_MAX_TEXTURES(get_max_textures())
-    { }
+      : m_maxTextures(get_max_textures())
+    {
+        m_textures.reserve(m_maxTextures);
+    }
+
+    uint TextureManager::reserve(void)
+    {
+        DRK_ASSERT_DEBUG(empty(), "Texture slots are not empty");
+        return m_nReserved++;
+    }
+
+    void TextureManager::refresh(void)
+    {
+        if (m_nReserved == 0)
+            m_textures.clear();
+        else
+            m_textures.erase(m_textures.begin() + m_nReserved, m_textures.end());
+    }
+
+    void TextureManager::emplace(uint slot, Ref<Texture> texture)
+    {
+
+    }
+
+    void TextureManager::push(Ref<Texture> texture)
+    {
+        DRK_ASSERT_DEBUG(!full(), "Texture slots are full");
+    }
+
+    uint TextureManager::count(void) const
+    {
+        return m_textures.size();
+    }
+
+    bool TextureManager::full(void) const
+    {
+        return count() >= m_maxTextures;
+    }
+
+    bool TextureManager::empty(void) const
+    {
+        return m_textures.empty();
+    }
 
     uint TextureManager::get_max_textures(void)
     {

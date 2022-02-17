@@ -13,7 +13,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Creating Window");
 
-        const auto& config = RuntimeSettings::config();
+        const auto& config = RuntimeSettings::get_config();
         int width  = config.init_window_size.width;
         int height = config.init_window_size.height;
 

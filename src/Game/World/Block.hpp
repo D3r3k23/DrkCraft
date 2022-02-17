@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_BLOCK_HPP
-#define DRK_GAME_BLOCK_HPP
+#ifndef DRK_GAME_WORLD_BLOCK_HPP
+#define DRK_GAME_WORLD_BLOCK_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/Texture.hpp"
@@ -27,4 +27,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_BLOCK_HPP
+#endif // DRK_GAME_WORLD_BLOCK_HPP

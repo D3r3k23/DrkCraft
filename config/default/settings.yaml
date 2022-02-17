@@ -1,6 +1,6 @@
 video:
   fullscreen: false
-  fullscreen_monitor: 0
+  fs_monitor: 0
   vsync: true
 audio:
   volume: 0.8

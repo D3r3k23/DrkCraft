@@ -2,6 +2,8 @@
 
 #include "Core/Debug/Profiler.hpp"
 
+#include <al/alc.h>
+
 namespace DrkCraft
 {
     //////////////////////////

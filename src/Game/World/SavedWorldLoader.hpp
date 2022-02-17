@@ -1,8 +1,8 @@
-#ifndef DRK_GAME_SAVED_WORLD_LOADER_HPP
-#define DRK_GAME_SAVED_WORLD_LOADER_HPP
+#ifndef DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP
+#define DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP
 
 #include "Core/Base.hpp"
-#include "Game/World.hpp"
+#include "Game/World/World.hpp"
 
 #include "lib/fs.hpp"
 
@@ -20,4 +20,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_SAVED_WORLD_LOADER_HPP
+#endif // DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP

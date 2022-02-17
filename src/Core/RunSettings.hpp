@@ -38,7 +38,7 @@ namespace DrkCraft
 
     struct ConfigData
     {
-        struct
+        struct InitWindowSize
         {
             int width = 1280;
             int height = 720;
@@ -52,29 +52,39 @@ namespace DrkCraft
         struct Video
         {
             bool fullscreen = false;
-            int fullscreen_monitor = 0;
+            int fs_monitor = 0;
             bool vsync = true;
+            int fov = 50;
+            int renderDistance;
         } video;
 
         struct Audio
         {
-            float volume = 0.5f;
+            int volume = 50;
             bool music = true;
         } audio;
 
         struct Controls
         {
-            int sensitivity = 0.5f;
+            int sensitivity = 50;
         } controls;
     };
 
     enum class Setting
     {
+        None = 0,
+
+        // Video
         Fullscreen,
-        FullscreenMonitor,
+        FsMonitor,
         VSync,
+        Fov,
+
+        // Audio
         Volume,
         Music,
+
+        // Controls
         Sensitivity
     };
 
@@ -82,58 +92,62 @@ namespace DrkCraft
     {
         struct PlayerMovement
         {
-            KeyCode forward = KeyCode::W;
-            KeyCode back    = KeyCode::S;
-            KeyCode left    = KeyCode::A;
-            KeyCode right   = KeyCode::D;
+            InputCode forward = KeyCode::W;
+            InputCode back    = KeyCode::S;
+            InputCode left    = KeyCode::A;
+            InputCode right   = KeyCode::D;
 
-            KeyCode sprint = KeyCode::LeftShift;
-            KeyCode crouch = KeyCode::LeftCtrl;
-            KeyCode jump   = KeyCode::Space;
+            InputCode sprint = KeyCode::LeftShift;
+            InputCode crouch = KeyCode::LeftCtrl;
+            InputCode jump   = KeyCode::Space;
 
         } player_movement;
 
         struct PlayerActions
         {
-            MouseCode use   = MouseCode::Button0; // Item: Weapon -> attack, Tool -> use, Block/other -> nothing
-            MouseCode place = MouseCode::Button1; // Item: Weapon -> secondary, Tool -> nothing, Block/other -> place
+            InputCode use   = MouseCode::Button0; // Item: Weapon -> attack, Tool -> use, Block/other -> nothing
+            InputCode place = MouseCode::Button1; // Item: Weapon -> secondary, Tool -> nothing, Block/other -> place
 
-            KeyCode interact  = KeyCode::E;
-            KeyCode inventory = KeyCode::T;
-            KeyCode fly       = KeyCode::F;
+            InputCode interact  = KeyCode::E;
+            InputCode inventory = KeyCode::T;
+            InputCode fly       = KeyCode::F;
         } player_actions;
     };
 
     class RuntimeSettings
     {
+    private:
+        static RuntimeSettings& get_instance(void);
+
     public:
         static void load(const fs::path& location);
         static void save(void);
 
-        static const ConfigData& config(void);
-        static const SettingsData& settings(void);
-        static const KeyBinds& keybinds(void);
+        static const ConfigData& get_config(void);
+        static const SettingsData& get_settings(void);
+        static const KeyBinds& get_keybinds(void);
 
+        static SettingsData& settings(void);
         static void set_settings(const SettingsData& settings);
         static void set_keybinds(const KeyBinds& keybinds);
 
     private:
-        static void load_config_file(const fs::path& filename);
-        static void load_settings_file(const fs::path& filename);
-        static void load_keybinds_file(const fs::path& filename);
+        void load_config_file(void);
+        void load_settings_file(void);
+        void load_keybinds_file(void);
 
-        static void save_config_file(const fs::path& filename);
-        static void save_settings_file(const fs::path& filename);
-        static void save_keybinds_file(const fs::path& filename);
+        void save_config_file(void);
+        void save_settings_file(void);
+        void save_keybinds_file(void);
 
     private:
-        static fs::path s_configFile;
-        static fs::path s_settingsFile;
-        static fs::path s_keybindsFile;
+        fs::path m_configFile;
+        fs::path m_settingsFile;
+        fs::path m_keybindsFile;
 
-        static ConfigData  s_configData;
-        static SettingsData s_settingsData;
-        static KeyBinds    s_keybindsData;
+        ConfigData  m_configData;
+        SettingsData m_settingsData;
+        KeyBinds    m_keybindsData;
     };
 }
 

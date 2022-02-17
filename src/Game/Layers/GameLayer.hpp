@@ -7,7 +7,7 @@
 #include "Application/Timestep.hpp"
 
 #include "Game/Game.hpp"
-#include "Game/WorldGenerator.hpp"
+#include "Game/World/WorldGenerator.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 #include "Game/Layers/Hud.hpp"
 #include "Game/Layers/Console.hpp"
@@ -16,6 +16,7 @@
 #include "lib/fs.hpp"
 
 #include <thread>
+#include <atomic>
 #include <functional>
 
 namespace DrkCraft
@@ -69,6 +70,7 @@ namespace DrkCraft
 
         std::jthread m_worldLoadThread;
         Ptr<World> m_loadedWorld;
+        std::atomic<bool> m_worldLoaded;
 
         GameStartCallbackFn m_onGameStart;
 

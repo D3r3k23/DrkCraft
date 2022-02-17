@@ -8,40 +8,17 @@
 
 #include "lib/glm/vec3.hpp"
 
-#include <functional>
-
 namespace DrkCraft
 {
     template <typename B>
-    using AudioSourceBufferDeleter = std::function<void(B*)>;
-
-    template <typename B>
     struct AudioSourceData
     {
-        AudioSourceData(B* buffer, const AudioSourceBufferDeleter<B>& bufferDeleter={})
-          : buffer(buffer),
-            m_deleter(bufferDeleter)
-        { }
-
-        ~AudioSourceData(void)
-        {
-            if (m_deleter)
-                m_deleter(buffer);
-        }
-
-        // Bitrate could be variable - do we need to find it?
-        // Might be required to get AudioSourceFormat
-
-        B* buffer;
+        Ptr<B> buffer;
         uint size=0;
+        uint length=0;
         uint channels=0;
         uint sampleRate=0;
-        uint bitRate=0; // kb/s
-        uint bitDepth=0;
         AudioSourceFormat format=AudioSourceFormat::None;
-
-    private:
-        AudioSourceBufferDeleter<B> m_deleter;
     };
 
     enum class AudioSourceState
@@ -57,12 +34,12 @@ namespace DrkCraft
         friend class AudioEngine;
 
     private:
-        AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, uint bitRate);
+        AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, float length);
 
     public:
         template <typename B>
         AudioSource(const AudioSourceData<B>& data)
-          : AudioSource(data.format, static_cast<void*>data.buffer, data.size, data.sampleRate, data.bitRate)
+          : AudioSource(data.format, static_cast<void*>data.buffer, data.size, data.sampleRate, data.length)
         { }
 
         virtual ~AudioSource(void);
@@ -100,7 +77,7 @@ namespace DrkCraft
     private:
         AlBuffer m_buffer;
 
-        const float m_length; // Seconds
+        const float m_length;
 
         vec3 m_position;
         bool m_spatial;

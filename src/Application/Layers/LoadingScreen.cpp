@@ -12,7 +12,6 @@ namespace DrkCraft
 
     LoadingScreen::LoadingScreen(bool activate)
       : Layer("LoadingScreenLayer", activate),
-        m_updateTimer(250),
         m_numPeriods(0)
     { }
 
@@ -49,7 +48,7 @@ namespace DrkCraft
 
     void LoadingScreen::on_update(Timestep timestep)
     {
-        if (m_updateTimer.on_interval())
+        if (m_updateTimer.on_interval<250>())
         {
             m_numPeriods++;
             if (m_numPeriods > MAX_PERIODS)

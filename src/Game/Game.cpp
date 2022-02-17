@@ -1,9 +1,10 @@
 #include "Game.hpp"
 
 #include "Application/Application.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
-#include "Game/ChunkRenderer.hpp"
+#include "Game/World/ChunkRenderer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <utility>
@@ -14,9 +15,22 @@
 
 namespace DrkCraft
 {
+    static const AssetList s_REQUIRED_ASSETS
+    {
+        { AssetType::Texture, "blockatlas.png" },
+        { AssetType::Texture, "skybox.png"     },
+
+        { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
+    };
+
+    const AssetList& Game::get_asset_list(void)
+    {
+        return s_REQUIRED_ASSETS;
+    }
+
     Game::Game(Ptr<World> world, AssetManager& assets)
       : m_assets(assets),
-        m_world(std::move(world)),
+        m_world(move(world)),
         m_running(true),
         m_paused(false),
         flatColorShaderProgram("FlatColorShaderProgram"),
@@ -69,13 +83,14 @@ namespace DrkCraft
         Renderer::end_scene();
 
 
-        GlObjectHandler<ShaderProgram> shader(flatColorShaderProgram);
+        flatColorShaderProgram.bind();
         // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
         // flatColorShaderProgram.upload_uniform("u_transform", Transform::Identity());
         flatColorShaderProgram.upload_uniform("u_color", vec4(color, 1.0f));
 
         Renderer::draw_triangle(*vertexBuffer);
-        // Renderer::draw_block(0, 0, 0);
+
+        flatColorShaderProgram.unbind();
     }
 
     void Game::update(Timestep timestep)

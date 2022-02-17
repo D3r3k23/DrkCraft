@@ -3,56 +3,54 @@
 
 #include "Core/Base.hpp"
 #include "Graphics/detail/GlObject.hpp"
+#include "System/Image.hpp"
 
 #include "lib/glm/vec2.hpp"
 
 #include <vector>
+#include <optional>
 
 namespace DrkCraft
 {
     class Texture : public GlObject
     {
     public:
-        Texture(void) = default;
+        static Ref<Texture> from_image(const Image& image);
+        static Ref<Texture> from_data();
+
+    private:
+        Texture(void);
+    public:
         virtual ~Texture(void);
 
-        virtual void bind(void) const = 0;
-        virtual void unbind(void) const = 0;
+        void attach(uint unit) const;
+        void detach(void) const;
 
-        virtual uvec2 get_coordinates(uint s, uint t);
+        bool attached(void) const;
 
-    protected:
+        uvec2 get_coordinates(uint s, uint t);
 
     private:
+        mutable std::optional<uint> m_slot;
     };
 
-    class Texture2D : public Texture
+    class TextureAtlas
     {
     public:
-        Texture2D(void);
-        virtual ~Texture2D(void);
+        TextureAtlas(Ref<Texture> atlasTexture);
 
-        virtual void bind(void) const override;
-        virtual void unbind(void) const override;
-
-    protected:
+        Ref<Texture> get_texture(void) const;
 
     private:
+        Ref<Texture> m_texture;
     };
 
-    class TextureAtlas : public Texture2D // ?
+    class SubTexture
     {
     public:
-        TextureAtlas(void);
+        SubTexture(Ref<TextureAtlas> atlas, const uvec2& tile);
 
-        virtual uvec2 get_coordinates(uint s, uint t) override;
-
-    private:
-    };
-
-    class SubTexture : public Texture2D
-    {
-
+        uvec2 get_coordinates(uint s, uint t);
     };
 
     class TextureManager
@@ -60,12 +58,26 @@ namespace DrkCraft
     public:
         TextureManager(void);
 
-    private:
-        const uint m_MAX_TEXTURES;
-        std::vector<uint> m_textures;
+        uint reserve(void);
+
+        void refresh(void);
+
+        void emplace(uint slot, Ref<Texture> texture);
+
+        void push(Ref<Texture> texture);
+
+        uint count(void) const;
+        bool full(void) const;
+        bool empty(void) const;
 
     private:
         static uint get_max_textures(void);
+
+    private:
+        const uint m_maxTextures;
+        std::vector<Ref<Texture>> m_textures;
+
+        uint m_nReserved;
     };
 }
 

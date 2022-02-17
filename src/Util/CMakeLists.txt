@@ -6,6 +6,7 @@ target_sources(DrkCraft
     Noise.cpp
     PeriodicUpdate.cpp
     Random.cpp
-    String.hpp
+    String.cpp
     Time.hpp
+    Yaml.cpp
 )

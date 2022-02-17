@@ -6,10 +6,11 @@ set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 file(READ VERSION.txt VERSION_txt)
 string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
 
-##########################################
+###########################################
 project(DrkCraft VERSION ${DRK_VERSION})
-##########################################
+###########################################
 
+# Options
 option(DRK_EN_PROFILE "Enable profiling" OFF)
 option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
 option(DRK_EN_TRACE_LOGGING "Enable trace logging in console" OFF)
@@ -51,6 +52,7 @@ else()
     return()
 endif()
 
+#######################################################
 message("=======================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
 message("- Platform: ${PLATFORM}")
@@ -72,12 +74,18 @@ endif()
 message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 message("- Compiler: ${CMAKE_CXX_COMPILER}")
 message("=======================================")
+#######################################################
 
-##########################################
+##################################
+##################################
+
 add_executable(DrkCraft)
+
 add_subdirectory(src)
 add_subdirectory(lib)
-##########################################
+
+##################################
+##################################
 
 # C++ 20
 set_target_properties(DrkCraft
@@ -85,6 +93,8 @@ set_target_properties(DrkCraft
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
+
+###### Compile definitions ######
 
 string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
 string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
@@ -121,6 +131,7 @@ if(${DRK_EN_DEV_MODE})
     target_compile_definitions(DrkCraft PUBLIC DRK_EN_DEV_MODE)
 endif()
 
+# Output directory
 set_target_properties(DrkCraft
   PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<1:${CMAKE_BUILD_TYPE}>"

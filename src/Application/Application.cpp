@@ -1,7 +1,7 @@
 #include "Application.hpp"
 
 #include "System/GlfwTools.hpp"
-#include "Graphics/Renderer.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Icon.hpp"
 #include "System/Input.hpp"
@@ -19,14 +19,14 @@ namespace DrkCraft
 
     Ptr<Application> Application::s_instance = nullptr;
 
-    void Application::init(void)
+    void Application::init(std::string_view title)
     {
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("Initializing GLFW");
         init_glfw();
 
-        s_instance = make_ptr<Application>();
+        s_instance = make_ptr<Application>(title);
 
         const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time()).count();
         DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime);
@@ -121,8 +121,8 @@ namespace DrkCraft
     //       Instance       //
     //////////////////////////
 
-    Application::Application(void)
-      : m_window("DrkCraft"),
+    Application::Application(std::string_view title)
+      : m_window(title),
         m_context(m_window),
         m_eventGenerator(m_window),
         m_layerStackForwardView(m_frameLayerStack),
@@ -133,7 +133,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto& settings = RuntimeSettings::settings();
+        const auto& settings = RuntimeSettings::get_settings();
         {
             DRK_LOG_CORE_TRACE("Loading monitors");
             DRK_PROFILE_THREAD_CREATE("monitor_load");
@@ -153,9 +153,6 @@ namespace DrkCraft
             DRK_LOG_CORE_TRACE("Initializing Audio system");
             Audio::init(settings.audio.volume);
 
-            DRK_LOG_CORE_TRACE("Loading Application assets");
-            load_assets();
-
             DRK_LOG_CORE_TRACE("Initializing Renderer");
             Renderer::init(m_context, m_window.get_framebuffer_size());
 
@@ -163,8 +160,10 @@ namespace DrkCraft
             m_imGuiManager = make_ptr<ImGuiManager>(m_window);
 
             m_window.set_vsync(settings.video.vsync);
-        }
 
+            DRK_LOG_CORE_TRACE("Loading Main Menu assets")
+            load_assets();
+        }
         if (settings.video.fullscreen)
             set_fullscreen();
 
@@ -321,9 +320,7 @@ namespace DrkCraft
 
     bool Application::on_monitor_disconnected(const MonitorDisconnectedEvent& event)
     {
-        auto settings = RuntimeSettings::settings();
-        settings.video.fullscreen_monitor = 0;
-        RuntimeSettings::set_settings(settings);
+        RuntimeSettings::settings().video.fullscreen_monitor = 0;
 
         if (is_fullscreen())
             set_fullscreen(0);
@@ -335,11 +332,8 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        AssetList assets
-        {
-            { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
-        };
-        m_assetManager.load_list(assets);
+        m_assetManager.load_list(MainMenu::get_asset_list());
+        m_assetManager.load_list(Game::get_asset_list());
     }
 
     void Application::set_fullscreen(int monitor)
@@ -347,7 +341,7 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Setting Application to fullscreen");
 
         if (monitor < 0)
-            monitor = RuntimeSettings::settings().video.fullscreen_monitor;
+            monitor = RuntimeSettings::get_settings().video.fullscreen_monitor;
 
         m_monitorManager.activate_fullscreen(m_window, monitor);
         DRK_LOG_CORE_INFO("Fullscreen monitor: {}", m_monitorManager.get_monitor(monitor).get_name());

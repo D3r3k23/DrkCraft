@@ -1,7 +1,7 @@
 #include "ChunkRenderer.hpp"
 
-#include "Graphics/CubeRenderer.hpp"
-#include "Game/Block.hpp"
+#include "Graphics/Renderer/CubeRenderer.hpp"
+#include "Game/World/Block.hpp"
 
 namespace DrkCraft
 {
