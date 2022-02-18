@@ -8,21 +8,6 @@
 
 namespace DrkCraft
 {
-    struct ImageData
-    {
-        ImageData(uint8* data, const vec2& size, uint channels);
-        ~ImageData(void);
-
-        ImageData(ImageData&& other);
-        ImageData& operator=(ImageData&& other);
-
-        ImageData(const ImageData&) = delete;
-        ImageData& operator=(const ImageData&) = delete;
-
-        void destroy(void);
-        operator bool(void) const;
-    };
-
     class Image
     {
     public:

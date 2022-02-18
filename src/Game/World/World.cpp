@@ -27,16 +27,5 @@ namespace DrkCraft
     void World::render_entities(void)
     {
         DRK_PROFILE_FUNCTION();
-
-        MeshRenderer::begin_scene();
-        EntityRegistry& entities = m_entityManager.get_entities();
-
-        for (auto group = entities.group<TransformComponent>(entt::get<MeshComponent>);
-            auto entity : group)
-        {
-            auto [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-            MeshRenderer::submit(mesh, transform);
-        }
-        MeshRenderer::end_scene();
     }
 }

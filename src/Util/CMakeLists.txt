@@ -4,6 +4,7 @@ target_sources(DrkCraft
     ImGui.cpp
     Json.cpp
     Noise.cpp
+    Obj.cpp
     PeriodicUpdate.cpp
     Random.cpp
     String.cpp

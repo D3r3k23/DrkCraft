@@ -20,6 +20,7 @@ namespace DrkCraft
         ~Window(void);
 
         GLFWwindow* get_raw_window(void);
+        const GLFWwindow* get_raw_window(void) const;
 
         void set_vsync(bool enable);
         bool get_vsync(void) const;

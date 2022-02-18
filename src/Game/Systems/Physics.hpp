@@ -2,8 +2,9 @@
 #define DRK_GAME_SYSTEMS_PHYSICS_HPP
 
 #include "Core/Base.hpp"
-#include "Game/System.hpp"
+#include "Game/GameSystem.hpp"
 #include "Application/Timestep.hpp"
+#include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 
 #include "Game/World/World.hpp"
@@ -11,17 +12,14 @@
 
 namespace DrkCraft
 {
-    class PhysicsSystem : public System
+    class PhysicsSystem : public GameSystem
     {
     public:
-        PhysicsSystem(EntityScene& scene, World& world, Player& player);
-        ~PhysicsSystem(void) = default;
+        PhysicsSystem(World& world, EntityScene& scene);
+        virtual ~PhysicsSystem(void) = default;
 
+        virtual void render(void) { };
         virtual void update(Timestep timestep) override;
-
-    private:
-        World& m_world;
-        Player& m_player;
     };
 }
 

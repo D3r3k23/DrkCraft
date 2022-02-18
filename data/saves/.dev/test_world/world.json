@@ -1,8 +1,6 @@
 {
-  "drkcraft_version": 0.2,
-  "name": "test_world",
   "seed": null,
-  "last_save": 0,
-  "day": 1,
-  "time": 4
+  "chunks": [
+    { "x": 0, "y": 0, "z": 0}
+  ]
 }

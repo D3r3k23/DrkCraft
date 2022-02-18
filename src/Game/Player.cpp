@@ -1,8 +1,11 @@
 #include "Player.hpp"
 
+#include "Game/Entity/Components.hpp"
 #include "System/Input.hpp"
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 #include "Core/Debug/Profiler.hpp"
+
+#include <entt/entity/registry.hpp>
 
 #include <glm/geometric.hpp>
 
@@ -10,21 +13,31 @@ namespace DrkCraft
 {
     static constexpr float FLYING_SPEED = 1.0f;
 
-    Player::Player(void)
-      : m_position(0.0f, 0.0f, -2.0f),
+    Entity create_player(EntityScene& entityScene)
+    {
+        Entity entity = entityScene.create();
+        entity.add_component<PlayerComponent>();
+        return entity;
+    }
+
+    PlayerController::PlayerController(Entity playerEntity)
+      : m_entity(playerEntity),
+        m_position(0.0f, 0.0f, -2.0f),
         m_direction(0.0f, 0.0f, 1.0f),
         m_state(PlayerState::Normal),
         m_distanceAboveGround(0.0f),
         m_camera(45.0f, 16.9f, 0.01f, 1000.0f, m_position, m_direction),
         m_cameraOffset(0.0f, 2.0f, 0.0f)
-    { }
+    {
+        DRK_ASSERT_DEBUG(playerEntity.has_component<PlayerComponent>(), "Entity is not a valid Player");
+    }
 
-    void Player::render(void)
+    void PlayerController::render(void)
     {
 
     }
 
-    void Player::update(Timestep timestep)
+    void PlayerController::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -95,12 +108,12 @@ namespace DrkCraft
         if (is_pressed(keybinds.player_movement.left))    m_position -= speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
         if (is_pressed(keybinds.player_movement.right))   m_position += speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
 
-        if (flying());
+        if (is_flying());
 
         m_camera.set_position(m_position + m_cameraOffset);
     }
 
-    void Player::on_event(InputEvent& event)
+    void PlayerController::on_event(InputEvent& event)
     {
         EventDispatcher ed(event);
         ed.dispatch<MouseMovedEvent>(DRK_BIND_FN(on_mouse_moved));
@@ -108,7 +121,7 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
     }
 
-    bool Player::on_mouse_moved(const MouseMovedEvent& event)
+    bool PlayerController::on_mouse_moved(const MouseMovedEvent& event)
     {
         // m_direction
 
@@ -116,7 +129,7 @@ namespace DrkCraft
         return false;
     }
 
-    bool Player::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
+    bool PlayerController::on_mouse_button_pressed(const MouseButtonPressedEvent& event)
     {
         if (on_mouse_or_key_pressed(event))
             return true;
@@ -124,7 +137,7 @@ namespace DrkCraft
         return false;
     }
 
-    bool Player::on_key_pressed(const KeyPressedEvent& event)
+    bool PlayerController::on_key_pressed(const KeyPressedEvent& event)
     {
         if (on_mouse_or_key_pressed(event))
             return true;
@@ -132,7 +145,7 @@ namespace DrkCraft
         return false;
     }
 
-    bool Player::on_mouse_or_key_pressed(const InputEvent& event)
+    bool PlayerController::on_mouse_or_key_pressed(const InputEvent& event)
     {
         const auto eventCode = [&]() -> InputCode
         {
@@ -183,25 +196,25 @@ namespace DrkCraft
             return false;
     }
 
-    bool Player::flying(void) const
+    bool PlayerController::is_flying(void) const
     {
         return m_state == PlayerState::Flying;
     }
 
-    const Camera& Player::get_camera(void) const
+    const Camera& PlayerController::get_camera(void) const
     {
         return m_camera;
     }
 
-    void Player::jump(void)
+    void PlayerController::jump(void)
     {
         if (m_state == PlayerState::Crouching)
             m_state = PlayerState::Normal;
     }
 
-    void Player::toggle_flying(void)
+    void PlayerController::toggle_flying(void)
     {
-        if (flying())
+        if (is_flying())
             m_state = PlayerState::Normal;
         else
             m_state = PlayerState::Flying;

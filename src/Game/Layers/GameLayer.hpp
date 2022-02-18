@@ -9,8 +9,6 @@
 #include "Game/Game.hpp"
 #include "Game/World/WorldGenerator.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
-#include "Game/Layers/Hud.hpp"
-#include "Game/Layers/Console.hpp"
 #include "Game/Layers/DebugOverlay.hpp"
 
 #include "lib/fs.hpp"
@@ -64,9 +62,7 @@ namespace DrkCraft
 
         Ref<LoadingScreen> m_loadingScreen;
 
-        Ref<Hud>    m_hudLayer;
-        Ref<Console>   m_consoleLayer;
-        Ref<DebugOverlay> m_debugLayer;
+        Ref<DebugOverlay> m_debugOverlay;
 
         std::jthread m_worldLoadThread;
         Ptr<World> m_loadedWorld;

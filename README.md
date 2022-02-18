@@ -30,6 +30,7 @@ Images
 * [RapidJSON](https://github.com/Tencent/rapidjson)
 * [spdlog](https://github.com/gabime/spdlog)
 * [stb](https://github.com/nothings/stb)
+* [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 

@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_SYSTEMS_LIGHTING_HPP
-#define DRK_GAME_SYSTEMS_LIGHTING_HPP
+#ifndef DRK_GAME_SYSTEMS_WORLD_RENDERER_HPP
+#define DRK_GAME_SYSTEMS_WORLD_RENDERER_HPP
 
 #include "Core/Base.hpp"
 #include "Game/GameSystem.hpp"
@@ -9,15 +9,15 @@
 
 namespace DrkCraft
 {
-    class LightingSystem : public GameSystem
+    class WorldRendererSystem : public GameSystem
     {
     public:
-        LightingSystem(World& world, EntityScene& scene);
-        virtual ~LightingSystem(void) = default;
+        WorldRendererSystem(World& world, EntityScene& entityScene);
+        virtual ~WorldRendererSystem(void) = default;
 
         virtual void render(void) override;
         virtual void update(Timestep timestep) override;
     };
 }
 
-#endif // DRK_GAME_SYSTEMS_LIGHTING_HPP
+#endif // DRK_GAME_SYSTEMS_WORLD_RENDERER_HPP

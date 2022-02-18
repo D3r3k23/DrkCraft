@@ -1,6 +1,6 @@
 target_sources(DrkCraft
   PRIVATE
-    RunSettings.cpp
+    Settings.cpp
     Util.cpp
     Version.cpp
 )

@@ -2,7 +2,7 @@
 #define DRK_CORE_BASE_HPP
 
 // Universal includes
-#include "Core/BuildSettings.hpp"
+#include "Core/Build.hpp"
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"
 #include "Core/Bind.hpp"

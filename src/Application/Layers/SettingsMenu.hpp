@@ -6,7 +6,7 @@
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 
 #include <magic_enum.hpp>
 

@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP
-#define DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP
+#ifndef DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP
+#define DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP
 
 #include "Core/Base.hpp"
 #include "Game/World/World.hpp"
@@ -8,10 +8,10 @@
 
 namespace DrkCraft
 {
-    class SavedWorldLoader
+    class SavedGameLoader
     {
     public:
-        SavedWorldLoader(const fs::path& dir);
+        SavedGameLoader(const fs::path& dir);
         Ptr<World> load(void);
 
     private:
@@ -20,4 +20,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_WORLD_SAVED_WORLD_LOADER_HPP
+#endif // DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP

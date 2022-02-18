@@ -3,7 +3,9 @@ target_sources(DrkCraft
     Game.cpp
     GameEvent.cpp
     Player.cpp
-    System.cpp
+    SavedWorldLoader.cpp
+    Skybox.cpp
+    GameSystem.cpp
 )
 
 add_subdirectory(Entity)

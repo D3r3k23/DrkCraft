@@ -1,6 +1,6 @@
 #include "Core/Base.hpp"
 #include "Core/Debug/Profiler.hpp"
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 #include "Application/Application.hpp"
 #include "Application/Layers/MainMenu.hpp"
 

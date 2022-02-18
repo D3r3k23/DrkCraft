@@ -1,14 +1,14 @@
-#include "SavedWorldLoader.hpp"
+#include "SavedGameLoader.hpp"
 
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
 {
-    SavedWorldLoader::SavedWorldLoader(const fs::path& dir)
+    SavedGameLoader::SavedGameLoader(const fs::path& dir)
       : m_dir(dir)
     { }
 
-    Ptr<World> SavedWorldLoader::load(void)
+    Ptr<World> SavedGameLoader::load(void)
     {
         DRK_PROFILE_FUNCTION();
 

@@ -3,8 +3,6 @@
 
 #include <glm/mat2x2.hpp>
 
-#include <string>
-
 namespace DrkCraft
 {
     using glm::mat2;

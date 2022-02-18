@@ -1,5 +1,5 @@
-#ifndef DRK_CORE_BUILD_SETTINGS_HPP
-#define DRK_CORE_BUILD_SETTINGS_HPP
+#ifndef DRK_CORE_BUILD_HPP
+#define DRK_CORE_BUILD_HPP
 
 #include "Core/Version.hpp"
 
@@ -51,4 +51,4 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_DEV_MODE_ENABLED false
 #endif
 
-#endif // DRK_CORE_BUILD_SETTINGS_HPP
+#endif // DRK_CORE_BUILD_HPP

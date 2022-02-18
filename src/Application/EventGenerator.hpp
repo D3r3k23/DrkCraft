@@ -5,8 +5,6 @@
 #include "Application/Events.hpp"
 #include "System/Window.hpp"
 
-struct GLFWwindow;
-
 namespace DrkCraft
 {
     class EventGenerator

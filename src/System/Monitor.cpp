@@ -1,6 +1,6 @@
 #include "Monitor.hpp"
 
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <vector>

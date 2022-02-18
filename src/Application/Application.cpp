@@ -5,7 +5,9 @@
 #include "Audio/Audio.hpp"
 #include "System/Icon.hpp"
 #include "System/Input.hpp"
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
+#include "Application/Layers/MainMenu.hpp"
+#include "Game/Layers/GameLayer.hpp"
 #include "Util/Time.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -141,7 +143,7 @@ namespace DrkCraft
             // since GLFW calls may not be thread safe
             std::jthread monitorLoadThread([this]()
             {
-                DRK_PROFILE_THREAD_START("monitor_load");
+                DRK_PROFILE_THREAD("monitor_load");
                 m_monitorManager.load_monitors();
             });
 
@@ -157,11 +159,11 @@ namespace DrkCraft
             Renderer::init(m_context, m_window.get_framebuffer_size());
 
             DRK_LOG_CORE_TRACE("Initializing ImGui");
-            m_imGuiManager = make_ptr<ImGuiManager>(m_window);
+            m_imGuiManager.emplace(m_window);
 
             m_window.set_vsync(settings.video.vsync);
 
-            DRK_LOG_CORE_TRACE("Loading Main Menu assets")
+            DRK_LOG_CORE_TRACE("Loading assets");
             load_assets();
         }
         if (settings.video.fullscreen)
@@ -341,7 +343,7 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Setting Application to fullscreen");
 
         if (monitor < 0)
-            monitor = RuntimeSettings::get_settings().video.fullscreen_monitor;
+            monitor = RuntimeSettings::get_settings().video.fs_monitor;
 
         m_monitorManager.activate_fullscreen(m_window, monitor);
         DRK_LOG_CORE_INFO("Fullscreen monitor: {}", m_monitorManager.get_monitor(monitor).get_name());

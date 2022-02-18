@@ -14,6 +14,7 @@
 #include "Application/Timestep.hpp"
 
 #include <string_view>
+#include <optional>
 
 namespace DrkCraft
 {
@@ -74,8 +75,8 @@ namespace DrkCraft
         MonitorManager m_monitorManager;
         AssetManager  m_assetManager;
 
-        Ptr<ImGuiManager> m_imGuiManager;
-        EventGenerator   m_eventGenerator;
+        std::optional<ImGuiManager> m_imGuiManager;
+        EventGenerator m_eventGenerator;
 
         LayerStack m_layerStack;
         LayerStack m_frameLayerStack;

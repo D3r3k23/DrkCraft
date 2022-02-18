@@ -2,6 +2,7 @@
 
 #include "Application/Application.hpp"
 #include "Graphics/Renderer/Renderer.hpp"
+#include "Graphics/Renderer/CubeRenderer.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
 #include "Game/World/ChunkRenderer.hpp"
@@ -28,9 +29,15 @@ namespace DrkCraft
         return s_REQUIRED_ASSETS;
     }
 
-    Game::Game(Ptr<World> world, AssetManager& assets)
+    Game::Game(World world, AssetManager& assets)
       : m_assets(assets),
-        m_world(move(world)),
+        m_world(world),
+        m_worldRenderer(m_world, m_entityScene),
+        m_entityRenderer(m_world, m_entityScene),
+        m_lightingSystem(m_world, m_entityScene),
+        m_physicsSystem(m_world, m_entityScene),
+        m_playerController(create_player(m_entityScene)),
+        m_hud(Layer::create<Hud>()),
         m_running(true),
         m_paused(false),
         flatColorShaderProgram("FlatColorShaderProgram"),
@@ -39,6 +46,11 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_GAME_INFO("Starting game");
+
+        const auto& blockAtlasTexture = assets.get_texture("blockatlas.png");
+        CubeRenderer::set_texture_atlas(TextureAtlas(blockAtlasTexture));
+
+        Application::add_layer(m_hud);
 
         std::array<float, 9> vertexPositions
         {
@@ -64,7 +76,7 @@ namespace DrkCraft
 
     Game::~Game(void)
     {
-
+        m_hud->detach_layer();
     }
 
     void Game::render(void)
@@ -72,40 +84,47 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_scene({
-            m_player.get_camera()
+            m_playerController.get_camera()
         });
 
-        m_world->skybox.render();
+        m_skybox.render();
 
-        m_chunkRenderer.render(m_world->chunkManager);
-        m_player.render();
+        m_worldRenderer.render();
+        m_entityRenderer.render();
+        m_lightingSystem.render();
+        m_physicsSystem.render();
 
         Renderer::end_scene();
 
 
-        flatColorShaderProgram.bind();
+        // flatColorShaderProgram.bind();
         // flatColorShaderProgram.upload_uniform("u_viewProjection", m_player.get_view_projection());
         // flatColorShaderProgram.upload_uniform("u_transform", Transform::Identity());
-        flatColorShaderProgram.upload_uniform("u_color", vec4(color, 1.0f));
+        // flatColorShaderProgram.upload_uniform("u_color", vec4(color, 1.0f));
 
-        Renderer::draw_triangle(*vertexBuffer);
+        // Renderer::draw_triangle(*vertexBuffer);
 
-        flatColorShaderProgram.unbind();
+        // flatColorShaderProgram.unbind();
     }
 
     void Game::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
-        m_player.update(timestep);
+        m_skybox.update(timestep);
+        m_playerController.update(timestep);
+        m_worldRenderer.update(timestep);
+        m_entityRenderer.update(timestep);
+        m_lightingSystem.update(timestep);
+        m_physicsSystem.update(timestep);
     }
 
     void Game::on_event(InputEvent& event)
     {
         EventDispatcher ed(event);
-        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed)); // Temp
 
-        m_player.on_event(event);
+        m_playerController.on_event(event);
     }
 
     bool Game::on_key_pressed(const KeyPressedEvent& event)
@@ -154,9 +173,9 @@ namespace DrkCraft
         return m_paused;
     }
 
-    const Player& Game::get_player(void) const
+    const PlayerController& Game::get_player(void) const
     {
-        return m_player;
+        return m_playerController;
     }
 
     void Game::save(void)

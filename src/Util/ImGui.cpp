@@ -42,7 +42,7 @@ namespace DrkCraft
             s_fonts[ImGuiFont::Title] = font;
         }
         setup_style();
-        init_impl(window.get_raw_window());
+        init_impl(window);
     }
 
     ImGuiManager::~ImGuiManager(void)
@@ -51,12 +51,12 @@ namespace DrkCraft
         ImGui::DestroyContext(m_context);
     }
 
-    void ImGuiManager::init_impl(GLFWwindow* window)
+    void ImGuiManager::init_impl(Window& window)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing ImGui");
 
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplGlfw_InitForOpenGL(window.get_raw_window(), true);
         ImGui_ImplOpenGL3_Init("#version 400");
     }
 

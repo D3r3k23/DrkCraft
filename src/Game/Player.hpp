@@ -5,11 +5,15 @@
 #include "Graphics/Camera.hpp"
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
+#include "Game/Entity/Entity.hpp"
+#include "Game/Entity/EntityScene.hpp"
 
 #include "lib/glm/vec3.hpp"
 
 namespace DrkCraft
 {
+    Entity create_player(EntityScene& entityScene);
+
     enum class PlayerState
     {
         Normal,
@@ -18,10 +22,10 @@ namespace DrkCraft
         Flying
     };
 
-    class Player
+    class PlayerController
     {
     public:
-        Player(void);
+        PlayerController(Entity playerEntity);
 
         void render(void);
         void update(Timestep timestep);
@@ -34,7 +38,7 @@ namespace DrkCraft
 
         void jump(void);
 
-        bool flying(void) const;
+        bool is_flying(void) const;
 
         const Camera& get_camera(void) const;
 
@@ -43,6 +47,8 @@ namespace DrkCraft
         void toggle_flying(void);
 
     private:
+        Entity m_entity;
+
         vec3 m_position;
         vec3 m_direction; // Horizontal
         PlayerState m_state;

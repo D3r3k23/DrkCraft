@@ -3,4 +3,5 @@ target_sources(DrkCraft
     EntityRenderer.cpp
     Lighting.cpp
     Physics.cpp
+    WorldRenderer.cpp
 )

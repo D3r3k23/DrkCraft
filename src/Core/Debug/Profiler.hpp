@@ -99,8 +99,8 @@
     #define DRK_PROFILE_THREAD_CREATE(name) \
         DRK_PROFILE_FLOW_BEGIN("thread", DRK_CONCAT(name, "_thread_flow"))
 
-    // NOTE: Is two statements
-    #define DRK_PROFILE_THREAD_START(name) \
+    // Should have a lifetime of the entire thread
+    #define DRK_PROFILE_THREAD(name) \
         DRK_PROFILE_FLOW_END("thread", DRK_CONCAT(name, "_thread_flow")); \
         DRK_PROFILE_SCOPE(DRK_CONCAT(name, "_thread"))
 
@@ -119,7 +119,7 @@
     #define DRK_PROFILE_FLOW_END(cat, name)
 
     #define DRK_PROFILE_THREAD_CREATE(name)
-    #define DRK_PROFILE_THREAD_START(name)
+    #define DRK_PROFILE_THREAD(name)
 #endif
 
 #endif // DRK_CORE_DEBUG_PROFILER_HPP

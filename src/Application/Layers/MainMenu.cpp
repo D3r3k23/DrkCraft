@@ -2,7 +2,7 @@
 
 #include "Application/Application.hpp"
 #include "Util/ImGui.hpp"
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 #include "Game/Layers/GameLayer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -69,6 +69,7 @@ namespace DrkCraft
         {
             ImGuiTools::BeginFullscreen("Main Menu", ImGuiWindowFlags_NoBackground);
 
+            // Title image
             ImGui::Dummy({250, 100});
             ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Title));
             ImGuiTools::TextCentered("DrkCraft");

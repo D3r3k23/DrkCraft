@@ -1,8 +1,7 @@
 #include "GameLayer.hpp"
 
-#include "Graphics/Renderer/CubeRenderer.hpp"
 #include "Application/Application.hpp"
-#include "Game/World/SavedWorldLoader.hpp"
+#include "Game/SavedGameLoader.hpp"
 #include "Game/Layers/PauseMenu.hpp"
 #include "System/Input.hpp"
 #include "Util/File.hpp"
@@ -13,17 +12,11 @@ namespace DrkCraft
     GameLayer::GameLayer(void)
       : Layer("GameLayer", true),
         m_loadingScreen(Layer::create<LoadingScreen>()),
-        m_hudLayer(Layer::create<Hud>()),
-        m_consoleLayer(Layer::create<Console>()),
-        m_debugLayer(Layer::create<DebugOverlay>()),
+        m_debugOverlay(Layer::create<DebugOverlay>()),
         m_worldLoaded(false),
         m_startPaused(false)
     {
         Application::add_overlay(m_loadingScreen);
-        const auto& assets = Application::get_assets();
-
-        const auto& blockAtlasTexture = assets.get_texture("blockatlas.png");
-        CubeRenderer::set_texture_atlas(TextureAtlas(blockAtlasTexture));
     }
 
     GameLayer::GameLayer(const fs::path& saveDir)
@@ -32,14 +25,14 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_ASSERT_CORE(is_dir(saveDir), "Path \"{}\" is not a directory", saveDir.generic_string());
-        DRK_LOG_GAME_INFO("Loading saved world from directory: {}", saveDir.generic_string());
+        DRK_LOG_GAME_INFO("Loading saved game from directory: {}", saveDir.generic_string());
 
-        auto savedWorldLoader = make_ptr<SavedWorldLoader>(saveDir);
+        auto SaveLoader = make_ptr<SavedGameLoader>(saveDir);
 
-        DRK_PROFILE_THREAD_CREATE("saved_world_load");
-        m_worldLoadThread = std::jthread([this, loader=move(savedWorldLoader)]
+        DRK_PROFILE_THREAD_CREATE("saved_game_load");
+        m_worldLoadThread = std::jthread([this, loader=move(saveLoader)]
         {
-            DRK_PROFILE_THREAD_START("saved_world_load");
+            DRK_PROFILE_THREAD("saved_game_load");
             m_loadedWorld = loader->load();
             m_worldLoaded = true;
         });
@@ -56,7 +49,7 @@ namespace DrkCraft
         DRK_PROFILE_THREAD_CREATE("world_generation");
         m_worldLoadThread = std::jthread([this, generator=move(worldGenerator)]
         {
-            DRK_PROFILE_THREAD_START("world_generation");
+            DRK_PROFILE_THREAD("world_generation");
             m_loadedWorld = generator->generate();
             m_worldLoaded = true;
         });
@@ -78,16 +71,12 @@ namespace DrkCraft
 
     void GameLayer::on_attach(void)
     {
-        Application::add_overlay(m_hudLayer);
-        Application::add_overlay(m_consoleLayer);
-        Application::add_overlay(m_debugLayer);
+        Application::add_overlay(m_debugOverlay);
     }
 
     void GameLayer::on_detach(void)
     {
-        m_debugLayer->detach_layer();
-        m_consoleLayer->detach_layer();
-        m_hudLayer->detach_layer();
+        m_debugOverlay->detach_layer();
     }
 
     void GameLayer::on_render(void)

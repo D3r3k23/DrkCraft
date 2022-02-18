@@ -72,6 +72,10 @@ namespace DrkCraft
         AssetManager(void);
         ~AssetManager(void);
 
+    private:
+        void load_worker(std::stop_token st);
+
+    public:
         void stop_loading(void);
         void unload_all(void);
 
@@ -93,7 +97,6 @@ namespace DrkCraft
         std::optional<std::string> currently_loading(void) const;
 
     private:
-        void load_worker(std::stop_token st);
         void load_impl(const AssetInfo& asset);
 
         void load_texture(const fs::path& filename);

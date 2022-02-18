@@ -6,7 +6,14 @@
 #include "Application/Timestep.hpp"
 #include "System/AssetManager.hpp"
 #include "Game/World/World.hpp"
+#include "Game/Entity/EntityScene.hpp"
+#include "Game/Systems/EntityRenderer.hpp"
+#include "Game/Systems/Lighting.hpp"
+#include "Game/Systems/Physics.hpp"
+#include "Game/Systems/WorldRenderer.hpp"
 #include "Game/Player.hpp"
+#include "Game/Skybox.hpp"
+#include "Game/Layers/Hud.hpp"
 
 // Temp
 #include "Util/Random.hpp"
@@ -25,7 +32,7 @@ namespace DrkCraft
     public:
         static const AssetList& get_asset_list(void);
 
-        Game(Ptr<World> world, AssetManager& assets);
+        Game(World world, AssetManager& assets);
         ~Game(void);
 
         void render(void);
@@ -38,21 +45,28 @@ namespace DrkCraft
         void unpause(void);
         bool is_paused(void) const;
 
-        const Player& get_player(void) const;
+        const PlayerController& get_player(void) const;
 
         void save(void);
 
     private:
         AssetManager& m_assets;
 
-        Ptr<World> m_world;
+        World m_world;
+        EntityScene m_entityScene;
 
-        Player m_player;
+        WorldRendererSystem m_worldRenderer;
+        EntityRendererSystem m_entityRenderer;
+        LightingSystem m_lightingSystem;
+        PhysicsSystem m_physicsSystem;
+
+        PlayerController m_playerController;
+        Skybox m_skybox;
+
+        Ref<Hud> m_hud;
 
         bool m_running;
         bool m_paused;
-
-        Ref<DebugOverlay> m_debugOverlay;
 
         // Temp
         Ptr<VertexBuffer> vertexBuffer;

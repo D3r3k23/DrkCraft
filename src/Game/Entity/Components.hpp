@@ -2,33 +2,57 @@
 #define DRK_GAME_ENTITY_COMPONENETS_HPP
 
 #include "Core/Base.hpp"
-#include "Game/Entity/Component.hpp"
 #include "Graphics/Transform.hpp"
 #include "Game/GameEvents.hpp"
 
 namespace DrkCraft
 {
-    struct TransformComponent : Component
+    struct Component
     {
 
     };
 
-    struct MeshComponent : Component
+    struct TransformComponent final : Component
     {
 
     };
 
-    struct TextureComponent : Component
+    struct MeshComponent final : Component
     {
 
     };
 
-    struct HitboxComponent : Component
+    struct TextureComponent final : Component
     {
 
     };
 
-    struct LightComponent : Component
+    struct HitboxComponent final : Component
+    {
+
+    };
+
+    struct LightComponent final : Component
+    {
+
+    };
+
+    struct PlayerComponent final : Component
+    {
+
+    };
+
+    struct InventoryComponent final : Component
+    {
+
+    };
+
+    struct HealthComponent final : Component
+    {
+
+    };
+
+    struct CombatComponent final : Component
     {
 
     };

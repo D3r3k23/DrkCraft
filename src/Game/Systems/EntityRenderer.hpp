@@ -2,19 +2,21 @@
 #define DRK_GAME_SYSTEMS_ENTITY_RENDERER_HPP
 
 #include "Core/Base.hpp"
-#include "Game/System.hpp"
+#include "Game/GameSystem.hpp"
 #include "Application/Timestep.hpp"
+#include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 
 namespace DrkCraft
 {
-    class EntityRendererSystem : public System
+    class EntityRendererSystem : public GameSystem
     {
     public:
-        EntityRendererSystem(EntityScene& scene);
-        ~EntityRendererSystem(void) = default;
+        EntityRendererSystem(World& world, EntityScene& entityScene);
+        virtual ~EntityRendererSystem(void) = default;
 
         virtual void render(void) override;
+        virtual void update(Timestep timestep) override;
     };
 }
 

@@ -1,5 +1,5 @@
-#ifndef DRK_CORE_RUN_SETTINGS_HPP
-#define DRK_CORE_RUN_SETTINGS_HPP
+#ifndef DRK_CORE_SETTINGS_HPP
+#define DRK_CORE_SETTINGS_HPP
 
 #include "Core/Base.hpp"
 #include "System/Input.hpp"
@@ -11,6 +11,11 @@
 
 namespace DrkCraft
 {
+    // Usage:
+    //   DrkCraft.exe [--dev]
+    // Options:
+    //   --dev  Enabled Dev mode
+
     class CommandLineOptions
     {
     private:
@@ -35,6 +40,8 @@ namespace DrkCraft
         std::string name = "DrkCraft";
         bool dev = false; // Or maybe this should be runtime-enabled with a hotkey
     };
+
+    // These contain settings which are loaded from files
 
     struct ConfigData
     {
@@ -70,24 +77,6 @@ namespace DrkCraft
         } controls;
     };
 
-    enum class Setting
-    {
-        None = 0,
-
-        // Video
-        Fullscreen,
-        FsMonitor,
-        VSync,
-        Fov,
-
-        // Audio
-        Volume,
-        Music,
-
-        // Controls
-        Sensitivity
-    };
-
     struct KeyBinds
     {
         struct PlayerMovement
@@ -112,6 +101,25 @@ namespace DrkCraft
             InputCode inventory = KeyCode::T;
             InputCode fly       = KeyCode::F;
         } player_actions;
+    };
+
+    enum class Setting
+    {
+        None = 0,
+
+        // Video
+        Fullscreen,
+        FsMonitor,
+        VSync,
+        Fov,
+        RenderDistance,
+
+        // Audio
+        Volume,
+        Music,
+
+        // Controls
+        Sensitivity
     };
 
     class RuntimeSettings
@@ -151,4 +159,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_CORE_RUN_SETTINGS_HPP
+#endif // DRK_CORE_SETTINGS_HPP

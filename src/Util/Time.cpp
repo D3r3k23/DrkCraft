@@ -23,7 +23,8 @@ namespace DrkCraft
 
         LocalTime get_local_time(void)
         {
-            return {};
+            static const auto tz = std::chrono::current_zone();
+            return tz->to_local(get_system_time());
         }
     }
 

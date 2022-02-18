@@ -3,7 +3,7 @@
 
 // Don't include this directly, use Core/Base.hpp instead
 
-#include "Core/BuildSettings.hpp"
+#include "Core/Build.hpp"
 
 #if DRK_ASSERTS_ENABLED
 

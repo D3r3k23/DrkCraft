@@ -36,7 +36,7 @@ namespace DrkCraft
         Time get_program_time(void);
 
         using SysTime   = std::chrono::sys_time<Seconds<int>>;
-        using LocalTime = Seconds<int>; ///
+        using LocalTime = std::chrono::local_time<Seconds<int>>;
 
         SysTime get_system_time(void);
         LocalTime get_local_time(void);

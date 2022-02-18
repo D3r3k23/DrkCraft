@@ -96,6 +96,31 @@ namespace DrkCraft
 
     }
 
+    void AssetManager::load_worker(std::stop_token st)
+    {
+        DRK_PROFILE_THREAD("asset_load");
+        DRK_PROFILE_FUNCTION();
+
+        while (!st.stop_requested())
+        {
+            bool ready = !m_loadQueue.empty();
+            if (ready)
+            {
+                DRK_PROFILE_EVENT("Load asset");
+                m_loading = true;
+                AssetInfo asset = m_loadQueue.pop();
+                m_recentlyLoadedAsset = asset.path.generic_string();
+                load_impl(asset);
+            }
+            else
+            {
+                m_loading = false;
+                DRK_PROFILE_SCOPE("Sleep");
+                std::this_thread::sleep_for(LOAD_WORKER_SLEEP_TIME);
+            }
+        }
+    }
+
     void AssetManager::stop_loading(void)
     {
         m_loadThread.request_stop();
@@ -218,31 +243,6 @@ namespace DrkCraft
             return m_recentlyLoadedAsset;
         else
             return {};
-    }
-
-    void AssetManager::load_worker(std::stop_token st)
-    {
-        DRK_PROFILE_THREAD_START("asset_load");
-        DRK_PROFILE_FUNCTION();
-
-        while (!st.stop_requested())
-        {
-            bool ready = !m_loadQueue.empty();
-            if (ready)
-            {
-                DRK_PROFILE_EVENT("Load asset");
-                m_loading = true;
-                AssetInfo asset = m_loadQueue.pop();
-                m_recentlyLoadedAsset = asset.path.generic_string();
-                load_impl(asset);
-            }
-            else
-            {
-                m_loading = false;
-                DRK_PROFILE_SCOPE("Sleep");
-                std::this_thread::sleep_for(LOAD_WORKER_SLEEP_TIME);
-            }
-        }
     }
 
     void AssetManager::load_impl(const AssetInfo& asset)

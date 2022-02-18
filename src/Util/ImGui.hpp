@@ -10,8 +10,6 @@
 
 #include <unordered_map>
 
-struct GLFWwindow;
-
 namespace DrkCraft
 {
     enum class ImGuiFont
@@ -39,7 +37,7 @@ namespace DrkCraft
         ImGuiManager(Window& window, bool enable=true);
         ~ImGuiManager(void);
 
-        void init_impl(GLFWwindow* window);
+        void init_impl(Window& window);
         void shutdown_impl(void);
 
         void begin_frame(void);

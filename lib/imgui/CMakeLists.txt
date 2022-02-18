@@ -1,6 +1,5 @@
 ##### imgui #########################
 add_library(imgui)
-#####################################
 
 target_sources(imgui
   PRIVATE
@@ -28,7 +27,7 @@ target_link_libraries(imgui
 
 target_compile_definitions(imgui
   PUBLIC
-    IMGUI_USER_CONFIG="imgui_impl/imconfig.h"
+    IMGUI_USER_CONFIG="drkcraft_imconfig.h"
 )
 
 if(${BUILD_CONFIG} STREQUAL Release)
@@ -37,7 +36,6 @@ endif()
 
 ##### imgui_impl ####################
 add_library(imgui_impl)
-#####################################
 
 target_sources(imgui_impl
   PRIVATE

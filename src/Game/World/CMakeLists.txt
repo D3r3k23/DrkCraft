@@ -2,9 +2,8 @@ target_sources(DrkCraft
   PRIVATE
     Block.cpp
     Chunk.cpp
-    ChunkManager.cpp
     ChunkRenderer.cpp
-    SavedWorldLoader.cpp
     World.cpp
     WorldGenerator.cpp
+    WorldLoader.cpp
 )

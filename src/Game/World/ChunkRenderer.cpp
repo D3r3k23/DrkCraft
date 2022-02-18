@@ -1,18 +1,17 @@
 #include "ChunkRenderer.hpp"
 
 #include "Graphics/Renderer/CubeRenderer.hpp"
-#include "Game/World/Block.hpp"
 
 namespace DrkCraft
 {
     ChunkRenderer::ChunkRenderer(void)
     {
-        CubeRenderer::begin_scene();
+
     }
 
     ChunkRenderer::~ChunkRenderer(void)
     {
-        CubeRenderer::end_scene();
+
     }
 
     void ChunkRenderer::render(const Ref<Chunk>& chunk) const

@@ -1,0 +1,3 @@
+add_library(tinyobjloader)
+target_sources(tinyobjloader PRIVATE tiny_obj_loader_impl.cpp)
+target_include_directories(tinyobjloader INTERFACE tinyobjloader)

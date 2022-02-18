@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-#include "Core/RunSettings.hpp"
+#include "Core/Settings.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <GLFW/glfw3.h>
@@ -38,6 +38,11 @@ namespace DrkCraft
     }
 
     GLFWwindow* Window::get_raw_window(void)
+    {
+        return m_window;
+    }
+
+    const GLFWwindow* Window::get_raw_window(void) const
     {
         return m_window;
     }
