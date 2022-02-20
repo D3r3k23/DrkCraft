@@ -12,7 +12,7 @@ namespace DrkCraft
     {
     public:
         Camera(float fov, float aspectRatio, float nearClip, float farClip,
-            const vec3& position, const vec3& direction);
+            const vec3& position, const vec3& direction, const vec3& vNeverParallel={0.0f, 1.0f, 0.0f});
 
         void set_fov(float fov); // Degrees
         void set_aspect_ratio(float aspectRatio);
@@ -40,6 +40,8 @@ namespace DrkCraft
 
         vec3 m_position;
         vec3 m_direction;
+
+        vec3 m_vNeverParallel;
 
         mat4 m_projection;
         mat4 m_viewProjection;

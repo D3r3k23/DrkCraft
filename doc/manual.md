@@ -16,7 +16,8 @@
 | Fly       | Toggle flying (Dev mode only)         |
 | Console   | Toggle console                        |
 | Esc       | Pause/Unpause                         |
-| F8        | Toggle debug overlay                  |
+| F5        | Screenshot                            |
+| F6        | Toggle debug overlay                  |
 | F7        | Toggle ImGui demo window (Debug only) |
 
 ## Getting Started

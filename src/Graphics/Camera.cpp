@@ -1,19 +1,19 @@
 #include "Camera.hpp"
 
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 
 namespace DrkCraft
 {
     Camera::Camera(float fov, float aspectRatio, float nearClip, float farClip,
-        const vec3& position, const vec3& direction)
+        const vec3& position, const vec3& direction, const vec3& vNeverParallel)
       : m_fov(glm::radians(fov)),
         m_aspectRatio(aspectRatio),
         m_nearClip(nearClip),
         m_farClip(farClip),
         m_position(position),
-        m_direction(direction)
+        m_direction(direction),
+        m_vNeverParallel(vNeverParallel)
     {
         calculate_projection();
         calculate_view_projection();

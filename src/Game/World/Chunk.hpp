@@ -16,8 +16,8 @@ namespace DrkCraft
     public:
         Chunk(void) = default;
 
-        const Block& block_at(const uvec3& coord);
-        const Block& block_at(uint x, uint y, uint z);
+        const Block& block_at(const uvec3& coord) const;
+        const Block& block_at(uint x, uint y, uint z) const;
     };
 }
 

@@ -82,9 +82,19 @@ namespace DrkCraft
         return fmt::format("xScale={} yScale={}", xScale, yScale);
     }
 
+    InputCode InputEvent::get_input_code(void) const
+    {
+        return {};
+    }
+
     std::string KeyEvent::get_details(void) const
     {
         return fmt::format("KeyCode={} InputMod={}", from_key_code(key), mods);
+    }
+
+    InputCode KeyEvent::get_input_code(void) const
+    {
+        return { key };
     }
 
     std::string CharTypedEvent::get_details(void) const
@@ -100,6 +110,11 @@ namespace DrkCraft
     std::string MouseButtonEvent::get_details(void) const
     {
         return fmt::format("MouseCode={} xPos={} yPos={} InputMod={}", from_mouse_code(button), xPos, yPos, mods);
+    }
+
+    InputCode MouseButtonEvent::get_input_code(void) const
+    {
+        return { button };
     }
 
     std::string ScrollWheelMovedEvent::get_details(void) const

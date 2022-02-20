@@ -22,11 +22,13 @@ namespace DrkCraft
 
         static Transform Identity(void);
         static Transform Translation(float x, float y, float z);
+        static Transform Translation(const vec3& d);
         static Transform Rotation(float theta, const vec3& axis);
         static Transform Scale(float s);
         static Transform Normal(void);
 
         Transform& translate(float x, float y, float z);
+        Transform& translate(const vec3& d);
         Transform& rotate(float theta, const vec3& axis);
         Transform& scale(float s);
 

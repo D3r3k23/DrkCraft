@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Game/World/World.hpp"
+#include "Util/Noise.hpp"
 
 namespace DrkCraft
 {
@@ -24,6 +25,8 @@ namespace DrkCraft
     private:
         const WorldGeneratorSpec m_spec;
         Ptr<World> m_world;
+
+        Noise noiseMap;
     };
 }
 

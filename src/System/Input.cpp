@@ -33,7 +33,7 @@ namespace DrkCraft
         if (MouseCode button = to_mouse_code(str); button != MouseCode::None)
             return button;
 
-        return MouseCode::None;
+        return {};
     }
 
     std::string_view input_code_name(InputCode code)

@@ -272,7 +272,7 @@ namespace DrkCraft
         if (const auto texture = Image::load_file(texture_asset_path(filename)); texture)
         {
             std::lock_guard lock(m_texturesMutex);
-            m_textures[filename.string()] = move(texture);
+            m_textures[filename.string()] = std::move(texture);
         }
     }
 
@@ -283,7 +283,7 @@ namespace DrkCraft
         if (const auto sound = Audio::load_file(sound_asset_path(filename)); sound)
         {
             std::lock_guard lock(m_audioSourcesMutex);
-            m_audioSources[filename.string()] = move(sound);
+            m_audioSources[filename.string()] = std::move(sound);
         }
     }
 
@@ -294,7 +294,7 @@ namespace DrkCraft
         if (const auto song = Audio::load_file(music_asset_path(filename)); song)
         {
             std::lock_guard lock(m_audioSourcesMutex);
-            m_audioSources[filename.string()] = move(song);
+            m_audioSources[filename.string()] = std::move(song);
         }
     }
 

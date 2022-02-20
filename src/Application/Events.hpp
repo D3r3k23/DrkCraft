@@ -137,6 +137,8 @@ namespace DrkCraft
     struct InputEvent : Event
     {
         DRK_EVENT_CATEGORY_INFO(Input);
+
+        virtual InputCode get_input_code(void) const;
     };
 
     ////////// Keyboard Events //////////
@@ -156,6 +158,7 @@ namespace DrkCraft
         { }
 
         virtual std::string get_details(void) const override;
+        virtual InputCode get_input_code(void) const override;
 
         const KeyCode key;
         const KeyModFlags mods;
@@ -243,6 +246,7 @@ namespace DrkCraft
         { }
 
         virtual std::string get_details(void) const override;
+        virtual InputCode get_input_code(void) const override;
 
         const MouseCode button;
         const KeyModFlags mods;

@@ -18,7 +18,7 @@ namespace DrkCraft
 
         m_world = make_ptr<World>();
 
-        return move(m_world);
+        return std::move(m_world);
     }
 
     const WorldGeneratorSpec& WorldGenerator::info(void) const

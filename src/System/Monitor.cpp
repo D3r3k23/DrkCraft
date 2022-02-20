@@ -192,7 +192,7 @@ namespace DrkCraft
             Monitor monitor(glfwMonitor, number, m_eventHandler);
 
             std::lock_guard lock(mutex);
-            m_monitors.push_back(move(monitor));
+            m_monitors.push_back(std::move(monitor));
         });
         {
             DRK_PROFILE_SCOPE("Sort monitors");

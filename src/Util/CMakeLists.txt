@@ -3,6 +3,7 @@ target_sources(DrkCraft
     File.cpp
     ImGui.cpp
     Json.cpp
+    Math.cpp
     Noise.cpp
     Obj.cpp
     PeriodicUpdate.cpp

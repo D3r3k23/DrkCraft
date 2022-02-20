@@ -55,7 +55,7 @@ namespace DrkCraft
 
         const auto samples = info.samples;
 
-        data->buffer  = move(buffer);
+        data->buffer  = std::move(buffer);
         data->size     = samples * sizeof(int16);
         data->channels  = static_cast<uint>(info.channels);
         data->sampleRate = static_cast<uint>(info.hz);
@@ -160,7 +160,7 @@ namespace DrkCraft
             auto buffer = make_ptr<Byte>(readBuffer, [](Byte* buffer){ delete[] buffer; });
             auto data = new AudioSourceData<uint8>();
 
-            data->buffer  = move(buffer);
+            data->buffer  = std::move(buffer);
             data->size     = vorbisFile.size();
             data->channels  = vorbisFile.channels();
             data->sampleRate = vorbisFile.sample_rate();

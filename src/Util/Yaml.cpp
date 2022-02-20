@@ -30,7 +30,7 @@ namespace DrkCraft::Yaml
             return {};
         }
         else
-            return { move(document) };
+            return { std::move(document) };
     }
 
     bool check_map(const YAML::Node& node, std::string_view key)

@@ -25,8 +25,6 @@ namespace DrkCraft
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
-
-    using std::move;
 }
 
 #endif // DRK_LIB_SMART_POINTER_HPP

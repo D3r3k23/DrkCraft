@@ -2,14 +2,10 @@
 #define DRK_GAME_WORLD_WORLD_HPP
 
 #include "Core/Base.hpp"
-#include "Game/World/ChunkManager.hpp"
+#include "Game/World/Chunk.hpp"
 #include "Game/World/WorldGenerator.hpp"
-#include "Application/Timestep.hpp"
-#include "Util/Noise.hpp"
 
-#include <entt/entt.hpp>
-
-#include "lib/fs.hpp"
+#include <vector>
 
 namespace DrkCraft
 {
@@ -18,16 +14,10 @@ namespace DrkCraft
     public:
         World(void) = default;
 
-        void render(void);
+        const std::vector<Chunk>& get_chunks(void) const;
 
-        void render_chunks(void);
-        void render_entities(void);
-
-        ChunkManager chunkManager;
-
-        entt::registry entities; // EntityManager
-
-        Noise noiseMap;
+    private:
+        std::vector<Chunk> m_chunks;
         WorldGenerator generator;
     };
 }

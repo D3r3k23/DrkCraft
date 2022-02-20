@@ -17,9 +17,14 @@ namespace DrkCraft
         return { glm::identity<mat4>() };
     }
 
-    Transform Transform::Translation(float x, float y, float z)
+    Transform Transform::Translation(float dx, float dy, float dz)
     {
-        return Identity().translate(x, y, z);
+        return Identity().translate(dx, dy, dz);
+    }
+
+    Transform Transform::Translation(const vec3& d)
+    {
+        return Identity().translate(d);
     }
 
     Transform Transform::Rotation(float theta, const vec3& axis)
@@ -37,9 +42,14 @@ namespace DrkCraft
         return Identity();
     }
 
-    Transform& Transform::translate(float x, float y, float z)
+    Transform& Transform::translate(float dx, float dy, float dz)
     {
-        m_matrix = glm::translate(m_matrix, {x, y, z});
+        return translate({dx, dy, dz});
+    }
+
+    Transform& Transform::translate(const vec3& d)
+    {
+        m_matrix = glm::translate(m_matrix, d);
         return *this;
     }
 

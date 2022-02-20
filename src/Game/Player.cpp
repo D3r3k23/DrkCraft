@@ -11,20 +11,26 @@
 
 namespace DrkCraft
 {
-    static constexpr float FLYING_SPEED = 1.0f;
+    static constexpr float BASE_SPEED = 1.0f;
+    static constexpr float SPRINT_SPEED_MULT = 1.5f;
+    static constexpr float CROUCH_SPEED_MULT = 0.5f;
+    static constexpr float FLYING_SPEED_MULT = 2.0f;
+    static constexpr float FLYING_SPEED_VERT = 1.5f;
 
     Entity create_player(EntityScene& entityScene)
     {
         Entity entity = entityScene.create();
         entity.add_component<PlayerComponent>();
+        entity.add_component<TransformComponent>();
+        entity.add_component<HealthComponent>();
         return entity;
     }
 
     PlayerController::PlayerController(Entity playerEntity)
       : m_entity(playerEntity),
+        m_state(PlayerState::Normal),
         m_position(0.0f, 0.0f, -2.0f),
         m_direction(0.0f, 0.0f, 1.0f),
-        m_state(PlayerState::Normal),
         m_distanceAboveGround(0.0f),
         m_camera(45.0f, 16.9f, 0.01f, 1000.0f, m_position, m_direction),
         m_cameraOffset(0.0f, 2.0f, 0.0f)
@@ -32,23 +38,13 @@ namespace DrkCraft
         DRK_ASSERT_DEBUG(playerEntity.has_component<PlayerComponent>(), "Entity is not a valid Player");
     }
 
-    void PlayerController::render(void)
-    {
-
-    }
-
     void PlayerController::update(Timestep timestep)
     {
         DRK_PROFILE_FUNCTION();
 
-        const float delta{timestep};
-        const vec3 horizontalDirection = {m_direction.x, m_direction.y, 0.0};
-
-        float speed = 1.0f;
-
         const KeyBinds keybinds = RuntimeSettings::get_keybinds();
-
         using enum PlayerState;
+
         switch (m_state)
         {
             case Normal:
@@ -73,7 +69,6 @@ namespace DrkCraft
                 {
                     m_state = Crouching;
                 }
-                speed *= 1.5;
                 break;
             }
             case Crouching:
@@ -82,19 +77,10 @@ namespace DrkCraft
                 {
                     m_state = Normal;
                 }
-                speed *= 0.5;
                 break;
             }
             case Flying:
             {
-                if (is_pressed(keybinds.player_movement.jump))
-                {
-                    m_position.y += FLYING_SPEED * delta;
-                }
-                if (is_pressed(keybinds.player_movement.crouch))
-                {
-                    m_position.y -= FLYING_SPEED * delta;
-                }
                 break;
             }
             default:
@@ -103,12 +89,32 @@ namespace DrkCraft
                 m_state = Normal;
             }
         }
-        if (is_pressed(keybinds.player_movement.forward)) m_position += speed * delta * horizontalDirection;
-        if (is_pressed(keybinds.player_movement.back))    m_position -= speed * delta * horizontalDirection;
-        if (is_pressed(keybinds.player_movement.left))    m_position -= speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
-        if (is_pressed(keybinds.player_movement.right))   m_position += speed * delta * glm::normalize(glm::cross(horizontalDirection, {0.0f, 1.0f, 0.0f}));
 
-        if (is_flying());
+        float speed = PLAYER_BASE_SPEED;
+        switch (m_state)
+        {
+            case Sprinting : speed *= SPRINT_SPEED_MULT; break;
+            case Crouching : speed *= CROUCH_SPEED_MULT; break;
+            case Flying    : speed *= FLYING_SPEED_MULT; break;
+        }
+
+        const vec3 horizontalForwardDirection = glm::normalize({m_direction.x, m_direction.y, 0.0});
+        const vec3 horizontalRightDirection   = glm::normalize(glm::cross(horizontalForwardDirection, {0.0f, 1.0f, 0.0f});
+
+        vec3 d_position{0.0f};
+        if (is_pressed(keybinds.player_movement.forward)) d_position += speed * timestep * horizontalForwardDirection;
+        if (is_pressed(keybinds.player_movement.back))    d_position -= speed * timestep * horizontalForwardDirection;
+        if (is_pressed(keybinds.player_movement.left))    d_position -= speed * timestep * horizontalRightDirection;
+        if (is_pressed(keybinds.player_movement.right))   d_position += speed * timestep * horizontalRightDirection;
+
+        if (is_flying())
+        {
+            if (is_pressed(keybinds.player_movement.jump))   d_position.y += FLYING_SPEED_VERT * delta;
+            if (is_pressed(keybinds.player_movement.crouch)) d_position.y -= FLYING_SPEED_VERT * delta;
+        }
+
+        m_position += d_position;
+        m_entity.get_component<TransformComponent>().transform.translate(d_position);
 
         m_camera.set_position(m_position + m_cameraOffset);
     }
@@ -124,8 +130,11 @@ namespace DrkCraft
     bool PlayerController::on_mouse_moved(const MouseMovedEvent& event)
     {
         // m_direction
+        // Can never look straight up
 
-        m_camera.set_direction(m_direction);
+        // m_camera.set_direction(m_direction);
+        // m_camera.tilt()
+        // m_camera.rotate()
         return false;
     }
 
@@ -147,15 +156,7 @@ namespace DrkCraft
 
     bool PlayerController::on_mouse_or_key_pressed(const InputEvent& event)
     {
-        const auto eventCode = [&]() -> InputCode
-        {
-            if (event == EventType::KeyPressed)
-                return event_cast<KeyPressedEvent>(event).key;
-            else if (event == EventType::MouseButtonPressed)
-                return event_cast<MouseButtonPressedEvent>(event).button;
-            else
-                return KeyCode::None;
-        }();
+        const auto eventCode = event.get_input_code();
         const auto& keybinds = RuntimeSettings::get_keybinds();
 
         if (eventCode == keybinds.player_actions.use)
@@ -168,7 +169,8 @@ namespace DrkCraft
         }
         else if (eventCode == keybinds.player_movement.jump)
         {
-            jump();
+            if (!is_flying())
+                jump();
             return true;
         }
         else if (eventCode == keybinds.player_actions.interact)
@@ -206,10 +208,22 @@ namespace DrkCraft
         return m_camera;
     }
 
+    Camera& PlayerController::get_camera(void)
+    {
+        return m_camera;
+    }
+
     void PlayerController::jump(void)
     {
         if (m_state == PlayerState::Crouching)
             m_state = PlayerState::Normal;
+
+
+    }
+
+    vec3 PlayerController::get_position(void) const
+    {
+        return m_position;
     }
 
     void PlayerController::toggle_flying(void)
@@ -217,6 +231,9 @@ namespace DrkCraft
         if (is_flying())
             m_state = PlayerState::Normal;
         else
+        {
             m_state = PlayerState::Flying;
+            // Disable gravity for physics system
+        }
     }
 }

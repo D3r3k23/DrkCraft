@@ -2,11 +2,12 @@
 #define DRK_GAME_PLAYER_HPP
 
 #include "Core/Base.hpp"
-#include "Graphics/Camera.hpp"
 #include "Application/Events.hpp"
 #include "Application/Timestep.hpp"
 #include "Game/Entity/Entity.hpp"
 #include "Game/Entity/EntityScene.hpp"
+#include "Graphics/Camera.hpp"
+#include "Game/Items/Inventory.hpp"
 
 #include "lib/glm/vec3.hpp"
 
@@ -27,7 +28,6 @@ namespace DrkCraft
     public:
         PlayerController(Entity playerEntity);
 
-        void render(void);
         void update(Timestep timestep);
         void on_event(InputEvent& event);
 
@@ -38,9 +38,12 @@ namespace DrkCraft
 
         void jump(void);
 
+        vec3 get_position(void) const;
+
         bool is_flying(void) const;
 
         const Camera& get_camera(void) const;
+        Camera& get_camera(void);
 
     private:
         void jump(void);
@@ -48,10 +51,12 @@ namespace DrkCraft
 
     private:
         Entity m_entity;
+        PlayerState m_state;
+
+        Inventory m_inventory;
 
         vec3 m_position;
-        vec3 m_direction; // Horizontal
-        PlayerState m_state;
+        vec3 m_direction;
 
         float m_distanceAboveGround;
 

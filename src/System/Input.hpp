@@ -14,10 +14,9 @@ namespace DrkCraft
 {
     ////// InputCode //////
 
-    using InputCode = std::variant<KeyCode, MouseCode>;
+    using InputCode = std::variant<std::monostate, KeyCode, MouseCode>;
 
     InputCode to_input_code(std::string_view str);
-
     std::string_view input_code_name(InputCode code);
 
     ////// Input Queries //////

@@ -30,7 +30,7 @@ namespace DrkCraft
         auto SaveLoader = make_ptr<SavedGameLoader>(saveDir);
 
         DRK_PROFILE_THREAD_CREATE("saved_game_load");
-        m_worldLoadThread = std::jthread([this, loader=move(saveLoader)]
+        m_worldLoadThread = std::jthread([this, loader=std::move(saveLoader)]
         {
             DRK_PROFILE_THREAD("saved_game_load");
             m_loadedWorld = loader->load();
@@ -47,7 +47,7 @@ namespace DrkCraft
         auto worldGenerator = make_ptr<WorldGenerator>(worldGeneratorSpec);
 
         DRK_PROFILE_THREAD_CREATE("world_generation");
-        m_worldLoadThread = std::jthread([this, generator=move(worldGenerator)]
+        m_worldLoadThread = std::jthread([this, generator=std::move(worldGenerator)]
         {
             DRK_PROFILE_THREAD("world_generation");
             m_loadedWorld = generator->generate();
@@ -87,6 +87,8 @@ namespace DrkCraft
 
     void GameLayer::on_update(Timestep timestep)
     {
+        DRK_PROFILE_FUNCTION();
+
         if (m_game)
         {
             m_game->update(timestep);
@@ -123,7 +125,12 @@ namespace DrkCraft
                 pause_game();
                 return true;
             }
-            case KeyCode::F8:
+            case KeyCode::F5:
+            {
+                // Take screenshot
+                return true;
+            }
+            case KeyCode::F6:
             {
                 if (m_game)
                     toggle_debug_overlay();
@@ -152,8 +159,8 @@ namespace DrkCraft
 
         m_loadingScreen->detach_layer();
 
-        m_game = make_ref<Game>(move(m_loadedWorld), Application::get_assets());
-        m_debugLayer->attach_game(m_game);
+        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_assets());
+        m_debugOverlay->attach_game(m_game);
 
         if (m_startPaused)
             pause_game();
@@ -210,19 +217,19 @@ namespace DrkCraft
 
     void GameLayer::show_debug_overlay(void)
     {
-        if (!m_debugLayer->is_layer_active())
-            m_debugLayer->activate_layer();
+        if (!m_debugOverlay->is_layer_active())
+            m_debugOverlay->activate_layer();
     }
 
     void GameLayer::hide_debug_overlay(void)
     {
-        if (m_debugLayer->is_layer_active())
-            m_debugLayer->deactivate_layer();
+        if (m_debugOverlay->is_layer_active())
+            m_debugOverlay->deactivate_layer();
     }
 
     void GameLayer::toggle_debug_overlay(void)
     {
-        if (!m_debugLayer->is_layer_active())
+        if (!m_debugOverlay->is_layer_active())
             show_debug_overlay();
         else
             hide_debug_overlay();

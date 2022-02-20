@@ -57,7 +57,7 @@ namespace DrkCraft
 
     void DebugOverlay::attach_game(Ref<Game> game)
     {
-        m_game = move(game);
+        m_game = std::move(game);
     }
 
     void DebugOverlay::on_attach(void)

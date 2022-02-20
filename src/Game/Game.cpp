@@ -5,7 +5,6 @@
 #include "Graphics/Renderer/CubeRenderer.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
-#include "Game/World/ChunkRenderer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <utility>
@@ -121,6 +120,8 @@ namespace DrkCraft
 
     void Game::on_event(InputEvent& event)
     {
+        DRK_PROFILE_FUNCTION();
+
         EventDispatcher ed(event);
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed)); // Temp
 

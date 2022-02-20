@@ -9,6 +9,7 @@ target_sources(DrkCraft
 )
 
 add_subdirectory(Entity)
+add_subdirectory(Items)
 add_subdirectory(Layers)
 add_subdirectory(Systems)
 add_subdirectory(World)

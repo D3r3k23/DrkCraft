@@ -3,6 +3,8 @@
 
 #include "Core/Base.hpp"
 #include "Graphics/Transform.hpp"
+#include "Graphics/Mesh.hpp"
+#include "Graphics/Texture.hpp"
 #include "Game/GameEvents.hpp"
 
 namespace DrkCraft
@@ -14,17 +16,17 @@ namespace DrkCraft
 
     struct TransformComponent final : Component
     {
-
+        Transform transform;
     };
 
     struct MeshComponent final : Component
     {
-
+        Mesh mesh;
     };
 
     struct TextureComponent final : Component
     {
-
+        Ref<Texture> texture;
     };
 
     struct HitboxComponent final : Component
@@ -38,11 +40,6 @@ namespace DrkCraft
     };
 
     struct PlayerComponent final : Component
-    {
-
-    };
-
-    struct InventoryComponent final : Component
     {
 
     };

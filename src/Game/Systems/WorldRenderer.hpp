@@ -17,6 +17,11 @@ namespace DrkCraft
 
         virtual void render(void) override;
         virtual void update(Timestep timestep) override;
+
+    private:
+        void render_chunk(const Chunk& chunk);
+
+    private:
     };
 }
 

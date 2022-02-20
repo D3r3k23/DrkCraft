@@ -82,7 +82,7 @@
         ProfileTimer function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
 
     #define DRK_PROFILE_SCOPE(name) \
-        ProfileTimer DRK_CONCAT(scope_profile_timer, __LINE__){name, "scope"}
+        ProfileTimer DRK_CONCAT(scope_profile_timer_, __LINE__){name, "scope"}
 
     #define DRK_PROFILE_OBJECT(name) \
         ProfileTimer object_profile_timer{name, "object"}
