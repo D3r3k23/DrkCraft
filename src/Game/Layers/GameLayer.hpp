@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include "Game/Game.hpp"
 #include "Game/World/WorldGenerator.hpp"
@@ -13,9 +13,9 @@
 
 #include "lib/fs.hpp"
 
+#include <functional>
 #include <thread>
 #include <atomic>
-#include <functional>
 
 namespace DrkCraft
 {
@@ -64,7 +64,7 @@ namespace DrkCraft
 
         Ref<DebugOverlay> m_debugOverlay;
 
-        std::jthread m_worldLoadThread;
+        std::jthread m_gameLoadThread;
         Ptr<World> m_loadedWorld;
         std::atomic<bool> m_worldLoaded;
 

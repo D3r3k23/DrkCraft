@@ -41,9 +41,21 @@ namespace DrkCraft
         }
 
         template <typename T>
-        bool has_component(void) const
+        bool has_component(void)
         {
-            return m_registry.has<T>(m_handle);
+            return m_registry.all_of<T>(m_handle);
+        }
+
+        template <typename ... Args>
+        bool has_all_components(void) const
+        {
+            return m_registry.all_of<Args>(m_handle);
+        }
+
+        template <typename ... Args>
+        bool has_any_component(void) const
+        {
+            return m_registry.any_of<Args>(m_handle);
         }
 
         template <typename T>

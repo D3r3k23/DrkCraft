@@ -1,6 +1,5 @@
 #include "Decoder.hpp"
 
-#include "Util/ByteBuffer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <minimp3/minimp3.h>
@@ -34,7 +33,7 @@ namespace DrkCraft
         mp3dec_init(&s_mp3Decoder);
     }
 
-    Ptr<const AudioSourceData<int16>> Mp3Decoder::decode(const fs::path& filename) const
+    Ref<AudioSource> Mp3Decoder::decode(const fs::path& filename) const
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Mp3);
@@ -50,19 +49,17 @@ namespace DrkCraft
                 return {};
             }
         }
-        auto buffer = make_ptr<int16>(static_cast<int16*>(info.buffer), [](int16* buffer){ std::free(buffer); });
-        auto data = new AudioSourceData<int16>();
+        const uint samples = info.samples;
+        const uint size     = samples * sizeof(int16);
+        const uint channels  = static_cast<uint>(info.channels);
+        const uint sampleRate = static_cast<uint>(info.hz);
+        const float length   = static_cast<float>(samples) / static_cast<float>(sampleRate);
+        const auto format   = get_audio_source_format(channels);
+        const void* data   = static_cast<const void*>(info.buffer);
 
-        const auto samples = info.samples;
-
-        data->buffer  = std::move(buffer);
-        data->size     = samples * sizeof(int16);
-        data->channels  = static_cast<uint>(info.channels);
-        data->sampleRate = static_cast<uint>(info.hz);
-        data->length    = static_cast<float>(samples) / static_cast<float>(data->sampleRate);
-        data->format   = get_audio_source_format(data->channels);
-
-        return Ptr<const AudioSourceData<int16>>(data);
+        auto source = new AudioSource(format, data, size, sampleRate, length);
+        std::free(info.buffer);
+        return Ref<AudioSource>(source);
     }
 
     ////////////////////////////
@@ -136,38 +133,38 @@ namespace DrkCraft
                     return buffer;
             }
 
-        uint64 sample_rate(void) const { return m_sampleRate; }
-        uint64 samples(void)   const { return m_samples; }
-        uint64 channels(void) const { return m_channels; }
-        uint64 size(void)   const { return m_size; }
+        uint sample_rate(void) const { return m_sampleRate; }
+        uint samples(void)   const { return m_samples; }
+        uint channels(void) const { return m_channels; }
+        uint size(void)   const { return m_size; }
 
         private:
             OggVorbis_File m_vorbisFile;
             uint m_sampleRate;
-            uint64 m_samples;
+            uint m_samples;
             uint m_channels;
             uint m_size;
         };
     }
 
-    Ptr<const AudioSourceData<Byte>> OggDecoder::decode(const fs::path& filename)
+    Ref<AudioSource> OggDecoder::decode(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
         VorbisFile vorbisFile(filename);
         if (Byte* readBuffer = vorbisFile.read(); readBuffer)
         {
-            auto buffer = make_ptr<Byte>(readBuffer, [](Byte* buffer){ delete[] buffer; });
-            auto data = new AudioSourceData<uint8>();
+            const uint samples = vorbisFile.samples();
+            const uint size     = vorbisFile.size();
+            const uint channels  = vorbisFile.channels();
+            const uint sampleRate = vorbisFile.sample_rate();
+            const float length   = static_cast<float>(samples) / static_cast<float>(sampleRate);
+            const auto format   = get_audio_source_format(channels);
+            const void* data   = static_cast<const void*>(readBuffer);
 
-            data->buffer  = std::move(buffer);
-            data->size     = vorbisFile.size();
-            data->channels  = vorbisFile.channels();
-            data->sampleRate = vorbisFile.sample_rate();
-            data->length    = static_cast<float>(vorbisFile.samples()) / static_cast<float>(data->sampleRate);
-            data->format   = get_audio_source_format(data->channels);
-
-            return Ptr<const AudioSourceData<Byte>>(data);
+            auto source = new AudioSource(format, data, size, sampleRate, length);
+            delete[] readBuffer;
+            return Ref<AudioSource>(source);
         }
         else
         {

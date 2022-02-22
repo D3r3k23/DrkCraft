@@ -1,6 +1,6 @@
 #include "WorldRenderer.hpp"
 
-#include "Graphics/Renderer/CubeRenderer.hpp"
+#include "Graphics/Renderer/BlockRenderer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
@@ -13,14 +13,14 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        CubeRenderer::begin_scene();
+        BlockRenderer::begin_scene();
 
         for (const auto& chunks = m_world.get_chunks(); const auto& chunk : chunks)
         {
             render_chunk(chunk);
         }
 
-        CubeRenderer::end_scene();
+        BlockRenderer::end_scene();
     }
 
     void WorldRendererSystem::update(Timestep timestep)
@@ -35,8 +35,8 @@ namespace DrkCraft
                 for (uint y = 0; y < CHUNK_HEIGHT; y++)
                 {
                     const auto& block = chunk.block_at(x, y, z);
-                    const auto& texture = get_block_texture(block);
-                    CubeRenderer::submit({x, y, z}, texture);
+                    const uint tid = 1; // get_block_tid(block);
+                    BlockRenderer::submit({x, y, z}, tid); // , texture);
                 }
     }
 }

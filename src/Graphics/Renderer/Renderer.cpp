@@ -1,6 +1,8 @@
 #include "Renderer.hpp"
 
-#include "Graphics/Renderer/CubeRenderer.hpp"
+#include "Graphics/Renderer/BlockRenderer.hpp"
+#include "Graphics/Renderer/MeshRenderer.hpp"
+#include "Graphics/Renderer/TextRenderer.hpp"
 #include "Graphics/detail/Util.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -45,14 +47,18 @@ namespace DrkCraft
         // context.swap_buffers();
 
         s_textureManager = make_ptr<TextureManager>();
-        CubeRenderer::init(s_textureManager);
+
+        BlockRenderer::init(s_textureManager);
+        MeshRenderer::init();
     }
 
     void Renderer::shutdown(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        CubeRenderer::shutdown();
+        BlockRenderer::shutdown();
+        MeshRenderer::shutdown();
+
         s_textureManager.reset();
     }
 
@@ -97,17 +103,6 @@ namespace DrkCraft
         return s_data.lastStats;
     }
 
-    void Renderer::reset_stats(void)
-    {
-        s_data.lastStats = s_data.stats;
-        s_data.stats = RendererStats{};
-    }
-
-    void Renderer::clear(void)
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
     void Renderer::attach_texture(Passkey, const Texture& texture)
     {
 
@@ -118,18 +113,18 @@ namespace DrkCraft
 
     }
 
-    void Renderer::draw_indexed(Passkey, const VertexArray& vao)
+    void Renderer::draw_indexed(Passkey, const VertexArray& vao, std::optional<uint> count=std::nullopt)
     {
         DRK_PROFILE_FUNCTION();
 
+        const auto primitiveType = to_gl_primitive_type(vao.get_vertex_buffer()->get_primitive_type());
+        uint indexCount = (!count || *count > indexBuffer.get_count()) ? indexBuffer.get_count() : *count;
+
         vao.bind();
-        glDrawElements(
-            to_gl_primitive_type(vao.get_vertex_buffer()->get_primitive_type()),
-            vao.get_index_buffer()->get_count(),
-            GL_UNSIGNED_INT, nullptr);
+        glDrawElements(primitiveType, indexCount, GL_UNSIGNED_INT, nullptr);
         vao.unbind();
 
-        s_data.stats.drawCalls++;
+        update_stats_on_draw_call(primitiveType, indexCount)
     }
 
     void Renderer::draw_triangles(Passkey, const IndexBuffer& indexBuffer, std::optional<uint> count)
@@ -142,5 +137,34 @@ namespace DrkCraft
 
         s_data.stats.indices += indexCount;
         s_data.stats.drawCalls++;
+    }
+
+    void Renderer::reset_stats(void)
+    {
+        s_data.lastStats = s_data.stats;
+        s_data.stats = RendererStats{};
+    }
+
+    void Renderer::clear(void)
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void Renderer::update_stats_on_draw_call(PrimitiveType primitive, uint indices)
+    {
+        s_data.stats.drawCalls++;
+        s_data.stats.indices += indices;
+
+        using enum PrimitiveType;
+        switch (primitive)
+        {
+            case Lines     : s_data.stats.lines += indices / 2; break;
+            case LineStrip : s_data.stats.lines += indices - 1; break;
+            case LineLoop  : s_data.stats.lines += indices;     break;
+
+            case Triangles     : s_data.stats.triangles += indices / 3; break;
+            case TriangleStrip : s_data.stats.triangles += indices - 2; break;
+            case TriangleFan   : s_data.stats.triangles += 0;           break;
+        }
     }
 }

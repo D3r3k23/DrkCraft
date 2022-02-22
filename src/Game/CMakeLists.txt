@@ -3,8 +3,8 @@ target_sources(DrkCraft
     Game.cpp
     GameEvent.cpp
     Player.cpp
-    SavedWorldLoader.cpp
-    Skybox.cpp
+    SavedGameLoader.cpp
+    Sky.cpp
     GameSystem.cpp
 )
 

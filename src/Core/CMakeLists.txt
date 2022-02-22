@@ -1,7 +1,7 @@
 target_sources(DrkCraft
   PRIVATE
     Settings.cpp
-    Util.cpp
+    Timestep.cpp
     Version.cpp
 )
 

@@ -4,6 +4,8 @@
 /.venv/*
 /.sourcetrail/*
 
+**/__pycache__/**
+
 /build/*
 
 /config/*
@@ -11,16 +13,12 @@
 
 /data/imgui.ini
 /data/logs/*
+/data/saves/*
 /data/screenshots/*
 
 /data/profile/*
 !/data/profile/README.md
 
-/data/saves/*
-!/data/saves/.dev/
-
 /packages/*
-
-**/__pycache__/**
 
 assets/audio/music/Alix Perez - Burning Babylon.mp3

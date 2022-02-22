@@ -52,7 +52,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGuiTools::BeginCentered("Settings", WINDOW_SIZE, ImGuiWindowFlags_NoCollapse);
+        DrkImGui::BeginCentered("Settings", WINDOW_SIZE, ImGuiWindowFlags_NoCollapse);
         ImGui::BeginGroup();
 
         if (ImGui::TreeNode("Video"))

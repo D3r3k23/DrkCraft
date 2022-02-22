@@ -1,7 +1,7 @@
 #ifndef DRK_CORE_VERSION_HPP
 #define DRK_CORE_VERSION_HPP
 
-#include "lib/type.hpp"
+#include "Core/Type.hpp"
 
 #include <string>
 #include <compare>

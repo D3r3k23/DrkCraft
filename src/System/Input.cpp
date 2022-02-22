@@ -78,7 +78,7 @@ namespace DrkCraft
 
     vec2 get_mouse_position(void)
     {
-        auto window = local_get_window();
+        auto window = Application::get_window().get_raw_window();
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
         return { (float)xPos, (float)yPos };

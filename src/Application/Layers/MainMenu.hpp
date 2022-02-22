@@ -4,22 +4,20 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
-#include "System/AssetManager.hpp"
+#include "System/AssetLibrary.hpp"
+#include "Game/World/WorldGenerator.hpp"
+
+#include "lib/fs.hpp"
+
+#include <vector>
+#include <optional>
 
 namespace DrkCraft
 {
-    enum class MainMenuState
-    {
-        Init = 0,
-        Loading,
-        ReadyToPlay,
-        PlaySelected
-    };
-
     class MainMenu : public Layer
     {
     public:
@@ -39,7 +37,15 @@ namespace DrkCraft
         virtual void on_event(Event& event) override;
 
     private:
+        void show_saved_games_table(void);
+        void show_create_world_menu(void);
+
+        void maybe_start_game(const fs::path& save);
+        void maybe_start_game(const WorldGeneratorSpec& worldGeneratorSpec);
+
         void start_game(void);
+        void wait_for_assets_to_load(void);
+
         void open_settings(void);
         void exit(void);
 
@@ -47,9 +53,12 @@ namespace DrkCraft
         Ref<SettingsMenu> m_settingsMenu;
         Ref<LoadingScreen> m_loadingScreen;
 
+        std::vector<fs::path> m_saves;
+
+        std::optional<fs::path> m_selectedSavedGame;
+        std::optional<WorldGeneratorSpec> m_worldGeneratorSpec;
+
         bool m_show;
-        bool m_applicationAssetsLoading;
-        bool m_startButtonPushed;
     };
 }
 

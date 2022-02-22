@@ -19,6 +19,19 @@ namespace DrkCraft::Yaml
 
     std::optional<YAML::Node> get_map(const YAML::Node& node, std::string_view key);
     std::optional<YAML::Node> get_scalar(const YAML::Node& node, std::string_view key);
+
+    template <typename T>
+    std::optional<T> get_value(const YAML::Node& node)
+    {
+        try
+        {
+            return node.as<T>();
+        }
+        catch (const YAML::BadConversion&)
+        {
+            return {};
+        }
+    }
 }
 
 #endif // DRK_UTIL_YAML_HPP

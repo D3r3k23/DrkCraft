@@ -1,5 +1,5 @@
-#ifndef DRK_LIB_TYPE_HPP
-#define DRK_LIB_TYPE_HPP
+#ifndef DRK_CORE_TYPE_HPP
+#define DRK_CORE_TYPE_HPP
 
 #include <cstdint>
 
@@ -19,4 +19,4 @@ namespace DrkCraft
     using Byte  = uint8;
 }
 
-#endif // DRK_LIB_TYPE_HPP
+#endif // DRK_CORE_TYPE_HPP

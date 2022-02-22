@@ -49,7 +49,7 @@ namespace DrkCraft
     //       Audio       //
     ///////////////////////
 
-    static Ptr<AudioEngine> s_audioEngine = nullptr;
+    static std::optional<AudioEngine> s_audioEngine;
 
     static AudioEngine& get_audio_engine(void)
     {
@@ -63,7 +63,7 @@ namespace DrkCraft
     {
         DRK_ASSERT_DEBUG(!s_audioEngine, "AudioEngine is already initialized");
 
-        s_audioEngine = make_ptr<AudioEngine>();
+        s_audioEngine.emplace();
         set_volume(volume);
     }
 

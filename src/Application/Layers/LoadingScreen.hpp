@@ -4,9 +4,12 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include "Util/PeriodicUpdate.hpp"
+
+#include <string>
+#include <string_view>
 
 namespace DrkCraft
 {
@@ -14,7 +17,7 @@ namespace DrkCraft
     class LoadingScreen : public Layer
     {
     public:
-        LoadingScreen(bool activate=true);
+        LoadingScreen(std::string_view msg, bool activate=true);
         virtual ~LoadingScreen(void);
 
         virtual void on_attach(void) override;
@@ -26,6 +29,7 @@ namespace DrkCraft
 
     private:
         IntervalTimer m_updateTimer;
+        std::string m_msg;
         uint m_numPeriods;
     };
 }

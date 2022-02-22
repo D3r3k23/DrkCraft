@@ -25,26 +25,32 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
+        get_data().argc = argc;
+        get_data().argv = argv;
+
         for (int i = 0; i < argc; i++)
         {
-            std::string_view arg{argv[i]};
+            const std::string_view arg{argv[i]};
             switch (i)
             {
                 case 0:
+                {
                     get_data().name = fs::path(arg).filename().string();
                     break;
-
+                }
                 case 1:
+                {
                     if (arg == "--dev")
-                        get_data().activate_dev_mode();
+                    {
+                        if constexpr (DRK_DEV_MODE_ENABLED)
+                            get_data().dev = true;
+                        else
+                            DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
+                    }
                     break;
-
-                default:
-                    break;
+                }
             }
         }
-        get_data().argc = argc;
-        get_data().argv = argv;
     }
 
     std::string_view CommandLineOptions::get_arg(int i)
@@ -61,14 +67,6 @@ namespace DrkCraft
     bool CommandLineOptions::dev_mode_activated(void)
     {
         return get_data().dev;
-    }
-
-    void CommandLineOptions::activate_dev_mode(void)
-    {
-        if constexpr (DRK_DEV_MODE_ENABLED)
-            get_data().dev = true;
-        else
-            DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
     }
 
     /////////////////////////////////
@@ -162,11 +160,11 @@ namespace DrkCraft
 
     namespace
     {
-        template <typename T, typename RepT=T>
-        using SettingTransform = std::function<T(RepT)>;
+        template <typename T>
+        using SettingConstraint = std::function<T(T)>;
 
         template <typename T>
-        SettingTransform<T> apply_range(T min, T max)
+        SettingConstraint<T> apply_range(T min, T max)
         {
             return [min, max](T value) -> T
             {
@@ -175,51 +173,46 @@ namespace DrkCraft
         }
 
         template <typename T>
-        SettingTransform<T> apply_min(T min)
+        SettingConstraint<T> apply_min(T min)
         {
             return [min](T value) -> T
             {
                 return std::max(value, min);
-            }
+            };
         }
 
         template <typename T>
-        SettingTransform<T> apply_max(T max)
+        SettingConstraint<T> apply_max(T max)
         {
             return [max](T value) -> T
             {
                 return std::min(value, max);
+            };
+        }
+
+        template <typename T>
+        void load_setting(const YAML::Node& parent, std::string_view key, T& setting,
+            const SettingConstraint<T>& constraint={})
+        {
+            if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
+            {
+                if (const auto value = Yaml::get_value<T>(*scalar); value)
+                {
+                    if (constraint)
+                        setting = constraint(*value);
+                    else
+                        setting = *value;
+                }
             }
         }
 
-        static SettingTransform<InputCode, std::string> keybind_converter = [](std::string name) -> InputCode
+        void load_keybind(const YAML::Node& parent, std::string_view key, InputCode& keybind)
         {
-            return to_input_code(name);
-        };
-
-        static SettingTransform<KeyCode, std::string> key_code_converter = [](std::string name) -> KeyCode
-        {
-            return to_key_code(name);
-        };
-
-        static SettingTransform<MouseCode, std::string> mouse_code_converter = [](std::string name) -> MouseCode
-        {
-            return to_mouse_code(name);
-        };
-
-        template <typename T>
-        void load_setting(const YAML::Node& parent, std::string_view key, T& value)
-        {
-            if (const auto setting = YAML::get_scalar(parent, key); value.has_value())
-                value = setting->as<T>(value);
-        }
-
-        template <typename T, typename RepT=T>
-        void load_setting(const YAML::Node& parent, std::string_view key, T& value,
-            const SettingTransform<T, RepT>& transform)
-        {
-            if (const auto setting = Yaml::get_scalar(parent, key); setting.has_value())
-                value = transform(setting->as<RepT>(value));
+            if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
+            {
+                if (const auto value = Yaml::get_value<std::string>(*scalar); value)
+                    keybind = to_input_code(*value);
+            }
         }
     }
 
@@ -239,7 +232,8 @@ namespace DrkCraft
             load_setting(*map, "width",  initWindowSizeSetting.width,  apply_min(0));
             load_setting(*map, "height", initWindowSizeSetting.height, apply_min(0));
         }
-        load_setting(config, "saves_directory", m_configData.saves_directory);
+        load_setting(config, "saves_directory",       m_configData.saves_directory);
+        load_setting(config, "screenshots_directory", m_configData.screenshots_directory);
 
         ensure_dir_exists(m_configData.saves_directory);
     }
@@ -288,22 +282,22 @@ namespace DrkCraft
         if (const auto map = Yaml::get_map(keybinds, "player_movement"); map.has_value())
         {
             auto& movementKeybinds = m_keybindsData.player_movement;
-            load_setting(*map, "forward", movementKeybinds.forward, keybind_converter);
-            load_setting(*map, "back",    movementKeybinds.back,   keybind_converter);
-            load_setting(*map, "left",    movementKeybinds.left,  keybind_converter);
-            load_setting(*map, "right",   movementKeybinds.right,  keybind_converter);
-            load_setting(*map, "sprint",  movementKeybinds.sprint,  keybind_converter);
-            load_setting(*map, "crouch",  movementKeybinds.crouch, keybind_converter);
-            load_setting(*map, "jump",    movementKeybinds.jump,  keybind_converter);
+            load_keybind(*map, "forward", movementKeybinds.forward);
+            load_keybind(*map, "back",    movementKeybinds.back);
+            load_keybind(*map, "left",    movementKeybinds.left);
+            load_keybind(*map, "right",   movementKeybinds.right);
+            load_keybind(*map, "sprint",  movementKeybinds.sprint);
+            load_keybind(*map, "crouch",  movementKeybinds.crouch);
+            load_keybind(*map, "jump",    movementKeybinds.jump);
         }
         if (const auto map = Yaml::get_map(keybinds, "player_actions"); map.has_value())
         {
             auto& actionKeybinds = m_keybindsData.player_actions;
-            load_setting(*map, "use",    actionKeybinds.use,     keybind_converter);
-            load_setting(*map, "place",   actionKeybinds.place,    keybind_converter);
-            load_setting(*map, "interact", actionKeybinds.interact,  keybind_converter);
-            load_setting(*map, "inventory", actionKeybinds.inventory, keybind_converter);
-            load_setting(*map, "fly",        actionKeybinds.fly,      keybind_converter);
+            load_keybind(*map, "use",    actionKeybinds.use);
+            load_keybind(*map, "place",   actionKeybinds.place);
+            load_keybind(*map, "interact", actionKeybinds.interact);
+            load_keybind(*map, "inventory", actionKeybinds.inventory);
+            load_keybind(*map, "fly",        actionKeybinds.fly);
         }
     }
 
@@ -319,7 +313,8 @@ namespace DrkCraft
         config     << YAML::Key << "width"  << YAML::Value << m_configData.init_window_size.width;
         config     << YAML::Key << "height" << YAML::Value << m_configData.init_window_size.height;
         config   << YAML::EndMap;
-        config   << YAML::Key << "saves_directory" << YAML::Value << m_configData.saves_directory;
+        config   << YAML::Key << "saves_directory"       << YAML::Value << m_configData.saves_directory;
+        config   << YAML::Key << "screenshots_directory" << YAML::Value << m_configData.screenshots_directory;
         config << YAML::EndMap;
 
         write_file(m_configFile, config.c_str());

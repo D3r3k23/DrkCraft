@@ -4,14 +4,15 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include "Game/Game.hpp"
-#include "System/AssetManager.hpp"
-#include "Util/ImGui.hpp"
+#include "System/AssetLibrary.hpp"
+#include "Application/ImGuiController.hpp"
 #include "Graphics/OpenGlContext.hpp"
 #include "Graphics/Renderer/Renderer.hpp"
-#include "Graphics/Renderer/CubeRenderer.hpp"
+#include "Graphics/Renderer/BlockRenderer.hpp"
+#include "Graphics/Renderer/MeshRenderer.hpp"
 #include "Util/PeriodicUpdate.hpp"
 
 namespace DrkCraft
@@ -50,16 +51,17 @@ namespace DrkCraft
         void update_renderer_stats(void);
 
     private:
-        const AssetManager& m_assetManager;
-        const ImGuiManager& m_imGuiManager;
+        const AssetLibrary& m_assetLibrary;
+        const ImGuiController& m_imGuiController;
         const OpenGlContext& m_glContext;
         Ref<Game> m_game;
 
         FpsCounter m_currentFps;
         FpsCounter m_avgFps;
 
-        RendererStats      m_rendererStats;
-        CubeRendererStats m_cubeRendererStats;
+        RendererStats    m_rendererStats;
+        BlockRendererStats m_blockRendererStats;
+        MeshRendererStats m_meshRendererStats;
         ImGuiRendererStats m_imGuiRendererStats;
 
         IntervalTimer m_fpsAvgTimer;

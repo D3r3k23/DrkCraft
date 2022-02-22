@@ -11,7 +11,7 @@
 
 namespace DrkCraft
 {
-    AudioSource::AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, float length)
+    AudioSource::AudioSource(AudioSourceFormat format, const void* data, uint size, uint sampleRate, float length)
       : m_buffer(format, data, size, sampleRate),
         m_length(length)
     {

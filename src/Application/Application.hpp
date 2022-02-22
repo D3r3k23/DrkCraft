@@ -2,16 +2,16 @@
 #define DRK_APPLICATION_APPLICATION_HPP
 
 #include "Core/Base.hpp"
+#include "Graphics/OpenGlContext.hpp"
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
-#include "System/AssetManager.hpp"
-#include "Util/ImGui.hpp"
-#include "Graphics/OpenGlContext.hpp"
+#include "System/AssetLibrary.hpp"
+#include "Application/ImGuiController.hpp"
 #include "Application/Events.hpp"
 #include "Application/EventGenerator.hpp"
 #include "Application/Layer.hpp"
 #include "Application/LayerStack.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include <string_view>
 #include <optional>
@@ -36,14 +36,15 @@ namespace DrkCraft
 
         static Window& get_window(void);
         static MonitorManager& get_monitors(void);
-        static AssetManager& get_assets(void);
-        static ImGuiManager& get_imgui(void);
+        static AssetLibrary& get_asset_library(void);
+        static ImGuiController& get_imgui(void);
         static OpenGlContext& get_gl_context(void);
 
-    private:
+    public:
         Application(std::string_view title);
         ~Application(void);
 
+    private:
         void run_internal(void);
         void exit_internal(int status);
 
@@ -67,15 +68,15 @@ namespace DrkCraft
         bool is_windowed(void) const;
 
     private:
-        static Ptr<Application> s_instance;
+        static std::optional<Application> s_instance;
 
         Window m_window;
         OpenGlContext m_context;
 
         MonitorManager m_monitorManager;
-        AssetManager  m_assetManager;
+        AssetLibrary  m_assetLibrary;
 
-        std::optional<ImGuiManager> m_imGuiManager;
+        std::optional<ImGuiController> m_imGuiController;
         EventGenerator m_eventGenerator;
 
         LayerStack m_layerStack;

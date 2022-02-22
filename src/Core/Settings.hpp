@@ -30,9 +30,6 @@ namespace DrkCraft
         static bool dev_mode_activated(void);
 
     private:
-        void activate_dev_mode(void);
-
-    private:
         int argc = 0;
         char** argv = nullptr;
 
@@ -52,6 +49,7 @@ namespace DrkCraft
         } init_window_size;
 
         std::string saves_directory = "data/saves";
+        std::string screenshots_directory = "data/screenshots";
     };
 
     struct SettingsData

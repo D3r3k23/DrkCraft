@@ -6,7 +6,7 @@
 
 namespace DrkCraft
 {
-    AlBuffer::AlBuffer(AudioSourceFormat format, void* data, uint size, uint sampleRate)
+    AlBuffer::AlBuffer(AudioSourceFormat format, const void* data, uint size, uint sampleRate)
     {
         DRK_PROFILE_FUNCTION();
 

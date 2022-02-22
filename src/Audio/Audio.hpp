@@ -6,6 +6,7 @@
 
 #include "lib/fs.hpp"
 
+#include <optional>
 #include <string_view>
 
 namespace DrkCraft

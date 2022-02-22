@@ -11,7 +11,7 @@ namespace DrkCraft
 {
     GameLayer::GameLayer(void)
       : Layer("GameLayer", true),
-        m_loadingScreen(Layer::create<LoadingScreen>()),
+        m_loadingScreen(Layer::create<LoadingScreen>("Loading Game")),
         m_debugOverlay(Layer::create<DebugOverlay>()),
         m_worldLoaded(false),
         m_startPaused(false)
@@ -27,10 +27,10 @@ namespace DrkCraft
         DRK_ASSERT_CORE(is_dir(saveDir), "Path \"{}\" is not a directory", saveDir.generic_string());
         DRK_LOG_GAME_INFO("Loading saved game from directory: {}", saveDir.generic_string());
 
-        auto SaveLoader = make_ptr<SavedGameLoader>(saveDir);
+        auto saveLoader = make_ptr<SavedGameLoader>(saveDir);
 
         DRK_PROFILE_THREAD_CREATE("saved_game_load");
-        m_worldLoadThread = std::jthread([this, loader=std::move(saveLoader)]
+        m_gameLoadThread = std::jthread([this, loader=std::move(saveLoader)]
         {
             DRK_PROFILE_THREAD("saved_game_load");
             m_loadedWorld = loader->load();
@@ -47,7 +47,7 @@ namespace DrkCraft
         auto worldGenerator = make_ptr<WorldGenerator>(worldGeneratorSpec);
 
         DRK_PROFILE_THREAD_CREATE("world_generation");
-        m_worldLoadThread = std::jthread([this, generator=std::move(worldGenerator)]
+        m_gameLoadThread = std::jthread([this, generator=std::move(worldGenerator)]
         {
             DRK_PROFILE_THREAD("world_generation");
             m_loadedWorld = generator->generate();
@@ -97,7 +97,7 @@ namespace DrkCraft
         {
             if (m_loadedWorld)
             {
-                m_worldLoadThread.join();
+                m_gameLoadThread.join();
                 start_game();
             }
         }
@@ -159,7 +159,7 @@ namespace DrkCraft
 
         m_loadingScreen->detach_layer();
 
-        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_assets());
+        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_asset_library());
         m_debugOverlay->attach_game(m_game);
 
         if (m_startPaused)

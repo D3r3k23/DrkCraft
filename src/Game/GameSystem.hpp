@@ -2,7 +2,7 @@
 #define DRK_GAME_GAME_SYSTEM_HPP
 
 #include "Core/Base.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 

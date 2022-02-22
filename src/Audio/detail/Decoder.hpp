@@ -17,13 +17,13 @@ namespace DrkCraft
         Mp3Decoder(void);
         ~Mp3Decoder(void) = default;
 
-        Ptr<const AudioSourceData<int16>> decode(const fs::path& filename) const;
+        Ref<AudioSource> decode(const fs::path& filename) const;
     };
 
     class OggDecoder
     {
     public:
-        static Ptr<const AudioSourceData<Byte>> decode(const fs::path& filename);
+        static Ref<AudioSource> decode(const fs::path& filename);
     };
 }
 

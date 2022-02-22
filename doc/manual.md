@@ -24,10 +24,13 @@
 
 * Create a world
 * Explore!
-* Search for [sticks](wiki#Stick) near trees or destroy some leaves
-* Search for [rocks](wiki#Rock) on the ground
+* Search for [sticks](doc/items.md#Stick) near trees or destroy some leaves
+* Search for [rocks](doc/items.md#Rock) on the ground
 * Build tools:
-  * [Pickaxe](wiki#Pickaxe)
-  * [Axe](wiki#Axe)
+  * [Pickaxe](doc/items.md#Pickaxe)
+  * [Axe](doc/items.md#Axe)
 * Weapons:
-  * [Sword](wiki#sword)
+  * [Sword](doc/items.md#sword)
+* Get resources
+  * [Lumber](doc/blocks.md#tree)
+  * [Stone](doc/blocks.md#stone)

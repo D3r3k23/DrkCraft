@@ -6,11 +6,18 @@
 
 #include "lib/fs.hpp"
 
+#include <vector>
+#include <string_view>
+
 namespace DrkCraft
 {
     class SavedGameLoader
     {
     public:
+        static std::vector<fs::path> get_saves(const fs::path& savesDir);
+        static ResultStatus rename_save(const fs::path& savesDir, std::string_view oldName, std::string_view newName);
+        static ResultStatus delete_save(const fs::path& save);
+
         SavedGameLoader(const fs::path& dir);
         Ptr<World> load(void);
 

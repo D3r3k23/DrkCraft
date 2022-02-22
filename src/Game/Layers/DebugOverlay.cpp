@@ -1,6 +1,7 @@
 #include "DebugOverlay.hpp"
 
 #include "Application/Application.hpp"
+#include "Util/ImGui.hpp"
 #include "System/Monitor.hpp"
 #include "Audio/Audio.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -41,8 +42,8 @@ namespace DrkCraft
 
     DebugOverlay::DebugOverlay(bool activate)
       : Layer("DebugOverlayLayer", activate),
-        m_assetManager(Application::get_assets()),
-        m_imGuiManager(Application::get_imgui()),
+        m_assetLibrary(Application::get_asset_library()),
+        m_imGuiController(Application::get_imgui()),
         m_glContext(Application::get_gl_context()),
         m_currentFps(0.995f),
         m_avgFps(0.75f)
@@ -131,10 +132,10 @@ namespace DrkCraft
             ImGui::Text("Textures: %u", m_rendererStats.textures);
             ImGui::EndGroup();
 
-            ImGui::Text("CubeRenderer:");
+            ImGui::Text("BlockRenderer:");
             ImGui::BeginGroup();
-            ImGui::Text("Cubes: %u", m_cubeRendererStats.cubes);
-            ImGui::Text("Cube faces: %u", m_cubeRendererStats.cubeFaces);
+            ImGui::Text("Blocks: %u", m_blockRendererStats.blocks);
+            ImGui::Text("Block faces: %u", m_blockRendererStats.blockFaces);
             ImGui::EndGroup();
 
             ImGui::Text("ImGui:");
@@ -148,7 +149,7 @@ namespace DrkCraft
         ImGui::EndGroup();
 
         // Asset loading status
-        if (const auto asset = m_assetManager.currently_loading(); asset)
+        if (const auto asset = m_assetLibrary.currently_loading(); asset)
         {
             ImGui::BeginGroup();
             ImGui::Text("Loading asset: %s", *asset);
@@ -193,8 +194,9 @@ namespace DrkCraft
 
     void DebugOverlay::update_renderer_stats(void)
     {
-        m_rendererStats  = Renderer::get_stats();
-        m_cubeRendererStats = CubeRenderer::get_stats();
-        m_imGuiRendererStats  = m_imGuiManager.get_renderer_stats();
+        m_rendererStats    = Renderer::get_stats();
+        m_blockRendererStats = BlockRenderer::get_stats();
+        m_meshRendererStats   = MeshRenderer::get_stats();
+        m_imGuiRendererStats   = m_imGuiController.get_renderer_stats();
     }
 }

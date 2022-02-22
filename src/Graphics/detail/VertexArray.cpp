@@ -20,7 +20,7 @@ namespace DrkCraft
         glBindVertexArray(m_id);
     }
 
-    void VertexArray::bind(void) const
+    void VertexArray::unbind(void) const
     {
         glBindVertexArray(0);
     }

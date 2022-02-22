@@ -10,17 +10,6 @@
 
 namespace DrkCraft
 {
-    template <typename B>
-    struct AudioSourceData
-    {
-        Ptr<B> buffer;
-        uint size=0;
-        uint length=0;
-        uint channels=0;
-        uint sampleRate=0;
-        AudioSourceFormat format=AudioSourceFormat::None;
-    };
-
     enum class AudioSourceState
     {
         Initial = 0,
@@ -32,16 +21,13 @@ namespace DrkCraft
     class AudioSource : public AlObject
     {
         friend class AudioEngine;
+        friend class Mp3Decoder;
+        friend class OggDecoder;
 
     private:
-        AudioSource(AudioSourceFormat format, void* data, uint size, uint sampleRate, float length);
+        AudioSource(AudioSourceFormat format, const void* data, uint size, uint sampleRate, float length);
 
     public:
-        template <typename B>
-        AudioSource(const AudioSourceData<B>& data)
-          : AudioSource(data.format, static_cast<void*>data.buffer, data.size, data.sampleRate, data.length)
-        { }
-
         virtual ~AudioSource(void);
 
         bool is_playing(void) const;

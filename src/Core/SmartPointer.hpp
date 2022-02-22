@@ -1,5 +1,5 @@
-#ifndef DRK_LIB_SMART_POINTER_HPP
-#define DRK_LIB_SMART_POINTER_HPP
+#ifndef DRK_CORE_SMART_POINTER_HPP
+#define DRK_CORE_SMART_POINTER_HPP
 
 #include <memory>
 #include <utility>
@@ -27,4 +27,4 @@ namespace DrkCraft
     }
 }
 
-#endif // DRK_LIB_SMART_POINTER_HPP
+#endif // DRK_CORE_SMART_POINTER_HPP

@@ -12,10 +12,6 @@ namespace DrkCraft
     //       Texture       //
     /////////////////////////
 
-    /////////////////////////
-    //       Texture       //
-    /////////////////////////
-
     Texture::Texture(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -46,6 +42,12 @@ namespace DrkCraft
         return m_slot.has_value();
     }
 
+    //////////////////////////////
+    //       TextureAtlas       //
+    //////////////////////////////
+
+
+
     ////////////////////////////////
     //       TextureManager       //
     ////////////////////////////////
@@ -70,14 +72,24 @@ namespace DrkCraft
             m_textures.erase(m_textures.begin() + m_nReserved, m_textures.end());
     }
 
-    void TextureManager::emplace(uint slot, Ref<Texture> texture)
+    void TextureManager::attach(Ref<Texture> texture, uint slot)
     {
-
+        texture->attach(slot);
+        m_textures[slot] = std::move(texture);
     }
 
-    void TextureManager::push(Ref<Texture> texture)
+    void TextureManager::attach(Ref<Texture> texture)
     {
-        DRK_ASSERT_DEBUG(!full(), "Texture slots are full");
+        if (full())
+        {
+            DRK_ASSERT_DEBUG(false, "Texture slots are full");
+            DRK_LOG_CORE_ERROR("Texture slots are full");
+        }
+        else
+        {
+            texture->attach(m_textures.size());
+            m_textures.push_back(std::move(texture));
+        }
     }
 
     uint TextureManager::count(void) const

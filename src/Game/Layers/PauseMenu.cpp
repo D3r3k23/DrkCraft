@@ -1,6 +1,8 @@
 #include "PauseMenu.hpp"
 
 #include "Application/Application.hpp"
+#include "Util/ImGui.hpp"
+#include "Application/ImGuiController.hpp"
 #include "Application/Layers/MainMenu.hpp"
 #include "System/Input.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -64,8 +66,8 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        ImGui::PushFont(ImGuiManager::get_font(ImGuiFont::Button));
-        ImGuiTools::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
+        ImGui::PushFont(ImGuiController::get_font(ImGuiFont::Button));
+        DrkImGui::BeginFullscreen("Pause Menu", ImGuiWindowFlags_NoBackground);
 
         ImGui::BeginGroup();
         for (const auto& option : m_options)
@@ -73,7 +75,7 @@ namespace DrkCraft
             ImGui::Dummy({250, 50});
 
             const auto& [str, action] = option;
-            if (ImGuiTools::ButtonCentered(str, {250, 100}))
+            if (DrkImGui::ButtonCentered(str, {250, 100}))
                 action();
         }
         ImGui::EndGroup();

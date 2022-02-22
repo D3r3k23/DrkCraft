@@ -55,5 +55,6 @@ namespace DrkCraft::Obj
                 indexOffset += nVertices;
             }
         }
+        return {};
     }
 }

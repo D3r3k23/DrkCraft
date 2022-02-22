@@ -1,4 +1,4 @@
-#include "Skybox.hpp"
+#include "Sky.hpp"
 
 namespace DrkCraft
 {

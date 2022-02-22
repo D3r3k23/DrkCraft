@@ -18,7 +18,9 @@ namespace DrkCraft
     class Mesh
     {
     public:
-        Mesh(const MeshData& data);
+        static Ref<Mesh> create(const MeshData& data);
+
+        Mesh();
 
     private:
         VertexArray m_vertexArray;

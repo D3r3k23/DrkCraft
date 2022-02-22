@@ -44,7 +44,8 @@ add_subdirectory(tinyobjloader)
 ###################################################
 
 message("Configuring magic_enum")
-add_subdirectory(magic_enum)
+add_library(magic_enum INTERFACE)
+target_include_directories(magic_enum INTERFACE magic_enum/include)
 
 ###################################################
 
@@ -71,13 +72,15 @@ add_subdirectory(vorbis)
 ###################################################
 
 message("Configuring RapidJSON")
-add_subdirectory(rapidjson)
-target_compile_definitions(rapidjson INTERFACE RAPIDJSON_HAS_STDSTRING=1)
+add_library(rapidjson INTERFACE)
+target_include_directories(rapidjson INTERFACE rapidjson/include)
+target_compile_definitions(rapidjson INTERFACE RAPIDJSON_HAS_STDSTRING)
 
 ###################################################
 
 message("Configuring yaml-cpp")
 set(YAML_CPP_BUILD_TOOLS OFF)
+set(YAML_CPP_BUILD_TESTS OFF)
 add_subdirectory(yaml-cpp)
 target_compile_definitions(yaml-cpp PUBLIC YAML_CPP_STATIC_DEFINE)
 
@@ -85,6 +88,7 @@ target_compile_definitions(yaml-cpp PUBLIC YAML_CPP_STATIC_DEFINE)
 
 message("Configuring EnTT")
 add_library(entt INTERFACE)
+target_include_directories(entt INTERFACE entt/src)
 
 ###################################################
 
@@ -116,6 +120,7 @@ target_link_libraries(DrkCraft
     rapidjson
     spdlog
     stb_image
+    stb_image_write
     stb_rect_pack
     stb_truetype
     tinyobjloader

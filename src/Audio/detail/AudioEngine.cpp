@@ -58,20 +58,8 @@ namespace DrkCraft
 
         switch (format)
         {
-            case AudioFileFormat::Mp3:
-            {
-                if (const auto data = m_mp3Decoder.decode(filename); data)
-                    return make_ref<AudioSource>(*data);
-                else
-                    return {};
-            }
-            case AudioFileFormat::Ogg:
-            {
-                if (const auto data = OggDecoder::decode(filename); data)
-                    return make_ref<AudioSource>(*data);
-                else
-                    return {};
-            }
+            case AudioFileFormat::Mp3: return m_mp3Decoder.decode(filename);
+            case AudioFileFormat::Ogg: return OggDecoder::decode(filename);
             default:
                 DRK_ASSERT_DEBUG(false, "Unknown audio file format \"{}\"", filename.extension().string());
                 return {};

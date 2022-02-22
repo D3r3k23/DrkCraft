@@ -3,7 +3,6 @@
 
 #include "Core/Base.hpp"
 #include "Game/World/Chunk.hpp"
-#include "Game/World/WorldGenerator.hpp"
 
 #include <vector>
 
@@ -18,7 +17,6 @@ namespace DrkCraft
 
     private:
         std::vector<Chunk> m_chunks;
-        WorldGenerator generator;
     };
 }
 

@@ -6,8 +6,8 @@
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"
 #include "Core/Bind.hpp"
-#include "lib/smart_pointer.hpp"
-#include "lib/type.hpp"
+#include "Core/SmartPointer.hpp"
+#include "Core/Type.hpp"
 
 // Common macros
 #define DRK_EXPAND(x) x

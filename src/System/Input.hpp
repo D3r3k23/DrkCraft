@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM_SYSTEM_INPUT_HPP
-#define DRK_INPUT_HPP
+#ifndef DRK_SYSTEM_INPUT_HPP
+#define DRK_SYSTEM_INPUT_HPP
 
 #include "Core/Base.hpp"
 #include "System/KeyCodes.hpp"

@@ -5,7 +5,6 @@ target_sources(DrkCraft
     Json.cpp
     Math.cpp
     Noise.cpp
-    Obj.cpp
     PeriodicUpdate.cpp
     Random.cpp
     String.cpp

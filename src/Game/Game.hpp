@@ -3,8 +3,8 @@
 
 #include "Core/Base.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
-#include "System/AssetManager.hpp"
+#include "Core/Timestep.hpp"
+#include "System/AssetLibrary.hpp"
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 #include "Game/Systems/EntityRenderer.hpp"
@@ -12,15 +12,9 @@
 #include "Game/Systems/Physics.hpp"
 #include "Game/Systems/WorldRenderer.hpp"
 #include "Game/Player.hpp"
-#include "Game/Skybox.hpp"
+#include "Game/Sky.hpp"
 #include "Game/Layers/Hud.hpp"
 
-// Temp
-#include "Util/Random.hpp"
-#include "Graphics/detail/Util.hpp"
-#include "Graphics/Renderer/Renderer.hpp"
-#include "Graphics/Shader.hpp"
-#include "Graphics/detail/Buffer.hpp"
 #include "Audio/AudioSource.hpp"
 
 #include "lib/fs.hpp"
@@ -32,7 +26,7 @@ namespace DrkCraft
     public:
         static const AssetList& get_asset_list(void);
 
-        Game(World world, AssetManager& assets);
+        Game(World world, AssetLibrary& assets);
         ~Game(void);
 
         void render(void);
@@ -50,7 +44,7 @@ namespace DrkCraft
         void save(void);
 
     private:
-        AssetManager& m_assets;
+        AssetLibrary& m_assets;
 
         World m_world;
         EntityScene m_entityScene;
@@ -61,18 +55,12 @@ namespace DrkCraft
         PhysicsSystem m_physicsSystem;
 
         PlayerController m_playerController;
-        Skybox m_skybox;
+        Skybox m_sky;
 
         Ref<Hud> m_hud;
 
         bool m_running;
         bool m_paused;
-
-        // Temp
-        Ptr<VertexBuffer> vertexBuffer;
-        ShaderProgram flatColorShaderProgram;
-        vec3 color;
-        RandomFloatDist randomDist;
 
         Ref<AudioSource> song;
     };

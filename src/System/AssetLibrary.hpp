@@ -1,10 +1,12 @@
-#ifndef DRK_SYSTEM_ASSET_MANAGER_HPP
-#define DRK_SYSTEM_ASSET_MANAGER_HPP
+#ifndef DRK_SYSTEM_ASSET_LIBRARY_HPP
+#define DRK_SYSTEM_ASSET_LIBRARY_HPP
 
 #include "Core/Base.hpp"
 #include "Audio/AudioSource.hpp"
+#include "Graphics/Texture.hpp"
+#include "Graphics/Mesh.hpp"
+
 #include "System/Image.hpp"
-#include "System/Font.hpp"
 
 #include "lib/fs.hpp"
 
@@ -25,7 +27,7 @@ namespace DrkCraft
     fs::path icon_asset_path(const fs::path& filename);
     fs::path texture_asset_path(const fs::path& filename);
     fs::path font_asset_path(const fs::path& filename);
-    fs::path model_asset_path(const fs::path& filename);
+    fs::path mesh_asset_path(const fs::path& filename);
     fs::path shader_asset_path(const fs::path& filename);
 
     enum class AssetType
@@ -34,9 +36,9 @@ namespace DrkCraft
         Font,
         Icon,
         Image,
-        Model,
-        Song,
+        Mesh,
         Shader,
+        Song,
         Sound,
         Texture
     };
@@ -49,7 +51,10 @@ namespace DrkCraft
 
     using AssetList = std::vector<AssetInfo>;
 
-    class AssetManager
+    template <typename A>
+    using AssetContainer = std::unordered_map<std::string, A>;
+
+    class AssetLibrary
     {
     private:
         class AssetLoadQueue // Thread-safe
@@ -69,8 +74,8 @@ namespace DrkCraft
         };
 
     public:
-        AssetManager(void);
-        ~AssetManager(void);
+        AssetLibrary(void);
+        ~AssetLibrary(void);
 
     private:
         void load_worker(std::stop_token st);
@@ -82,51 +87,60 @@ namespace DrkCraft
         void load(const AssetInfo& asset);
         void load_list(const AssetList& assets);
 
-        bool texture_loaded(const fs::path& filename) const;
-        Ref<Texture> get_texture(const fs::path& filename) const;
-
-        bool sound_loaded(const fs::path& filename) const;
-        bool song_loaded(const fs::path& filename) const;
-        Ref<AudioSource> get_sound(const fs::path& filename) const;
-        Ref<AudioSource> get_song(const fs::path& filename) const;
+        void load_impl(const AssetInfo& asset);
 
         void unload(const AssetInfo& asset);
         void unload_list(const AssetList& assets);
+
+        bool texture_loaded(const fs::path& filename) const;
+        Ref<Texture> get_texture(const fs::path& filename) const;
+
+        bool song_loaded(const fs::path& filename) const;
+        bool sound_loaded(const fs::path& filename) const;
+        Ref<AudioSource> get_song(const fs::path& filename) const;
+        Ref<AudioSource> get_sound(const fs::path& filename) const;
+
+        bool mesh_loaded(const fs::path& filename) const;
+        Ref<Mesh> get_mesh(const fs::path& filename) const;
 
         bool loading(void) const;
         std::optional<std::string> currently_loading(void) const;
 
     private:
-        void load_impl(const AssetInfo& asset);
-
         void load_texture(const fs::path& filename);
-
-        void load_sound(const fs::path& filename);
-        void load_song(const fs::path& filename);
+        void load_audio_source(const fs::path& filename);
+        void load_mesh(const fs::path& filename);
+        void unload_texture(const fs::path& filename);
+        void unload_audio_source(const fs::path& filename);
+        void unload_mesh(const fs::path& filename);
 
     private:
         AssetLoadQueue m_loadQueue;
         std::jthread m_loadThread;
-        std::atomic<bool> m_loading;
-        std::atomic<std::string> m_recentlyLoadedAsset;
 
-        std::unordered_map<std::string, Ref<Image>> m_textures;
-        std::unordered_map<std::string, Ref<AudioSource>> m_audioSources;
+        std::atomic<bool> m_loading;
+        std::string m_recentlyLoadedAsset;
+        std::mutex m_recentlyLoadedAssetMutex;
+
+        AssetContainer<Ref<Image>> m_textures;
+        AssetContainer<Ref<AudioSource>> m_audioSources;
+        AssetContainer<Ref<Mesh>> m_meshes;
 
         std::mutex m_texturesMutex;
         std::mutex m_audioSourcesMutex;
+        std::mutex m_meshesMutex;
     };
 
     class AssetLoader
     {
     public:
-        AssetLoader(AssetManager& assetManager, const AssetList& assets);
+        AssetLoader(AssetLibrary& library, const AssetList& assets);
         ~AssetLoader(void);
 
     private:
-        AssetManager& m_assetManager;
+        AssetLibrary& m_library;
         AssetList m_assets;
     };
 }
 
-#endif // DRK_SYSTEM_ASSET_MANAGER_HPP
+#endif // DRK_SYSTEM_ASSET_LIBRARY_HPP

@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 #include "Game/Entity/Entity.hpp"
 #include "Game/Entity/EntityScene.hpp"
 #include "Graphics/Camera.hpp"
@@ -35,8 +35,6 @@ namespace DrkCraft
         bool on_mouse_button_pressed(const MouseButtonPressedEvent& event);
         bool on_key_pressed(const KeyPressedEvent& event);
         bool on_mouse_or_key_pressed(const InputEvent& event);
-
-        void jump(void);
 
         vec3 get_position(void) const;
 

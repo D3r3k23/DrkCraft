@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 
 #include <functional>
 #include <concepts>

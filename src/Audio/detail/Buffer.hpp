@@ -10,7 +10,7 @@ namespace DrkCraft
     class AlBuffer : public AlObject
     {
     public:
-        AlBuffer(AudioSourceFormat format, void* data, uint size, uint sampleRate);
+        AlBuffer(AudioSourceFormat format, const void* data, uint size, uint sampleRate);
         virtual ~AlBuffer(void);
 
     private:

@@ -14,7 +14,7 @@ namespace DrkCraft
         virtual ~VertexArray(void);
 
         virtual void bind(void) const override;
-        virtual void bind(void) const override;
+        virtual void unbind(void) const override;
 
         void set_vertex_buffer(const Ref<VertexBuffer> buffer);
         void set_index_buffer(const Ref<IndexBuffer> buffer);

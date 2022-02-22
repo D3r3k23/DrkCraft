@@ -17,9 +17,8 @@ namespace DrkCraft
     {
         friend class Audio;
 
-    private:
-        AudioEngine(void);
     public:
+        AudioEngine(void);
         ~AudioEngine(void);
 
     private:

@@ -19,7 +19,7 @@ namespace DrkCraft
     //       Static       //
     ////////////////////////
 
-    Ptr<Application> Application::s_instance = nullptr;
+    std::optional<Application> Application::s_instance;
 
     void Application::init(std::string_view title)
     {
@@ -28,7 +28,7 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Initializing GLFW");
         init_glfw();
 
-        s_instance = make_ptr<Application>(title);
+        s_instance.emplace(title);
 
         const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time()).count();
         DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime);
@@ -104,14 +104,14 @@ namespace DrkCraft
         return get_instance().m_monitorManager;
     }
 
-    AssetManager& Application::get_assets(void)
+    AssetLibrary& Application::get_asset_library(void)
     {
-        return get_instance().m_assetManager;
+        return get_instance().m_assetLibrary;
     }
 
-    ImGuiManager& Application::get_imgui(void)
+    ImGuiController& Application::get_imgui(void)
     {
-        return *(get_instance().m_imGuiManager);
+        return *(get_instance().m_imGuiController);
     }
 
     OpenGlContext& Application::get_gl_context(void)
@@ -159,7 +159,7 @@ namespace DrkCraft
             Renderer::init(m_context, m_window.get_framebuffer_size());
 
             DRK_LOG_CORE_TRACE("Initializing ImGui");
-            m_imGuiManager.emplace(m_window);
+            m_imGuiController.emplace(m_window);
 
             m_window.set_vsync(settings.video.vsync);
 
@@ -184,7 +184,7 @@ namespace DrkCraft
         m_frameLayerStack.clear();
         m_layerStack.clear();
 
-        m_assetManager.unload_all();
+        m_assetLibrary.unload_all();
 
         DRK_LOG_CORE_TRACE("Saving Settings");
         RuntimeSettings::save();
@@ -192,7 +192,7 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
 
-        m_imGuiManager.reset();
+        m_imGuiController.reset();
 
         DRK_LOG_CORE_TRACE("Shutting down Audio system");
         Audio::shutdown();
@@ -203,10 +203,12 @@ namespace DrkCraft
         DRK_PROFILE_EVENT("New frame");
         DRK_PROFILE_FUNCTION();
 
+        TimestepGenerator timestepGen;
+
         m_running = true;
         while (m_running)
         {
-            Timestep timestep;
+            Timestep timestep = timestepGen.get_timestep();
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
                 DRK_PROFILE_SCOPE("Application core loop");
@@ -248,13 +250,13 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiManager->begin_frame();
+        m_imGuiController->begin_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
-        m_imGuiManager->end_frame();
+        m_imGuiController->end_frame();
         Renderer::end_frame();
     }
 
@@ -280,7 +282,7 @@ namespace DrkCraft
         // We could redraw the screen on resize/move
 
         if (event == EventCategory::Input)
-            m_imGuiManager->on_event(event_cast<InputEvent>(event));
+            m_imGuiController->on_event(event_cast<InputEvent>(event));
 
         for (auto& layer : m_layerStackForwardView)
             layer->on_event(event);
@@ -290,13 +292,16 @@ namespace DrkCraft
     {
         switch (event.key)
         {
-        #if defined(DRK_CONFIG_DEBUG)
             case KeyCode::F7:
             {
-                m_imGuiManager->toggle_demo_window();
-                return true;
+                if constexpr (DRK_CONFIG_DEBUG)
+                {
+                    m_imGuiController->toggle_demo_window();
+                    return true;
+                }
+                else
+                    return false;
             }
-        #endif
             default:
                 return false;
         }
@@ -322,7 +327,7 @@ namespace DrkCraft
 
     bool Application::on_monitor_disconnected(const MonitorDisconnectedEvent& event)
     {
-        RuntimeSettings::settings().video.fullscreen_monitor = 0;
+        RuntimeSettings::settings().video.fs_monitor = 0;
 
         if (is_fullscreen())
             set_fullscreen(0);
@@ -334,8 +339,8 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_assetManager.load_list(MainMenu::get_asset_list());
-        m_assetManager.load_list(Game::get_asset_list());
+        m_assetLibrary.load_list(MainMenu::get_asset_list());
+        m_assetLibrary.load_list(Game::get_asset_list());
     }
 
     void Application::set_fullscreen(int monitor)

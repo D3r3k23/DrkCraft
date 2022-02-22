@@ -37,20 +37,15 @@ namespace DrkCraft
     class TextureAtlas
     {
     public:
-        TextureAtlas(Ref<Texture> atlasTexture);
+        TextureAtlas(Ref<Texture> atlasTexture, uint numTextures);
 
         Ref<Texture> get_texture(void) const;
 
+        uvec2 get_coordinates(uint index, const ivec2& subtextureCoordinates);
+
     private:
         Ref<Texture> m_texture;
-    };
-
-    class SubTexture
-    {
-    public:
-        SubTexture(Ref<TextureAtlas> atlas, const uvec2& tile);
-
-        uvec2 get_coordinates(uint s, uint t);
+        const uint numTextures;
     };
 
     class TextureManager
@@ -62,9 +57,8 @@ namespace DrkCraft
 
         void refresh(void);
 
-        void emplace(uint slot, Ref<Texture> texture);
-
-        void push(Ref<Texture> texture);
+        void attach(Ref<Texture> texture, uint slot);
+        void attach(Ref<Texture> texture);
 
         uint count(void) const;
         bool full(void) const;

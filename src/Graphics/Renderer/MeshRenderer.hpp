@@ -22,6 +22,8 @@ namespace DrkCraft
         static void end_scene(void);
 
         static void submit(const Mesh& mesh, const Transform& transform);
+
+        static const MeshRendererStats& get_stats(void);
     };
 }
 

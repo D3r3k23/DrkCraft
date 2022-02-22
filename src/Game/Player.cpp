@@ -11,7 +11,7 @@
 
 namespace DrkCraft
 {
-    static constexpr float BASE_SPEED = 1.0f;
+    static constexpr float PLAYER_BASE_SPEED = 1.0f;
     static constexpr float SPRINT_SPEED_MULT = 1.5f;
     static constexpr float CROUCH_SPEED_MULT = 0.5f;
     static constexpr float FLYING_SPEED_MULT = 2.0f;
@@ -98,8 +98,8 @@ namespace DrkCraft
             case Flying    : speed *= FLYING_SPEED_MULT; break;
         }
 
-        const vec3 horizontalForwardDirection = glm::normalize({m_direction.x, m_direction.y, 0.0});
-        const vec3 horizontalRightDirection   = glm::normalize(glm::cross(horizontalForwardDirection, {0.0f, 1.0f, 0.0f});
+        const vec3 horizontalForwardDirection = glm::normalize(vec3{m_direction.x, m_direction.y, 0.0});
+        const vec3 horizontalRightDirection   = glm::normalize(glm::cross(horizontalForwardDirection, {0.0f, 1.0f, 0.0f}));
 
         vec3 d_position{0.0f};
         if (is_pressed(keybinds.player_movement.forward)) d_position += speed * timestep * horizontalForwardDirection;
@@ -109,8 +109,8 @@ namespace DrkCraft
 
         if (is_flying())
         {
-            if (is_pressed(keybinds.player_movement.jump))   d_position.y += FLYING_SPEED_VERT * delta;
-            if (is_pressed(keybinds.player_movement.crouch)) d_position.y -= FLYING_SPEED_VERT * delta;
+            if (is_pressed(keybinds.player_movement.jump))   d_position.y += FLYING_SPEED_VERT * timestep;
+            if (is_pressed(keybinds.player_movement.crouch)) d_position.y -= FLYING_SPEED_VERT * timestep;
         }
 
         m_position += d_position;
@@ -198,6 +198,12 @@ namespace DrkCraft
             return false;
     }
 
+    vec3 PlayerController::get_position(void) const
+    {
+        return m_position;
+    }
+
+
     bool PlayerController::is_flying(void) const
     {
         return m_state == PlayerState::Flying;
@@ -219,11 +225,6 @@ namespace DrkCraft
             m_state = PlayerState::Normal;
 
 
-    }
-
-    vec3 PlayerController::get_position(void) const
-    {
-        return m_position;
     }
 
     void PlayerController::toggle_flying(void)

@@ -19,9 +19,9 @@ namespace DrkCraft
     struct RendererStats
     {
         uint drawCalls = 0;
-        uint vertices  = 0; // ?
         uint indices   = 0;
-        uint textures  = 0;
+        uint lines     = 0;
+        uint triangles = 0;
     };
 
     struct LightSource // Somewhere else
@@ -56,17 +56,13 @@ namespace DrkCraft
 
         static const RendererStats& get_stats(void);
 
-    private:
-        static void reset_stats(void);
-        static void clear(void);
-
     public:
         class Passkey
         {
         private:
             Passkey(void) = default;
             friend class Renderer;
-            friend class CubeRenderer;
+            friend class BlockRenderer;
             friend class MeshRenderer;
             friend class TextRenderer;
         };
@@ -77,8 +73,13 @@ namespace DrkCraft
         static void attach_texture(Passkey, const Texture& texture);
         static void detach_texture(Passkey, const Texture& texture);
 
-        static void draw_indexed(Passkey, const VertexArray& vao);
-        static void draw_triangles(Passkey, const IndexBuffer& indexBuffer, std::optional<uint> count=std::nullopt);
+        static void draw_indexed(Passkey, const VertexArray& vao, std::optional<uint> count=std::nullopt);
+
+    private:
+        static void reset_stats(void);
+        static void clear(void);
+
+        static void update_stats_on_draw_call(PrimitiveType primitive, uint indices);
     };
 }
 

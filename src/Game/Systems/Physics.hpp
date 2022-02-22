@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Game/GameSystem.hpp"
-#include "Application/Timestep.hpp"
+#include "Core/Timestep.hpp"
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 

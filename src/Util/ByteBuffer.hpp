@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 
+#include <span>
 #include <algorithm>
 
 namespace DrkCraft
