@@ -3,12 +3,12 @@ from ruamel.yaml import YAML
 yaml = YAML(typ='safe')
 
 from typing import *
-from dataclasses import dataclass
 import argparse
+import dataclasses
 import os.path
 import math
 
-@dataclass
+@dataclasses.dataclass
 class Vec2:
     x: int = 0
     y: int = 0
@@ -30,19 +30,19 @@ ATLAS_MAX_WIDTH    = 16
 NUM_TEXTURES_PER_BLOCK = 3
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('blocks_yaml', type=str, default=os.path.join('data', 'blocks.yaml'))
-    parser.add_argument('texture_dir', type=str, default=os.path.join('assets', 'images', 'textures'))
-    parser.add_argument('atlas',       type=str, default='blockatlas.png')
+    parser = argparse.ArgumentParser(description='Generates textures atlas image for all blocks')
+    parser.add_argument('atlas', nargs='?', type=str, default=os.path.join('assets', 'images', 'textures', 'block_atlas.png'), description='Output texture .png file')
+    parser.add_argument('--blocks',       type=str,  default=os.path.join('data', 'blocks.yaml'),                          description='blocks.yaml file')
+    parser.add_argument('--textures',   type=str,   default=os.path.join('assets', 'images', 'textures', 'blocks'),    description='Block textures directory')
     args = parser.parse_args()
 
-    gen_block_texture_atlas(args.blocks_yaml, args.texture_dir, args.atlas)
+    gen_block_texture_atlas(args.blocks, args.textures, args.atlas)
 
 def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: str):
     print(f'Loading "{blocks_yaml_fn}"')
     blocks = load_yaml(blocks_yaml_fn)
     if blocks is None:
-        print(f'Error: Could not open blocks YAML "{blocks_yaml_fn}"')
+        print(f'Error: Could not open blocks YAML: "{blocks_yaml_fn}"')
         return
 
     print('Loading textures')
@@ -103,7 +103,7 @@ def find_texture_atlas_size(textures: List[Texture]) -> Vec2:
     count = len(textures)
     return Vec2(max(count, ATLAS_MAX_WIDTH), int(math.ceil(count / ATLAS_MAX_WIDTH)))
 
-def load_yaml(filename: str) -> Optional[yaml]:
+def load_yaml(filename: str) -> Optional[Mapping]:
     try:
         with open(filename, 'r') as f:
             return yaml.load(f)

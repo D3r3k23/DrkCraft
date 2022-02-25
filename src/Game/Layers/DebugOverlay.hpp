@@ -34,11 +34,8 @@ namespace DrkCraft
     class DebugOverlay : public Layer
     {
     public:
-        DebugOverlay(bool activate=false);
-
+        DebugOverlay(const Game& game, bool activate=false);
         virtual ~DebugOverlay(void);
-
-        void attach_game(Ref<Game> game);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -51,10 +48,10 @@ namespace DrkCraft
         void update_renderer_stats(void);
 
     private:
+        const Game& m_game;
         const AssetLibrary& m_assetLibrary;
         const ImGuiController& m_imGuiController;
         const OpenGlContext& m_glContext;
-        Ref<Game> m_game;
 
         FpsCounter m_currentFps;
         FpsCounter m_avgFps;

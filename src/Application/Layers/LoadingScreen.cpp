@@ -62,4 +62,9 @@ namespace DrkCraft
     {
 
     }
+
+    void LoadingScreen::set_message(std::string_view msg)
+    {
+        m_msg = msg;
+    }
 }

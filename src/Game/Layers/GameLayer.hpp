@@ -13,7 +13,7 @@
 
 #include "lib/fs.hpp"
 
-#include <functional>
+#include <optional>
 #include <thread>
 #include <atomic>
 
@@ -21,18 +21,14 @@ namespace DrkCraft
 {
     class GameLayer : public Layer
     {
-        using GameStartCallbackFn = std::function<void(void)>;
-
     private:
-        GameLayer(void);
+        GameLayer(Ref<LoadingScreen> loadingScreen);
 
     public:
-        GameLayer(const fs::path& saveDir);
-        GameLayer(const WorldGeneratorSpec& worldGeneratorSpec);
+        GameLayer(Ref<LoadingScreen> loadingScreen, const fs::path& saveDir);
+        GameLayer(Ref<LoadingScreen> loadingScreen, const WorldGeneratorSpec& worldGeneratorSpec);
 
         virtual ~GameLayer(void);
-
-        void set_game_start_callback_fn(const GameStartCallbackFn& fn);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -58,17 +54,14 @@ namespace DrkCraft
         void toggle_debug_overlay(void);
 
     private:
-        Ref<Game> m_game;
+        std::optional<Game> m_game;
 
         Ref<LoadingScreen> m_loadingScreen;
-
         Ref<DebugOverlay> m_debugOverlay;
 
         std::jthread m_gameLoadThread;
         Ptr<World> m_loadedWorld;
         std::atomic<bool> m_worldLoaded;
-
-        GameStartCallbackFn m_onGameStart;
 
         bool m_startPaused;
     };

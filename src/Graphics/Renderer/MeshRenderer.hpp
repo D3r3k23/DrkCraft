@@ -9,7 +9,7 @@ namespace DrkCraft
 {
     struct MeshRendererStats
     {
-
+        uint meshes = 0;
     };
 
     class MeshRenderer

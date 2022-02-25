@@ -17,6 +17,9 @@ namespace DrkCraft
     {
         struct InputCodeNameVisitor
         {
+            std::string_view operator()(std::monostate)
+                { return ""; }
+
             std::string_view operator()(KeyCode key)
                 { return key_code_name(key); }
 
@@ -63,6 +66,9 @@ namespace DrkCraft
     {
         struct IsInputPressedVisitor
         {
+            bool operator()(std::monostate)
+                { return false; }
+
             bool operator()(KeyCode key)
                 { return is_key_pressed(key); }
 

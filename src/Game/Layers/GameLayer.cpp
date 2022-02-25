@@ -9,24 +9,30 @@
 
 namespace DrkCraft
 {
-    GameLayer::GameLayer(void)
+    GameLayer::GameLayer(Ref<LoadingScreen> loadingScreen)
       : Layer("GameLayer", true),
-        m_loadingScreen(Layer::create<LoadingScreen>("Loading Game")),
-        m_debugOverlay(Layer::create<DebugOverlay>()),
+        m_loadingScreen(loadingScreen),
         m_worldLoaded(false),
         m_startPaused(false)
     {
-        Application::add_overlay(m_loadingScreen);
+        if (loadingScreen->is_layer_detached())
+        {
+            Application::add_layer(loadingScreen);
+            if (!loadingScreen->is_layer_active())
+                loadingScreen->activate_layer();
+        }
+        loadingScreen->set_message("Loading Game");
     }
 
-    GameLayer::GameLayer(const fs::path& saveDir)
-      : GameLayer()
+    GameLayer::GameLayer(Ref<LoadingScreen> loadingScreen, const fs::path& saveDir)
+      : GameLayer(loadingScreen)
     {
         DRK_PROFILE_FUNCTION();
 
         DRK_ASSERT_CORE(is_dir(saveDir), "Path \"{}\" is not a directory", saveDir.generic_string());
         DRK_LOG_GAME_INFO("Loading saved game from directory: {}", saveDir.generic_string());
 
+        loadingScreen->set_message("Loading Save");
         auto saveLoader = make_ptr<SavedGameLoader>(saveDir);
 
         DRK_PROFILE_THREAD_CREATE("saved_game_load");
@@ -38,12 +44,14 @@ namespace DrkCraft
         });
     }
 
-    GameLayer::GameLayer(const WorldGeneratorSpec& worldGeneratorSpec)
-      : GameLayer()
+    GameLayer::GameLayer(Ref<LoadingScreen> loadingScreen, const WorldGeneratorSpec& worldGeneratorSpec)
+      : GameLayer(loadingScreen)
     {
         DRK_PROFILE_FUNCTION();
+
         DRK_LOG_GAME_INFO("Generating world");
 
+        loadingScreen->set_message("Generating world");
         auto worldGenerator = make_ptr<WorldGenerator>(worldGeneratorSpec);
 
         DRK_PROFILE_THREAD_CREATE("world_generation");
@@ -64,14 +72,9 @@ namespace DrkCraft
 
     }
 
-    void GameLayer::set_game_start_callback_fn(const GameStartCallbackFn& fn)
-    {
-        m_onGameStart = fn;
-    }
-
     void GameLayer::on_attach(void)
     {
-        Application::add_overlay(m_debugOverlay);
+        Layer::create<DebugOverlay>()
     }
 
     void GameLayer::on_detach(void)
@@ -159,8 +162,8 @@ namespace DrkCraft
 
         m_loadingScreen->detach_layer();
 
-        m_game = make_ref<Game>(std::move(m_loadedWorld), Application::get_asset_library());
-        m_debugOverlay->attach_game(m_game);
+        m_game.emplace(Application::get_asset_library());
+        m_debugOverlay = Layer::create<DebugOverlay>(m_game);
 
         if (m_startPaused)
             pause_game();

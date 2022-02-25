@@ -28,9 +28,9 @@ namespace DrkCraft
         return s_REQUIRED_ASSETS;
     }
 
-    Game::Game(World world, AssetLibrary& assets)
+    Game::Game(AssetLibrary& assets)
       : m_assets(assets),
-        m_world(world),
+        m_world(),
         m_worldRenderer(m_world, m_entityScene),
         m_entityRenderer(m_world, m_entityScene),
         m_lightingSystem(m_world, m_entityScene),
@@ -38,7 +38,8 @@ namespace DrkCraft
         m_playerController(create_player(m_entityScene)),
         m_hud(Layer::create<Hud>(true)),
         m_running(true),
-        m_paused(false)
+        m_paused(false),
+        m_gameTimeSeconds(0.0f)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_GAME_INFO("Starting game");
@@ -78,7 +79,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        m_sky.update(timestep);
+        update_game_time(timestep);
+
+        m_sky.update(m_gameTime);
         m_playerController.update(timestep);
 
         m_worldRenderer.update(timestep);
@@ -159,5 +162,15 @@ namespace DrkCraft
     void Game::save(void)
     {
         DRK_LOG_GAME_INFO("Saving Game");
+    }
+
+    void Game::update_game_time(Timestep timestep)
+    {
+        m_gameTimeSeconds += timestep * 1000;
+        if (m_gameTimeSeconds > 3600) // 1 hour
+        {
+            m_gameTime++;
+            m_gameTimeSeconds = 0.0f;
+        }
     }
 }

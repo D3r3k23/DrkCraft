@@ -102,7 +102,7 @@
     // Should have a lifetime of the entire thread
     #define DRK_PROFILE_THREAD(name) \
         DRK_PROFILE_FLOW_END("thread", DRK_CONCAT(name, "_thread_flow")); \
-        DRK_PROFILE_SCOPE(DRK_CONCAT(name, "_thread"))
+        ProfileTimer thread_profile_timer{name, "thread"}
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)

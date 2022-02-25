@@ -40,8 +40,9 @@ namespace DrkCraft
     //       DebugOverlay       //
     //////////////////////////////
 
-    DebugOverlay::DebugOverlay(bool activate)
+    DebugOverlay::DebugOverlay(const Game& game, bool activate)
       : Layer("DebugOverlayLayer", activate),
+        m_game(game),
         m_assetLibrary(Application::get_asset_library()),
         m_imGuiController(Application::get_imgui()),
         m_glContext(Application::get_gl_context()),
@@ -54,11 +55,6 @@ namespace DrkCraft
     DebugOverlay::~DebugOverlay(void)
     {
 
-    }
-
-    void DebugOverlay::attach_game(Ref<Game> game)
-    {
-        m_game = std::move(game);
     }
 
     void DebugOverlay::on_attach(void)
@@ -128,14 +124,20 @@ namespace DrkCraft
             ImGui::Text("Renderer:");
             ImGui::BeginGroup();
             ImGui::Text("Draw calls: %u", m_rendererStats.drawCalls);
-            ImGui::Text("Indices:   %u", m_rendererStats.indices);
-            ImGui::Text("Textures: %u", m_rendererStats.textures);
+            ImGui::Text("Indices: %u",   m_rendererStats.indices);
+            ImGui::Text("Lines: %u",    m_rendererStats.lines);
+            ImGui::Text("Triangles: %u", m_rendererStats.triangles);
             ImGui::EndGroup();
 
             ImGui::Text("BlockRenderer:");
             ImGui::BeginGroup();
             ImGui::Text("Blocks: %u", m_blockRendererStats.blocks);
             ImGui::Text("Block faces: %u", m_blockRendererStats.blockFaces);
+            ImGui::EndGroup();
+
+            ImGui::Text("MeshRenderer:");
+            ImGui::BeginGroup();
+            ImGui::Text("Meshes: %u", m_meshRendererStats.meshes);
             ImGui::EndGroup();
 
             ImGui::Text("ImGui:");

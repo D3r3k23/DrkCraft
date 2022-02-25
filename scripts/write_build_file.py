@@ -7,10 +7,10 @@ def on_off_to_bool(string: str):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename')
-    parser.add_argument('version')
-    parser.add_argument('platform')
-    parser.add_argument('build_config')
+    parser.add_argument('filename',  type=str)
+    parser.add_argument('version',    type=str)
+    parser.add_argument('platform',    type=str)
+    parser.add_argument('build_config', type=str)
     parser.add_argument('en_profile',   type=on_off_to_bool)
     parser.add_argument('en_dev_mode',  type=on_off_to_bool)
     parser.add_argument('en_trace_log', type=on_off_to_bool)

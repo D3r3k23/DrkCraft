@@ -17,7 +17,7 @@ namespace DrkCraft
     class LoadingScreen : public Layer
     {
     public:
-        LoadingScreen(std::string_view msg, bool activate=true);
+        LoadingScreen(std::string_view msg="Loading", bool activate=true);
         virtual ~LoadingScreen(void);
 
         virtual void on_attach(void) override;
@@ -26,6 +26,8 @@ namespace DrkCraft
         virtual void on_render(void) override;
         virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
+
+        void set_message(std::string_view msg);
 
     private:
         IntervalTimer m_updateTimer;

@@ -16,7 +16,7 @@ namespace DrkCraft
     using int64 = std::int64_t;
 
     using uint = unsigned int;
-    using Byte  = uint8;
+    using Byte = uint8;
 }
 
 #endif // DRK_CORE_TYPE_HPP

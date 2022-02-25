@@ -2,9 +2,9 @@ import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename')
-    parser.add_argument('DrkCraft_license')
-    parser.add_argument('lib_license')
+    parser.add_argument('filename', type=str)
+    parser.add_argument('DrkCraft_license', type=str)
+    parser.add_argument('lib_license', type=str)
     args = parser.parse_args()
 
     with open(args.DrkCraft_license, 'r') as f:

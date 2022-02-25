@@ -7,6 +7,8 @@
 
 #if DRK_ASSERTS_ENABLED
 
+    #include "Core/Type.hpp"
+
     #include <fmt/format.h>
 
     #include <string_view>

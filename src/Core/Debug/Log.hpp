@@ -7,6 +7,7 @@
 
 #if DRK_LOGGING_ENABLED
 
+    #include "Core/Type.hpp"
     #include "Core/SmartPointer.hpp"
 
     #include <spdlog/logger.h>

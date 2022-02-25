@@ -4,7 +4,7 @@
 
 Minecraft-based game in C++ created using an OpenGL renderer
 
-* Minecraft<sup>2</sup>
+* Minecraft<sup>2</sup>??
 
 ### Videos
 [Youtube](https://www.youtube.com/playlist?list=PLD41ILT9lDJa0fnwzflIxxq_wivyyBtYb)

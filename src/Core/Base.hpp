@@ -2,12 +2,12 @@
 #define DRK_CORE_BASE_HPP
 
 // Universal includes
+#include "Core/Type.hpp"
 #include "Core/Build.hpp"
-#include "Core/Debug/Log.hpp"
-#include "Core/Debug/Assert.hpp"
 #include "Core/Bind.hpp"
 #include "Core/SmartPointer.hpp"
-#include "Core/Type.hpp"
+#include "Core/Debug/Log.hpp"
+#include "Core/Debug/Assert.hpp"
 
 // Common macros
 #define DRK_EXPAND(x) x

@@ -5,9 +5,9 @@ import os
 import re
 
 def main():
-    parser = argparse.ArgumentParser
-    parser.add_argument('log_dir', type=str, default=os.path.join('data', 'logs'))
-    parser.add_argument('max_age', type=int, default=3)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('log_dir', type=str, nargs='?', default=os.path.join('data', 'logs'))
+    parser.add_argument('--max_age', type=int, default=3)
     args = parser.parse_args()
 
     clean_logs(args.log_dir, args.max_age)

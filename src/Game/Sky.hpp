@@ -12,7 +12,6 @@ namespace DrkCraft
         Skybox(void);
 
         void render(void);
-        void update(Timestep timestep);
     };
 
     class Sun
@@ -31,12 +30,14 @@ namespace DrkCraft
         Sky(void);
 
         void render(void);
-        void update(Timestep timestep);
+        void update(uint gameTime);
 
     private:
         Skybox m_skybox;
-        Sun m_sun;
-        Moon m_moon;
+        // Sun m_sun;
+        // Moon m_moon;
+
+        uint m_gameTime;
     };
 }
 

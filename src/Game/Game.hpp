@@ -11,6 +11,7 @@
 #include "Game/Systems/Lighting.hpp"
 #include "Game/Systems/Physics.hpp"
 #include "Game/Systems/WorldRenderer.hpp"
+#include "Game/World/WorldLoader.hpp"
 #include "Game/Player.hpp"
 #include "Game/Sky.hpp"
 #include "Game/Layers/Hud.hpp"
@@ -26,7 +27,7 @@ namespace DrkCraft
     public:
         static const AssetList& get_asset_list(void);
 
-        Game(World world, AssetLibrary& assets);
+        Game(AssetLibrary& assets);
         ~Game(void);
 
         void render(void);
@@ -44,6 +45,9 @@ namespace DrkCraft
         void save(void);
 
     private:
+        void update_game_time(Timestep timestep);
+
+    private:
         AssetLibrary& m_assets;
 
         World m_world;
@@ -55,12 +59,15 @@ namespace DrkCraft
         PhysicsSystem m_physicsSystem;
 
         PlayerController m_playerController;
-        Skybox m_sky;
+        Sky m_sky;
 
         Ref<Hud> m_hud;
 
         bool m_running;
         bool m_paused;
+
+        float m_gameTimeSeconds;
+        uint m_gameTime;
 
         Ref<AudioSource> song;
     };

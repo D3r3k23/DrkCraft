@@ -7,7 +7,7 @@
 #include "lib/fs.hpp"
 
 #include <vector>
-#include <string_view>
+#include <string>
 
 namespace DrkCraft
 {
@@ -15,7 +15,7 @@ namespace DrkCraft
     {
     public:
         static std::vector<fs::path> get_saves(const fs::path& savesDir);
-        static ResultStatus rename_save(const fs::path& savesDir, std::string_view oldName, std::string_view newName);
+        static ResultStatus rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName);
         static ResultStatus delete_save(const fs::path& save);
 
         SavedGameLoader(const fs::path& dir);

@@ -26,7 +26,7 @@ namespace DrkCraft
         return saves;
     }
 
-    ResultStatus SavedGameLoader::rename_save(const fs::path& savesDir, std::string_view oldName, std::string_view newName)
+    ResultStatus SavedGameLoader::rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName)
     {
         const fs::path oldSaveJson = savesDir / oldName / "save.json";
 

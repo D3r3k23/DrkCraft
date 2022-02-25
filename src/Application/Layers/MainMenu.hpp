@@ -14,7 +14,7 @@
 #include "lib/fs.hpp"
 
 #include <vector>
-#include <optional>
+#include <variant>
 
 namespace DrkCraft
 {
@@ -40,11 +40,8 @@ namespace DrkCraft
         void show_saved_games_table(void);
         void show_create_world_menu(void);
 
-        void maybe_start_game(const fs::path& save);
-        void maybe_start_game(const WorldGeneratorSpec& worldGeneratorSpec);
-
+        void attempt_to_start_game(void);
         void start_game(void);
-        void wait_for_assets_to_load(void);
 
         void open_settings(void);
         void exit(void);
@@ -55,8 +52,7 @@ namespace DrkCraft
 
         std::vector<fs::path> m_saves;
 
-        std::optional<fs::path> m_selectedSavedGame;
-        std::optional<WorldGeneratorSpec> m_worldGeneratorSpec;
+        std::variant<std::monostate, fs::path, WorldGeneratorSpec> m_gameLoadSource;
 
         bool m_show;
     };

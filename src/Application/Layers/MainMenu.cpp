@@ -6,6 +6,7 @@
 #include "Core/Settings.hpp"
 #include "Game/SavedGameLoader.hpp"
 #include "Game/Layers/GameLayer.hpp"
+#include "Util/Overloaded.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -29,6 +30,7 @@ namespace DrkCraft
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer", true),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
+        m_loadingScreen(Layer::create<LoadingScreen>("Loading Assets")),
         m_saves(SavedGameLoader::get_saves(RuntimeSettings::get_config().saves_directory)),
         m_show(true)
     {
@@ -132,11 +134,7 @@ namespace DrkCraft
     {
         // Animate background
 
-        if (!Application::get_asset_library().loading())
-        {
-            if (m_loadingScreen)
-                m_loadingScreen->detach_layer();
-        }
+        attempt_to_start_game();
     }
 
     void MainMenu::on_event(Event& event)
@@ -177,7 +175,7 @@ namespace DrkCraft
                     ImGui::TableNextColumn();
                     if (ImGui::SmallButton("Start"))
                     {
-                        maybe_start_game(save);
+                        m_gameLoadSource = save;
                     }
 
                     ImGui::TableNextColumn();
@@ -222,27 +220,25 @@ namespace DrkCraft
 
     void MainMenu::show_create_world_menu(void)
     {
-        WorldGeneratorSpec worldSpec;
+        WorldGeneratorSpec worldGeneratorSpec;
 
-        maybe_start_game(worldSpec);
+        m_gameLoadSource = worldGeneratorSpec;
     }
 
-    void MainMenu::maybe_start_game(const fs::path& save)
+    void MainMenu::attempt_to_start_game(void)
     {
-        m_selectedSavedGame = save;
-        if (!Application::get_asset_library().loading())
-            start_game();
-        else
-            wait_for_assets_to_load();
-    }
-
-    void MainMenu::maybe_start_game(const WorldGeneratorSpec& worldGeneratorSpec)
-    {
-        m_worldGeneratorSpec = worldGeneratorSpec;
-        if (!Application::get_asset_library().loading())
-            start_game();
-        else
-            wait_for_assets_to_load();
+        if (!std::holds_alternative<std::monostate>(m_gameLoadSource))
+        {
+            if (!Application::get_asset_library().loading())
+            {
+                start_game();
+            }
+            else if (!m_loadingScreen)
+            {
+                DRK_LOG_CORE_INFO("Game selected to load, waiting for assets to load");
+                Application::add_layer(m_loadingScreen);
+            }
+        }
     }
 
     void MainMenu::start_game(void)
@@ -250,31 +246,22 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
-        DRK_ASSERT_DEBUG(m_selectedSavedGame || m_worldGeneratorSpec, "Game has not been selected");
+        DRK_ASSERT_DEBUG(!std::holds_alternative<std::monostate>(m_gameLoadSource), "Game has not been selected");
 
-        hide_menu();
-        m_settingsMenu->deactivate_layer();
-
-        // Either load save from file or create new world
-        Ref<GameLayer> gameLayer;
-        if (m_selectedSavedGame)
+        std::visit(Overloaded
         {
-            gameLayer = Layer::create<GameLayer>(*m_selectedSavedGame);
-        }
-        else if (m_worldGeneratorSpec)
-        {
-            gameLayer = Layer::create<GameLayer>(*m_worldGeneratorSpec);
-        }
-        gameLayer->set_game_start_callback_fn(DRK_BIND_FN(detach_layer));
-        Application::add_layer(gameLayer);
+            [](std::monostate){ DRK_ASSERT_DEBUG_NO_MSG(false); },
+            [this](const fs::path& save)
+            {
+                Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), save));
+            },
+            [this](const WorldGeneratorSpec& worldGeneratorSpec)
+            {
+                Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), worldGeneratorSpec));
+            }
+        }, m_gameLoadSource);
 
-        deactivate_layer();
-    }
-
-    void MainMenu::wait_for_assets_to_load(void)
-    {
-        m_loadingScreen = Layer::create<LoadingScreen>("Loading Assets");
-        Application::add_layer(m_loadingScreen);
+        detach_layer();
     }
 
     void MainMenu::open_settings(void)
