@@ -6,9 +6,9 @@ set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 file(READ VERSION.txt VERSION_txt)
 string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
 
-###########################################
+#############################################
 project(DrkCraft VERSION ${DRK_VERSION})
-###########################################
+#############################################
 
 # Options
 option(DRK_EN_PROFILE "Enable profiling" OFF)
@@ -52,7 +52,8 @@ else()
     return()
 endif()
 
-#######################################################
+#### Configuration info dump ####
+
 message("=======================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
 message("- Platform: ${PLATFORM}")
@@ -74,16 +75,13 @@ endif()
 message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 message("- Compiler: ${CMAKE_CXX_COMPILER}")
 message("=======================================")
-#######################################################
 
 ##################################
 ##################################
-
 add_executable(DrkCraft)
 
 add_subdirectory(src)
 add_subdirectory(lib)
-
 ##################################
 ##################################
 
@@ -94,7 +92,7 @@ set_target_properties(DrkCraft
     CXX_STANDARD_REQUIRED ON
 )
 
-###### Compile definitions ######
+#### Compile definitions ####
 
 string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
 string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
@@ -134,6 +132,7 @@ endif()
 # Output directory
 set_target_properties(DrkCraft
   PROPERTIES
+    # Use generator expression for MSVC
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<1:${CMAKE_BUILD_TYPE}>"
 )
 

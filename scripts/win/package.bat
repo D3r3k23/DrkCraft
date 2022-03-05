@@ -39,23 +39,36 @@ mkdir %package_dir%\data\profile
 mkdir %package_dir%\data\saves
 xcopy data\blocks.yaml %package_dir%\data\
 
-echo Creating tools directory
-mkdir %package_dir%\tools
-xcopy scripts\clean_logs.py        %package_dir%\tools\
-xcopy scripts\gen_texture_atlas.py %package_dir%\tools\
+if "%dist%" != "ON" (
+    echo Creating tools directory
+    mkdir %package_dir%\tools
+    xcopy scripts\gen_texture_atlas.py %package_dir%\tools\
+    xcopy scripts\clean_logs.py        %package_dir%\tools\
+    xcopy scripts\profile.py           %package_dir%\tools\
+)
 
 echo Creating about directory
 mkdir %package_dir%\about
 
+echo Write README.txt
+python scripts\packaging\write_package_readme.py %package_dir%\about\README.txt ^
+    %version%
+
 echo Writing build.txt
-python scripts\write_build_file.py %package_dir%\about\build.txt ^
+python scripts\packaging\write_build_file.py %package_dir%\about\build.txt ^
     %version% Windows %build_config% %en_profile% %en_dev_mode% %en_trace_log% %dist%
 
 echo Writing LICENSE.txt
-python scripts\write_license_file.py %package_dir%\about\LICENSE.txt LICENSE.txt lib\LICENSE.txt
+python scripts\packaging\write_license_file.py %package_dir%\about\LICENSE.txt LICENSE.txt lib\LICENSE.txt
 
-echo Creating archive %package_zip%
+echo Creating doc directory
+xcopy /e doc %package_dir%\about\doc\
+
+echo Creating package archive %package_zip%
 if exist %package_zip% del /Q %package_zip%
 tar -a -c -f %package_zip% -C packages DrkCraft
 
 echo Package %package_name% built
+
+FOR %%A IN (%package_zip%) DO set size=%%~zA
+echo Package archive size: %size% bytes

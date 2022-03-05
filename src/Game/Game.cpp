@@ -95,7 +95,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         EventDispatcher ed(event);
-        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed)); // Temp
+        ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
 
         m_playerController.on_event(event);
     }
@@ -108,7 +108,7 @@ namespace DrkCraft
             {
                 if constexpr (DRK_CONFIG_DEBUG)
                 {
-                    // m_worldRenderer.show_wireframe();
+                    // m_worldRenderer.show_wireframe(); // or inside DebugOverlay
                     return true;
                 }
                 else

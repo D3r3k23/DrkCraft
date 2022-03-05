@@ -74,7 +74,7 @@ namespace DrkCraft
 
     void GameLayer::on_attach(void)
     {
-        Layer::create<DebugOverlay>()
+        Layer::create<DebugOverlay>();
     }
 
     void GameLayer::on_detach(void)

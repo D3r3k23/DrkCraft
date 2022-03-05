@@ -12,9 +12,9 @@
 namespace DrkCraft
 {
     // Usage:
-    //   DrkCraft.exe [--dev]
+    //   DrkCraft(.exe) [--dev]
     // Options:
-    //   --dev  Enabled Dev mode
+    //   --dev   Enable Dev mode
 
     class CommandLineOptions
     {
