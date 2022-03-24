@@ -160,6 +160,6 @@ namespace DrkCraft
 
     std::string_view Audio::get_device_name(void)
     {
-        get_audio_engine().get_device().get_name();
+        return get_audio_engine().get_device().get_name();
     }
 }

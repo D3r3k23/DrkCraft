@@ -1,7 +1,6 @@
 #ifndef DRK_CORE_BASE_HPP
 #define DRK_CORE_BASE_HPP
 
-// Universal includes
 #include "Core/Type.hpp"
 #include "Core/Build.hpp"
 #include "Core/Bind.hpp"
@@ -9,7 +8,6 @@
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"
 
-// Common macros
 #define DRK_EXPAND(x) x
 #define DRK_STRINGIFY(x) #x
 #define DRK_CONCAT_IMPL(a, b) a##b
@@ -17,7 +15,7 @@
 #define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
 #ifndef APIENTRY
-#   if defined(DRK_PLATFORM_WINDOWS)
+#   if DRK_WINDOWS_ENABLED
 #       define APIENTRY __stdcall
 #   else
 #       define APIENTRY
@@ -25,7 +23,7 @@
 #endif
 #define DRK_APIENTRY APIENTRY
 
-#if defined(DRK_PLATFORM_WINDOWS)
+#if DRK_WINDOWS_ENABLED
 #   ifndef NOMINMAX
 #       define NOMINMAX
 #   endif

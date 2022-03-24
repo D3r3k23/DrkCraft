@@ -4,7 +4,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 
 # Set DRK_VERSION
 file(READ VERSION.txt VERSION_txt)
-string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt})
+string(REGEX REPLACE "[ \t\r\n]" "" DRK_VERSION ${VERSION_txt}) # Trim whitespace
 
 #############################################
 project(DrkCraft VERSION ${DRK_VERSION})
@@ -29,24 +29,24 @@ else()
     set(DRK_EN_ASSERTS ON)
 endif()
 
-# Set PLATFORM
+# Set DRK_PLATFORM
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-    set(PLATFORM Windows)
+    set(DRK_PLATFORM Windows)
     if(NOT ${MSVC})
         message("Warning: Using non-VS generator on Windows")
     endif()
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
-    set(PLATFORM Linux)
+    set(DRK_PLATFORM Linux)
 else()
     message("Error: Unsupported platform")
     return()
 endif()
 
-# Set BUILD_CONFIG
+# Set DRK_BUILD_CONFIG
 if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    set(BUILD_CONFIG Debug)
+    set(DRK_BUILD_CONFIG Debug)
 elseif((${CMAKE_BUILD_TYPE} STREQUAL Release) OR (${CMAKE_BUILD_TYPE} STREQUAL RelWithDebInfo))
-    set(BUILD_CONFIG Release)
+    set(DRK_BUILD_CONFIG Release)
 else()
     message("Error: Unknown build type")
     return()
@@ -56,13 +56,13 @@ endif()
 
 message("=======================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
-message("- Platform: ${PLATFORM}")
-message("- Build config: ${BUILD_CONFIG}")
+message("- Platform: ${DRK_PLATFORM}")
+message("- Build config: ${DRK_BUILD_CONFIG}")
 
 if(${DRK_EN_PROFILE})
     message("- Profiling enabled")
 endif()
-if(${DRK_EN_PROFILE})
+if(${DRK_EN_DEV_MODE})
     message("- Dev mode enabled")
 endif()
 if (${DRK_EN_TRACE_LOGGING})
@@ -76,6 +76,10 @@ message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 message("- Compiler: ${CMAKE_CXX_COMPILER}")
 message("=======================================")
 
+# C++ Standard - C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 ##################################
 ##################################
 add_executable(DrkCraft)
@@ -85,23 +89,16 @@ add_subdirectory(lib)
 ##################################
 ##################################
 
-# C++ 20
-set_target_properties(DrkCraft
-  PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-)
-
 #### Compile definitions ####
 
-string(TOUPPER DRK_PLATFORM_${PLATFORM}   DRK_PLATFORM)
-string(TOUPPER DRK_CONFIG_${BUILD_CONFIG} DRK_BUILD_CONFIG)
+string(TOUPPER DRK_PLATFORM_${DRK_PLATFORM}   DRK_PLATFORM_DEFINITION)
+string(TOUPPER DRK_CONFIG_${DRK_BUILD_CONFIG} DRK_BUILD_CONFIG_DEFINITION)
 
 target_compile_definitions(DrkCraft
   PUBLIC
     DRK_VERSION_STRING="${DRK_VERSION}"
-    ${DRK_PLATFORM}
-    ${DRK_BUILD_CONFIG}
+    ${DRK_PLATFORM_DEFINITION}
+    ${DRK_BUILD_CONFIG_DEFINITION}
 )
 
 if(${DRK_BUILD_CONFIG} STREQUAL Debug)
@@ -110,24 +107,13 @@ else()
     target_compile_definitions(DrkCraft PUBLIC NDEBUG)
 endif()
 
-if(${DRK_EN_LOGGING})
-    target_compile_definitions(DrkCraft PUBLIC DRK_EN_LOGGING)
-    if((${DRK_EN_TRACE_LOGGING}) AND (${BUILD_CONFIG} STREQUAL Debug))
-        target_compile_definitions(DrkCraft PUBLIC DRK_EN_TRACE_LOGGING)
-    endif()
-endif()
-
-if(${DRK_EN_ASSERTS})
-    target_compile_definitions(DrkCraft PUBLIC DRK_EN_ASSERTS)
-endif()
-
-if(${DRK_EN_PROFILE})
-    target_compile_definitions(DrkCraft PUBLIC DRK_EN_PROFILE)
-endif()
-
-if(${DRK_EN_DEV_MODE})
-    target_compile_definitions(DrkCraft PUBLIC DRK_EN_DEV_MODE)
-endif()
+target_compile_definitions(DrkCraft
+  PUBLIC
+    $<$<BOOL:DRK_EN_ASSERTS>:"DRK_EN_ASSERTS">
+    $<$<BOOL:DRK_EN_PROFILE>:"DRK_EN_PROFILE">
+    $<$<BOOL:DRK_EN_DEV_MODE>:"DRK_EN_DEV_MODE">
+    $<$<BOOL:DRK_EN_TRACE_LOGGING>:"DRK_EN_TRACE_LOGGING">
+)
 
 # Output directory
 set_target_properties(DrkCraft
@@ -137,10 +123,10 @@ set_target_properties(DrkCraft
 )
 
 # Disable console window for Release builds
-if(${BUILD_CONFIG} STREQUAL Release)
-    if(${PLATFORM} STREQUAL Windows)
+if(${DRK_BUILD_CONFIG} STREQUAL Release)
+    if(${DRK_PLATFORM} STREQUAL Windows)
         target_link_options(DrkCraft PUBLIC /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
-    elseif(${PLATFORM} STREQUAL Linux)
+    elseif(${DRK_PLATFORM} STREQUAL Linux)
         message("TODO: Disable console on Linux build?")
     endif()
 endif()

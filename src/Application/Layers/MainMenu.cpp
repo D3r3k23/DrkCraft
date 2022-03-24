@@ -6,7 +6,7 @@
 #include "Core/Settings.hpp"
 #include "Game/SavedGameLoader.hpp"
 #include "Game/Layers/GameLayer.hpp"
-#include "Util/Overloaded.hpp"
+#include "Util/Overload.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <imgui/imgui.h>
@@ -248,9 +248,9 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
         DRK_ASSERT_DEBUG(!std::holds_alternative<std::monostate>(m_gameLoadSource), "Game has not been selected");
 
-        std::visit(Overloaded
+        std::visit(Overload
         {
-            [](std::monostate){ DRK_ASSERT_DEBUG_NO_MSG(false); },
+            [](std::monostate){ DRK_ASSERT_DEBUG(false, "Invalid variant"); },
             [this](const fs::path& save)
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), save));

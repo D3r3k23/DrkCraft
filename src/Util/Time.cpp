@@ -5,6 +5,7 @@ namespace DrkCraft
     namespace Time
     {
         static Time s_programStart = Clock::now();
+        static const auto s_currentTimezone = std::chrono::current_zone();
 
         Time get_program_start_time(void)
         {
@@ -23,8 +24,7 @@ namespace DrkCraft
 
         LocalTime get_local_time(void)
         {
-            static const auto tz = std::chrono::current_zone();
-            return tz->to_local(get_system_time());
+            return s_currentTimezone->to_local(get_system_time());
         }
     }
 

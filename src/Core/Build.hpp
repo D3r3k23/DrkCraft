@@ -3,7 +3,16 @@
 
 #include "Core/Version.hpp"
 
-inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
+// Required compile definitions:
+// DRK_VERSION_STRING "x.x"
+// DRK_PLATFORM_WINDOWS | DRK_PLATFORM_LINUX
+// DRK_CONFIG_DEBUG | DRK_CONFIG_RELEASE
+
+// Version
+
+inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
+
+// Platform
 
 #if defined(DRK_PLATFORM_WINDOWS)
 #   define DRK_PLATFORM_NAME "Windows"
@@ -13,6 +22,20 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   error "Unknown platform"
 #endif
 
+#if defined(DRK_PLATFORM_WINDOWS)
+#   define DRK_WINDOWS_ENABLED true
+#else
+#   define DRK_WINDOWS_ENABLED false
+#endif
+
+#if defined(DRK_PLATFORM_LINUX)
+#   define DRK_LINUX_ENABLED true
+#else
+#   define DRK_LINUX_ENABLED false
+#endif
+
+// Config
+
 #if defined(DRK_CONFIG_DEBUG)
 #   define DRK_CONFIG_NAME "Debug"
 #elif defined(DRK_CONFIG_RELEASE)
@@ -20,6 +43,14 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #else
 #   error "Unknown config"
 #endif
+
+#if defined(DRK_CONFIG_DEBUG)
+#   define DRK_DEBUG_ENABLED true
+#else
+#   define DRK_DEBUG_ENABLED false
+#endif
+
+// Logging
 
 #if defined(DRK_EN_LOGGING)
 #   define DRK_LOGGING_ENABLED true
@@ -33,17 +64,23 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_TRACE_LOGGING_ENABLED false
 #endif
 
+// Asserts
+
 #if defined(DRK_EN_ASSERTS)
 #   define DRK_ASSERTS_ENABLED true
 #else
 #   define DRK_ASSERTS_ENABLED false
 #endif
 
+// Profiling
+
 #if defined(DRK_EN_PROFILE)
 #   define DRK_PROFILING_ENABLED true
 #else
 #   define DRK_PROFILING_ENABLED false
 #endif
+
+// Dev Mode
 
 #if defined(DRK_EN_DEV_MODE)
 #   define DRK_DEV_MODE_ENABLED true

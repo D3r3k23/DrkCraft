@@ -17,7 +17,7 @@ namespace DrkCraft
 
     enum class PlayerState
     {
-        Normal,
+        Normal = 0,
         Sprinting,
         Crouching,
         Flying

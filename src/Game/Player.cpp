@@ -42,8 +42,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        const KeyBinds keybinds = RuntimeSettings::get_keybinds();
         using enum PlayerState;
+
+        const KeyBinds keybinds = RuntimeSettings::get_keybinds();
 
         switch (m_state)
         {
@@ -84,10 +85,8 @@ namespace DrkCraft
                 break;
             }
             default:
-            {
                 DRK_ASSERT_DEBUG(false, "Unknown PlayerState");
                 m_state = Normal;
-            }
         }
 
         float speed = PLAYER_BASE_SPEED;

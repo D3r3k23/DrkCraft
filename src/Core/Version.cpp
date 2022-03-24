@@ -1,10 +1,12 @@
 #include "Version.hpp"
 
+#include "Util/String.hpp"
+
 #include <fmt/format.h>
 
 namespace DrkCraft
 {
-    Version::Version(std::string ver) // ver: "<major>.<minor>"
+    Version::Version(const std::string& ver) // ver: "<major>.<minor>"
       : m_major(find_major(ver)),
         m_minor(find_minor(ver))
     { }
@@ -29,7 +31,25 @@ namespace DrkCraft
         return m_minor;
     }
 
-    uint Version::find_major(std::string ver)
+    std::strong_ordering operator<=>(const Version& v1, const Version& v2)
+    {
+        if (v1.m_major == v2.m_major)
+            return v1.m_minor <=> v2.m_minor;
+        else
+            return v1.m_major <=> v2.m_minor;
+    }
+
+    std::strong_ordering operator<=>(const Version& ver, const std::string& str)
+    {
+        return ver <=> Version(str);
+    }
+
+    std::strong_ordering operator<=>(const std::string& str, const Version& ver)
+    {
+        return ver <=> str;
+    }
+
+    constexpr uint Version::find_major(const std::string& ver)
     {
         if (uint sep = ver.find("."); sep != std::string::npos)
             return std::stoul(ver.substr(0, sep));
@@ -37,19 +57,11 @@ namespace DrkCraft
             return 0;
     }
 
-    uint Version::find_minor(std::string ver)
+    constexpr uint Version::find_minor(const std::string& ver)
     {
         if (uint sep = ver.find("."); sep != std::string::npos)
             return std::stoul(ver.substr(sep + 1, ver.length() - sep - 1));
         else
             return 0;
-    }
-
-    std::strong_ordering operator<=>(const Version& v1, const Version& v2)
-    {
-        if (v1.m_major == v2.m_major)
-            return v1.m_minor <=> v2.m_minor;
-        else
-            return v1.m_major <=> v2.m_minor;
     }
 }

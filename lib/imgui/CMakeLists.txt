@@ -30,10 +30,6 @@ target_compile_definitions(imgui
     IMGUI_USER_CONFIG="drkcraft_imconfig.h"
 )
 
-if(${BUILD_CONFIG} STREQUAL Release)
-    target_compile_definitions(imgui PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
-endif()
-
 ##### imgui_impl ####################
 add_library(imgui_impl)
 

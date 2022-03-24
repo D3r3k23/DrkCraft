@@ -31,9 +31,25 @@ NUM_TEXTURES_PER_BLOCK = 3
 
 def main():
     parser = argparse.ArgumentParser(description='Generates textures atlas image for all blocks')
-    parser.add_argument('atlas', nargs='?', type=str, default=os.path.join('assets', 'images', 'textures', 'block_atlas.png'), description='Output texture .png file')
-    parser.add_argument('--blocks',       type=str,  default=os.path.join('data', 'blocks.yaml'),                          description='blocks.yaml file')
-    parser.add_argument('--textures',   type=str,   default=os.path.join('assets', 'images', 'textures', 'blocks'),    description='Block textures directory')
+    parser.add_argument(
+        'atlas',
+        type=str,
+        nargs='?',
+        default=os.path.join('assets', 'images', 'textures', 'block_atlas.png'),
+        description='Output texture .png file'
+    )
+    parser.add_argument(
+        '--blocks',
+        type=str,
+        default=os.path.join('data', 'blocks.yaml'),
+        description='blocks.yaml file'
+    )
+    parser.add_argument(
+        '--textures',
+        type=str,
+        default=os.path.join('assets', 'images', 'textures', 'blocks'),
+        description='Block textures directory'
+    )
     args = parser.parse_args()
 
     gen_block_texture_atlas(args.blocks, args.textures, args.atlas)
@@ -57,9 +73,9 @@ def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: s
     atlas.save(os.path.join(texture_dir, atlas_name))
 
 def load_textures(texture_dir: str, texture_names: List[str], f_ext: str) -> List[Texture]:
-    texture_files = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
+    texturefiles = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
     textures: List[Texture] = []
-    for filename in texture_files:
+    for filename in texturefiles:
         try:
             f = open(filename, 'rb')
         except (OSError, IOError):

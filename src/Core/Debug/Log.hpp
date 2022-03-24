@@ -1,8 +1,6 @@
 #ifndef DRK_CORE_DEBUG_LOG_HPP
 #define DRK_CORE_DEBUG_LOG_HPP
 
-// Don't include this directly, use Core/Base.hpp instead
-
 #include "Core/Build.hpp"
 
 #if DRK_LOGGING_ENABLED
@@ -60,8 +58,9 @@
     #define DRK_LOG_EVENT_CRITICAL(...) Logger::get_event_logger().critical(__VA_ARGS__)
 
 #else
-    #define DRK_LOGGER_INIT(dir)
+    #define DRK_LOGGER_INIT(name, dir)
     #define DRK_LOGGER_CLOSE()
+    #define DRK_LOGGER_FLUSH()
 
     #define DRK_LOG_CORE_TRACE(...)
     #define DRK_LOG_CORE_DEBUG(...)

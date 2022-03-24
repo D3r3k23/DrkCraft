@@ -1,8 +1,6 @@
 #ifndef DRK_CORE_DEBUG_ASSERT_HPP
 #define DRK_CORE_DEBUG_ASSERT_HPP
 
-// Don't include this directly, use Core/Base.hpp instead
-
 #include "Core/Build.hpp"
 
 #if DRK_ASSERTS_ENABLED
@@ -19,10 +17,10 @@
         void on_assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg="");
     }
 
-    #if defined(DRK_CONFIG_DEBUG)
-    #   if defined(DRK_PLATFORM_WINDOWS)
+    #if DRK_DEBUG_ENABLED
+    #   if DRK_WINDOWS_ENABLED
     #      define DRK_DEBUG_BREAK() __debugbreak()
-    #   elif defined(DRK_PLATFORM_LINUX)
+    #   elif DRK_LINUX_ENABLED
     #      include <signal.h>
     #      define DRK_DEBUG_BREAK() raise(SIGTRAP)
     #   else
@@ -48,7 +46,7 @@
     #define DRK_ASSERT_CORE(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
     #define DRK_ASSERT_CORE_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
 
-    #if defined(DRK_CONFIG_DEBUG)
+    #if DRK_DEBUG_ENABLED
     #   define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
     #   define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
     #else

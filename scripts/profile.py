@@ -91,11 +91,11 @@ def analyze_profile(profile_json: Mapping):
 def add_durations(events: List[DurationEvent]) -> Dict[str, float]:
     result: Dict[str, float] = {}
     for event in events:
-        if not event.name in result:
+        if event.name not in result:
             result[event.name] = event.duration
         else:
             result[event.name] += event.duration
-    return { k: result[k] for k in sorted(result.keys(), key=lambda kk: result[kk], reverse=True) }
+    return { k: result[k] for k in sorted(result.keys(), key=lambda name: result[name], reverse=True) }
 
 def read_json(filename: str) -> Optional[Mapping]:
     try:

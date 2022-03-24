@@ -18,11 +18,8 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
     DRK_LOG_CORE_INFO("Config: {}",   DRK_CONFIG_NAME);
 
-    if (DRK_PROFILER_ACTIVE())
-        DRK_LOG_CORE_INFO("Profiler running");
-
-    if constexpr (DRK_TRACE_LOGGING_ENABLED)
-        DRK_LOG_CORE_INFO("Trace logging enabled");
+    if constexpr (DRK_PROFILING_ENABLED)     DRK_LOG_CORE_INFO("Profiler enabled");
+    if constexpr (DRK_TRACE_LOGGING_ENABLED) DRK_LOG_CORE_INFO("Trace logging enabled");
 
     DRK_LOG_CORE_INFO("Loading settings");
     CommandLineOptions::parse_args(argc, argv);

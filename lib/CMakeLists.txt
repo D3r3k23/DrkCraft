@@ -100,6 +100,9 @@ target_include_directories(FastNoiseLite INTERFACE FastNoiseLite/Cpp)
 
 message("Configuring ImGui")
 add_subdirectory(imgui)
+if(${DRK_BUILD_CONFIG} STREQUAL Release)
+    target_compile_definitions(imgui PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
+endif()
 
 ###################################################
 

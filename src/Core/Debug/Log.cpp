@@ -25,7 +25,7 @@
 
         using LogLevel = spdlog::level::level_enum;
 
-    #if defined(DRK_CONFIG_DEBUG)
+    #if DRK_DEBUG_ENABLED
         constexpr LogLevel STATIC_LOG_LEVEL  = LogLevel::trace;
         constexpr LogLevel CONSOLE_LOG_LEVEL = DRK_TRACE_LOGGING_ENABLED ? LogLevel::trace : LogLevel::debug;
         constexpr bool CONSOLE_LOG_ENABLED = true;
@@ -52,11 +52,11 @@
                 auto consoleSink = make_ref<spdlog::sinks::stdout_color_sink_mt>();
                 consoleSink->set_level(CONSOLE_LOG_LEVEL);
                 sink->add_sink(consoleSink);
-            }{
-                auto fileSink = make_ref<spdlog::sinks::basic_file_sink_mt>(file.string());
-                fileSink->set_level(FILE_LOG_LEVEL);
-                sink->add_sink(fileSink);
             }
+            auto fileSink = make_ref<spdlog::sinks::basic_file_sink_mt>(file.string());
+            fileSink->set_level(FILE_LOG_LEVEL);
+            sink->add_sink(fileSink);
+
             sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
             sink->set_level(STATIC_LOG_LEVEL);
 

@@ -25,7 +25,7 @@ def get_date_from_log_name(log: str) -> Optional[datetime]:
     pattern = re.compile('_\d\d\d\d-\d\d-\d\d_')
     result  = pattern.search(log)
     if result:
-        datestring  = result[0].strip('_')
+        datestring   = result[0].strip('_')
         datecomponents = datestring.split('-')
         year, month, day = datecomponents
         date = datetime(int(year), int(month), int(day))
