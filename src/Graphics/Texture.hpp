@@ -20,6 +20,7 @@ namespace DrkCraft
 
     private:
         Texture(void);
+
     public:
         virtual ~Texture(void);
 
@@ -45,7 +46,7 @@ namespace DrkCraft
 
     private:
         Ref<Texture> m_texture;
-        const uint numTextures;
+        const uint m_numTextures;
     };
 
     class TextureManager
@@ -71,7 +72,7 @@ namespace DrkCraft
         const uint m_maxTextures;
         std::vector<Ref<Texture>> m_textures;
 
-        uint m_nReserved;
+        uint m_numReserved;
     };
 }
 

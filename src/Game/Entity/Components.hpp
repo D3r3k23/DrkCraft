@@ -21,7 +21,7 @@ namespace DrkCraft
 
     struct MeshComponent final : Component
     {
-        Mesh mesh;
+        Ref<Mesh> mesh;
     };
 
     struct TextureComponent final : Component

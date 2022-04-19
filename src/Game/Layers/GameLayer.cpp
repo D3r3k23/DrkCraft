@@ -74,12 +74,12 @@ namespace DrkCraft
 
     void GameLayer::on_attach(void)
     {
-        Layer::create<DebugOverlay>();
+
     }
 
     void GameLayer::on_detach(void)
     {
-        m_debugOverlay->detach_layer();
+
     }
 
     void GameLayer::on_render(void)
@@ -163,7 +163,9 @@ namespace DrkCraft
         m_loadingScreen->detach_layer();
 
         m_game.emplace(Application::get_asset_library());
-        m_debugOverlay = Layer::create<DebugOverlay>(m_game);
+
+        m_debugOverlay = Layer::create<DebugOverlay>(*m_game);
+        Application::add_overlay(m_debugOverlay);
 
         if (m_startPaused)
             pause_game();
@@ -171,13 +173,14 @@ namespace DrkCraft
 
     void GameLayer::exit_game(void)
     {
+        m_debugOverlay->detach_layer();
         detach_layer();
     }
 
     void GameLayer::pause_game(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_GAME_INFO("Paused");
+        DRK_LOG_GAME_INFO("Game paused");
 
         if (m_game)
         {
@@ -195,7 +198,7 @@ namespace DrkCraft
     void GameLayer::unpause_game(void)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_GAME_INFO("Unpaused");
+        DRK_LOG_GAME_INFO("Game unpaused");
 
         if (m_game)
         {

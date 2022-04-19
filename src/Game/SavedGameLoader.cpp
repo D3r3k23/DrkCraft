@@ -32,7 +32,8 @@ namespace DrkCraft
 
         rapidjson::Document save;
         if (Json::parse(oldSaveJson, save))
-            save["name"] = newName;
+            save["name"].SetString(newName.c_str(), newName.length());
+
         Json::write(oldSaveJson, save);
 
         fs::rename(savesDir / oldName, savesDir / newName);

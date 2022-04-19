@@ -3,7 +3,7 @@ target_sources(DrkCraft
     AssetLibrary.cpp
     Font.cpp
     GlfwTools.cpp
-    Icon.hpp
+    Icon.cpp
     Image.cpp
     Input.cpp
     Obj.cpp

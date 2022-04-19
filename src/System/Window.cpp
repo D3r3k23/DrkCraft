@@ -73,8 +73,8 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         GLFWimage image = {
-            .width  = icon.get_size().x,
-            .height = icon.get_size().y,
+            .width  = static_cast<int>(icon.get_size().x),
+            .height = static_cast<int>(icon.get_size().y),
             .pixels = icon.get_data()
         };
         glfwSetWindowIcon(m_window, 1, &image);

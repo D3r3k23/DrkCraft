@@ -18,7 +18,7 @@ namespace DrkCraft
         PhysicsSystem(World& world, EntityScene& scene);
         virtual ~PhysicsSystem(void) = default;
 
-        virtual void render(void) { };
+        virtual void render(void) override;
         virtual void update(Timestep timestep) override;
     };
 }

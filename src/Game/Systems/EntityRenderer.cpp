@@ -17,14 +17,16 @@ namespace DrkCraft
         MeshRenderer::begin_scene();
 
         const auto view = m_entityScene.view<TransformComponent, MeshComponent>();
-        view.each([](const auto& transform, const auto& mesh)
+        view.each([](const auto& tc, const auto& mc)
         {
-            MeshRenderer::submit(mesh, transform);
+            MeshRenderer::submit(*(mc.mesh), tc.transform);
         });
 
         MeshRenderer::end_scene();
     }
 
     void EntityRendererSystem::update(Timestep timestep)
-    { }
+    {
+
+    }
 }

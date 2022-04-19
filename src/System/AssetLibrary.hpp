@@ -120,15 +120,16 @@ namespace DrkCraft
 
         std::atomic<bool> m_loading;
         std::string m_recentlyLoadedAsset;
-        std::mutex m_recentlyLoadedAssetMutex;
 
-        AssetContainer<Ref<Image>> m_textures;
+        AssetContainer<Ref<Texture>> m_textures;
         AssetContainer<Ref<AudioSource>> m_audioSources;
         AssetContainer<Ref<Mesh>> m_meshes;
 
-        std::mutex m_texturesMutex;
-        std::mutex m_audioSourcesMutex;
-        std::mutex m_meshesMutex;
+        mutable std::mutex m_texturesMutex;
+        mutable std::mutex m_audioSourcesMutex;
+        mutable std::mutex m_meshesMutex;
+
+        mutable std::mutex m_recentlyLoadedAssetMutex;
     };
 
     class AssetLoader

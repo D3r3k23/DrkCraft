@@ -56,24 +56,14 @@ namespace DrkCraft
 
         static const RendererStats& get_stats(void);
 
-    public:
-        class Passkey
-        {
-        private:
-            Passkey(void) = default;
-            friend class Renderer;
-            friend class BlockRenderer;
-            friend class MeshRenderer;
-            friend class TextRenderer;
-        };
+    protected:
+        static void bind_shader(const ShaderProgram& shader);
+        static void unbind_shader(const ShaderProgram& shader);
 
-        static void bind_shader(Passkey, const ShaderProgram& shader);
-        static void unbind_shader(Passkey, const ShaderProgram& shader);
+        static void attach_texture(const Texture& texture);
+        static void detach_texture(const Texture& texture);
 
-        static void attach_texture(Passkey, const Texture& texture);
-        static void detach_texture(Passkey, const Texture& texture);
-
-        static void draw_indexed(Passkey, const VertexArray& vao, std::optional<uint> count=std::nullopt);
+        static void draw_indexed(const VertexArray& vao, std::optional<uint> count={});
 
     private:
         static void reset_stats(void);

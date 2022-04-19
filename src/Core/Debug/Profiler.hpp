@@ -74,32 +74,43 @@
 
     #define DRK_CLEAN_FUNC_NAME (const char*)(DRK_FUNC_SIG + 10) // Trims "DrkCraft::"
 
+    /////////////////////
+    //       API       //
+    /////////////////////
+
     #define DRK_PROFILER_BEGIN(name, file) Profiler::get_instance().begin(name, file)
     #define DRK_PROFILER_END()             Profiler::get_instance().end()
     #define DRK_PROFILER_ACTIVE()          Profiler::get_instance().active()
 
+    // Call at beginning of function
     #define DRK_PROFILE_FUNCTION() \
         ProfileTimer function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
 
+    // Call in any scope
     #define DRK_PROFILE_SCOPE(name) \
         ProfileTimer DRK_CONCAT(scope_profile_timer_, __LINE__){name, "scope"}
 
-    #define DRK_PROFILE_OBJECT(name) \
+    // Class member declaration
+    #define DRK_OBJECT_PROFILER(name) \
         ProfileTimer object_profile_timer{name, "object"}
 
+    // Instant event
     #define DRK_PROFILE_EVENT(name) \
         Profiler::get_instance().create_event_profile(name)
 
+    // Begin flow event
     #define DRK_PROFILE_FLOW_BEGIN(cat, name) \
         Profiler::get_instance().create_flow_begin_profile(cat, name)
 
+    // End flow event
     #define DRK_PROFILE_FLOW_END(cat, name) \
         Profiler::get_instance().create_flow_end_profile(cat, name)
 
+    // Call immediately before creating a new thread
     #define DRK_PROFILE_THREAD_CREATE(name) \
         DRK_PROFILE_FLOW_BEGIN("thread", DRK_CONCAT(name, "_thread_flow"))
 
-    // Should have a lifetime of the entire thread
+    // Call it beginning of thread
     #define DRK_PROFILE_THREAD(name) \
         DRK_PROFILE_FLOW_END("thread", DRK_CONCAT(name, "_thread_flow")); \
         ProfileTimer thread_profile_timer{name, "thread"}
@@ -111,7 +122,7 @@
 
     #define DRK_PROFILE_FUNCTION()
     #define DRK_PROFILE_SCOPE(name)
-    #define DRK_PROFILE_OBJECT(name)
+    #define DRK_OBJECT_PROFILER(name)
 
     #define DRK_PROFILE_EVENT(name)
 

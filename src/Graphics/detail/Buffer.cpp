@@ -44,7 +44,6 @@ namespace DrkCraft
       : name(name),
         type(type),
         size(get_shader_data_type_size(type)),
-        count(get_shader_data_type_element_count(type)),
         offset(0),
         normalized(normalized)
     { }
@@ -65,7 +64,8 @@ namespace DrkCraft
 
     VertexBufferLayout::VertexBufferLayout(std::span<VertexAttribute> attributes)
     {
-        add_attribute(attributes);
+        std::ranges::copy(attributes, std::back_inserter(m_attributes));
+        calculate_offsets_and_stride();
     }
 
     void VertexBufferLayout::add_attribute(const VertexAttribute& attribute)
@@ -74,56 +74,58 @@ namespace DrkCraft
         calculate_offsets_and_stride();
     }
 
-    void VertexBufferLayout::add_attribute(std::span<VertexAttribute> attributes)
+    uint VertexBufferLayout::num_attributes(void) const
     {
-        std::ranges::copy(attributes, std::back_inserter(m_attributes));
-        calculate_offsets_and_stride();
+        return m_attributes.size();
     }
 
     void VertexBufferLayout::activate(void)
     {
-        for (uint i = 0; const auto& attribute : m_attributes)
-        {
-            ShaderDataBaseType baseType = to_shader_data_base_type(attribute.type);
+        DRK_PROFILE_FUNCTION();
 
-            switch (baseType)
+        for (uint index = 0; const auto& attribute : m_attributes)
+        {
+            const auto type  = attribute.type;
+            const auto glType = to_gl_base_shader_data_type(type);
+            const auto norm  = static_cast<GLboolean>(attribute.normalized);
+            const void* ptr = reinterpret_cast<const void*>(attribute.offset);
+
+            if (is_matrix(type))
             {
-                case ShaderDataBaseType::Float:
-                    glVertexAttribPointer(i,
-                        attribute.count,
-                        to_gl_base_shader_data_type(baseType),
-                        static_cast<GLboolean>(attribute.normalized),
-                        m_stride,
-                        reinterpret_cast<const void*>(attribute.offset)
-                    );
-                    break;
-                case ShaderDataBaseType::Int:
-                case ShaderDataBaseType::Uint:
-                case ShaderDataBaseType::Bool:
-                    glVertexAttribIPointer(i,
-                        attribute.count,
-                        to_gl_base_shader_data_type(baseType),
-                        m_stride,
-                        reinterpret_cast<const void*>(attribute.offset)
-                    );
-                    break;
-                // Mat?
-                default:
-                    DRK_ASSERT_DEBUG(false, "Invalid base type");
-                    continue;
+                const uint count = get_shader_data_type_attribute_count(type);
+                for (int i = 0; i < count; i++)
+                {
+                    glEnableVertexAttribArray(index);
+                    glVertexAttribPointer(index, count, glType, norm, m_stride, ptr);
+                    index++;
+                }
             }
-            i++;
+            else
+            {
+                const uint count = get_shader_data_type_element_count(type);
+                glEnableVertexAttribArray(index);
+
+                if (to_shader_data_base_type(type) == ShaderDataBaseType::Float)
+                    glVertexAttribPointer(index++, count, glType, norm, m_stride, ptr);
+                else
+                    glVertexAttribIPointer(index++, count, glType, m_stride, ptr);
+
+                index++;
+            }
         }
     }
 
     void VertexBufferLayout::calculate_offsets_and_stride(void)
     {
+        DRK_PROFILE_FUNCTION();
+
         uint offset = 0;
         m_stride = 0;
 
         for (auto& attribute : m_attributes)
         {
             attribute.offset = offset;
+
             offset += attribute.size;
             m_stride += attribute.size;
         }
@@ -133,27 +135,15 @@ namespace DrkCraft
     //       VertexBuffer       //
     //////////////////////////////
 
-    VertexBuffer::VertexBuffer(uint size, PrimitiveType type)
-      : GlBuffer(size),
-        m_primitiveType(type)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        bind();
-        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-        unbind();
-    }
-
-    VertexBuffer::VertexBuffer(uint size, PrimitiveType type, const VertexBufferLayout& layout)
+    VertexBuffer::VertexBuffer(uint size, PrimitiveType type, VertexBufferLayout layout)
       : GlBuffer(size),
         m_primitiveType(type),
-        m_layout(layout)
+        m_layout(std::move(layout))
     {
         DRK_PROFILE_FUNCTION();
 
         bind();
         glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-        unbind();
     }
 
     VertexBuffer::VertexBuffer(uint size, PrimitiveType type, const VertexBufferLayout& layout, void* data, uint count)
@@ -164,8 +154,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         bind();
-        glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-        unbind();
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
     }
 
     void VertexBuffer::set_layout(const VertexBufferLayout& layout)
@@ -174,20 +163,26 @@ namespace DrkCraft
         m_layout = layout;
     }
 
+    bool VertexBuffer::has_layout(void) const
+    {
+        return m_layout.num_attributes() > 0;
+    }
+
     void VertexBuffer::activate_layout(void)
     {
         DRK_ASSERT_DEBUG_NO_MSG(has_layout());
 
-        glEnableVertexAttribArray(m_id);
+        bind();
         m_layout.activate();
     }
 
     void VertexBuffer::update(void* data, uint size)
     {
+        DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG_NO_MSG(has_layout());
-        if (size > get_size())
-            size = get_size();
-        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+
+        bind();
+        glBufferSubData(GL_ARRAY_BUFFER, 0, std::min(size, get_size()), data);
     }
 
     PrimitiveType VertexBuffer::get_primitive_type(void) const
@@ -209,18 +204,39 @@ namespace DrkCraft
     //       IndexBuffer       //
     /////////////////////////////
 
-    IndexBuffer::IndexBuffer(std::span<Index> indices)
-      : IndexBuffer(indices.data(), indices.size())
-    { }
+    IndexBuffer::IndexBuffer(uint size)
+      : GlBuffer(size)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        bind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_size(), nullptr, GL_DYNAMIC_DRAW);
+    }
 
     IndexBuffer::IndexBuffer(Index* indices, uint count)
-      : GlBuffer(count * sizeof(Index), count)
+      : GlBuffer(calculate_size(count), count)
     {
         DRK_PROFILE_FUNCTION();
 
         bind();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_size(), indices, GL_STATIC_DRAW);
-        unbind();
+    }
+
+    IndexBuffer::IndexBuffer(std::span<Index> indices)
+      : IndexBuffer(indices.data(), indices.size())
+    { }
+
+    void IndexBuffer::update(Index* indices, uint count)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        bind();
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, std::min(calculate_size(count), get_size()), indices);
+    }
+
+    void IndexBuffer::update(std::span<Index> indices)
+    {
+        update(indices.data(), indices.size());
     }
 
     void IndexBuffer::bind(void) const
@@ -231,5 +247,10 @@ namespace DrkCraft
     void IndexBuffer::unbind(void) const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    uint IndexBuffer::calculate_size(uint count)
+    {
+        return count * sizeof(Index);
     }
 }

@@ -26,10 +26,10 @@ namespace DrkCraft
         using std::chrono::duration_cast;
         using std::chrono::time_point_cast;
 
-        template <typename Duration>
-        Duration as_duration(const auto& time)
+        template <typename D=Duration>
+        D as_duration(const Time& time)
         {
-            return duration_cast<Duration>(time.time_since_epoch());
+            return duration_cast<D>(time.time_since_epoch());
         }
 
         Time get_program_start_time(void);

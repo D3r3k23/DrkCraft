@@ -21,7 +21,7 @@ namespace DrkCraft::Yaml
             error = true;
         }
 
-        if (!document.IsDefined() || !(document.IsMap() || document.IsSequence()))
+        if (!error && !document.IsDefined() || !(document.IsMap() || document.IsSequence()))
             error = true;
 
         if (error)
@@ -33,17 +33,17 @@ namespace DrkCraft::Yaml
             return { std::move(document) };
     }
 
-    bool check_map(const YAML::Node& node, std::string_view key)
+    bool check_map(const YAML::Node& node, const std::string& key)
     {
         return node[key] && node[key].IsMap();
     }
 
-    bool check_scalar(const YAML::Node& node, std::string_view key)
+    bool check_scalar(const YAML::Node& node, const std::string& key)
     {
         return node[key] && node[key].IsScalar();
     }
 
-    std::optional<YAML::Node> get_map(const YAML::Node& node, std::string_view key)
+    std::optional<YAML::Node> get_map(const YAML::Node& node, const std::string& key)
     {
         if (check_map(node, key))
             return node[key];
@@ -51,7 +51,7 @@ namespace DrkCraft::Yaml
             return {};
     }
 
-    std::optional<YAML::Node> get_scalar(const YAML::Node& node, std::string_view key)
+    std::optional<YAML::Node> get_scalar(const YAML::Node& node, const std::string& key)
     {
         if (check_scalar(node, key))
             return node[key];

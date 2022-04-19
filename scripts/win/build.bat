@@ -21,8 +21,6 @@ if "%print_help%" == "ON" (
     exit /b 0
 )
 
-set "start_time=%time%"
-
 call scripts\win\get_build_config.bat %1 %2 %3 %4
 
 echo ====== Configuring CMake ======
@@ -47,17 +45,3 @@ if NOT %errorlevel% == 0 (
 )
 
 echo ====== DrkCraft build completed ======
-
-set "end_time=%time%"
-
-@REM Calculate build time
-@REM https://stackoverflow.com/a/42603985/12385258
-set /A "ss=(((1%end_time::=-100)*60+1%-100)-(((1%start_time::=-100)*60+1%-100)"
-set /A "hh=ss/3600+100,ss%%=3600,mm=ss/60+100,ss=ss%%60+100"
-set build_time=%hh:~1%:%mm:~1%:%ss:~1%
-
-@REM Calculate executable size
-FOR %%A IN (%exe%) DO set exe_size=%%~zA
-
-echo Build time: %build_time%
-echo %exe%: %exe_size% bytes

@@ -14,6 +14,8 @@ namespace DrkCraft
         Camera(float fov, float aspectRatio, float nearClip, float farClip,
             const vec3& position, const vec3& direction, const vec3& vNeverParallel={0.0f, 1.0f, 0.0f});
 
+        Camera(void);
+
         void set_fov(float fov); // Degrees
         void set_aspect_ratio(float aspectRatio);
         void set_near_plane(float nearPlane);

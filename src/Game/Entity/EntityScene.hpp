@@ -20,13 +20,13 @@ namespace DrkCraft
         template <typename ... Args>
         auto view(void)
         {
-            return m_registry.view<Args>();
+            return m_registry.view<Args...>();
         }
 
         template <typename ... Args>
         const auto view(void) const
         {
-            return m_registry.view<Args>();
+            return m_registry.view<Args...>();
         }
 
     private:

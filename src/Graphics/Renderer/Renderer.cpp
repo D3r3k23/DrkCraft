@@ -22,6 +22,7 @@ namespace DrkCraft
             SceneData sceneData;
         };
     }
+
     static RendererData s_data;
 
     Ptr<TextureManager> s_textureManager;
@@ -29,7 +30,7 @@ namespace DrkCraft
     void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
     {
         DRK_PROFILE_FUNCTION();
-        DRK_LOG_CORE_INFO("Initializing core Renderer");
+        DRK_LOG_CORE_INFO("Initializing Renderer");
 
         DRK_LOG_CORE_INFO("Renderer hardware: {}", context.get_renderer_info());
 
@@ -50,14 +51,16 @@ namespace DrkCraft
 
         BlockRenderer::init(s_textureManager);
         MeshRenderer::init();
+        TextRenderer::init();
     }
 
     void Renderer::shutdown(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        BlockRenderer::shutdown();
+        TextRenderer::shutdown();
         MeshRenderer::shutdown();
+        BlockRenderer::shutdown();
 
         s_textureManager.reset();
     }
@@ -103,41 +106,43 @@ namespace DrkCraft
         return s_data.lastStats;
     }
 
-    void Renderer::attach_texture(Passkey, const Texture& texture)
+    void Renderer::attach_texture(const Texture& texture)
     {
 
     }
 
-    void Renderer::detach_texture(Passkey, const Texture& texture)
+    void Renderer::detach_texture(const Texture& texture)
     {
 
     }
 
-    void Renderer::draw_indexed(Passkey, const VertexArray& vao, std::optional<uint> count=std::nullopt)
+    void Renderer::draw_indexed(const VertexArray& vao, std::optional<uint> count)
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto primitiveType = to_gl_primitive_type(vao.get_vertex_buffer()->get_primitive_type());
-        uint indexCount = (!count || *count > indexBuffer.get_count()) ? indexBuffer.get_count() : *count;
+        const auto indexBuffer = vao.get_index_buffer();
+        uint indexCount = std::min(count.value_or(indexBuffer->get_count()), indexBuffer->get_count());
+
+        const auto primitiveType = vao.get_vertex_buffer()->get_primitive_type();
+        const auto glPrimitiveType = to_gl_primitive_type(primitiveType);
 
         vao.bind();
-        glDrawElements(primitiveType, indexCount, GL_UNSIGNED_INT, nullptr);
-        vao.unbind();
+        glDrawElements(glPrimitiveType, indexCount, GL_UNSIGNED_INT, nullptr);
 
-        update_stats_on_draw_call(primitiveType, indexCount)
+        update_stats_on_draw_call(primitiveType, indexCount);
     }
 
-    void Renderer::draw_triangles(Passkey, const IndexBuffer& indexBuffer, std::optional<uint> count)
-    {
-        DRK_PROFILE_FUNCTION();
+    // void Renderer::draw_triangles(const IndexBuffer& indexBuffer, std::optional<uint> count)
+    // {
+    //     DRK_PROFILE_FUNCTION();
 
-        uint indexCount = (!count || *count > indexBuffer.get_count()) ? indexBuffer.get_count() : *count;
+    //     uint indexCount = (!count || *count > indexBuffer.get_count()) ? indexBuffer.get_count() : *count;
 
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+    //     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 
-        s_data.stats.indices += indexCount;
-        s_data.stats.drawCalls++;
-    }
+    //     s_data.stats.indices += indexCount;
+    //     s_data.stats.drawCalls++;
+    // }
 
     void Renderer::reset_stats(void)
     {

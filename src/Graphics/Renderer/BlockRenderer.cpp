@@ -64,14 +64,14 @@ namespace DrkCraft
         s_data.shader.emplace("BlockShader");
 
         Ref<Shader> shaders[] = {
-          Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex),
-          Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment)
+            Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex),
+            Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment)
         };
         s_data.shader->attach(shaders);
         s_data.shader->link();
 
         const uint vbSize = MAX_BLOCK_VERTICES * sizeof(BlockVertex);
-        const uint ibSize = MAX_BLOCK_VERTICES * sizeof(IndexBuffer);
+        const uint ibSize = MAX_BLOCK_VERTICES * sizeof(Index);
 
         s_data.vertexArray.emplace();
         s_data.vertexBuffer = make_ref<VertexBuffer>(vbSize, PrimitiveType::Triangles);
@@ -85,7 +85,7 @@ namespace DrkCraft
             { ShaderDataType::Uint,   "a_texIndex" }
         });
 
-        Index blockIndices[NUM_INDICES_IN_BLOCK] = {
+        Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
             0, 1, 3,  1, 2, 3, // Front
             1, 5, 2,  5, 6, 2, // Right
             5, 4, 6,  4, 7, 6, // Back
@@ -97,7 +97,7 @@ namespace DrkCraft
         std::vector<Index> blockIndexBufferData(MAX_BLOCK_INDICES);
         for (uint c = 0; c < MAX_BLOCKS; c++)
             for (uint i = 0; i < NUM_INDICES_IN_BLOCK; i++)
-                blockIndexBufferData.push_back(blockIndices[i]);
+                blockIndexBufferData.push_back(BLOCK_INDICES[i]);
 
         s_data.indexBuffer->update(blockIndexBufferData);
 
@@ -113,7 +113,9 @@ namespace DrkCraft
         s_data.vertexBuffer.reset();
         s_data.shader.reset();
     }
+
 #define NUM_BLOCKS 5
+
     void BlockRenderer::set_texture_atlas(const Ref<Texture>& atlasTexture)
     {
         s_data.blockTextureAtlas.emplace(atlasTexture, NUM_BLOCKS);
@@ -143,7 +145,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        static constexpr vec3 blockVertexPositions[NUM_VERTICES_IN_BLOCK] = {
+        static constexpr vec3 BLOCK_VERTEX_POSITIONS[NUM_VERTICES_IN_BLOCK] = {
             {0.0f, 0.0f, 0.5f}, // 0
             {0.5f, 0.0f, 0.5f}, // 1
             {0.5f, 0.5f, 0.5f}, // 2
@@ -162,7 +164,7 @@ namespace DrkCraft
 
         for (uint i = 0; i < NUM_VERTICES_IN_BLOCK; i++)
         {
-            const vec3 vertexPosition = blockVertexPositions[i] * vec3(position);
+            const vec3 vertexPosition = BLOCK_VERTEX_POSITIONS[i] * vec3(position);
 
             ivec2 subtextureCoordinates = { 0, 0 }; // s, t
 
@@ -206,6 +208,6 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         s_data.vertexArray->get_vertex_buffer()->update<BlockVertex>(s_data.vertexBufferData);
-        Renderer::draw_triangles(Renderer::Passkey(), *s_data.vertexArray->get_index_buffer(), s_data.indices);
+        Renderer::draw_indexed(*s_data.vertexArray);
     }
 }

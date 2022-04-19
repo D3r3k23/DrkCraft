@@ -2,10 +2,10 @@ target_sources(DrkCraft
   PRIVATE
     Game.cpp
     GameEvent.cpp
+    GameSystem.cpp
     Player.cpp
     SavedGameLoader.cpp
     Sky.cpp
-    GameSystem.cpp
 )
 
 add_subdirectory(Entity)

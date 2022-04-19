@@ -1,12 +1,14 @@
 #include "Monitor.hpp"
 
 #include "Core/Settings.hpp"
+#include "Util/Fn.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <vector>
 #include <algorithm>
 #include <execution>
 #include <mutex>
+
 namespace DrkCraft
 {
     /////////////////////////
@@ -261,9 +263,12 @@ namespace DrkCraft
 
     void MonitorManager::deactivate_fullscreen(Window& window)
     {
-        const auto& defaultSize = RuntimeSettings::get_config().init_window_size;
-        const auto& size = m_savedWindowedSize.value_or(defaultSize);
-        const auto& pos  = m_savedWindowedPos.value_or(ivec2(0, 0));
+        const auto pos  = m_savedWindowedPos.value_or(ivec2{0, 0});
+        const auto size = lazy_value_or(m_savedWindowedSize, []
+        {
+            const auto& size = RuntimeSettings::get_config().init_window_size;
+            return uvec2{size.width, size.height};
+        });
 
         m_fullscreen = false;
         glfwSetWindowMonitor(window.get_raw_window(), nullptr, pos.x, pos.y, size.x, size.y, 0);

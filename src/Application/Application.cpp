@@ -29,9 +29,6 @@ namespace DrkCraft
         init_glfw();
 
         s_instance.emplace(title);
-
-        const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time()).count();
-        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime);
     }
 
     int Application::shutdown(void)
@@ -41,13 +38,14 @@ namespace DrkCraft
         if (s_instance)
         {
             int exitCode = s_instance->m_exitCode;
-            s_instance.reset();;
+            s_instance.reset();
 
             DRK_LOG_CORE_TRACE("Shutting down GLFW");
             shutdown_glfw();
 
             if (exitCode)
                 DRK_LOG_CORE_ERROR("Application stopped with error code {}", exitCode);
+
             return exitCode;
         }
         else
@@ -200,14 +198,18 @@ namespace DrkCraft
 
     void Application::run_internal(void)
     {
-        DRK_PROFILE_EVENT("New frame");
         DRK_PROFILE_FUNCTION();
+
+        const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time());
+        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime.count());
 
         TimestepGenerator timestepGen;
 
         m_running = true;
         while (m_running)
         {
+            DRK_PROFILE_EVENT("New frame");
+
             Timestep timestep = timestepGen.get_timestep();
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
@@ -241,6 +243,7 @@ namespace DrkCraft
     {
         if (!m_running)
             DRK_LOG_CORE_WARN("Application is not running!");
+
         m_running  = false;
         m_exitCode = status;
     }

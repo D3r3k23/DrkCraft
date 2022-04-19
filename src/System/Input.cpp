@@ -234,11 +234,11 @@ namespace DrkCraft
 
     MouseCode to_mouse_code(std::string_view str)
     {
-        return magic_enum::enum_cast<MouseCode>(str);
+        return magic_enum::enum_cast<MouseCode>(str).value_or(MouseCode::None);
     }
 
     std::string_view mouse_code_name(MouseCode button)
     {
-        return magic_enum::enum_name(button).value_or(MouseCode::None);
+        return magic_enum::enum_name(button);
     }
 }

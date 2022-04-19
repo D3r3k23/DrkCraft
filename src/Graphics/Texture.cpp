@@ -12,6 +12,16 @@ namespace DrkCraft
     //       Texture       //
     /////////////////////////
 
+    Ref<Texture> Texture::from_image(const Image& image)
+    {
+        return {};
+    }
+
+    Ref<Texture> Texture::from_data()
+    {
+        return {};
+    }
+
     Texture::Texture(void)
     {
         DRK_PROFILE_FUNCTION();
@@ -46,7 +56,20 @@ namespace DrkCraft
     //       TextureAtlas       //
     //////////////////////////////
 
+    TextureAtlas::TextureAtlas(Ref<Texture> atlasTexture, uint numTextures)
+      : m_texture(atlasTexture),
+        m_numTextures(numTextures)
+    { }
 
+    Ref<Texture> TextureAtlas::get_texture(void) const
+    {
+        return {};
+    }
+
+    uvec2 TextureAtlas::get_coordinates(uint index, const ivec2& subtextureCoordinates)
+    {
+        return {};
+    }
 
     ////////////////////////////////
     //       TextureManager       //
@@ -61,15 +84,15 @@ namespace DrkCraft
     uint TextureManager::reserve(void)
     {
         DRK_ASSERT_DEBUG(empty(), "Texture slots are not empty");
-        return m_nReserved++;
+        return m_numReserved++;
     }
 
     void TextureManager::refresh(void)
     {
-        if (m_nReserved == 0)
+        if (m_numReserved == 0)
             m_textures.clear();
         else
-            m_textures.erase(m_textures.begin() + m_nReserved, m_textures.end());
+            m_textures.erase(m_textures.begin() + m_numReserved, m_textures.end());
     }
 
     void TextureManager::attach(Ref<Texture> texture, uint slot)

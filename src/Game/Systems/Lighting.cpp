@@ -14,5 +14,7 @@ namespace DrkCraft
     }
 
     void LightingSystem::update(Timestep timestep)
-    { }
+    {
+
+    }
 }

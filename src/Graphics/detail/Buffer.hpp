@@ -7,6 +7,7 @@
 
 #include <string>
 #include <string_view>
+#include <optional>
 #include <initializer_list>
 #include <vector>
 #include <span>
@@ -36,7 +37,6 @@ namespace DrkCraft
         std::string name;
         ShaderDataType type;
         uint size;
-        uint count;
         uint offset;
         bool normalized;
 
@@ -50,11 +50,11 @@ namespace DrkCraft
         using const_Iterator = std::vector<VertexAttribute>::const_iterator;
 
         VertexBufferLayout(void);
-        VertexBufferLayout(std::span<VertexAttribute> attributes);
         VertexBufferLayout(std::initializer_list<VertexAttribute> attributes);
+        VertexBufferLayout(std::span<VertexAttribute> attributes);
 
         void add_attribute(const VertexAttribute& attribute);
-        void add_attribute(std::span<VertexAttribute> attributes);
+        uint num_attributes(void) const;
 
         void activate(void);
 
@@ -75,8 +75,7 @@ namespace DrkCraft
     class VertexBuffer : public GlBuffer
     {
     public:
-        VertexBuffer(uint size, PrimitiveType type);
-        VertexBuffer(uint size, PrimitiveType type, const VertexBufferLayout& layout);
+        VertexBuffer(uint size, PrimitiveType type, VertexBufferLayout layout={});
         VertexBuffer(uint size, PrimitiveType type, const VertexBufferLayout& layout, void* data, uint count);
 
         template <typename T>
@@ -84,10 +83,8 @@ namespace DrkCraft
           : VertexBuffer(layout, static_cast<void*>(data.data()), data.size(), data.size_bytes())
         { }
 
-        bool has_layout(void) const;
-        bool has_data(void) const;
-
         void set_layout(const VertexBufferLayout& layout);
+        bool has_layout(void) const;
         void activate_layout(void);
 
         void update(void* data, uint size);
@@ -114,14 +111,16 @@ namespace DrkCraft
     {
     public:
         IndexBuffer(uint size);
-        IndexBuffer(std::span<Index> indices);
         IndexBuffer(Index* indices, uint count);
+        IndexBuffer(std::span<Index> indices);
 
-        void update(Index* data, uint count);
+        void update(Index* indices, uint count);
         void update(std::span<Index> data);
 
         virtual void bind(void) const override;
         virtual void unbind(void) const override;
+
+        static uint calculate_size(uint count);
     };
 }
 

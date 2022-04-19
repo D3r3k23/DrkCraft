@@ -31,16 +31,18 @@ namespace DrkCraft
 
         bind();
         buffer->bind();
-
         buffer->activate_layout();
-        m_vertexBuffer = buffer;
 
-        unbind();
-        buffer->bind(); // ?
+        m_vertexBuffer = buffer;
     }
 
     void VertexArray::set_index_buffer(const Ref<IndexBuffer> buffer)
     {
+        DRK_PROFILE_FUNCTION();
+
+        bind();
+        buffer->bind();
+
         m_indexBuffer = buffer;
     }
 

@@ -7,18 +7,18 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <string_view>
+#include <string>
 #include <optional>
 
 namespace DrkCraft::Yaml
 {
     std::optional<YAML::Node> load(const fs::path& filename);
 
-    bool check_map(const YAML::Node& node, std::string_view key);
-    bool check_scalar(const YAML::Node& node, std::string_view key);
+    bool check_map(const YAML::Node& node, const std::string& key);
+    bool check_scalar(const YAML::Node& node, const std::string& key);
 
-    std::optional<YAML::Node> get_map(const YAML::Node& node, std::string_view key);
-    std::optional<YAML::Node> get_scalar(const YAML::Node& node, std::string_view key);
+    std::optional<YAML::Node> get_map(const YAML::Node& node, const std::string& key);
+    std::optional<YAML::Node> get_scalar(const YAML::Node& node, const std::string& key);
 
     template <typename T>
     std::optional<T> get_value(const YAML::Node& node)

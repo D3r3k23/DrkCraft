@@ -2,6 +2,7 @@
 #define DRK_GRAPHICS_RENDERER_BLOCK_RENDERER_HPP
 
 #include "Core/Base.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Graphics/Texture.hpp"
 
 #include "lib/glm/vec2.hpp"
@@ -17,7 +18,7 @@ namespace DrkCraft
         uint blockFaces = 0;
     };
 
-    class BlockRenderer
+    class BlockRenderer : public Renderer
     {
     public:
         static void init(const Ptr<TextureManager>& textureSlots);

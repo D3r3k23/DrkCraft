@@ -191,7 +191,7 @@ namespace DrkCraft
         }
 
         template <typename T>
-        void load_setting(const YAML::Node& parent, std::string_view key, T& setting,
+        void load_setting(const YAML::Node& parent, const std::string& key, T& setting,
             const SettingConstraint<T>& constraint={})
         {
             if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
@@ -206,7 +206,7 @@ namespace DrkCraft
             }
         }
 
-        void load_keybind(const YAML::Node& parent, std::string_view key, InputCode& keybind)
+        void load_keybind(const YAML::Node& parent, const std::string& key, InputCode& keybind)
         {
             if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
             {

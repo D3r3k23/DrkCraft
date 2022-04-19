@@ -20,7 +20,7 @@ namespace DrkCraft
     public:
         static Ref<Mesh> create(const MeshData& data);
 
-        Mesh();
+        Mesh(void);
 
     private:
         VertexArray m_vertexArray;

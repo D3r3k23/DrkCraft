@@ -209,7 +209,7 @@ namespace DrkCraft
     {
         std::lock_guard lock(m_texturesMutex);
         if (m_textures.contains(filename.string()))
-            return m_textures[filename.string()];
+            return m_textures.at(filename.string());
         else
             return {};
     }
@@ -235,7 +235,7 @@ namespace DrkCraft
     {
         std::lock_guard lock(m_audioSourcesMutex);
         if (m_audioSources.contains(filename.string()))
-            return m_audioSources[filename.string()];
+            return m_audioSources.at(filename.string());
         else
             return {};
     }
@@ -250,7 +250,7 @@ namespace DrkCraft
     {
         std::lock_guard lock(m_meshesMutex);
         if (m_meshes.contains(filename.string()))
-            return m_meshes[filename.string()];
+            return m_meshes.at(filename.string());
         else
             return {};
     }

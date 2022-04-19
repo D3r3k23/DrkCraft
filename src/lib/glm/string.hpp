@@ -19,7 +19,7 @@ namespace DrkCraft
 }
 
 template <typename V>
-struct fmt::formatter<Vec>
+struct fmt::formatter<V>
 {
     template <typename ParseContext>
     constexpr auto parse(ParseContext& ctx)

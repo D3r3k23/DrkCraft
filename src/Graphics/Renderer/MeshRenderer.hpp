@@ -2,6 +2,7 @@
 #define DRK_GRAPHICS_RENDERER_MESH_RENDERER
 
 #include "Core/Base.hpp"
+#include "Graphics/Renderer/Renderer.hpp"
 #include "Graphics/Mesh.hpp"
 #include "Graphics/Transform.hpp"
 
@@ -12,7 +13,7 @@ namespace DrkCraft
         uint meshes = 0;
     };
 
-    class MeshRenderer
+    class MeshRenderer : public Renderer
     {
     public:
         static void init(void);

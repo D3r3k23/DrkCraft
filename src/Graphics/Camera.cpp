@@ -19,6 +19,10 @@ namespace DrkCraft
         calculate_view_projection();
     }
 
+    Camera::Camera(void)
+      : Camera(0.5f, 0.5f, 0.01f, 0.99f, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f})
+    { }
+
     void Camera::set_fov(float fov)
     {
         m_fov = glm::radians(fov);

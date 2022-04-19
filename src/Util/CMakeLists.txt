@@ -8,6 +8,6 @@ target_sources(DrkCraft
     PeriodicUpdate.cpp
     Random.cpp
     String.cpp
-    Time.hpp
+    Time.cpp
     Yaml.cpp
 )

@@ -4,6 +4,7 @@
 #include "Core/Version.hpp"
 
 // Required compile definitions:
+//
 // DRK_VERSION_STRING "x.x"
 // DRK_PLATFORM_WINDOWS | DRK_PLATFORM_LINUX
 // DRK_CONFIG_DEBUG | DRK_CONFIG_RELEASE
@@ -23,15 +24,15 @@ inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
 #endif
 
 #if defined(DRK_PLATFORM_WINDOWS)
-#   define DRK_WINDOWS_ENABLED true
+#   define DRK_WINDOWS_ENABLED 1
 #else
-#   define DRK_WINDOWS_ENABLED false
+#   define DRK_WINDOWS_ENABLED 0
 #endif
 
 #if defined(DRK_PLATFORM_LINUX)
-#   define DRK_LINUX_ENABLED true
+#   define DRK_LINUX_ENABLED 1
 #else
-#   define DRK_LINUX_ENABLED false
+#   define DRK_LINUX_ENABLED 0
 #endif
 
 // Config
@@ -45,47 +46,47 @@ inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
 #endif
 
 #if defined(DRK_CONFIG_DEBUG)
-#   define DRK_DEBUG_ENABLED true
+#   define DRK_DEBUG_ENABLED 1
 #else
-#   define DRK_DEBUG_ENABLED false
+#   define DRK_DEBUG_ENABLED 0
 #endif
 
 // Logging
 
 #if defined(DRK_EN_LOGGING)
-#   define DRK_LOGGING_ENABLED true
+#   define DRK_LOGGING_ENABLED 1
 #   if defined(DRK_EN_TRACE_LOGGING)
-#       define DRK_TRACE_LOGGING_ENABLED true
+#       define DRK_TRACE_LOGGING_ENABLED 1
 #   else
-#       define DRK_TRACE_LOGGING_ENABLED false
+#       define DRK_TRACE_LOGGING_ENABLED 0
 #   endif
 #else
-#   define DRK_LOGGING_ENABLED false
-#   define DRK_TRACE_LOGGING_ENABLED false
+#   define DRK_LOGGING_ENABLED 0
+#   define DRK_TRACE_LOGGING_ENABLED 0
 #endif
 
 // Asserts
 
 #if defined(DRK_EN_ASSERTS)
-#   define DRK_ASSERTS_ENABLED true
+#   define DRK_ASSERTS_ENABLED 1
 #else
-#   define DRK_ASSERTS_ENABLED false
+#   define DRK_ASSERTS_ENABLED 0
 #endif
 
 // Profiling
 
 #if defined(DRK_EN_PROFILE)
-#   define DRK_PROFILING_ENABLED true
+#   define DRK_PROFILING_ENABLED 1
 #else
-#   define DRK_PROFILING_ENABLED false
+#   define DRK_PROFILING_ENABLED 0
 #endif
 
 // Dev Mode
 
 #if defined(DRK_EN_DEV_MODE)
-#   define DRK_DEV_MODE_ENABLED true
+#   define DRK_DEV_MODE_ENABLED 1
 #else
-#   define DRK_DEV_MODE_ENABLED false
+#   define DRK_DEV_MODE_ENABLED 0
 #endif
 
 #endif // DRK_CORE_BUILD_HPP
