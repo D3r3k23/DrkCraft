@@ -23,7 +23,7 @@ if "%print_help%" == "ON" (
 
 call scripts\win\get_build_config.bat %1 %2 %3 %4
 
-echo ====== Configuring CMake ======
+echo ============ Configuring CMake ============
 cmake -S . -B %build_dir%                  ^
     -D CMAKE_BUILD_TYPE=%build_config%     ^
     -D DRK_EN_PROFILE=%en_profile%         ^
@@ -36,7 +36,7 @@ if NOT %errorlevel% == 0 (
     exit /b 1
 )
 
-echo ====== Building DrkCraft ======
+echo ============ Building DrkCraft ============
 cmake --build %build_dir% --config %build_config%
 
 if NOT %errorlevel% == 0 (
@@ -44,4 +44,4 @@ if NOT %errorlevel% == 0 (
     exit /b 1
 )
 
-echo ====== DrkCraft build completed ======
+echo ============ DrkCraft build completed ============

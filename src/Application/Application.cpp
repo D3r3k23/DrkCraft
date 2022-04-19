@@ -297,7 +297,7 @@ namespace DrkCraft
         {
             case KeyCode::F7:
             {
-                if constexpr (DRK_CONFIG_DEBUG)
+                if constexpr (DRK_DEBUG_ENABLED)
                 {
                     m_imGuiController->toggle_demo_window();
                     return true;

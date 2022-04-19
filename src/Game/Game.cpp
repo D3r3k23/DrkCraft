@@ -106,7 +106,7 @@ namespace DrkCraft
         {
             case KeyCode::F8:
             {
-                if constexpr (DRK_CONFIG_DEBUG)
+                if constexpr (DRK_DEBUG_ENABLED)
                 {
                     // m_worldRenderer.show_wireframe(); // or inside DebugOverlay
                     return true;
