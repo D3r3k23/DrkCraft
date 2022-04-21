@@ -7,7 +7,7 @@ if "%2" == "--clean" set "clean=true"
 set "no_venv=false"
 if "%1" == "--no-venv" set "no_venv=true"
 if "%2" == "--no-venv" set "no_venv=true"
-
+echo OK
 if "%no_venv%" == "false" (
     set "venv=.venv"
 
