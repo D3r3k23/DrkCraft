@@ -22,14 +22,14 @@ jobs:
         with:
           python-version: '>=3.10'
 
-      - name: Install pip
+      - name: Update pip
         run: python -m pip install --upgrade pip
 
       - name: Set up environment
-        run: scripts\setup.bat
+        run: scripts\setup.bat --no-venv
 
       - name: Run Mypy
-        run: mypy --no-warn-no-return scripts\drkcraft-py launcher/drkcraft_launcher
+        run: mypy --no-warn-no-return scripts\drkcraft-py launcher\drkcraft_launcher
 
       - name: CMake build (Debug)
         run: python -m drkcraft build --debug --profile --dev
@@ -37,20 +37,34 @@ jobs:
       - name: CMake build (Release)
         run: python -m drkcraft build --release
 
-  # Linux:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
+  Linux:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-  #       with:
-  #         submodules: recursive
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-  #     - name: CMake build (Debug)
-  #       run: scripts/lin/build.sh --debug --profile --dev --trace
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '>=3.10'
 
-  #     - name: CMake build (Release)
-  #       run: scripts/lin/build.sh --release
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+
+      - name: Set up environment
+        run: scripts/setup.sh --no-venv
+
+      - name: Run Mypy
+        run: mypy --no-warn-no-return scripts/drkcraft-py launcher/drkcraft_launcher
+
+      - name: CMake build (Debug)
+        run: python -m drkcraft build --debug --profile --dev
+
+      - name: CMake build (Release)
+        run: python -m drkcraft build --release
