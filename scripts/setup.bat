@@ -9,8 +9,9 @@ if "%1" == "--no-venv" set "no_venv=true"
 if "%2" == "--no-venv" set "no_venv=true"
 echo OK 1
 if "%no_venv%" == "false" (
-    set "venv=.venv"
     echo OK 2
+    set "venv=.venv"
+    echo OK 3
     if exist %venv% (
         if "%clean%" == "true" (
             echo Cleaning virtualenv
