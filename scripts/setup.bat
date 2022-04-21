@@ -33,7 +33,7 @@ if "%no_venv%" == "false" (
 )
 
 echo Building drkcraft-py
-if not exist scripts\drkcraft-py\build mkdir scripts\drkcraft-py\build
+if not exist scripts\drkcraft-py\build\ mkdir scripts\drkcraft-py\build
 pip install -e scripts\drkcraft-py
 
 echo Installing launcher dependencies
