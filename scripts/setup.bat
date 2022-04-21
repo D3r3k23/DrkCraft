@@ -1,4 +1,4 @@
-@echo ON
+@echo OFF
 
 set "clean=false"
 if "%1" == "--clean" set "clean=true"
