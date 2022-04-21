@@ -11,7 +11,7 @@ if "%2" == "--no-venv" set "no_venv=true"
 if "%no_venv%" == "false" (
     set "venv=.venv"
 
-    if exist %venv% (
+    if exist %venv%\ (
         if "%clean%" == "true" (
             echo Cleaning virtualenv
             rmdir /s /q %venv%
