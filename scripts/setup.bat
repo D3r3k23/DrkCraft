@@ -1,8 +1,8 @@
 @echo OFF
 
 set "clean=false"
-if "%1" == "--clean"   set "clean=true"
-if "%2" == "--clean"   set "clean=true"
+if "%1" == "--clean" set "clean=true"
+if "%2" == "--clean" set "clean=true"
 
 set "no_venv=false"
 if "%1" == "--no-venv" set "no_venv=true"
