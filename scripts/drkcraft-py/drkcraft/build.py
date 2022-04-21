@@ -35,7 +35,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
     bytes = os.path.getsize(drkcraft.config.get_exe(args.build_config))
     megabytes = bytes / 10**6
-    print(f'Executable size: {megabytes:.1f}MB')
+    print(f'Executable size: {megabytes:.2f}MB')
 
 def build(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool=False) -> bool:
     build_dir = drkcraft.config.get_build_dir()

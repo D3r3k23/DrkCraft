@@ -43,7 +43,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
     bytes = os.path.getsize(package_path)
     megabytes = bytes / 10**6
-    print(f'Package size: {megabytes:.1f}MB')
+    print(f'Package size: {megabytes:.2f}MB')
 
 PACKAGE_DIR = os.path.join('packages', 'DrkCraft')
 
