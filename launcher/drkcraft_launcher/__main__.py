@@ -1,3 +1,4 @@
-from main import main
+import sys
 
-main()
+from main import main
+sys.exit(main(sys.argv))

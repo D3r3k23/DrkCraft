@@ -16,16 +16,17 @@ CMD = {
 }
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    argv[0] = 'drkcraft'
+    sys.argv[0] = 'drkcraft'
 
     parser = argparse.ArgumentParser(description='Python utilities for DrkCraft', add_help=False)
     parser.add_argument('-h', '--help', action='store_true', help='show this help message and exit')
     parser.add_argument('-V', '--version', action='version', version=drkcraft.config.get_version())
-    parser.add_argument('cmd', type=str, choices=(list(CMD.keys()) + ['']), metavar='cmd', help='[build|run|clean|package]',
-        nargs=('?' if '-h' in sys.argv or '--help' in sys.argv else 1), default='')
-    args = parser.parse_args(argv)
+    parser.add_argument('cmd', type=str, metavar='cmd', help='[build|run|clean|package]',
+        choices=(list(CMD.keys()) + ([''] if help_in(argv) else [])),
+        nargs=('?' if help_in(argv) else None), default='')
+    args = parser.parse_args(argv[1:])
 
-    cmd_name = args.cmd[0]
+    cmd_name = args.cmd
 
     if args.help:
         if args.cmd == '':
@@ -37,6 +38,9 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
         cmd_args = sys.argv[2:]
 
     return CMD[cmd_name](cmd_args)
+
+def help_in(args: Sequence[str]) -> bool:
+    return any(h in args for h in { '-h', '--help' })
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

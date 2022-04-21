@@ -16,6 +16,8 @@ OPTIONS = (
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     if sys.argv[0] == 'drkcraft':
         sys.argv[0] += ' run'
+    else:
+        sys.argv[0] = 'drkcraft.run'
 
     args = drkcraft.config.parse_args(argv, OPTIONS, description='Runs DrkCraft')
 

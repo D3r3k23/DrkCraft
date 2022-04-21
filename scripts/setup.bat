@@ -24,6 +24,9 @@ if "%make_venv%" == "true" (
 )
 
 call %venv%\Scripts\activate
+
+mkdir scripts\drkcraft-py\build
 pip install -e scripts\drkcraft-py
+
 pip install --upgrade -r scripts\requirements.txt
 pip install --upgrade -r launcher\requirements.txt

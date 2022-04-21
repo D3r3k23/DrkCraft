@@ -7,6 +7,8 @@ import sys
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     if sys.argv[0] == 'drkcraft':
         sys.argv[0] += ' clean'
+    else:
+        sys.argv[0] = 'drkcraft.clean'
 
     parser = argparse.ArgumentParser(description='Removes build files')
     parser.add_argument('--all', action='store_true')

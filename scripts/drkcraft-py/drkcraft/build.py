@@ -16,6 +16,8 @@ OPTIONS = (
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     if sys.argv[0] == 'drkcraft':
         sys.argv[0] += ' build'
+    else:
+        sys.argv[0] = 'drkcraft.build'
 
     args = drkcraft.config.parse_args(argv, OPTIONS, description='Builds DrkCraft')
 
@@ -28,7 +30,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
     elapsed = end - start
     elapsed_min = round(elapsed) // 60
-    elapsed_sec = elapsed - elapsed_min * 60
+    elapsed_sec = round(elapsed - elapsed_min * 60)
     print(f'Build time: {elapsed_min}min {elapsed_sec}s')
 
     bytes = os.path.getsize(drkcraft.config.get_exe(args.build_config))
