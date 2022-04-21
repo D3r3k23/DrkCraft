@@ -7,12 +7,11 @@ if "%2" == "--clean" set "clean=true"
 set "no_venv=false"
 if "%1" == "--no-venv" set "no_venv=true"
 if "%2" == "--no-venv" set "no_venv=true"
-echo OK 1
+
 if "%no_venv%" == "false" (
-    echo OK 2
     set "venv=.venv"
-    echo OK 3
-    if exist %venv%\ (
+
+    if exist %venv% (
         if "%clean%" == "true" (
             echo Cleaning virtualenv
             rmdir /s /q %venv%
@@ -35,8 +34,7 @@ if "%no_venv%" == "false" (
 
 echo Building drkcraft-py
 if not exist scripts\drkcraft-py\build mkdir scripts\drkcraft-py\build
-pip install -q -e scripts\drkcraft-py
+pip install -e scripts\drkcraft-py
 
-echo Installing dependencies
-pip install --upgrade -r scripts\requirements.txt
+echo Installing launcher dependencies
 pip install --upgrade -r launcher\requirements.txt
