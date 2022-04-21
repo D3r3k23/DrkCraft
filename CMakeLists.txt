@@ -11,17 +11,16 @@ project(DrkCraft VERSION ${DRK_VERSION})
 #############################################
 
 # Options
-option(DRK_EN_PROFILE "Enable profiling" OFF)
+option(DRK_EN_PROFILING "Enable profiling" OFF)
 option(DRK_EN_DEV_MODE "Enable Dev mode" OFF)
-option(DRK_EN_TRACE_LOGGING "Enable trace logging in console" OFF)
 option(DRK_DIST "Dist config" OFF)
 
 # Dist Config
 if(${DRK_DIST})
     set(CMAKE_BUILD_TYPE Release)
-    set(DRK_EN_PROFILE OFF)
+    set(DRK_EN_PROFILING OFF)
     set(DRK_EN_DEV_MODE OFF)
-    set(DRK_EN_TRACE_LOGGING OFF)
+    set(DRK_EN_TRACE_LOG OFF)
     set(DRK_EN_LOGGING OFF)
     set(DRK_EN_ASSERTS OFF)
 else()
@@ -59,13 +58,13 @@ message("Configuring DrkCraft v${DRK_VERSION} build:")
 message("- Platform: ${DRK_PLATFORM}")
 message("- Build config: ${DRK_BUILD_CONFIG}")
 
-if(${DRK_EN_PROFILE})
+if(${DRK_EN_PROFILING})
     message("- Profiling enabled")
 endif()
 if(${DRK_EN_DEV_MODE})
     message("- Dev mode enabled")
 endif()
-if(${DRK_EN_TRACE_LOGGING})
+if(${DRK_EN_TRACE_LOG})
     message("- Trace logging enabled")
 endif()
 if(${DRK_DIST})
@@ -109,16 +108,17 @@ endif()
 
 target_compile_definitions(DrkCraft
   PUBLIC
+    $<$<BOOL:DRK_EN_LOGGING>:"DRK_EN_LOGGING">
     $<$<BOOL:DRK_EN_ASSERTS>:"DRK_EN_ASSERTS">
-    $<$<BOOL:DRK_EN_PROFILE>:"DRK_EN_PROFILE">
+    $<$<BOOL:DRK_EN_PROFILING>:"DRK_EN_PROFILING">
     $<$<BOOL:DRK_EN_DEV_MODE>:"DRK_EN_DEV_MODE">
-    $<$<BOOL:DRK_EN_TRACE_LOGGING>:"DRK_EN_TRACE_LOGGING">
+    $<$<BOOL:DRK_EN_TRACE_LOG>:"DRK_EN_TRACE_LOG">
 )
 
 # Output directory
 set_target_properties(DrkCraft
   PROPERTIES
-    # Use generator expression for MSVC
+    # Use generator expression for MSVC (because its a multi config generator)
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<1:${CMAKE_BUILD_TYPE}>"
 )
 

@@ -188,7 +188,7 @@ namespace DrkCraft
                         std::string name;
                         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
                         {
-                            if (SavedGameLoader::rename_save(savesDir, saveName, name) == ResultSuccess)
+                            if (SavedGameLoader::rename_save(savesDir, saveName, name) == Result::Success)
                                 save = savesDir / name;
                         }
                         ImGui::EndPopup();

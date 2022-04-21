@@ -130,7 +130,7 @@ namespace DrkCraft
             }
             case KeyCode::F5:
             {
-                // Take screenshot
+                // Take screenshot (make screenshot directories if not exist)
                 return true;
             }
             case KeyCode::F6:

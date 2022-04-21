@@ -1,12 +1,14 @@
+from typing import *
+import argparse
+import sys
+import os.path
+import dataclasses
+import enum
+import math
+
 import PIL
 from ruamel.yaml import YAML
 yaml = YAML(typ='safe')
-
-from typing import *
-import argparse
-import dataclasses
-import os.path
-import math
 
 @dataclasses.dataclass
 class Vec2:
@@ -14,7 +16,7 @@ class Vec2:
     y: int = 0
 
 Texture = NewType(PIL.Image.Image)
-Box = NewType(Tuple[int, int] | Tuple[int, int, int, int])
+Box = NewType(tuple[int, int] | tuple[int, int, int, int])
 
 def make_box(upperleft: Vec2) -> Box:
     return (upperleft.x, upperleft.y)
@@ -29,7 +31,7 @@ ATLAS_MAX_WIDTH    = 16
 
 NUM_TEXTURES_PER_BLOCK = 3
 
-def main():
+def main() -> Optional[int]:
     parser = argparse.ArgumentParser(description='Generates textures atlas image for all blocks')
     parser.add_argument(
         'atlas',
@@ -52,6 +54,20 @@ def main():
     )
     args = parser.parse_args()
 
+    class PathType(enum.Enum):
+        File = 0
+        Dir = 1
+
+    files: list[tuple[str, str, PathType]] = [
+        ( args.atlas, 'texture atlas', PathType.File ),
+        ( args.blocks, 'blocks YAML', PathType.File ),
+        ( args.textures, 'textures', PathType.Dir )
+    ]
+    for (path, description, type) in files:
+        if not (os.path.isfile(path) if type == PathType.File else os.path.isdir(path)):
+            print(f'Error: {description} {type} "{path}" not found')
+            return 1
+
     gen_block_texture_atlas(args.blocks, args.textures, args.atlas)
 
 def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: str):
@@ -72,9 +88,9 @@ def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: s
     print(f'Saving texture atlas to "{atlas_name}"')
     atlas.save(os.path.join(texture_dir, atlas_name))
 
-def load_textures(texture_dir: str, texture_names: List[str], f_ext: str) -> List[Texture]:
+def load_textures(texture_dir: str, texture_names: list[str], f_ext: str) -> list[Texture]:
     texturefiles = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
-    textures: List[Texture] = []
+    textures: list[Texture] = []
     for filename in texturefiles:
         try:
             f = open(filename, 'rb')
@@ -91,7 +107,7 @@ def load_textures(texture_dir: str, texture_names: List[str], f_ext: str) -> Lis
             f.close()
     return textures
 
-def get_block_textures(image: Texture) -> List[Texture]:
+def get_block_textures(image: Texture) -> list[Texture]:
     def get_block_face_box(faceindex: int) -> Box:
         upperleft   = Vec2(BLOCK_TEXTURE_SIZE * faceindex, 0)
         bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
@@ -99,7 +115,7 @@ def get_block_textures(image: Texture) -> List[Texture]:
 
     return [ image.crop(get_block_face_box(i)) for i in range(NUM_TEXTURES_PER_BLOCK) ]
 
-def create_block_texture_atlas_image(textures: List[Texture]) -> Texture:
+def create_block_texture_atlas_image(textures: list[Texture]) -> Texture:
     size = find_texture_atlas_size(textures)
     atlas = PIL.Image.new(TEXTURE_MODE, (size.x * BLOCK_TEXTURE_SIZE, size.y * BLOCK_TEXTURE_SIZE))
 
@@ -115,7 +131,7 @@ def create_block_texture_atlas_image(textures: List[Texture]) -> Texture:
 
     return atlas
 
-def find_texture_atlas_size(textures: List[Texture]) -> Vec2:
+def find_texture_atlas_size(textures: list[Texture]) -> Vec2:
     count = len(textures)
     return Vec2(max(count, ATLAS_MAX_WIDTH), int(math.ceil(count / ATLAS_MAX_WIDTH)))
 
@@ -127,4 +143,4 @@ def load_yaml(filename: str) -> Optional[Mapping]:
         return None
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

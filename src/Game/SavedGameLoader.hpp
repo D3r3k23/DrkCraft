@@ -15,8 +15,8 @@ namespace DrkCraft
     {
     public:
         static std::vector<fs::path> get_saves(const fs::path& savesDir);
-        static ResultStatus rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName);
-        static ResultStatus delete_save(const fs::path& save);
+        static Result rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName);
+        static Result delete_save(const fs::path& save);
 
         SavedGameLoader(const fs::path& dir);
         Ptr<World> load(void);

@@ -26,25 +26,27 @@ namespace DrkCraft
         return saves;
     }
 
-    ResultStatus SavedGameLoader::rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName)
+    Result SavedGameLoader::rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName)
     {
         const fs::path oldSaveJson = savesDir / oldName / "save.json";
 
         rapidjson::Document save;
         if (Json::parse(oldSaveJson, save))
             save["name"].SetString(newName.c_str(), newName.length());
+        else
+            return Result::Failure;
 
         Json::write(oldSaveJson, save);
 
         fs::rename(savesDir / oldName, savesDir / newName);
 
-        return ResultSuccess;
+        return Result::Success;
     }
 
-    ResultStatus SavedGameLoader::delete_save(const fs::path& save)
+    Result SavedGameLoader::delete_save(const fs::path& save)
     {
         fs::remove_all(save);
-        return ResultSuccess;
+        return Result::Success;
     }
 
     SavedGameLoader::SavedGameLoader(const fs::path& dir)

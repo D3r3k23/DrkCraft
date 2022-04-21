@@ -35,6 +35,7 @@ Minecraft-based game in C++ created using an OpenGL renderer
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+* Python scripts require Python 3.10
 
 ### Build Instructions (Windows)
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`

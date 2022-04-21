@@ -1,10 +1,7 @@
 @echo OFF
 
-set "print_help=OFF"
-if "%1" == "-h"     set "print_help=ON"
-if "%1" == "--help" set "print_help=ON"
-if "%print_help%" == "ON" (
-    echo Usage: scripts\build.bat [-h] build_config [dev_mode]
+if "%1" == "--help" (
+    echo Usage: scripts\build.bat [--help] build_config [--dev]
     echo.
     echo Positional arguments:
     echo   build_config   --Debug, --Release, --RelWithDebInfo, --Dist

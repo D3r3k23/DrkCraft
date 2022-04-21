@@ -5,6 +5,8 @@
 #include "Core/Build.hpp"
 #include "Core/Bind.hpp"
 #include "Core/SmartPointer.hpp"
+#include "Core/Result.hpp"
+
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"
 
@@ -28,14 +30,5 @@
 #       define NOMINMAX
 #   endif
 #endif
-
-namespace DrkCraft
-{
-    enum ResultStatus
-    {
-        ResultFailure = 0,
-        ResultSuccess = 1
-    };
-}
 
 #endif // DRK_CORE_BASE_HPP

@@ -9,7 +9,7 @@
 
 namespace DrkCraft::Json
 {
-    bool parse(const fs::path& filename, rapidjson::Document& document);
+    Result parse(const fs::path& filename, rapidjson::Document& document);
     void write(const fs::path& filename, const rapidjson::Document& document);
 }
 

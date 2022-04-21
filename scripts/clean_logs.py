@@ -1,14 +1,19 @@
-from typing import Optional
-from datetime import datetime
+from typing import *
 import argparse
+import sys
 import os
 import re
+from datetime import datetime
 
-def main():
+def main() -> Optional[int]:
     parser = argparse.ArgumentParser()
     parser.add_argument('log_dir', type=str, nargs='?', default=os.path.join('data', 'logs'))
     parser.add_argument('--max_age', type=int, default=3)
     args = parser.parse_args()
+
+    if not os.path.isdir(args.log_dir):
+        print(f'Error: log directory "{args.log_dir}" not found')
+        return 1
 
     clean_logs(args.log_dir, args.max_age)
 
@@ -34,4 +39,4 @@ def get_date_from_log_name(log: str) -> Optional[datetime]:
         return None
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

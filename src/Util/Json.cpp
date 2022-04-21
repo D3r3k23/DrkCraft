@@ -10,7 +10,7 @@
 
 namespace DrkCraft::Json
 {
-    bool parse(const fs::path& filename, rapidjson::Document& document)
+    Result parse(const fs::path& filename, rapidjson::Document& document)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -19,10 +19,10 @@ namespace DrkCraft::Json
         if (document.HasParseError())
         {
             DRK_ASSERT_DEBUG(false, "Could not parse json file \"{}\"", filename.generic_string());
-            return false;
+            return Result::Failure;
         }
         else
-            return true;
+            return Result::Success;
     }
 
     void write(const fs::path& filename, const rapidjson::Document& document)

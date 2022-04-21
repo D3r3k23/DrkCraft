@@ -17,11 +17,25 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '>=3.10'
+
+      - name: Install pip
+        uses: python -m pip install --upgrade pip
+
+      - name: Set up environment
+        run: scripts\setup.bat
+
+      - name: Run Mypy
+        run: mypy --no-warn-no-return scripts\drkcraft-py launcher/drkcraft_launcher
+
       - name: CMake build (Debug)
-        run: scripts\win\build.bat --debug --profile --dev --trace
+        run: python -m drkcraft build --debug --profile --dev
 
       - name: CMake build (Release)
-        run: scripts\win\build.bat --release
+        run: python -m drkcraft build --release
 
   # Linux:
   #   runs-on: ubuntu-latest

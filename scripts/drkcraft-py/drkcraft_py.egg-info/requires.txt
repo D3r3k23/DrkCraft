@@ -1,2 +1,4 @@
+mypy
+glad
 ruamel.yaml
 Pillow

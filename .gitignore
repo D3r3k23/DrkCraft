@@ -13,11 +13,12 @@
 
 /data/imgui.ini
 /data/logs/*
-/data/saves/*
-/data/screenshots/*
 
 /data/profile/*
 !/data/profile/README.md
+
+/saves/*
+/screenshots/*
 
 /packages/*
 

@@ -96,7 +96,7 @@ namespace DrkCraft
         return m_type;
     }
 
-    ResultStatus Shader::compile(std::string_view source)
+    Result Shader::compile(std::string_view source)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -111,7 +111,7 @@ namespace DrkCraft
         GLint success = 0;
         glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
         if (success)
-            return ResultSuccess;
+            return Result::Success;
         else
         {
             GLint shaderLogLength = 0;
@@ -122,7 +122,7 @@ namespace DrkCraft
             shaderLog[shaderLogLength - 1] = '\0';
 
             DRK_LOG_CORE_ERROR("{} compilation failed: {}", shaderType, shaderLog.data());
-            return ResultFailure;
+            return Result::Failure;
         }
     }
 
@@ -171,7 +171,7 @@ namespace DrkCraft
             attach(shader);
     }
 
-    ResultStatus ShaderProgram::link(void)
+    Result ShaderProgram::link(void)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Linking ShaderProgram: {}", get_name());
@@ -180,7 +180,7 @@ namespace DrkCraft
         GLint success = 0;
         glGetProgramiv(m_id, GL_LINK_STATUS, &success);
         if (success)
-            return ResultSuccess;
+            return Result::Success;
         else
         {
             GLint programLogLength = 0;
@@ -191,7 +191,7 @@ namespace DrkCraft
             programLog[programLogLength - 1] = '\0';
 
             DRK_LOG_CORE_ERROR("Shader program \"{}\" linkage failed: {}", m_name, programLog.data());
-            return ResultFailure;
+            return Result::Failure;
         }
     }
 
