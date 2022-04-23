@@ -1,6 +1,6 @@
 [Title](assets/logo_full.png)
 
-[![CMake Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/cmake_build.yaml)
+[![Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml)
 
 Minecraft-based game in C++ created using an OpenGL renderer
 
