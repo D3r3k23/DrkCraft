@@ -46,7 +46,7 @@ Minecraft-based game in C++ created using an OpenGL renderer
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
-### Development Environment Setup
+### Build Instructions
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `cd DrkCraft`
 4. `scripts\setup.bat` | `source scripts/setup.sh`
