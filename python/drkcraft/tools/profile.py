@@ -24,18 +24,27 @@ class InstantEvent:
     def from_json(jobj: Mapping):
         return InstantEvent(jobj['name'], jobj['ts'])
 
-def main() -> Optional[int]:
-    parser = argparse.ArgumentParser(description='Analyzes profiler results')
-    parser.add_argument('profile', nargs='?', type=str, default=os.path.join('data', 'profile', 'results.json'))
-    args = parser.parse_args()
+def main(argv: list[str]=sys.argv) -> Optional[int]:
+    prog = argv[0]
+    args = argv[1:]
 
-    if not os.path.isfile(args.profile):
-        print(f'Error: profile file "{args.profile}" not found')
+    description = 'Analyzes profiler results'
+    usage = f'{prog} [profile]'
+
+    profile_default = os.path.join('data', 'profile', 'results.json')
+    profile_help = f'JSON profile data (default={profile_default})'
+
+    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser.add_argument('profile', nargs='?', type=str, default=profile_default, help=profile_help)
+    parsed_args = parser.parse_args(args)
+
+    if not os.path.isfile(parsed_args.profile):
+        print(f'Error: profile file "{parsed_args.profile}" not found')
         return 1
 
-    print(f'Loading "{args.profile}"')
+    print(f'Loading "{parsed_args.profile}"')
     try:
-        profile_json = load_json(args.profile)
+        profile_json = load_json(parsed_args.profile)
     except json.JSONDecodeError as e:
         print(f'JSON Error: {e.msg}')
         return 1
@@ -104,4 +113,4 @@ def load_json(filename: str) -> Optional[Mapping]:
         return None
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

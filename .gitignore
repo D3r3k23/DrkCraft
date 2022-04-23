@@ -2,6 +2,7 @@
 /.VSCodeCounter/*
 /.vs/*
 /.venv/*
+/.mypy_cache/*
 /.sourcetrail/*
 
 **/__pycache__/**

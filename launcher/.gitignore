@@ -1,4 +1,8 @@
+/.venv/
 /build/*
+/dist/*
 
 /Installations/*
 /Screenshots/*
+
+/logs/*

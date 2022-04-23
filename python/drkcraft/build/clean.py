@@ -5,16 +5,17 @@ import os.path
 import sys
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    if sys.argv[0] == 'drkcraft':
-        sys.argv[0] += ' clean'
-    else:
-        sys.argv[0] = 'drkcraft.clean'
+    prog = argv[0]
+    args = argv[1:]
 
-    parser = argparse.ArgumentParser(description='Removes build files')
-    parser.add_argument('--all', action='store_true')
-    args = parser.parse_args(argv)
+    description = 'Removes DrkCraft build files'
+    usage = f'{prog} [-h] [--all]'
 
-    clean(args.all)
+    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser.add_argument('--all', action='store_true', help='Remove all build files')
+    parsed_args = parser.parse_args(args)
+
+    clean(parsed_args.all)
 
 def clean(all: bool=False):
     if all:

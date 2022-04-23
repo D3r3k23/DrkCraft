@@ -8,33 +8,47 @@ set "no_venv=false"
 if "%1" == "--no-venv" set "no_venv=true"
 if "%2" == "--no-venv" set "no_venv=true"
 
-if "%no_venv%" == "false" (
-    set "venv=.venv"
+set "venv=.venv"
 
-    if exist %venv%\ (
+if "%no_venv%" == "false" (
+    if exist "%venv%" (
         if "%clean%" == "true" (
-            echo Cleaning virtualenv
+            if defined VIRTUAL_ENV (
+                echo Deactivating %venv%
+                call deactivate
+            )
+            echo Deleting %venv%
             rmdir /s /q %venv%
-            set "make_venv=true"
-        ) else (
-            set "make_venv=false"
         )
-    ) else (
-        set "make_venv=true"
     )
 
-    if "%make_venv%" == "true" (
-        echo Creating virtualenv
+    if NOT exist "%venv%" (
+        echo Creating %venv%
         python -m venv %venv%
     )
 
-    echo Activating virtualenv
-    call %venv%\Scripts\activate
+    if NOT defined VIRTUAL_ENV (
+        echo Activating %venv%
+        call %venv%\Scripts\activate
+    )
 )
 
-echo Building drkcraft-py
-if not exist scripts\drkcraft-py\build\ mkdir scripts\drkcraft-py\build
-pip install -e scripts\drkcraft-py
+set "install_packages=false"
+if "%no_venv%" == "true" (
+    set "install_packages=true"
+)
+if NOT exist "%venv%\Lib\site-packages\drkcraft-py.egg-link" (
+    set "install_packages=true"
+)
 
-echo Installing launcher dependencies
-pip install --upgrade -r launcher\requirements.txt
+if "%install_packages%" == "true" (
+    echo Building drkcraft-py package
+    pip install -e python
+
+    echo Installing drkcraft-py packages
+    pip install -r python\requirements.txt
+
+    echo Installing launcher packages
+    pip install -r launcher\requirements.txt
+)
+

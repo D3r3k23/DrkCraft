@@ -1,0 +1,4 @@
+mypy
+PyInstaller
+glad
+-r drkcraft/tools/requirements.txt

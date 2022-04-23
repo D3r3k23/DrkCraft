@@ -3,8 +3,7 @@ import subprocess
 import os.path
 import sys
 
-import drkcraft
-from drkcraft.config import Option, BuildConfig
+from .config import Option, BuildConfig
 from .build import build
 
 OPTIONS = (
@@ -14,17 +13,12 @@ OPTIONS = (
 )
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    if sys.argv[0] == 'drkcraft':
-        sys.argv[0] += ' run'
-    else:
-        sys.argv[0] = 'drkcraft.run'
-
-    args = drkcraft.config.parse_args(argv, OPTIONS, description='Runs DrkCraft')
+    args = build.config.parse_args(argv, OPTIONS, 'Runs DrkCraft')
 
     return run(args.build_config, args.en_dev_mode, args.en_trace_log)
 
 def run(build_config: BuildConfig, en_dev_mode: bool=False, en_trace_log: bool=False) -> Optional[int]:
-    exe = drkcraft.config.get_exe(build_config)
+    exe = build.config.get_exe(build_config)
 
     if not os.path.isfile(exe):
         print('Executable "{exe}" not found: building DrkCraft')

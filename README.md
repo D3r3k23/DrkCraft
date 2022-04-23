@@ -18,6 +18,7 @@ Minecraft-based game in C++ created using an OpenGL renderer
 ### Dependencies
 * C++ 20
 * CMake
+* Python 3.10
 * [Dear ImGui](https://github.com/ocornut/imgui)
 * [EnTT](https://github.com/skypjack/entt)
 * [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
@@ -35,11 +36,10 @@ Minecraft-based game in C++ created using an OpenGL renderer
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-* Python tools require Python 3.10
 
 ### Development Environment Setup
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `cd DrkCraft`
-4. `scripts\setup.bat` or `scripts/setup.sh`
+4. `scripts\setup`
 5. `python -m drkcraft build`
 6. `python -m drkcraft run`
