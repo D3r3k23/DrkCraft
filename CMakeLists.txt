@@ -112,7 +112,6 @@ target_compile_definitions(DrkCraft
     $<$<BOOL:DRK_EN_ASSERTS>:"DRK_EN_ASSERTS">
     $<$<BOOL:DRK_EN_PROFILING>:"DRK_EN_PROFILING">
     $<$<BOOL:DRK_EN_DEV_MODE>:"DRK_EN_DEV_MODE">
-    $<$<BOOL:DRK_EN_TRACE_LOG>:"DRK_EN_TRACE_LOG">
 )
 
 # Output directory

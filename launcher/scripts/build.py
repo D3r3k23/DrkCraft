@@ -10,6 +10,10 @@ import PyInstaller.__main__
 PLATFORM = platform.system()
 
 def main() -> Optional[int]:
+    if not 'VIRTUAL_ENV' in os.environ:
+        print('Error: Activate .venv')
+        return 2
+
     if Path(os.getcwd()).name != 'launcher':
         if os.path.isdir('launcher'):
             os.chdir('launcher')
