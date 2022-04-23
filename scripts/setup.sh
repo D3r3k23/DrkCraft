@@ -9,34 +9,46 @@ else
     no_venv="false"
 fi
 
-if [ "$no_venv" == "false" ]; then
-    venv=".venv"
+venv=".venv"
 
+if [ "$no_venv" == "false" ]; then
     if [ -d $venv ]; then
-        if [ "$clean" == "true "]; then
-            echo "Cleaning virtualenv"
+        if [ "$clean" == "true" ]; then
+            if [ -n "$VIRTUAL_ENV" ]; then
+                echo "Deactivating $venv"
+                deactivate
+            fi
+            echo "Deleting $venv"
             rm -r -f $venv
-            make_venv="true"
-        else
-            make_venv="false"
         fi
-    else
-        make_venv="true"
     fi
 
-    if [ "$make_venv" == "true" ]; then
-        echo "Creating virtualenv"
+    if [ ! -d $venv ]; then
+        echo "Creating $venv"
         python -m venv $venv
     fi
 
-    echo "Activating virtualenv"
-    source $venv/bin/activate
+    if [ -z "$VIRTUAL_ENV" ]; then
+        echo "Activating $venv"
+        source $venv/bin/activate
+    fi
 fi
 
-echo "Building drkcraft-py"
-mkdir -p scripts/drkcraft-py/build
-pip install -q -e scripts/drkcraft-py
+if [ "$no_venv" == "true" ]; then
+    install_packages="true"
+elif ! pip list | grep drkcraft-py > /dev/null; then
+    install_packages="true"
+else
+    install_packages="false"
+fi
 
-echo "Installing dependencies"
-pip install --upgrade -r scripts/requirements.txt
-pip install --upgrade -r launcher/requirements.txt
+if [ "$install_packages" == "true" ]; then
+    echo "Building drkcraft-py package"
+    pip install -e python
+
+    echo "Installing drkcraft-py packages"
+    pip install -r python/requirements.txt
+
+    echo "Installing launcher packages"
+    pip install -r launcher/requirements.txt
+fi
