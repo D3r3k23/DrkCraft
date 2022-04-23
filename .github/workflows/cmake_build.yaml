@@ -29,7 +29,7 @@ jobs:
         run: scripts\setup.bat --no-venv
 
       - name: Run Mypy
-        run: mypy --no-warn-no-return python\drkcraft # launcher\drkcraft_launcher
+        run: mypy --config-file python/mypy.ini python\drkcraft launcher\drkcraft_launcher
 
       - name: CMake build (Debug)
         run: python -m drkcraft build --debug --profile --dev
@@ -61,7 +61,7 @@ jobs:
         run: scripts/setup.sh --no-venv
 
       - name: Run Mypy
-        run: mypy --no-warn-no-return python/drkcraft # launcher/drkcraft_launcher
+        run: mypy --config-file python\mypy.ini python/drkcraft launcher/drkcraft_launcher
 
       - name: CMake build (Debug)
         run: python -m drkcraft build --debug --profile --dev

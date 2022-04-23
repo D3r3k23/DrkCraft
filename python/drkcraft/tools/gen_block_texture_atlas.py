@@ -7,7 +7,9 @@ import enum
 import math
 
 import PIL
-from PIL import Image
+import PIL.Image
+from PIL.Image import Image as Texture
+
 from ruamel.yaml import YAML
 yaml = YAML(typ='safe')
 
@@ -16,11 +18,13 @@ class Vec2:
     x: int = 0
     y: int = 0
 
-Texture = NewType('Texture', Image.Image)
-Box = NewType('Box4', tuple[int, int, int, int])
+@dataclasses.dataclass
+class Box:
+    upperleft: Vec2
+    bottomright: Vec2
 
-def make_box(upperleft: Vec2, bottomright: Vec2) -> Box:
-    return (upperleft.x, upperleft.y, bottomright.x, bottomright.y)
+    def tup(self) -> tuple[int, int, int, int]:
+        return ( self.upperleft.x, self.upperleft.y, self.bottomright.x, self.bottomright.y )
 
 TEXTURE_MODE = 'RGBA'
 
@@ -76,19 +80,19 @@ def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: s
         return False
 
     print('Loading textures')
-    texture_names = blocks.keys()
+    texture_names = tuple(blocks.keys())
     textures = load_textures(texture_dir, texture_names, '.png')
     print(f'{len(textures)} textures loaded')
 
     print('Generating texture atlas')
-    atlas = create_block_texture_atlas_image(texture_dir, textures)
+    atlas = create_block_texture_atlas_image(textures)
 
     print(f'Saving texture atlas to "{atlas_name}"')
     atlas.save(os.path.join(texture_dir, atlas_name))
 
     return True
 
-def load_textures(texture_dir: str, texture_names: list[str], f_ext: str) -> list[Texture]:
+def load_textures(texture_dir: str, texture_names: Sequence[str], f_ext: str) -> list[Texture]:
     texture_files = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
     textures: list[Texture] = []
     for filename in texture_files:
@@ -98,7 +102,7 @@ def load_textures(texture_dir: str, texture_names: list[str], f_ext: str) -> lis
             print(f'Error: could not open texture file "{filename}"')
         else:
             try:
-                image = Image.open(f)
+                image = PIL.Image.open(f)
             except PIL.UnidentifiedImageError:
                 print(f'Error: missing texture file: "{filename}"')
             else:
@@ -111,23 +115,23 @@ def get_block_textures(image: Texture) -> list[Texture]:
     def get_block_face_box(face_index: int) -> Box:
         upperleft   = Vec2(BLOCK_TEXTURE_SIZE * face_index, 0)
         bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
-        return make_box(upperleft, bottomright)
+        return Box(upperleft, bottomright)
 
-    return [ image.crop(get_block_face_box(i)) for i in range(NUM_TEXTURES_PER_BLOCK) ]
+    return [ image.crop(get_block_face_box(i).tup()) for i in range(NUM_TEXTURES_PER_BLOCK) ]
 
 def create_block_texture_atlas_image(textures: list[Texture]) -> Texture:
     size = find_texture_atlas_size(textures)
-    atlas = Image.new(TEXTURE_MODE, (size.x * BLOCK_TEXTURE_SIZE, size.y * BLOCK_TEXTURE_SIZE))
+    atlas = PIL.Image.new(TEXTURE_MODE, (size.x * BLOCK_TEXTURE_SIZE, size.y * BLOCK_TEXTURE_SIZE))
 
     def get_atlas_texture_box(atlas_index: int) -> Box:
         coord       = Vec2(atlas_index % ATLAS_MAX_WIDTH, atlas_index // ATLAS_MAX_WIDTH)
         upperleft   = Vec2(coord.x * BLOCK_TEXTURE_SIZE, coord.y * BLOCK_TEXTURE_SIZE)
-        bottomright = Vec2(upperleft.x1 + BLOCK_TEXTURE_SIZE, upperleft.y1 + BLOCK_TEXTURE_SIZE)
-        return make_box(upperleft, bottomright)
+        bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
+        return Box(upperleft, bottomright)
 
     print('Compositing atlas')
     for i, texture in enumerate(textures):
-        atlas.paste(texture, get_atlas_texture_box(i))
+        atlas.paste(texture, get_atlas_texture_box(i).tup())
 
     return atlas
 

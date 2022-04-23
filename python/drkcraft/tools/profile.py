@@ -43,11 +43,12 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
         return 1
 
     print(f'Loading "{parsed_args.profile}"')
-    try:
-        profile_json = load_json(parsed_args.profile)
-    except json.JSONDecodeError as e:
-        print(f'JSON Error: {e.msg}')
-        return 1
+    with open(parsed_args.profile, 'r') as f:
+        try:
+            profile_json = json.load(f)
+        except json.JSONDecodeError as e:
+            print(f'JSON Error: {e.msg}')
+            return 1
 
     analyze_profile(profile_json)
 
@@ -98,19 +99,12 @@ def add_durations(events: list[DurationEvent]) -> dict[str, float]:
             result[event.name] = event.duration
         else:
             result[event.name] += event.duration
-    return { k: result[k] for k in sorted(result.keys(), key=lambda name: result[name], reverse=True) }
+    return { k: result[k] for k in sorted(list(result.keys()), key=lambda name: result[name], reverse=True) }
 
 def print_stats(stats: dict[str, float]):
-    for i, name in enumerate(sorted(stats.keys(), key=stats.get, reverse=True)[:10], 1):
+    for i, name in enumerate(sorted(list(stats.keys()), key=lambda name: stats[name], reverse=True)[:10], 1):
         duration = stats[name]
         print(f'{i}. {name}: {duration / 1000:.2f}ms')
-
-def load_json(filename: str) -> Optional[Mapping]:
-    try:
-        with open(filename, 'r') as f:
-            return json.load(f)
-    except (OSError, IOError):
-        return None
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

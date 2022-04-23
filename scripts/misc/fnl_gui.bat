@@ -1,5 +1,4 @@
 @echo OFF
-
 @REM Requires .NET
 
 set "exe=lib\FastNoiseLite\PreviewApp\build\FastNoiseLiteGUI.exe"

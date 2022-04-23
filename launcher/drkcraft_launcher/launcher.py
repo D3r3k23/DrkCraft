@@ -1,17 +1,13 @@
 from typing import *
 import logging
 import os
-from datetime import datetime
 
 import dearpygui.dearpygui as dpg
 import semver
 
-import drkcraft
-from drkcraft.tools import clean_logs
+from . import *
 
-LOG_DIR = 'logs'
-
-def run(title: str='DrkCraft Launcher', debug: bool=False):
+def run():
     logging.info('Starting DrkCraft Launcher')
 
     logging.debug('Creating DPG window')
@@ -29,24 +25,8 @@ def run(title: str='DrkCraft Launcher', debug: bool=False):
 def start_callback():
     print("Start")
 
-def setup_logger(debug: bool=True):
-    if os.path.isdir(LOG_DIR):
-        clean_logs.clean_logs(LOG_DIR, 6)
-    else:
-        os.makedirs(LOG_DIR)
-
-    log_name = f'DrkCraft_Launcher_{datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.log'
-
-    file_level = logging.INFO if debug else logging.WARN
-    console_level = logging.DEBUG if debug else None
-    log_level = console_level if console_level is not None else file_level
-
-    file_handler = logging.FileHandler(os.path.join(LOG_DIR, log_name)).setLevel(file_level)
-    console_handler = logging.StreamHandler().setLevel(console_level) if console_level is not None else None
-
-    handlers = [ file_handler ] + [ console_handler ] if console_handler is not None else []
-
-    logging.basicConfig(level=log_level, handlers=handlers)
+def get_window_size() -> tuple[int, int]:
+    return ( 960, 720 )
 
 if __name__ == '__main__':
     run()

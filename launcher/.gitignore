@@ -1,8 +1,6 @@
-/.venv/
-/build/*
-/dist/*
+/pyinstaller/*
 
 /Installations/*
 /Screenshots/*
 
-/logs/*
+/Launcher/logs/*

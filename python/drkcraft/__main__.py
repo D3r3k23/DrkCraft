@@ -4,6 +4,7 @@ import sys
 
 import drkcraft
 
+from .build import config
 from .build import build
 from .build import run
 from .build import clean
@@ -13,7 +14,7 @@ from .tools import profile
 from .tools import clean_logs
 from .tools import gen_block_texture_atlas
 
-CMD: dict[str, callable] = {
+CMD: dict[str, Callable] = {
       'build' : build.main,
         'run' : run.main,
       'clean' : clean.main,
@@ -53,14 +54,16 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     else:
         parser.add_argument('cmd', type=str.lower, metavar='cmd', help=cmd_help, choices=cmd_choices)
 
-    parser.add_argument('options', nargs='*')
     parsed_args, cmd_args = parser.parse_known_args(args)
 
     if opt_help:
         parser.print_help()
     elif opt_version:
-        print(drkcraft.config.get_version())
+        print(config.get_version())
     else:
+        if parsed_args.help:
+            cmd_args.append('-h')
+
         cmd_name = parsed_args.cmd
         cmd_argv = [ f'{prog} {cmd_name}' ] + cmd_args
 
