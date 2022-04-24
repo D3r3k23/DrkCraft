@@ -9,23 +9,33 @@ namespace DrkCraft
     class Timestep
     {
     public:
-        Timestep(float elapsed=0) : m_elapsed(elapsed) {}
+        Timestep(float ts=0) : m_delta(ts) {}
 
         Timestep(const Timestep&) = default;
         Timestep& operator=(Timestep&) = default;
 
-        float elapsed(void)  const { return m_elapsed; }
-        operator float(void) const { return m_elapsed; }
+        float ts(void)   const { return m_delta; }
+        float delta(void)  const { return m_delta; }
+        operator float(void) const { return m_delta; }
 
     private:
-        const float m_elapsed; // Seconds
+        const float m_delta; // Seconds
     };
+
+    // If framerate drops below 5 FPS, game will slow down
+    static constexpr float MAX_TIMESTEP = 1.0 / 5;
 
     class TimestepGenerator
     {
     public:
         TimestepGenerator(void) = default;
-        Timestep get_timestep(void);
+
+        Timestep get_timestep(void)
+        {
+            float elapsed = m_timer.elapsed_seconds();
+            m_timer.reset();
+            return { elapsed < MAX_TIMESTEP ? elapsed : MAX_TIMESTEP };
+        }
 
     private:
         Timer m_timer;

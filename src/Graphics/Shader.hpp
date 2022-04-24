@@ -15,7 +15,6 @@
 #include <unordered_map>
 #include <vector>
 #include <span>
-#include <initializer_list>
 
 namespace DrkCraft
 {
@@ -57,7 +56,6 @@ namespace DrkCraft
     public:
         ShaderProgram(std::string_view name);
         ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders);
-        ShaderProgram(std::string_view name, std::initializer_list<Ref<Shader>> shaders);
         virtual ~ShaderProgram(void);
 
         void attach(Ref<Shader> shader);

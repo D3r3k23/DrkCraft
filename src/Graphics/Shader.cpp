@@ -140,17 +140,11 @@ namespace DrkCraft
         DRK_ASSERT_DEBUG(m_id, "glCreateProgram failed");
     }
 
-    ShaderProgram::ShaderProgram(std::string_view name, std::initializer_list<Ref<Shader>> shaders)
-      : ShaderProgram(name)
-    {
-        DRK_PROFILE_FUNCTION();
-        std::ranges::copy(shaders, std::back_inserter(m_shaders));
-    }
-
     ShaderProgram::ShaderProgram(std::string_view name, std::span<Ref<Shader>> shaders)
       : ShaderProgram(name)
     {
         DRK_PROFILE_FUNCTION();
+
         attach(shaders);
     }
 
@@ -167,6 +161,8 @@ namespace DrkCraft
 
     void ShaderProgram::attach(std::span<Ref<Shader>> shaders)
     {
+        DRK_PROFILE_FUNCTION();
+
         for (const auto& shader : shaders)
             attach(shader);
     }

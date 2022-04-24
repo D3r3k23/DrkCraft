@@ -61,13 +61,12 @@ namespace DrkCraft
         DRK_LOG_CORE_INFO("Initializing BlockRenderer");
 
         s_textureSlots = textureSlots.get();
-        s_data.shader.emplace("BlockShader");
 
-        Ref<Shader> shaders[] = {
-            Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex),
-            Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment)
-        };
-        s_data.shader->attach(shaders);
+        auto vs = Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex);
+        auto fs = Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment)
+        DRK_ASSERT_DEBUG(vs && fs, "Block shader compilation failed");
+
+        s_data.shader.emplace("BlockShader", { vs, fs });
         s_data.shader->link();
 
         const uint vbSize = MAX_BLOCK_VERTICES * sizeof(BlockVertex);
