@@ -20,13 +20,10 @@ if "%no_venv%" == "false" (
             echo Deleting %venv%
             rmdir /s /q %venv%
         )
-    )
-
-    if NOT exist "%venv%" (
+    ) else (
         echo Creating %venv%
         python -m venv %venv%
     )
-
     if NOT defined VIRTUAL_ENV (
         echo Activating %venv%
         call %venv%\Scripts\activate
