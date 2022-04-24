@@ -21,13 +21,10 @@ if [ "$no_venv" == "false" ]; then
             echo "Deleting $venv"
             rm -r -f $venv
         fi
-    fi
-
-    if [ ! -d $venv ]; then
+    else
         echo "Creating $venv"
         python -m venv $venv
     fi
-
     if [ -z "$VIRTUAL_ENV" ]; then
         echo "Activating $venv"
         source $venv/bin/activate
