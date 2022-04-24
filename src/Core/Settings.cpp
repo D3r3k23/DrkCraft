@@ -15,58 +15,50 @@ namespace DrkCraft
     //       CommandLineOptions       //
     ////////////////////////////////////
 
-    CommandLineOptions& CommandLineOptions::get_data(void)
+    CommandLineOptions& CommandLineOptions::get_instance(void)
     {
         static CommandLineOptions s_instance;
         return s_instance;
     }
 
-    void CommandLineOptions::parse_args(int argc, char* argv[])
+    void CommandLineOptions::parse_args(int argc, char** argv)
     {
         DRK_PROFILE_FUNCTION();
 
-        get_data().argc = argc;
-        get_data().argv = argv;
+        get_instance().argc = argc;
+        get_instance().argv = argv;
 
-        for (int i = 0; i < argc; i++)
+        for (uint i = 0; i < argc; i++)
         {
-            const std::string_view arg{argv[i]};
-            switch (i)
+            std::string_view arg = argv[i];
+            if (i == 0)
             {
-                case 0:
+                get_instance().options.program = fs::path(arg).filename().string();
+            }
+            else
+            {
+                if (arg == "--dev")
                 {
-                    get_data().name = fs::path(arg).filename().string();
-                    break;
+                    if constexpr (DRK_DEV_MODE_ENABLED)
+                        get_instance().options.en_dev_mode = true;
                 }
-                case 1:
+                else if (arg == "--trace")
                 {
-                    if (arg == "--dev")
-                    {
-                        if constexpr (DRK_DEV_MODE_ENABLED)
-                            get_data().dev = true;
-                        else
-                            DRK_ASSERT_CORE(false, "This build does not support Dev mode. Aborting");
-                    }
-                    break;
+                    get_instance().options.en_trace_log = true;
                 }
             }
         }
     }
 
-    std::string_view CommandLineOptions::get_arg(int i)
+    std::string_view CommandLineOptions::get_arg(uint i)
     {
-        DRK_ASSERT_DEBUG(i < get_data().argc, "arg[{}] does not exist", i);
-        return get_data().argv[i];
+        DRK_ASSERT_DEBUG(i < get_instance().argc, "arg[{}] does not exist", i);
+        return get_instance().argv[i];
     }
 
-    std::string_view CommandLineOptions::get_program_name(void)
+    const OptionsData& CommandLineOptions::get_options(void)
     {
-        return get_data().name;
-    }
-
-    bool CommandLineOptions::dev_mode_activated(void)
-    {
-        return get_data().dev;
+        return get_instance().options;
     }
 
     /////////////////////////////////
@@ -232,10 +224,7 @@ namespace DrkCraft
             load_setting(*map, "width",  initWindowSizeSetting.width,  apply_min(0));
             load_setting(*map, "height", initWindowSizeSetting.height, apply_min(0));
         }
-        load_setting(config, "saves_directory",       m_configData.saves_directory);
         load_setting(config, "screenshots_directory", m_configData.screenshots_directory);
-
-        ensure_dir_exists(m_configData.saves_directory);
     }
 
     void RuntimeSettings::load_settings_file(void)
@@ -313,7 +302,6 @@ namespace DrkCraft
         config     << YAML::Key << "width"  << YAML::Value << m_configData.init_window_size.width;
         config     << YAML::Key << "height" << YAML::Value << m_configData.init_window_size.height;
         config   << YAML::EndMap;
-        config   << YAML::Key << "saves_directory"       << YAML::Value << m_configData.saves_directory;
         config   << YAML::Key << "screenshots_directory" << YAML::Value << m_configData.screenshots_directory;
         config << YAML::EndMap;
 

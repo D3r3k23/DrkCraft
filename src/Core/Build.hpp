@@ -11,7 +11,10 @@
 
 // Version
 
-inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
+namespace DrkCraft
+{
+    inline const DrkCraft::Version BUILD_VERSION(DRK_VERSION_STRING);
+}
 
 // Platform
 
@@ -51,18 +54,18 @@ inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
 #   define DRK_DEBUG_ENABLED 0
 #endif
 
+#if defined(DRK_CONFIG_RELEASE)
+#   define DRK_RELEASE_ENABLED 1
+#else
+#   define DRK_RELEASE_ENABLED 0
+#endif
+
 // Logging
 
 #if defined(DRK_EN_LOGGING)
 #   define DRK_LOGGING_ENABLED 1
-#   if defined(DRK_EN_TRACE_LOGGING)
-#       define DRK_TRACE_LOGGING_ENABLED 1
-#   else
-#       define DRK_TRACE_LOGGING_ENABLED 0
-#   endif
 #else
 #   define DRK_LOGGING_ENABLED 0
-#   define DRK_TRACE_LOGGING_ENABLED 0
 #endif
 
 // Asserts
@@ -75,7 +78,7 @@ inline const DrkCraft::Version DRK_VERSION(DRK_VERSION_STRING);
 
 // Profiling
 
-#if defined(DRK_EN_PROFILE)
+#if defined(DRK_EN_PROFILING)
 #   define DRK_PROFILING_ENABLED 1
 #else
 #   define DRK_PROFILING_ENABLED 0

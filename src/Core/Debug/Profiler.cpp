@@ -89,11 +89,9 @@
 
         void Profiler::begin(const char* name, const char* file)
         {
-            DRK_PROFILE_FUNCTION();
-
             if (!active())
             {
-                m_sessionTimer = make_ptr<ProfileTimer>(m_name, "profile");
+                std::lock_guard lock(m_mutex);
 
                 m_active = true;
                 m_name = name;
@@ -101,28 +99,26 @@
                 ensure_dir_exists(fs::path(file).parent_path());
                 m_outStream.open(file);
 
-                auto time = Time::get_system_time();
-                double timestamp = get_timestamp(Time::get_program_start_time());
-                write_header(m_name, DRK_VERSION_STRING, fmt::format("{:%Y-%m-%d %H:%M:%S}", fmt::localtime(time)).c_str(), timestamp);
+                const auto time = Time::get_system_time();
+                const auto time_str = fmt::format("{:%Y-%m-%d %H:%M:%S}", fmt::localtime(time));
+                const double timestamp = get_timestamp(Time::Clock::now());
+                write_header(m_name, DRK_VERSION_STRING, time_str.c_str(), timestamp);
+
+                m_sessionTimer = make_ptr<ProfileTimer>(m_name, "profiler_session");
             }
         }
 
         void Profiler::end(void)
         {
-            {
-                DRK_PROFILE_FUNCTION();
-
-                if (m_sessionTimer->running())
-                    m_sessionTimer->stop();
-
-                if (active())
-                {
-                    m_mutex.lock();
-                    write_footer();
-                }
-            }
             if (active())
             {
+                if (m_sessionTimer && m_sessionTimer->running())
+                    m_sessionTimer->stop();
+
+                std::lock_guard lock(m_mutex);
+
+                write_footer();
+
                 m_active = false;
                 m_outStream.close();
             }

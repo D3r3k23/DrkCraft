@@ -11,20 +11,20 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 
 [![Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml)
 
-Minecraft-based game in C++ created using an OpenGL renderer
+#### Minecraft-based game in C++ created using an OpenGL renderer
 
 * Minecraft<sup>2</sup>??
 
-### Videos
+## Videos
 [Youtube](https://www.youtube.com/playlist?list=PLD41ILT9lDJa0fnwzflIxxq_wivyyBtYb)
 
-### Manual
+## Manual
 [manual.md](doc/manual.md)
 
-### Images
+## Images
 [Game](media/game.png)
 
-### Dependencies
+## Dependencies
 * C++ 20
 * CMake
 * Python 3.10
@@ -46,7 +46,7 @@ Minecraft-based game in C++ created using an OpenGL renderer
 * [Vorbis](https://github.com/xiph/vorbis)
 * [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
-### Build Instructions
+## Build Instructions
 1. `git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `cd DrkCraft`
 4. `scripts\setup.bat` | `source scripts/setup.sh`

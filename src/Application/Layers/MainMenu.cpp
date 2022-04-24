@@ -1,8 +1,8 @@
 #include "MainMenu.hpp"
 
 #include "Application/Application.hpp"
-#include "Util/ImGui.hpp"
 #include "Application/ImGuiController.hpp"
+#include "Util/ImGui.hpp"
 #include "Core/Settings.hpp"
 #include "Game/SavedGameLoader.hpp"
 #include "Game/Layers/GameLayer.hpp"
@@ -31,7 +31,7 @@ namespace DrkCraft
       : Layer("MainMenuLayer", true),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_loadingScreen(Layer::create<LoadingScreen>("Loading Assets")),
-        m_saves(SavedGameLoader::get_saves(RuntimeSettings::get_config().saves_directory)),
+        m_saves(SavedGameLoader::get_saves("saves")),
         m_show(true)
     {
         DRK_PROFILE_FUNCTION();
@@ -151,7 +151,7 @@ namespace DrkCraft
         static constexpr uint NUM_SAVES = 10;
         const float textHeight = ImGui::GetTextLineHeightWithSpacing();
 
-        static const fs::path savesDir = RuntimeSettings::get_config().saves_directory;
+        static const fs::path savesDir{"saves"};
 
         if (ImGui::BeginTable("Saves", 3, flags, {0.0f, textHeight * NUM_SAVES}));
         {

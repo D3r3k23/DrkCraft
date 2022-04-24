@@ -15,27 +15,32 @@ namespace DrkCraft
     //   DrkCraft(.exe) [--dev]
     // Options:
     //   --dev   Enable Dev mode
+    //   --trace Enable console trace logging
+
+    struct OptionsData
+    {
+        std::string program = "DrkCraft";
+        bool en_dev_mode = false;
+        bool en_trace_log = false;
+    };
 
     class CommandLineOptions
     {
     private:
         CommandLineOptions(void) = default;
-        static CommandLineOptions& get_data(void);
+        static CommandLineOptions& get_instance(void);
 
     public:
-        static void parse_args(int argc, char* argv[]);
-        static std::string_view get_arg(int i);
+        static void parse_args(int argc, char** argv);
+        static std::string_view get_arg(uint i);
 
-        static std::string_view get_program_name(void);
-        static bool dev_mode_activated(void);
+        static const OptionsData& get_options(void);
 
     private:
         int argc = 0;
         char** argv = nullptr;
 
-        // Options
-        std::string name = "DrkCraft";
-        bool dev = false; // Or maybe this should be runtime-enabled with a hotkey
+        OptionsData options;
     };
 
     // These contain settings which are loaded from files
@@ -48,7 +53,6 @@ namespace DrkCraft
             int height = 720;
         } init_window_size;
 
-        std::string saves_directory = "data/saves";
         std::string screenshots_directory = "data/screenshots";
     };
 

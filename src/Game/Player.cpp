@@ -185,7 +185,7 @@ namespace DrkCraft
         }
         else if (eventCode == keybinds.player_actions.fly)
         {
-            if (CommandLineOptions::dev_mode_activated())
+            if (CommandLineOptions::get_options().en_dev_mode)
             {
                 toggle_flying();
                 return true;

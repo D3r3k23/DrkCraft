@@ -34,11 +34,12 @@ def build(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool
     cmake_configure = [ 'cmake',
         '-S', '.',
         '-B', build_dir,
-        '-D', f'DRK_DIST={"ON" if build_config == BuildConfig.Dist else "OFF"}',
         '-D', f'CMAKE_BUILD_TYPE={build_config.to_cmake_build_type()}',
+        '-D', f'DRK_DIST={build_config == BuildConfig.Dist}',
         '-D', f'DRK_EN_PROFILING={en_profiling}',
         '-D', f'DRK_EN_DEV_MODE={en_dev_mode}'
     ]
+    print('>>> ' + ' '.join(cmake_configure))
     try:
         subprocess.run(cmake_configure, check=True)
     except subprocess.CalledProcessError:
@@ -50,6 +51,7 @@ def build(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool
         '--build', build_dir,
         '--config', build_config.to_cmake_build_type()
     ]
+    print('>>> ' + ' '.join(cmake_build))
     try:
         subprocess.run(cmake_build, check=True)
     except subprocess.CalledProcessError:

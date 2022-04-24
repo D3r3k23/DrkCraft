@@ -79,23 +79,15 @@ def parse_args(argv: Sequence[str], options: Sequence[Option], description: Opti
     parsed_args = parser.parse_args(args)
 
     if Option.build_config in options:
-        override_options = False
         if parsed_args.build_config == BuildConfig.Unknown:
             parsed_args.build_config = BuildConfig.Debug
-            override_options = True
-            en_profiling = True
-            en_dev_mode  = True
-            en_trace_log = False
+            if Option.en_profiling in options: parsed_args.en_profiling = True
+            if Option.en_dev_mode  in options: parsed_args.en_dev_mode  = True
+            if Option.en_trace_log in options: parsed_args.en_trace_log = False
         elif parsed_args.build_config == BuildConfig.Dist:
-            override_options = True
-            en_profiling = False
-            en_dev_mode  = False
-            en_trace_log = False
-
-        if override_options:
-            if Option.en_profiling in options: parsed_args.en_profiling = en_profiling
-            if Option.en_dev_mode  in options: parsed_args.en_dev_mode  = en_dev_mode
-            if Option.en_trace_log in options: parsed_args.en_trace_log = en_trace_log
+            if Option.en_profiling in options: parsed_args.en_profiling = False
+            if Option.en_dev_mode  in options: parsed_args.en_dev_mode  = False
+            if Option.en_trace_log in options: parsed_args.en_trace_log = False
 
     return parsed_args
 

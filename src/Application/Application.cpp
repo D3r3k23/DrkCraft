@@ -63,6 +63,9 @@ namespace DrkCraft
 
     void Application::run(void)
     {
+        const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time());
+        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime.count());
+
         get_instance().run_internal();
     }
 
@@ -147,8 +150,8 @@ namespace DrkCraft
 
             // Set up logo splash screen
 
-            DRK_LOG_CORE_TRACE("Setting window icon");
-            m_window.set_icon(Icon(icon_asset_path("icon.png")));
+            // DRK_LOG_CORE_TRACE("Setting window icon");
+            // m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
             DRK_LOG_CORE_TRACE("Initializing Audio system");
             Audio::init(settings.audio.volume);
@@ -200,17 +203,14 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time());
-        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime.count());
-
         TimestepGenerator timestepGen;
-
         m_running = true;
+
         while (m_running)
         {
             DRK_PROFILE_EVENT("New frame");
-
             Timestep timestep = timestepGen.get_timestep();
+
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
                 DRK_PROFILE_SCOPE("Application core loop");

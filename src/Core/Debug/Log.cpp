@@ -3,6 +3,7 @@
 #if DRK_LOGGING_ENABLED
 
     #include "Util/Time.hpp"
+    #include "Core/Settings.hpp"
     #include "Core/Debug/Profiler.hpp"
 
     #include "lib/fs.hpp"
@@ -15,6 +16,8 @@
     #include <fmt/format.h>
     #include <fmt/chrono.h>
 
+    #include <algorithm>
+
     namespace DrkCraft
     {
         const char* Logger::s_name = nullptr;
@@ -23,18 +26,10 @@
         Ref<spdlog::logger> Logger::s_gameLogger;
         Ref<spdlog::logger> Logger::s_eventLogger;
 
+        using DistSink = spdlog::sinks::dist_sink_mt;
         using LogLevel = spdlog::level::level_enum;
 
-    #if DRK_DEBUG_ENABLED
-        constexpr LogLevel STATIC_LOG_LEVEL  = LogLevel::trace;
-        constexpr LogLevel CONSOLE_LOG_LEVEL = DRK_TRACE_LOGGING_ENABLED ? LogLevel::trace : LogLevel::debug;
-        constexpr bool CONSOLE_LOG_ENABLED = true;
-    #else
-        constexpr LogLevel STATIC_LOG_LEVEL  = LogLevel::info;
-        constexpr LogLevel CONSOLE_LOG_LEVEL = LogLevel::off;
-        constexpr bool CONSOLE_LOG_ENABLED = false;
-    #endif
-        constexpr LogLevel FILE_LOG_LEVEL = STATIC_LOG_LEVEL;
+        static Ref<DistSink> create_sink(const fs::path& logFile, LogLevel fileLevel, LogLevel consoleLevel=LogLevel::off);
 
         void Logger::init(const char* logName, const char* dir)
         {
@@ -42,35 +37,41 @@
 
             s_name = logName;
 
-            auto time = Time::get_system_time();
-            auto name = fmt::format("{}_{:%Y-%m-%d_%H.%M.%S}.log", logName, fmt::localtime(time));
-            auto file = fs::path(dir) / fs::path(name);
+            const auto time = Time::get_system_time();
+            const auto name = fmt::format("{}_{:%Y-%m-%d_%H.%M.%S}.log", logName, fmt::localtime(time));
+            const auto file = fs::path(dir) / fs::path(name);
 
-            auto sink = make_ref<spdlog::sinks::dist_sink_mt>();
-            if constexpr (CONSOLE_LOG_ENABLED)
+            LogLevel fileLevel;
+            LogLevel consoleLevel;
+            if constexpr (DRK_DEBUG_ENABLED)
             {
-                auto consoleSink = make_ref<spdlog::sinks::stdout_color_sink_mt>();
-                consoleSink->set_level(CONSOLE_LOG_LEVEL);
-                sink->add_sink(consoleSink);
+                fileLevel = LogLevel::trace;
+                if (CommandLineOptions::get_options().en_trace_log)
+                    consoleLevel = LogLevel::trace;
+                else
+                    consoleLevel = LogLevel::debug;
             }
-            auto fileSink = make_ref<spdlog::sinks::basic_file_sink_mt>(file.string());
-            fileSink->set_level(FILE_LOG_LEVEL);
-            sink->add_sink(fileSink);
+            else
+            {
+                fileLevel = LogLevel::info;
+                consoleLevel = LogLevel::off;
+            }
+            LogLevel staticLevel = std::min(fileLevel, consoleLevel);
 
-            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
-            sink->set_level(STATIC_LOG_LEVEL);
+            auto sink = create_sink(file, fileLevel, consoleLevel);
+            sink->set_level(staticLevel);
 
             s_coreLogger = make_ref<spdlog::logger>("Core", sink);
             s_coreLogger->flush_on(spdlog::level::err);
-            s_coreLogger->set_level(STATIC_LOG_LEVEL);
+            s_coreLogger->set_level(staticLevel);
 
             s_gameLogger = make_ref<spdlog::logger>("Game", sink);
             s_gameLogger->flush_on(spdlog::level::err);
-            s_gameLogger->set_level(STATIC_LOG_LEVEL);
+            s_gameLogger->set_level(staticLevel);
 
             s_eventLogger = make_ref<spdlog::logger>("Event", sink);
             s_eventLogger->flush_on(spdlog::level::err);
-            s_eventLogger->set_level(STATIC_LOG_LEVEL);
+            s_eventLogger->set_level(staticLevel);
 
             DRK_LOG_CORE_INFO("{} Logger initialized", s_name);
         }
@@ -106,6 +107,24 @@
         spdlog::logger& Logger::get_event_logger(void)
         {
             return *s_eventLogger;
+        }
+
+        Ref<DistSink> create_sink(const fs::path& logFile, LogLevel fileLevel, LogLevel consoleLevel)
+        {
+            auto sink = make_ref<spdlog::sinks::dist_sink_mt>();
+            if (consoleLevel < LogLevel::off)
+            {
+                auto consoleSink = make_ref<spdlog::sinks::stdout_color_sink_mt>();
+                consoleSink->set_level(consoleLevel);
+                sink->add_sink(consoleSink);
+            }
+            auto fileSink = make_ref<spdlog::sinks::basic_file_sink_mt>(logFile.string());
+            fileSink->set_level(fileLevel);
+            sink->add_sink(fileSink);
+
+            sink->set_pattern("[%Y-%m-%d %T.%e] [%^%n:%l%$] %v");
+
+            return sink;
         }
     }
 
