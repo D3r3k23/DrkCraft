@@ -3,14 +3,14 @@ name: Build
 on:
   push:
     paths:
-      - '.github/workflows/*'
-      - '*/CMakeLists.txt'
-      - '/src/*'
-      - '/lib/*'
-      - '/python/*'
-      - '/scripts/*'
-      - '/launcher/drkcraft_launcher/*'
-      - '/launcher/scripts/*'
+      - '.github/workflows/**'
+      - 'src/**'
+      - 'lib/**'
+      - 'python/**'
+      - 'scripts/**'
+      - 'launcher/drkcraft_launcher/**'
+      - 'launcher/scripts/**'
+      - 'CMakeLists.txt'
     branches:
       - '**'
     tags-ignore:
