@@ -106,16 +106,6 @@ namespace DrkCraft
         return s_data.lastStats;
     }
 
-    void Renderer::attach_texture(const Texture& texture)
-    {
-
-    }
-
-    void Renderer::detach_texture(const Texture& texture)
-    {
-
-    }
-
     void Renderer::draw_indexed(const VertexArray& vao, std::optional<uint> count)
     {
         DRK_PROFILE_FUNCTION();

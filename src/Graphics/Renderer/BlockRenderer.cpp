@@ -59,51 +59,67 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Initializing BlockRenderer");
+        {
+            DRK_PROFILE_SCOPE("BlockRenderer texture initialization");
+            DRK_LOG_CORE_TRACE("Initializing BlockRenderer textures");
+            s_textureSlots = textureSlots.get();
 
-        s_textureSlots = textureSlots.get();
+            s_data.blockAtlasTextureIndex = s_textureSlots->reserve();
+        }{
+            DRK_PROFILE_SCOPE("BlockShader initialization");
+            DRK_LOG_CORE_TRACE("Initializing BlockShader");
+            s_data.shader.emplace("BlockShader");
 
-        auto vs = Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex);
-        auto fs = Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment)
-        DRK_ASSERT_DEBUG(vs && fs, "Block shader compilation failed");
+            auto vert = Shader::create(shader_asset_path("block_vertex_shader.glsl"), ShaderType::Vertex);
+            auto frag = Shader::create(shader_asset_path("block_fragment_shader.glsl"), ShaderType::Fragment);
+            DRK_ASSERT_DEBUG(vert && frag, "Block shader compilation failed");
 
-        s_data.shader.emplace("BlockShader", { vs, fs });
-        s_data.shader->link();
-
+            s_data.shader->attach(vert);
+            s_data.shader->attach(frag);
+            s_data.shader->link();
+        }
         const uint vbSize = MAX_BLOCK_VERTICES * sizeof(BlockVertex);
         const uint ibSize = MAX_BLOCK_VERTICES * sizeof(Index);
+        {
+            DRK_PROFILE_SCOPE("BlockRenderer VertexArray initialization");
+            DRK_LOG_CORE_TRACE("Initializing BlockRenderer VertexArray");
+            s_data.vertexArray.emplace();
+            {
+                DRK_PROFILE_SCOPE("BlockRenderer VertexBuffer initialization");
+                DRK_LOG_CORE_TRACE("Initializing BlockRenderer VertexBuffer");
+                s_data.vertexBuffer = make_ref<VertexBuffer>(vbSize, PrimitiveType::Triangles);
 
-        s_data.vertexArray.emplace();
-        s_data.vertexBuffer = make_ref<VertexBuffer>(vbSize, PrimitiveType::Triangles);
-        s_data.indexBuffer  = make_ref<IndexBuffer>(ibSize);
+                s_data.vertexBufferData.resize(MAX_BLOCK_VERTICES);
 
-        s_data.vertexBufferData.resize(MAX_BLOCK_VERTICES);
+                s_data.vertexBuffer->set_layout({
+                    { ShaderDataType::Float3, "a_position" },
+                    { ShaderDataType::Float2, "a_texCoord" },
+                    { ShaderDataType::Uint,   "a_texIndex" }
+                });
 
-        s_data.vertexBuffer->set_layout({
-            { ShaderDataType::Float3, "a_position" },
-            { ShaderDataType::Float2, "a_texCoord" },
-            { ShaderDataType::Uint,   "a_texIndex" }
-        });
+                s_data.vertexArray->set_vertex_buffer(s_data.vertexBuffer);
+            }{
+                DRK_PROFILE_SCOPE("BlockRenderer IndexBuffer initialization");
+                DRK_LOG_CORE_TRACE("Initializing BlockRenderer IndexBuffer");
+                s_data.indexBuffer = make_ref<IndexBuffer>(ibSize);
 
-        Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
-            0, 1, 3,  1, 2, 3, // Front
-            1, 5, 2,  5, 6, 2, // Right
-            5, 4, 6,  4, 7, 6, // Back
-            4, 0, 7,  0, 3, 7, // Left
-            3, 2, 7,  2, 6, 7, // Top
-            4, 5, 0,  5, 1, 0  // Bottom
-        };
+                Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
+                    0, 1, 3,  1, 2, 3, // Front
+                    1, 5, 2,  5, 6, 2, // Right
+                    5, 4, 6,  4, 7, 6, // Back
+                    4, 0, 7,  0, 3, 7, // Left
+                    3, 2, 7,  2, 6, 7, // Top
+                    4, 5, 0,  5, 1, 0  // Bottom
+                };
+                std::vector<Index> blockIndexBufferData(MAX_BLOCK_INDICES);
+                for (uint c = 0; c < MAX_BLOCKS; c++)
+                    for (uint i = 0; i < NUM_INDICES_IN_BLOCK; i++)
+                        blockIndexBufferData.push_back(BLOCK_INDICES[i]);
 
-        std::vector<Index> blockIndexBufferData(MAX_BLOCK_INDICES);
-        for (uint c = 0; c < MAX_BLOCKS; c++)
-            for (uint i = 0; i < NUM_INDICES_IN_BLOCK; i++)
-                blockIndexBufferData.push_back(BLOCK_INDICES[i]);
-
-        s_data.indexBuffer->update(blockIndexBufferData);
-
-        s_data.vertexArray->set_vertex_buffer(s_data.vertexBuffer);
-        s_data.vertexArray->set_index_buffer(s_data.indexBuffer);
-
-        s_data.blockAtlasTextureIndex = s_textureSlots->reserve();
+                s_data.indexBuffer->update(blockIndexBufferData);
+                s_data.vertexArray->set_index_buffer(s_data.indexBuffer);
+            }
+        }
     }
 
     void BlockRenderer::shutdown(void)

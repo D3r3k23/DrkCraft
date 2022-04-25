@@ -155,14 +155,14 @@ namespace DrkCraft
 
     void ShaderProgram::attach(Ref<Shader> shader)
     {
+        DRK_PROFILE_FUNCTION();
+
         glAttachShader(m_id, shader->get_id());
         m_shaders.push_back(shader);
     }
 
     void ShaderProgram::attach(std::span<Ref<Shader>> shaders)
     {
-        DRK_PROFILE_FUNCTION();
-
         for (const auto& shader : shaders)
             attach(shader);
     }

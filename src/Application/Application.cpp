@@ -138,7 +138,7 @@ namespace DrkCraft
 
         const auto& settings = RuntimeSettings::get_settings();
         {
-            DRK_LOG_CORE_TRACE("Loading monitors");
+            DRK_LOG_CORE_INFO("Loading monitors");
             DRK_PROFILE_THREAD_CREATE("monitor_load");
             // Probably should eventually do this on the main thread,
             // since GLFW calls may not be thread safe
@@ -148,23 +148,21 @@ namespace DrkCraft
                 m_monitorManager.load_monitors();
             });
 
-            // Set up logo splash screen
-
-            // DRK_LOG_CORE_TRACE("Setting window icon");
+            // DRK_LOG_CORE_INFO("Setting up window");
             // m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
-            DRK_LOG_CORE_TRACE("Initializing Audio system");
+            DRK_LOG_CORE_INFO("Initializing Audio system");
             Audio::init(settings.audio.volume);
 
-            DRK_LOG_CORE_TRACE("Initializing Renderer");
+            DRK_LOG_CORE_INFO("Initializing Renderer");
             Renderer::init(m_context, m_window.get_framebuffer_size());
 
-            DRK_LOG_CORE_TRACE("Initializing ImGui");
+            DRK_LOG_CORE_INFO("Initializing ImGui");
             m_imGuiController.emplace(m_window);
 
             m_window.set_vsync(settings.video.vsync);
 
-            DRK_LOG_CORE_TRACE("Loading assets");
+            DRK_LOG_CORE_INFO("Loading assets");
             load_assets();
         }
         if (settings.video.fullscreen)
@@ -283,6 +281,7 @@ namespace DrkCraft
         ed.dispatch<MonitorDisconnectedEvent>(DRK_BIND_FN(on_monitor_disconnected));
 
         // We could redraw the screen on resize/move
+        // Or only do this for imgui rendering, and always pause the game
 
         if (event == EventCategory::Input)
             m_imGuiController->on_event(event_cast<InputEvent>(event));

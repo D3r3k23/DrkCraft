@@ -60,9 +60,6 @@ namespace DrkCraft
         static void bind_shader(const ShaderProgram& shader);
         static void unbind_shader(const ShaderProgram& shader);
 
-        static void attach_texture(const Texture& texture);
-        static void detach_texture(const Texture& texture);
-
         static void draw_indexed(const VertexArray& vao, std::optional<uint> count={});
 
     private:
