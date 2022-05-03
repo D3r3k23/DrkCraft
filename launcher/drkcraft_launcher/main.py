@@ -18,7 +18,7 @@ class Mode(Enum):
     Install = 0
     Launch = 1
 
-def main():
+def main() -> Optional[int]:
     default_install_dir = installer.get_base_installation_dir()
 
     parser = argparse.ArgumentParser(prog='DrkCraft Launcher')
