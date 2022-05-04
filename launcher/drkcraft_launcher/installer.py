@@ -1,7 +1,7 @@
 from typing import *
 import os.path
 
-from . import *
+from drkcraft_launcher import *
 
 def run():
     ...

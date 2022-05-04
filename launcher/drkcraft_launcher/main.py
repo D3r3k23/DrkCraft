@@ -2,6 +2,7 @@ from typing import *
 import argparse
 import logging
 import os
+import sys
 from enum import Enum
 from pathlib import Path
 from datetime import datetime
@@ -10,9 +11,9 @@ import dearpygui.dearpygui as dpg
 
 from drkcraft.tools import clean_logs
 
-from . import *
-import installer
-import launcher
+from drkcraft_launcher import *
+from . import installer
+from . import launcher
 
 class Mode(Enum):
     Install = 0
@@ -22,7 +23,7 @@ def main() -> Optional[int]:
     default_install_dir = installer.get_base_installation_dir()
 
     parser = argparse.ArgumentParser(prog='DrkCraft Launcher')
-    parser.add_argument('-V', '--version', action='version', version=__version__)
+    parser.add_argument('-V', '--version', action='version', version=VERSION)
     parser.add_argument('-l', '--launch', action='store_true', help='Forces Launch mode')
     parser.add_argument('-d', '--debug', action='store_true', help='Enables debug logging')
     parser.add_argument('-i', '--install', dest='install_dir', help='Overrides base installation directory', default=default_install_dir)
@@ -86,4 +87,4 @@ def setup_logger(en_file: bool=False, en_console: bool=False):
         logging.basicConfig(handlers=handlers)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

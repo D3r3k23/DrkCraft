@@ -5,7 +5,7 @@ import os
 import dearpygui.dearpygui as dpg
 import semver
 
-from . import *
+from drkcraft_launcher import *
 
 def run():
     logging.info('Starting DrkCraft Launcher')

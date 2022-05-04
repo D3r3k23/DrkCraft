@@ -1,4 +1,4 @@
-from .main import main
+from drkcraft.main import main
 import sys
 
 argv = [ 'drkcraft' ] + sys.argv[1:]

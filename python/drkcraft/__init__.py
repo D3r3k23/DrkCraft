@@ -1,2 +1,2 @@
-from .core import *
-from . import package
+from drkcraft.core import *
+from drkcraft import package

@@ -4,15 +4,15 @@ import sys
 
 import drkcraft
 
-from .build import config
-from .build import build
-from .build import run
-from .build import clean
-from .build import package
+from drkcraft.build import config
+from drkcraft.build import build
+from drkcraft.build import run
+from drkcraft.build import clean
+from drkcraft.build import package
 
-from .tools import profile
-from .tools import clean_logs
-from .tools import gen_block_texture_atlas
+from drkcraft.tools import profile
+from drkcraft.tools import clean_logs
+from drkcraft.tools import gen_block_texture_atlas
 
 CMD: dict[str, Callable] = {
       'build' : build.main,

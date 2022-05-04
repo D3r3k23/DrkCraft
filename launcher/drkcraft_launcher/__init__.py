@@ -1,7 +1,8 @@
 import os.path
 import platform
 
-from _version import __version__
+from ._version import __version__
+VERSION = __version__
 
 PLATFORM = platform.system()
 
