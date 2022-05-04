@@ -3,6 +3,8 @@
 
 #include "Core/Base.hpp"
 
+#define DRK_BUFFER_OFFSET(x) (static_cast<const char*>(0) + (x))
+
 namespace DrkCraft
 {
     enum class PrimitiveType

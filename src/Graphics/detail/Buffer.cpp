@@ -88,7 +88,7 @@ namespace DrkCraft
             const auto type  = attribute.type;
             const auto glType = to_gl_base_shader_data_type(type);
             const auto norm  = static_cast<GLboolean>(attribute.normalized);
-            const void* ptr = reinterpret_cast<const void*>(attribute.offset);
+            const void* ptr = DRK_BUFFER_OFFSET(attribute.offset);
 
             if (is_matrix(type))
             {

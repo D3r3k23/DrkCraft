@@ -82,6 +82,7 @@ namespace DrkCraft
             DrkImGui::BeginFullscreen("Main Menu", ImGuiWindowFlags_NoBackground);
 
             // Title image
+
             ImGui::Dummy({250, 100});
             ImGui::PushFont(ImGuiController::get_font(ImGuiFont::Title));
             DrkImGui::TextCentered("DrkCraft");
