@@ -61,11 +61,11 @@ def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bo
     shutil.copy(exe, PACKAGE_DIR)
 
     print('Copying assets')
-    unnecessary_assets = [
+    unnecessary_assets = (
         os.path.join('assets', 'images', 'textures', 'blocks'),
         os.path.join('assets', 'images', 'textures', 'dev')
-    ]
-    ignore_assets = shutil.ignore_patterns(unnecessary_assets) if build_config == BuildConfig.Dist else None
+    )
+    ignore_assets = shutil.ignore_patterns(*unnecessary_assets) if build_config == BuildConfig.Dist else None
     shutil.copytree('assets', os.path.join(PACKAGE_DIR, 'assets'), ignore=ignore_assets)
 
     print('Creating config directory')
@@ -98,7 +98,7 @@ def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bo
         shutil.copy(os.path.join(tools_src_dir, 'gen_block_texture_atlas.py'), tools_dir)
         shutil.copy(os.path.join('data', 'blocks.yaml'), tools_dir)
 
-        print('Writing Tools README')
+        print('Writing tools README')
         write_tools_readme_file(os.path.join(tools_dir, 'README.txt'), en_profiling)
 
     print('Creating about directory')
