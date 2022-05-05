@@ -72,11 +72,11 @@ jobs:
 
       - name: Set up environment
         run: |
-          scripts/setup.sh --no-venv
           sudo apt install xorg-dev
+          scripts/setup.sh --no-venv
 
       - name: Run Mypy
-        run: mypy --config-file python/mypy.ini python/drkcraft scripts launcher
+        run: scripts\mypy.sh
 
       - name: CMake build (Debug)
         run: python -m drkcraft build Debug --profile --dev
