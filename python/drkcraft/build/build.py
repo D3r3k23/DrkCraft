@@ -39,7 +39,7 @@ def build(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool
         '-D', f'DRK_EN_PROFILING={en_profiling}',
         '-D', f'DRK_EN_DEV_MODE={en_dev_mode}'
     ]
-    print('>>> ' + ' '.join(cmake_configure))
+    print('>>>', ' '.join(cmake_configure))
     try:
         subprocess.run(cmake_configure, check=True)
     except subprocess.CalledProcessError:
@@ -51,7 +51,7 @@ def build(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool
         '--build', build_dir,
         '--config', build_config.to_cmake_build_type()
     ]
-    print('>>> ' + ' '.join(cmake_build))
+    print('>>>', ' '.join(cmake_build))
     try:
         subprocess.run(cmake_build, check=True)
     except subprocess.CalledProcessError:

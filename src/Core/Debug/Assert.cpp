@@ -17,7 +17,7 @@
             DRK_LOG_CORE_CRITICAL("[{0}:{1}] Assert ({2}) failed{3}{4}",
                 filename, src.line(), cond, msg.length() > 0 ? ": " : "", msg);
 
-            DRK_LOGGER_FLUSH();
+            DRK_LOGGER_CLOSE();
             DRK_PROFILER_END();
         }
     }

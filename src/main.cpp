@@ -13,6 +13,8 @@ int main(int argc, char* argv[])
     CommandLineOptions::parse_args(argc, argv);
 
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
+    DRK_PROFILE_EVENT("Begin Startup");
+
     DRK_LOGGER_INIT("DrkCraft", "data/logs");
 
     DRK_LOG_CORE_INFO("DrkCraft Build:");
@@ -20,10 +22,14 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
     DRK_LOG_CORE_INFO("Config: {}",  DRK_CONFIG_NAME);
 
-    if constexpr (DRK_PROFILING_ENABLED) DRK_LOG_CORE_INFO("Profiler enabled");
+    if constexpr (DRK_PROFILING_ENABLED)
+        DRK_LOG_CORE_INFO("Profiler enabled");
 
-    if (CommandLineOptions::get_options().en_dev_mode)  DRK_LOG_CORE_INFO("Dev mode enabled");
-    if (CommandLineOptions::get_options().en_trace_log) DRK_LOG_CORE_INFO("Trace logging enabled");
+    if (CommandLineOptions::get_options().en_dev_mode)
+        DRK_LOG_CORE_INFO("Dev mode enabled");
+
+    if (CommandLineOptions::get_options().en_trace_log)
+        DRK_LOG_CORE_INFO("Trace logging enabled");
 
     DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
 
@@ -36,8 +42,12 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_TRACE("Opening Main Menu");
     Application::add_layer(Layer::create<MainMenu>());
 
-    DRK_LOG_CORE_TRACE("Running Application");
+    DRK_PROFILE_EVENT("Startup Complete");
+
+    DRK_LOG_CORE_TRACE("Begin Runtime");
     Application::run();
+
+    DRK_PROFILE_EVENT("Begin Shutdown");
 
     DRK_LOG_CORE_TRACE("Shutting down Application");
     int status = Application::shutdown();

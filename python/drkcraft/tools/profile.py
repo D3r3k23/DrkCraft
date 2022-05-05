@@ -42,13 +42,20 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
         print(f'Error: profile file "{parsed_args.profile}" not found')
         return 1
 
-    print(f'Loading "{parsed_args.profile}"')
+    print(f'Loading {parsed_args.profile}')
     with open(parsed_args.profile, 'r') as f:
         try:
             profile_json = json.load(f)
         except json.JSONDecodeError as e:
-            print(f'JSON Error: {e.msg}')
+            print('JSON Error:', e.msg)
             return 1
+
+    if profile_json['title'] is None or profile_json['time'] is None or profile_json['traceEvents'] is None:
+        print('Invalid profile file:', parsed_args.profile)
+        return 1
+
+    print('Profile:', profile_json['title'])
+    print('Session:', profile_json['time'])
 
     analyze_profile(profile_json)
 
@@ -89,8 +96,8 @@ def analyze_profile(profile_json: Mapping):
     print_stats(threadstats)
 
     # Averate time per call
-
     # Events - frame time
+    # Separate startup, shutdonw, runtime
 
 def add_durations(events: list[DurationEvent]) -> dict[str, float]:
     result: dict[str, float] = {}

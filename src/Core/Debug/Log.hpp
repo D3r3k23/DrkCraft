@@ -8,10 +8,15 @@
     #include "Core/Type.hpp"
     #include "Core/SmartPointer.hpp"
 
+    #include "lib/fs.hpp"
+
     #include <spdlog/logger.h>
+    #include <spdlog/sinks/dist_sink.h>
 
     namespace DrkCraft
     {
+        using DistSink = spdlog::sinks::dist_sink_mt;
+
         class Logger
         {
         public:
@@ -23,9 +28,13 @@
             static spdlog::logger& get_game_logger(void);
             static spdlog::logger& get_event_logger(void);
 
+            static const fs::path& get_filename(void);
+
         private:
             static const char* s_name;
+            static fs::path s_filename;
 
+            static Ref<DistSink> s_sink;
             static Ref<spdlog::logger> s_coreLogger;
             static Ref<spdlog::logger> s_gameLogger;
             static Ref<spdlog::logger> s_eventLogger;
@@ -57,6 +66,9 @@
     #define DRK_LOG_EVENT_ERROR(...)    Logger::get_event_logger().error(__VA_ARGS__)
     #define DRK_LOG_EVENT_CRITICAL(...) Logger::get_event_logger().critical(__VA_ARGS__)
 
+    #define DRK_LOG_FILENAME() Logger::get_filename().filename().string()
+    #define DRK_LOG_FILEPATH() Logger::get_filename()
+
 #else
     #define DRK_LOGGER_INIT(name, dir)
     #define DRK_LOGGER_CLOSE()
@@ -82,6 +94,9 @@
     #define DRK_LOG_EVENT_WARN(...)
     #define DRK_LOG_EVENT_ERROR(...)
     #define DRK_LOG_EVENT_CRITICAL(...)
+
+    #define DRK_LOG_FILENAME()
+    #define DRK_LOG_FILEPATH()
 #endif
 
 #endif // DRK_CORE_DEBUG_LOG_HPP

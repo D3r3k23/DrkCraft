@@ -64,7 +64,7 @@ namespace DrkCraft
     void Application::run(void)
     {
         const auto startupTime = Time::as_duration<Time::Seconds<>>(Time::get_program_time());
-        DRK_LOG_CORE_INFO("Startup time: {:.3f}", startupTime.count());
+        DRK_LOG_CORE_INFO("Startup time: {:.3f}s", startupTime.count());
 
         get_instance().run_internal();
     }

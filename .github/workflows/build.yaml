@@ -76,8 +76,8 @@ jobs:
       - name: Run Mypy
         run: mypy --config-file python/mypy.ini python/drkcraft scripts launcher
 
-      # - name: CMake build (Debug)
-      #   run: python -m drkcraft build Debug --profile --dev
+      - name: CMake build (Debug)
+        run: python -m drkcraft build Debug --profile --dev
 
-      # - name: CMake build (Release)
-      #   run: python -m drkcraft build Release
+      - name: CMake build (Release)
+        run: python -m drkcraft build Release

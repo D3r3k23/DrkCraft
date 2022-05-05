@@ -16,9 +16,9 @@ OPTIONS = (
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     args = config.parse_args(argv, OPTIONS, 'Runs DrkCraft')
 
-    return run(args.build_config, argv[1:], args.en_dev_mode, args.en_trace_log)
+    return run(args.build_config, args.en_dev_mode, args.en_trace_log)
 
-def run(build_config: BuildConfig, args: list[str], en_dev_mode: bool=False, en_trace_log: bool=False) -> Optional[int]:
+def run(build_config: BuildConfig, en_dev_mode: bool=False, en_trace_log: bool=False) -> Optional[int]:
     exe = config.get_exe(build_config)
 
     if not os.path.isfile(exe):
@@ -26,7 +26,10 @@ def run(build_config: BuildConfig, args: list[str], en_dev_mode: bool=False, en_
         if not build(build_config, True, en_dev_mode):
             return 1
 
-    drkcraft_cmd = [ exe ] + args
+    drkcraft_cmd = [ exe ]
+    if en_dev_mode: drkcraft_cmd.append('--dev')
+    if en_trace_log: drkcraft_cmd.append('--trace')
+
     print('>>> ' + ' '.join(drkcraft_cmd))
     try:
         subprocess.run(drkcraft_cmd)

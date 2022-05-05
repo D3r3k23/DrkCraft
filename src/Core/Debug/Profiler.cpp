@@ -96,7 +96,6 @@
                 m_active = true;
                 m_name = name;
 
-                ensure_dir_exists(fs::path(file).parent_path());
                 m_outStream.open(file);
 
                 const auto time = Time::get_system_time();
