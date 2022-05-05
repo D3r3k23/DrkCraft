@@ -71,7 +71,7 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Set up environment
-        run: source scripts/setup.sh --no-venv
+        run: scripts/setup.sh --no-venv
 
       - name: Run Mypy
         run: mypy --config-file python/mypy.ini python/drkcraft scripts launcher

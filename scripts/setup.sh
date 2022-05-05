@@ -49,3 +49,7 @@ if [ "$install_packages" == "true" ]; then
     echo "Installing launcher packages"
     pip install -r launcher/requirements.txt
 fi
+
+# X11 development package is required to compile GLFW
+# - on Debian (Ubuntu & Linux Mint)
+sudo apt install xorg-dev

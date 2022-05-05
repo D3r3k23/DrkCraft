@@ -4,6 +4,7 @@ import sys
 import os
 import re
 from datetime import datetime
+from pathlib import Path
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     prog = argv[0]
@@ -25,7 +26,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
 def clean_logs(logdir: str, max_age: int=5):
     now = datetime.now()
-    logs = os.listdir(logdir)
+    logs = [ log for log in os.listdir(logdir) if Path(log).suffix == '.log' ]
     for log in logs:
         date = get_date_from_log_name(log)
         if date is not None and (now - date).days > max_age:

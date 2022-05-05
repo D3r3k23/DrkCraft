@@ -61,9 +61,12 @@ def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bo
     shutil.copy(exe, PACKAGE_DIR)
 
     print('Copying assets')
-    shutil.copytree('assets', os.path.join(PACKAGE_DIR, 'assets'))
-    if build_config == BuildConfig.Dist:
-        shutil.rmtree(os.path.join(PACKAGE_DIR, 'assets', 'images', 'textures', 'blocks'))
+    unnecessary_assets = [
+        os.path.join('assets', 'images', 'textures', 'blocks'),
+        os.path.join('assets', 'images', 'textures', 'dev')
+    ]
+    ignore_assets = shutil.ignore_patterns(unnecessary_assets) if build_config == BuildConfig.Dist else None
+    shutil.copytree('assets', os.path.join(PACKAGE_DIR, 'assets'), ignore=ignore_assets)
 
     print('Creating config directory')
     shutil.copytree(os.path.join('config', 'default'), os.path.join(PACKAGE_DIR, 'config'))
