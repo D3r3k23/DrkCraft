@@ -78,8 +78,8 @@ jobs:
       - name: Run Mypy
         run: scripts/mypy.sh
 
-      - name: CMake build (Debug)
-        run: python -m drkcraft build Debug --profile --dev
+      # - name: CMake build (Debug)
+      #   run: python -m drkcraft build Debug --profile --dev
 
-      - name: CMake build (Release)
-        run: python -m drkcraft build Release
+      # - name: CMake build (Release)
+      #   run: python -m drkcraft build Release

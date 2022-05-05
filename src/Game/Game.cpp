@@ -17,7 +17,7 @@ namespace DrkCraft
 {
     static const AssetList s_REQUIRED_ASSETS
     {
-        { AssetType::Texture, "blockatlas.png" },
+        // { AssetType::Texture, "blockatlas.png" },
         { AssetType::Texture, "skybox.png"     },
 
         { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
