@@ -76,7 +76,7 @@ jobs:
           scripts/setup.sh --no-venv
 
       - name: Run Mypy
-        run: scripts\mypy.sh
+        run: scripts/mypy.sh
 
       - name: CMake build (Debug)
         run: python -m drkcraft build Debug --profile --dev
