@@ -72,7 +72,7 @@ jobs:
 
       - name: Set up environment
         run: |
-          sudo apt install xorg-dev
+          sudo apt-get install xorg-dev -y
           scripts/setup.sh --no-venv
 
       - name: Run Mypy

@@ -1,15 +1,20 @@
 # X11 development package is required to compile GLFW
 # - on Debian (Ubuntu & Linux Mint): sudo apt install xorg-dev
 
-if [ "$1" == "--clean" ] || [ "$2" == "--clean" ]; then
+if [ "$1" == "--clean" ] || [ "$2" == "--clean" ] || [ "$3" == "--clean" ]; then
     clean="true"
 else
     clean="false"
 fi
-if [ "$1" == "--no-venv" ] || [ "$2" == "--no-venv" ]; then
+if [ "$1" == "--no-venv" ] || [ "$2" == "--no-venv" ] || [ "$3" == "--no-venv" ]; then
     no_venv="true"
 else
     no_venv="false"
+fi
+if [ "$1" == "--update" ] || [ "$2" == "--update" ] || [ "$3" == "--update" ]; then
+    update="true"
+else
+    update="false"
 fi
 
 venv=".venv"
@@ -24,7 +29,8 @@ if [ "$no_venv" == "false" ]; then
             echo "Deleting $venv"
             rm -r -f $venv
         fi
-    else
+    fi
+    if [ ! -d $venv ]; then
         echo "Creating $venv"
         python -m venv $venv
     fi
@@ -34,7 +40,9 @@ if [ "$no_venv" == "false" ]; then
     fi
 fi
 
-if [ "$no_venv" == "true" ]; then
+if [ "$update" == "true" ]; then
+    install_packages="true"
+elif [ "$no_venv" == "true" ]; then
     install_packages="true"
 elif ! pip list | grep drkcraft-py > /dev/null; then
     install_packages="true"
@@ -47,8 +55,8 @@ if [ "$install_packages" == "true" ]; then
     pip install -e python
 
     echo "Installing drkcraft-py packages"
-    pip install -r python/requirements.txt
+    pip install --upgrade -r python/requirements.txt
 
     echo "Installing launcher packages"
-    pip install -r launcher/requirements.txt
+    pip install --upgrade -r launcher/requirements.txt
 fi

@@ -3,10 +3,17 @@
 set "clean=false"
 if "%1" == "--clean" set "clean=true"
 if "%2" == "--clean" set "clean=true"
+if "%3" == "--clean" set "clean=true"
 
 set "no_venv=false"
 if "%1" == "--no-venv" set "no_venv=true"
 if "%2" == "--no-venv" set "no_venv=true"
+if "%3" == "--no-venv" set "no_venv=true"
+
+set "update=false"
+if "%1" == "--update" set "update=true"
+if "%2" == "--update" set "update=true"
+if "%3" == "--update" set "update=true"
 
 set "venv=.venv"
 
@@ -20,7 +27,8 @@ if "%no_venv%" == "false" (
             echo Deleting %venv%
             rmdir /s /q %venv%
         )
-    ) else (
+    )
+    if NOT exist "%venv%" (
         echo Creating %venv%
         python -m venv %venv%
     )
@@ -30,12 +38,18 @@ if "%no_venv%" == "false" (
     )
 )
 
-set "install_packages=false"
-if "%no_venv%" == "true" (
+if "%update%" == "true" (
     set "install_packages=true"
-)
-if NOT exist "%venv%\Lib\site-packages\drkcraft-py.egg-link" (
-    set "install_packages=true"
+) else (
+    if "%no_venv%" == "true" (
+        set "install_packages=true"
+    ) else (
+        if NOT exist "%venv%\Lib\site-packages\drkcraft-py.egg-link" (
+            set "install_packages=true"
+        ) else (
+            set "install_packages=false"
+        )
+    )
 )
 
 if "%install_packages%" == "true" (
@@ -43,9 +57,8 @@ if "%install_packages%" == "true" (
     pip install -e python
 
     echo Installing drkcraft-py packages
-    pip install -r python\requirements.txt
+    pip install --upgrade -r python\requirements.txt
 
     echo Installing launcher packages
-    pip install -r launcher\requirements.txt
+    pip install --upgrade -r launcher\requirements.txt
 )
-
