@@ -49,6 +49,7 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 ## Build Instructions
 1. `$ git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `$ cd DrkCraft`
-4. `$ scripts\setup.bat` | `source scripts/setup.sh`
+3. `$ scripts\setup.bat` (Windows) || `$ source scripts/setup.sh` (Linux)
+4. `$ sudo apt install xorg-dev` (Debian/Ubuntu/Linux Mint)
 5. `(.venv) $ python -m drkcraft build`
 6. `(.venv) $ python -m drkcraft run`
