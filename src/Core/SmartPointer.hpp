@@ -7,8 +7,8 @@
 namespace DrkCraft
 {
     // Lifetime-owning pointer
-    template <typename T>
-    using Ptr = std::unique_ptr<T>;
+    template <typename T, typename D=std::default_delete<T>>
+    using Ptr = std::unique_ptr<T, D>;
 
     template <typename T, typename ... Args>
     constexpr Ptr<T> make_ptr(Args&& ... args)

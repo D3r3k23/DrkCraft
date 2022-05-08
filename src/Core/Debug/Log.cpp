@@ -9,6 +9,7 @@
     #include <spdlog/spdlog.h>
     #include <spdlog/sinks/stdout_color_sinks.h>
     #include <spdlog/sinks/basic_file_sink.h>
+    #include <spdlog/sinks/dist_sink.h>
 
     #include <fmt/format.h>
     #include <fmt/chrono.h>
@@ -20,11 +21,11 @@
         const char* Logger::s_name = nullptr;
         fs::path Logger::s_filename;
 
-        Ref<DistSink> Logger::s_sink;
         Ref<spdlog::logger> Logger::s_coreLogger;
         Ref<spdlog::logger> Logger::s_gameLogger;
         Ref<spdlog::logger> Logger::s_eventLogger;
 
+        using DistSink = spdlog::sinks::dist_sink_mt;
         using LogLevel = spdlog::level::level_enum;
 
         static Ref<DistSink> create_sink(const fs::path& logFile, LogLevel fileLevel, LogLevel consoleLevel=LogLevel::off);
@@ -54,18 +55,18 @@
             }
             LogLevel staticLevel = std::min(fileLevel, consoleLevel);
 
-            s_sink = create_sink(s_filename, fileLevel, consoleLevel);
-            s_sink->set_level(staticLevel);
+            auto sink = create_sink(s_filename, fileLevel, consoleLevel);
+            sink->set_level(staticLevel);
 
-            s_coreLogger = make_ref<spdlog::logger>("Core", s_sink);
+            s_coreLogger = make_ref<spdlog::logger>("Core", sink);
             s_coreLogger->flush_on(spdlog::level::err);
             s_coreLogger->set_level(staticLevel);
 
-            s_gameLogger = make_ref<spdlog::logger>("Game", s_sink);
+            s_gameLogger = make_ref<spdlog::logger>("Game", sink);
             s_gameLogger->flush_on(spdlog::level::err);
             s_gameLogger->set_level(staticLevel);
 
-            s_eventLogger = make_ref<spdlog::logger>("Event", s_sink);
+            s_eventLogger = make_ref<spdlog::logger>("Event", sink);
             s_eventLogger->flush_on(spdlog::level::err);
             s_eventLogger->set_level(staticLevel);
 
@@ -79,7 +80,9 @@
             DRK_LOG_CORE_INFO("Log file: {}", s_filename.generic_string());
 
             flush();
-            s_sink->sinks().clear();
+            s_coreLogger->set_level(LogLevel::off);
+            s_gameLogger->set_level(LogLevel::off);
+            s_eventLogger->set_level(LogLevel::off);
         }
 
         void Logger::flush(void)

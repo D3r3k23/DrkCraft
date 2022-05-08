@@ -108,7 +108,7 @@ namespace DrkCraft
             bool ready = !m_loadQueue.empty();
             if (ready)
             {
-                DRK_PROFILE_EVENT("Load asset");
+                DRK_PROFILE_EVENT_LOCAL("Load asset");
                 m_loading = true;
                 AssetInfo asset = m_loadQueue.pop();
                 load_impl(asset);

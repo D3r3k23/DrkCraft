@@ -23,6 +23,8 @@ namespace DrkCraft
         }
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = "data/imgui.ini";
+
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         {
             DRK_PROFILE_SCOPE("ImGui load fonts");
             const auto fontPath = font_asset_path("Kanit-Medium.ttf");
@@ -117,21 +119,21 @@ namespace DrkCraft
     {
         if (m_enabled)
         {
-            if (should_capture_event(event))
+            if (should_capture_event(event))DRK_LOG_CORE_DEBUG("ImGui capturing event: {}", event.get_string());
                 event.set_handled();
         }
     }
 
     bool ImGuiController::should_capture_event(const InputEvent& event) const
     {
-        if (!m_enabled || !m_blockEvents)
-            return false;
-        else
+        if (m_enabled && m_blockEvents)
         {
             ImGuiIO& io = ImGui::GetIO();
             return (event == EventCategory::Mouse    && io.WantCaptureMouse)
                 || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
         }
+        else
+            return false;
     }
 
     void ImGuiController::block_events(bool block)

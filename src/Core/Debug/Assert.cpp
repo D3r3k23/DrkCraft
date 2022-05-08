@@ -11,7 +11,7 @@
     {
         void on_assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg)
         {
-            DRK_PROFILE_EVENT("Assert failure");
+            DRK_PROFILE_EVENT_LOCAL("Assert failure");
 
             const auto filename = fs::path{src.file_name()}.filename().string();
             DRK_LOG_CORE_CRITICAL("[{0}:{1}] Assert ({2}) failed{3}{4}",

@@ -11,12 +11,9 @@
     #include "lib/fs.hpp"
 
     #include <spdlog/logger.h>
-    #include <spdlog/sinks/dist_sink.h>
 
     namespace DrkCraft
     {
-        using DistSink = spdlog::sinks::dist_sink_mt;
-
         class Logger
         {
         public:
@@ -34,7 +31,6 @@
             static const char* s_name;
             static fs::path s_filename;
 
-            static Ref<DistSink> s_sink;
             static Ref<spdlog::logger> s_coreLogger;
             static Ref<spdlog::logger> s_gameLogger;
             static Ref<spdlog::logger> s_eventLogger;

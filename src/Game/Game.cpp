@@ -18,7 +18,7 @@ namespace DrkCraft
     static const AssetList s_REQUIRED_ASSETS
     {
         // { AssetType::Texture, "blockatlas.png" },
-        { AssetType::Texture, "skybox.png"     },
+        // { AssetType::Texture, "skybox.png"     },
 
         { AssetType::Song, "Alix Perez - Burning Babylon.mp3" }
     };
@@ -79,7 +79,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        update_game_time(timestep);
+        update_game_time(timestep); // class GameTime?
 
         m_sky.update(m_gameTime);
         m_playerController.update(timestep);

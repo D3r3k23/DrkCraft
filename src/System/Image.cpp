@@ -51,13 +51,28 @@ namespace DrkCraft
     }
 
     Image::Image(uint8* data, const uvec2& size, uint channels)
-      : data(data),
-        size(size),
-        channels(channels)
+      : m_data(data),
+        m_size(size),
+        m_channels(channels)
     { }
 
     Image::~Image(void)
     {
-        stbi_image_free(data);
+        stbi_image_free(m_data);
+    }
+
+    const uint8* Image::data(void) const
+    {
+        return m_data;
+    }
+
+    const uvec2& Image::size(void) const
+    {
+        return m_size;
+    }
+
+    const uint Image::channels(void) const
+    {
+        return m_channels;
     }
 }

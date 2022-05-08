@@ -11,13 +11,13 @@ namespace DrkCraft
         return static_cast<bool>(m_image);
     }
 
-    uint8* Icon::get_data(void) const
+    const uint8* Icon::get_data(void) const
     {
-        return m_image->data;
+        return m_image->data();
     }
 
     const uvec2& Icon::get_size(void) const
     {
-        return m_image->size;
+        return m_image->size();
     }
 }

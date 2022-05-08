@@ -12,20 +12,73 @@ namespace DrkCraft
     //       Texture       //
     /////////////////////////
 
+    namespace
+    {
+        GLenum to_gl_internal_format(TextureFormat format)
+        {
+            switch (format)
+            {
+                case TextureFormat::RGB  : return GL_RGB8;
+                case TextureFormat::RGBA : return GL_RGBA8;
+                default:
+                    DRK_ASSERT_DEBUG(false, "Unknown TextureFormat");
+                    return 0;
+            }
+        }
+
+        GLenum to_gl_data_format(TextureFormat format)
+        {
+            switch (format)
+            {
+                case TextureFormat::RGB  : return GL_RGB;
+                case TextureFormat::RGBA : return GL_RGBA;
+                default:
+                    DRK_ASSERT_DEBUG(false, "Unknown TextureFormat");
+                    return 0;
+            }
+        }
+    }
+
     Ref<Texture> Texture::from_image(const Image& image)
     {
-        return {};
+        TextureFormat format = [&]
+        {
+            switch (image.channels())
+            {
+                case 3: return TextureFormat::RGB;
+                case 4: return TextureFormat::RGBA;
+                default:
+                    DRK_ASSERT_CORE(false, "{} channels in image", image.channels());
+                    return TextureFormat::None;
+            }
+        }();
+
+        return Ref<Texture>(new Texture(image.data(), image.size(), format));
     }
 
-    Ref<Texture> Texture::from_data()
+    Ref<Texture> Texture::from_data(const uint8* data, const uvec2& size, TextureFormat format)
     {
-        return {};
+        return Ref<Texture>(new Texture(data, size, format));
     }
 
-    Texture::Texture(void)
+    Texture::Texture(const uint8* data, const uvec2& size, TextureFormat format)
+      : m_format(format),
+        m_size(size)
     {
         DRK_PROFILE_FUNCTION();
+
         glCreateTextures(GL_TEXTURE_2D, 1, &m_id);
+        glTextureStorage2D(m_id, 1, to_gl_internal_format(format), size.x, size.y);
+
+        // Could use builder pattern for parameters
+
+        glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glTextureSubImage2D(m_id, 0, 0, 0, size.x, size.y, to_gl_data_format(format), GL_UNSIGNED_BYTE, data);
     }
 
     Texture::~Texture(void)
@@ -38,13 +91,13 @@ namespace DrkCraft
     {
         DRK_ASSERT_DEBUG(!attached(), "Texture is already attached");
         m_slot = slot;
-        glBindTextureUnit(m_id, slot);
+        glBindTextureUnit(slot, m_id);
     }
 
     void Texture::detach(void) const
     {
         if (m_slot)
-            glBindTextureUnit(0, *m_slot);
+            glBindTextureUnit(*m_slot, 0);
     }
 
     bool Texture::attached(void) const

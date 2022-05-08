@@ -49,12 +49,11 @@
 
             // Thread safe
             void write_dur_profile(const char* cat, const char* name, double start, double duration);
-            void write_inst_profile(const char* cat, const char* name, double ts);
-            void write_flow_profile(const char* ph, const char* cat, const char* name, int id, double ts);
+            void write_inst_profile(const char* cat, const char* name, double ts, char scope); // scope: g: global, p: process, t: thread
+            void write_flow_profile(const char* cat, const char* name, double ts, char ph, int id); // ph: s: start, f: finish
 
-            void create_event_profile(const char* name);
-            void create_flow_begin_profile(const char* cat, const char* name);
-            void create_flow_end_profile(const char* cat, const char* name);
+            void create_event_profile(const char* name, char scope);
+            void create_flow_profile(const char* cat, const char* name, char ph);
 
         private:
             void write_header(const char* title, const char* version, const char* time, double timestamp);
@@ -94,25 +93,29 @@
     #define DRK_OBJECT_PROFILER(name) \
         ProfileTimer object_profile_timer{name, "object"}
 
-    // Instant event
-    #define DRK_PROFILE_EVENT(name) \
-        Profiler::get_instance().create_event_profile(name)
+    // Local event
+    #define DRK_PROFILE_EVENT_LOCAL(name) \
+        Profiler::get_instance().create_event_profile(name, 't')
+
+    // Global event
+    #define DRK_PROFILE_EVENT_GLOBAL(name) \
+        Profiler::get_instance().create_event_profile(name, 'g')
 
     // Begin flow event
     #define DRK_PROFILE_FLOW_BEGIN(cat, name) \
-        Profiler::get_instance().create_flow_begin_profile(cat, name)
+        Profiler::get_instance().create_flow_profile(cat, name, 's')
 
     // End flow event
     #define DRK_PROFILE_FLOW_END(cat, name) \
-        Profiler::get_instance().create_flow_end_profile(cat, name)
+        Profiler::get_instance().create_flow_profile(cat, name, 'f')
 
     // Call immediately before creating a new thread
     #define DRK_PROFILE_THREAD_CREATE(name) \
-        DRK_PROFILE_FLOW_BEGIN("thread", DRK_CONCAT(name, "_thread_flow"))
+        Profiler::get_instance().create_flow_profile("thread", DRK_CONCAT(name, "_thread_flow"), 's')
 
     // Call it beginning of thread
     #define DRK_PROFILE_THREAD(name) \
-        DRK_PROFILE_FLOW_END("thread", DRK_CONCAT(name, "_thread_flow")); \
+        Profiler::get_instance().create_flow_profile("thread", DRK_CONCAT(name, "_thread_flow"), 'f'); \
         ProfileTimer thread_profile_timer{name, "thread"}
 
 #else
@@ -124,7 +127,8 @@
     #define DRK_PROFILE_SCOPE(name)
     #define DRK_OBJECT_PROFILER(name)
 
-    #define DRK_PROFILE_EVENT(name)
+    #define DRK_PROFILE_EVENT_LOCAL(name)
+    #define DRK_PROFILE_EVENT_GLOBAL(name)
 
     #define DRK_PROFILE_FLOW_BEGIN(cat, name)
     #define DRK_PROFILE_FLOW_END(cat, name)

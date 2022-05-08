@@ -153,7 +153,7 @@
             }
         }
 
-        void Profiler::write_inst_profile(const char* cat, const char* name, double ts)
+        void Profiler::write_inst_profile(const char* cat, const char* name, double ts, char scope)
         {
             if (active())
             {
@@ -162,8 +162,8 @@
                 profile << fmt::format("\"ph\":\"{}\",", "i");
                 profile << fmt::format("\"cat\":\"{}\",",  cat);
                 profile << fmt::format("\"name\":\"{}\",", name);
-                profile << fmt::format("\"ts\":{:.2f},",   ts);
-                profile << fmt::format("\"s\":\"{}\",",  "t");
+                profile << fmt::format("\"ts\":{:.2f},",    ts);
+                profile << fmt::format("\"s\":\"{}\",",  scope);
                 profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
                 profile <<             "\"tid\":" <<  std::this_thread::get_id();
                 profile << "}";
@@ -176,7 +176,7 @@
             }
         }
 
-        void Profiler::write_flow_profile(const char* ph, const char* cat, const char* name, int id, double ts)
+        void Profiler::write_flow_profile(const char* cat, const char* name, double ts, char ph, int id)
         {
             if (active())
             {
@@ -199,21 +199,15 @@
             }
         }
 
-        void Profiler::create_event_profile(const char* name)
+        void Profiler::create_event_profile(const char* name, char scope)
         {
-            write_inst_profile("event", name, get_current_timestamp());
+            write_inst_profile("event", name, get_current_timestamp(), scope);
         }
 
-        void Profiler::create_flow_begin_profile(const char* cat, const char* name)
+        void Profiler::create_flow_profile(const char* cat, const char* name, char ph)
         {
             int id = std::hash<std::string>{}(name);
-            write_flow_profile("s", cat, name, id, get_current_timestamp());
-        }
-
-        void Profiler::create_flow_end_profile(const char* cat, const char* name)
-        {
-            int id = std::hash<std::string>{}(name);
-            write_flow_profile("f", cat, name, id, get_current_timestamp());
+            write_flow_profile(cat, name, get_current_timestamp(), id, ph);
         }
 
         void Profiler::write_header(const char* title, const char* version, const char* time, double timestamp)

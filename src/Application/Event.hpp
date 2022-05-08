@@ -60,12 +60,12 @@ namespace DrkCraft
     template <EventConcept E>
     const E& event_cast(const AbstractEventConcept auto& event)
     {
-        return static_cast<const E&>(event);
-
-    #if 0 // defined(DRK_CONFIG_DEBUG)
+    #if defined(DRK_DEBUG_ENABLED)
         const E* e = dynamic_cast<const E*>(&event);
         DRK_ASSERT_DEBUG(e, "Invalid Event cast");
         return *e;
+    #else
+        return static_cast<const E&>(event);
     #endif
     }
 

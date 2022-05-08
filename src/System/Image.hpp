@@ -16,9 +16,14 @@ namespace DrkCraft
         Image(uint8* data, const uvec2& size, uint channels);
         ~Image(void);
 
-        uint8* data;
-        const uvec2 size;
-        const uint channels;
+        const uint8* data(void) const;
+        const uvec2& size(void) const;
+        const uint channels(void) const;
+
+    private:
+        uint8* m_data;
+        uvec2 m_size;
+        uint m_channels;
     };
 }
 

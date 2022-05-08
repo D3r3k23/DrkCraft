@@ -12,19 +12,27 @@
 
 namespace DrkCraft
 {
+    enum class TextureFormat
+    {
+        None = 0,
+
+        RGB,
+        RGBA
+    };
+
     class Texture : public GlObject
     {
     public:
         static Ref<Texture> from_image(const Image& image);
-        static Ref<Texture> from_data();
+        static Ref<Texture> from_data(const uint8* data, const uvec2& size, TextureFormat format);
 
     private:
-        Texture(void);
+        Texture(const uint8* data, const uvec2& size, TextureFormat format);
 
     public:
         virtual ~Texture(void);
 
-        void attach(uint unit) const;
+        void attach(uint slot) const;
         void detach(void) const;
 
         bool attached(void) const;
@@ -33,6 +41,9 @@ namespace DrkCraft
 
     private:
         mutable std::optional<uint> m_slot;
+
+        uvec2 m_size;
+        TextureFormat m_format;
     };
 
     class TextureAtlas

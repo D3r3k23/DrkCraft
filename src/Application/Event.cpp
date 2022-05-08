@@ -44,7 +44,7 @@ namespace DrkCraft
                 DRK_LOG_EVENT_TRACE(msg);
                 break;
             default:
-                DRK_LOG_EVENT_INFO(msg);
+                DRK_LOG_EVENT_DEBUG(msg);
         }
     }
 

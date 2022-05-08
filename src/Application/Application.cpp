@@ -142,14 +142,14 @@ namespace DrkCraft
             DRK_PROFILE_THREAD_CREATE("monitor_load");
             // Probably should eventually do this on the main thread,
             // since GLFW calls may not be thread safe
-            std::jthread monitorLoadThread([this]()
+            std::jthread monitorLoadThread([this]
             {
                 DRK_PROFILE_THREAD("monitor_load");
                 m_monitorManager.load_monitors();
             });
 
-            // DRK_LOG_CORE_INFO("Setting up window");
-            // m_window.set_icon(Icon(icon_asset_path("icon.png")));
+            DRK_LOG_CORE_INFO("Setting window icon");
+            m_window.set_icon(Icon(icon_asset_path("icon.png")));
 
             DRK_LOG_CORE_INFO("Initializing Audio system");
             Audio::init(settings.audio.volume);
@@ -206,7 +206,7 @@ namespace DrkCraft
 
         while (m_running)
         {
-            DRK_PROFILE_EVENT("New frame");
+            DRK_PROFILE_EVENT_LOCAL("New frame");
             Timestep timestep = timestepGen.get_timestep();
 
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);

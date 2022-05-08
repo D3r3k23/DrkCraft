@@ -53,12 +53,12 @@ namespace DrkCraft
         const uint size     = samples * sizeof(int16);
         const uint channels  = static_cast<uint>(info.channels);
         const uint sampleRate = static_cast<uint>(info.hz);
-        const float length   = static_cast<float>(samples) / static_cast<float>(sampleRate);
-        const auto format   = get_audio_source_format(channels);
-        const void* data   = static_cast<const void*>(info.buffer);
+        const float length  = static_cast<float>(samples) / static_cast<float>(sampleRate);
+        const auto format = get_audio_source_format(channels);
+        void* data      = static_cast<void*>(info.buffer);
 
         auto source = new AudioSource(format, data, size, sampleRate, length);
-        std::free(info.buffer);
+        std::free(data);
         return Ref<AudioSource>(source);
     }
 
@@ -93,18 +93,14 @@ namespace DrkCraft
                 ov_clear(&m_vorbisFile);
             }
 
-            uint8* read(void)
+            Ptr<uint8[]> read(void)
             {
                 DRK_PROFILE_FUNCTION();
 
                 static constexpr uint READ_SIZE = 4096;
 
-                Byte* buffer;
-                {
-                    DRK_PROFILE_SCOPE("Allocate buffer");
-                    buffer = new Byte[m_size];
-                }
-                Byte* bufPtr = buffer;
+                Ptr<Byte[]> buffer = make_ptr<Byte[]>(m_size);
+                Byte* bufPtr = buffer.get();
 
                 bool eof = false;
                 bool error = false;
@@ -126,11 +122,9 @@ namespace DrkCraft
                 if (error)
                 {
                     DRK_ASSERT_DEBUG(false, "Error while reading Vorbis file");
-                    delete[] buffer;
-                    return nullptr;
+                    buffer.reset();
                 }
-                else
-                    return buffer;
+                return std::move(buffer);
             }
 
         uint sample_rate(void) const { return m_sampleRate; }
@@ -152,7 +146,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         VorbisFile vorbisFile(filename);
-        if (Byte* readBuffer = vorbisFile.read(); readBuffer)
+        if (auto readBuffer = vorbisFile.read(); readBuffer)
         {
             const uint samples = vorbisFile.samples();
             const uint size     = vorbisFile.size();
@@ -160,11 +154,9 @@ namespace DrkCraft
             const uint sampleRate = vorbisFile.sample_rate();
             const float length   = static_cast<float>(samples) / static_cast<float>(sampleRate);
             const auto format   = get_audio_source_format(channels);
-            const void* data   = static_cast<const void*>(readBuffer);
+            const void* data   = static_cast<const void*>(readBuffer.get());
 
-            auto source = new AudioSource(format, data, size, sampleRate, length);
-            delete[] readBuffer;
-            return Ref<AudioSource>(source);
+            return Ref<AudioSource>(new AudioSource(format, data, size, sampleRate, length));
         }
         else
         {

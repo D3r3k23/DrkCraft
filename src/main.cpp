@@ -13,8 +13,6 @@ int main(int argc, char* argv[])
     CommandLineOptions::parse_args(argc, argv);
 
     DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
-    DRK_PROFILE_EVENT("Begin Startup");
-
     DRK_LOGGER_INIT("DrkCraft", "data/logs");
 
     DRK_LOG_CORE_INFO("DrkCraft Build:");
@@ -42,12 +40,12 @@ int main(int argc, char* argv[])
     DRK_LOG_CORE_TRACE("Opening Main Menu");
     Application::add_layer(Layer::create<MainMenu>());
 
-    DRK_PROFILE_EVENT("Startup Complete");
+    DRK_PROFILE_EVENT_GLOBAL("runtime_start");
 
-    DRK_LOG_CORE_TRACE("Begin Runtime");
+    DRK_LOG_CORE_TRACE("Running Application");
     Application::run();
 
-    DRK_PROFILE_EVENT("Begin Shutdown");
+    DRK_PROFILE_EVENT_GLOBAL("runtime_end");
 
     DRK_LOG_CORE_TRACE("Shutting down Application");
     int status = Application::shutdown();

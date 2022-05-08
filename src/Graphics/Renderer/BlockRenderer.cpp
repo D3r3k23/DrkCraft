@@ -53,18 +53,18 @@ namespace DrkCraft
     }
 
     static BlockRendererData s_data;
-    static TextureManager* s_textureSlots;
+    static TextureManager* s_textureManager;
 
-    void BlockRenderer::init(const Ptr<TextureManager>& textureSlots)
+    void BlockRenderer::init(const Ptr<TextureManager>& textureManager)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Initializing BlockRenderer");
         {
             DRK_PROFILE_SCOPE("BlockRenderer texture initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockRenderer textures");
-            s_textureSlots = textureSlots.get();
+            s_textureManager = textureManager.get();
 
-            s_data.blockAtlasTextureIndex = s_textureSlots->reserve();
+            s_data.blockAtlasTextureIndex = s_textureManager->reserve();
         }{
             DRK_PROFILE_SCOPE("BlockShader initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockShader");
@@ -134,7 +134,7 @@ namespace DrkCraft
     void BlockRenderer::set_texture_atlas(const Ref<Texture>& atlasTexture)
     {
         s_data.blockTextureAtlas.emplace(atlasTexture, NUM_BLOCKS);
-        s_textureSlots->attach(atlasTexture, s_data.blockAtlasTextureIndex);
+        s_textureManager->attach(atlasTexture, s_data.blockAtlasTextureIndex);
     }
 
     void BlockRenderer::begin_scene(void)
@@ -154,6 +154,7 @@ namespace DrkCraft
         flush();
 
         s_data.vertexArray->unbind();
+        s_data.shader->unbind();
     }
 
     void BlockRenderer::submit(const ivec3& position, uint tid)

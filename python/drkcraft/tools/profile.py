@@ -61,6 +61,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
 def analyze_profile(profile_json: Mapping):
     profile = profile_json['traceEvents'][1:]
+    print(f'{len(profile)} trace events found')
 
     functions: list[DurationEvent] = []
     scopes:   list[DurationEvent] = []

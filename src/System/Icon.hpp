@@ -16,7 +16,7 @@ namespace DrkCraft
 
         bool valid(void) const;
 
-        uint8* get_data(void) const;
+        const uint8* get_data(void) const;
         const uvec2& get_size(void) const;
 
     private:

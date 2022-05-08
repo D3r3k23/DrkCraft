@@ -83,11 +83,9 @@ def parse_args(argv: Sequence[str], options: Sequence[Option], description: Opti
             parsed_args.build_config = BuildConfig.Debug
             if Option.en_profiling in options: parsed_args.en_profiling = True
             if Option.en_dev_mode  in options: parsed_args.en_dev_mode  = True
-            if Option.en_trace_log in options: parsed_args.en_trace_log = False
         elif parsed_args.build_config == BuildConfig.Dist:
             if Option.en_profiling in options: parsed_args.en_profiling = False
             if Option.en_dev_mode  in options: parsed_args.en_dev_mode  = False
-            if Option.en_trace_log in options: parsed_args.en_trace_log = False
 
     return parsed_args
 

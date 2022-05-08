@@ -6,32 +6,37 @@
 
 #include <glm/gtx/string_cast.hpp>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 #include <string>
+#include <ostream>
 
 namespace DrkCraft
 {
-    template <typename V>
-    std::string to_string(const V& vec)
+    template <int N, typename T, glm::qualifier Q>
+    std::string to_string(const glm::vec<N, T, Q>& v)
     {
-        return glm::to_string(vec);
+        return glm::to_string(v);
     }
+
+    template <int N, typename T, glm::qualifier Q>
+    std::ostream& operator<<(std::ostream& os, const glm::vec<N, T, Q>& v)
+    {
+        return os << to_string(v);
+    }
+
+    template <int N, typename T, glm::qualifier Q>
+    std::string to_string(const glm::mat<N, N, T, Q>& m)
+    {
+        return glm::to_string(m);
+    }
+
+    template <int N, typename T, glm::qualifier Q>
+    std::ostream& operator<<(std::ostream& os, const glm::mat<N, N, T, Q>& m)
+    {
+        return os << to_string(m);
+    }
+
 }
-
-template <typename V>
-struct fmt::formatter<V>
-{
-    template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(const V& vec, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "%s", to_string(vec))
-    }
-};
 
 #endif // DRK_LIB_GLM_STRING_HPP
