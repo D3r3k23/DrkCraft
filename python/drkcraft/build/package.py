@@ -4,7 +4,10 @@ import sys
 import os
 import pathlib
 
-import strip_markdown as sm
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
+
+import strip_markdown
 
 import drkcraft
 from . import config
@@ -35,8 +38,7 @@ PACKAGE_DIR = os.path.join('packages', 'DrkCraft')
 PLATFORM = drkcraft.get_platform()
 VERSION = config.get_version()
 
-def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool=False,
-                                                    en_build: bool=True) -> Optional[str]:
+def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bool=False, en_build: bool=True) -> Optional[str]:
     package_name = f'DrkCraft-v{VERSION}-{PLATFORM}-{build_config}'
     package_zip = os.path.join('packages', package_name + '.zip')
 
@@ -74,14 +76,13 @@ def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bo
     print('Creating data directory')
     data_dir = os.path.join(PACKAGE_DIR, 'data')
     os.mkdir(data_dir)
-    os.mkdir(os.path.join(data_dir, 'logs'))
 
     if en_profiling:
         print('Creating profile directory')
         os.mkdir(os.path.join(data_dir, 'profile'))
 
         print('Copying profile README')
-        sm.strip_markdown_file(os.path.join('data', 'profile', 'README.md'), os.path.join(data_dir, 'profile'))
+        strip_markdown.strip_markdown_file(os.path.join('data', 'profile', 'README.md'), os.path.join(data_dir, 'profile'))
 
     if build_config != BuildConfig.Dist:
         print('Creating tools directory')
@@ -167,47 +168,60 @@ def write_build_file(filename: str, version: str, platform: str, build_config: s
             f.write(f'Dev mode: {bool_to_en_dis(en_dev_mode)}\n')
 
 def write_license_file(filename: str, drkcraft_license_filename: str, lib_license_filename: str):
+    lines: list[str] = []
+
     with open(drkcraft_license_filename, 'r') as f:
         drkcraft_license = f.read()
 
+    lines += [
+        '========== DrkCraft ============================================================',
+        '',
+        drkcraft_license,
+        '',
+        '================================================================================'
+    ]
+
     with open(lib_license_filename, 'r') as f:
-        lib_license = f.read()
+        lib_licenses = yaml.load(f)
+
+    for lib, license in lib_licenses.items():
+        lines += [
+            '',
+            f'{"=" * 10 + f" {lib} " : =>80}',
+            '',
+            license,
+            '',
+            '=' * 80
+        ]
 
     with open(filename, 'w') as f:
-        f.write('========== DrkCraft ===========================================================\n')
-        f.write('\n')
-        f.write(drkcraft_license)
-        f.write('\n')
-        f.write('===============================================================================\n')
-        f.write('\n')
-        f.write(lib_license)
+        f.writelines(f'{line}\n' for line in lines)
 
 def write_tools_readme_file(filename: str, en_profiling: bool=False):
     lines = [
         'TOOLS',
         '',
         '- Install dependencies using `python -m pip install -r requirements.txt`',
-        '- Run scripts using `python -m tools.',
         ''
     ]
     if en_profiling:
         lines += [
             '****** profile.py ******',
-            f'usage: python -m {os.path.join("tools", "profile.py")} [profile]',
+            f'usage: python {os.path.join("tools", "profile.py")} [profile]',
             'Analyzes profiler results',
             f'- Default profile: {os.path.join("data", "profile", "results.json")}',
             '',
         ]
     lines += [
         '****** clean_logs.py ******',
-        f'- usage: python -m {os.path.join("tools", "clean_logs.py")} [log_dir] [--max_age]',
+        f'usage: python {os.path.join("tools", "clean_logs.py")} [log_dir] [--max_age]',
         '- Cleans log directory',
+        ''
     ]
     lines += [
         '****** gen_block_texture_atlas.py ******',
-        f'- usage: python -m {os.path.join("tools", "gen_block_texture_atlas.py")} [atlas] [--blocks] [--textures]',
+        f'usage: python {os.path.join("tools", "gen_block_texture_atlas.py")} [atlas] [--blocks] [--textures]',
         '- Generates textures atlas image for all blocks',
-        ''
     ]
 
     with open(filename, 'w') as f:

@@ -12,6 +12,9 @@ namespace DrkCraft
         static void init(void);
         static void shutdown(void);
 
+        static void begin_frame(void);
+        static void end_frame(void);
+
         static void begin_scene(void);
         static void end_scene(void);
     };

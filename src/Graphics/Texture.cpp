@@ -90,6 +90,7 @@ namespace DrkCraft
     void Texture::attach(uint slot) const
     {
         DRK_ASSERT_DEBUG(!attached(), "Texture is already attached");
+
         m_slot = slot;
         glBindTextureUnit(slot, m_id);
     }
@@ -158,8 +159,8 @@ namespace DrkCraft
     {
         if (full())
         {
-            DRK_ASSERT_DEBUG(false, "Texture slots are full");
-            DRK_LOG_CORE_ERROR("Texture slots are full");
+            DRK_ASSERT_DEBUG(false, "All texture slots are full");
+            DRK_LOG_CORE_ERROR("All texture slots are full");
         }
         else
         {

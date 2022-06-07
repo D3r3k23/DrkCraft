@@ -35,7 +35,7 @@ namespace DrkCraft
 
         struct BlockRendererData
         {
-            BlockRendererStats lastStats;
+            BlockRendererStats lastFrameStats;
             BlockRendererStats stats;
 
             std::optional<ShaderProgram> shader;
@@ -47,24 +47,24 @@ namespace DrkCraft
             std::vector<BlockVertex> vertexBufferData;
             uint indices = 0;
 
+            TextureManager* textureManager;
             std::optional<TextureAtlas> blockTextureAtlas;
             uint blockAtlasTextureIndex;
         };
     }
 
     static BlockRendererData s_data;
-    static TextureManager* s_textureManager;
 
-    void BlockRenderer::init(const Ptr<TextureManager>& textureManager)
+    void BlockRenderer::init(TextureManager* textureManager)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Initializing BlockRenderer");
         {
             DRK_PROFILE_SCOPE("BlockRenderer texture initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockRenderer textures");
-            s_textureManager = textureManager.get();
+            s_data.textureManager = textureManager;
 
-            s_data.blockAtlasTextureIndex = s_textureManager->reserve();
+            s_data.blockAtlasTextureIndex = s_data.textureManager->reserve();
         }{
             DRK_PROFILE_SCOPE("BlockShader initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockShader");
@@ -134,16 +134,24 @@ namespace DrkCraft
     void BlockRenderer::set_texture_atlas(const Ref<Texture>& atlasTexture)
     {
         s_data.blockTextureAtlas.emplace(atlasTexture, NUM_BLOCKS);
-        s_textureManager->attach(atlasTexture, s_data.blockAtlasTextureIndex);
+        s_data.textureManager->attach(atlasTexture, s_data.blockAtlasTextureIndex);
+    }
+
+    void BlockRenderer::begin_frame(void)
+    {
+        reset_stats();
+    }
+
+    void BlockRenderer::end_frame(void)
+    {
+
     }
 
     void BlockRenderer::begin_scene(void)
     {
-        const Camera& camera = Renderer::get_camera();
+        const Camera& camera = Renderer::get_scene().get_camera();
         s_data.shader->bind();
         s_data.shader->upload_uniform("u_viewProjection", camera.get_view_projection());
-
-        reset_stats();
 
         s_data.vertexArray->bind();
         start_batch();
@@ -199,12 +207,12 @@ namespace DrkCraft
 
     const BlockRendererStats& BlockRenderer::get_stats(void)
     {
-        return s_data.lastStats;
+        return s_data.lastFrameStats;
     }
 
     void BlockRenderer::reset_stats(void)
     {
-        s_data.lastStats = s_data.stats;
+        s_data.lastFrameStats = s_data.stats;
         s_data.stats = BlockRendererStats{};
     }
 

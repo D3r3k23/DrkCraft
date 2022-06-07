@@ -15,12 +15,12 @@ namespace DrkCraft
     //       Monitor       //
     /////////////////////////
 
-    Monitor::Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>& eventHandler)
+    Monitor::Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>* eventHandler)
       : m_monitor(monitor),
         m_number(number)
     {
         m_vidMode = find_best_vid_mode();
-        glfwSetMonitorUserPointer(m_monitor, static_cast<void*>(&eventHandler));
+        glfwSetMonitorUserPointer(m_monitor, static_cast<void*>(eventHandler));
     }
 
     Monitor::~Monitor(void)
@@ -163,9 +163,9 @@ namespace DrkCraft
         glfwSetMonitorCallback(nullptr);
     }
 
-    void MonitorManager::register_event_handler(const AbstractEventHandlerFn<MonitorEvent>& eventHandler)
+    void MonitorManager::register_event_handler(AbstractEventHandlerFn<MonitorEvent> handler)
     {
-        m_eventHandler = eventHandler;
+        m_eventHandler = std::move(handler);
     }
 
     void MonitorManager::load_monitors(void)
@@ -191,7 +191,7 @@ namespace DrkCraft
             DRK_PROFILE_SCOPE("Monitor load");
 
             const auto& [number, glfwMonitor] = monitorPair;
-            Monitor monitor(glfwMonitor, number, m_eventHandler);
+            Monitor monitor(glfwMonitor, number, &m_eventHandler);
 
             std::lock_guard lock(mutex);
             m_monitors.push_back(std::move(monitor));
@@ -264,10 +264,10 @@ namespace DrkCraft
     void MonitorManager::deactivate_fullscreen(Window& window)
     {
         const auto pos  = m_savedWindowedPos.value_or(ivec2{0, 0});
-        const auto size = lazy_value_or(m_savedWindowedSize, []
+        const auto size = lazy_value_or(m_savedWindowedSize, []() -> uvec2
         {
             const auto& size = RuntimeSettings::get_config().init_window_size;
-            return uvec2{size.width, size.height};
+            return { size.width, size.height };
         });
 
         m_fullscreen = false;

@@ -1,4 +1,7 @@
-/pyinstaller/*
+/.venv/*
+/install/*
+
+/DrkCraft Launcher
 
 /Installations/*
 /Screenshots/*

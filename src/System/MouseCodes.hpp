@@ -13,7 +13,7 @@ namespace DrkCraft
     MouseCode to_mouse_code(std::string_view str);
     std::string_view mouse_code_name(MouseCode button);
 
-    // From glfw3.h, same codes as in imgui_impl_glfw.cpp
+    // From glfw3.h
     enum class MouseCode
     {
         None = -1,

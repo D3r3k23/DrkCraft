@@ -11,9 +11,9 @@ import dearpygui.dearpygui as dpg
 
 from drkcraft.tools import clean_logs
 
-from drkcraft_launcher import *
-from . import installer
-from . import launcher
+from config import *
+import installer
+import launcher
 
 class Mode(Enum):
     Install = 0
@@ -29,10 +29,12 @@ def main() -> Optional[int]:
     parser.add_argument('-i', '--install', dest='install_dir', help='Overrides base installation directory', default=default_install_dir)
     args = parser.parse_args()
 
-    install_dir = args.install_dir
-
-    in_install_dir = Path(os.getcwd()) == Path(install_dir)
     en_debug = args.debug
+
+    install_dir = Path(args.install_dir)
+    cwd = Path(os.getcwd())
+
+    in_install_dir = install_dir == cwd
 
     if args.launch or in_install_dir:
         mode = Mode.Launch

@@ -22,6 +22,16 @@ namespace DrkCraft
 
     }
 
+    void TextRenderer::begin_frame(void)
+    {
+
+    }
+
+    void TextRenderer::end_frame(void)
+    {
+
+    }
+
     void TextRenderer::begin_scene(void)
     {
 

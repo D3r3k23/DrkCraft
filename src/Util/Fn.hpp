@@ -6,12 +6,12 @@
 #include <functional>
 #include <concepts>
 #include <optional>
+#include <variant>
 #include <utility>
-
-// Functional programming utilities
 
 namespace DrkCraft
 {
+    // For std::visit
     template <typename ... T>
     struct Overload : T ...
     {
@@ -19,7 +19,7 @@ namespace DrkCraft
     };
 
     template <typename T>
-    T lazy_value_or(const std::optional<T>& opt, auto fn)
+    T lazy_value_or(const std::optional<T>& opt, std::invocable auto fn)
     {
         if (opt.has_value())
             return opt.value();
@@ -33,7 +33,16 @@ namespace DrkCraft
         return [&](auto&& ... args) -> R
         {
             prefix();
-            fn(std::forward<Args>(args)...);
+            return fn(std::forward<Args>(args)...);
+        };
+    }
+
+    template <typename F, typename G, typename ... Args>
+    std::function<F(Args...)> compose(std::function<F(G)> f, std::function<G(Args...)> g)
+    {
+        return [&](auto&& ... args) -> F
+        {
+            return f(g(args));
         };
     }
 }

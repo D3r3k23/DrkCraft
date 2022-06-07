@@ -11,7 +11,7 @@
 #include "Application/EventGenerator.hpp"
 #include "Application/Layer.hpp"
 #include "Application/LayerStack.hpp"
-#include "Core/Timestep.hpp"
+#include "Util/Timestep.hpp"
 
 #include <string_view>
 #include <optional>

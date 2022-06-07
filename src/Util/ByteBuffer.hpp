@@ -8,44 +8,60 @@
 
 namespace DrkCraft
 {
-    template <int SIZE>
     class ByteBuffer
     {
     public:
         ByteBuffer(void)
-        {
-            m_data = new Byte[SIZE];
-        }
+          : m_data(nullptr)
+            m_size(0);
+        { }
+
+        ByteBuffer(uint size)
+          : m_data(new Byte[size]),
+            m_size(size)
+        { }
 
         ByteBuffer(std::span<Byte> data)
-          : ByteBuffer()
+          : ByteBuffer(data.size())
         {
-            DRK_ASSERT_DEBUG_NO_MSG(data.size() <= SIZE);
-            std::copy(data, data + SIZE, m_data);
+            std::copy_n(data.begin()), data.size(), m_data);
         }
 
-        ByteBuffer(const ByteBuffer<SIZE>& other)
-          : ByteBuffer()
+        ByteBuffer(const ByteBuffer& other)
+          : ByteBuffer(other.size())
         {
-            std::copy(data, data + SIZE, m_data);
-        }
-
-        ByteBuffer& operator=(const ByteBuffer<SIZE>& other)
-        {
-            std::fill(m_data, m_data + SIZE, 0);
-            std::copy(data, data + SIZE, m_data);
-            return *this;
+            std::copy(other.data(), other.data() + other.size(), m_data);
         }
 
         ByteBuffer(ByteBuffer<SIZE>&& other)
+          : ByteBuffer(other.size)
         {
-            m_data = other.m_data;
-            other.m_data = nullptr;
+            std::swap(other.m_data, m_data);
+            other.m_size = 0;
         }
 
-        ByteBuffer& operator=(ByteBuffer<SIZE>&& other)
+        ByteBuffer& operator=(const ByteBuffer& other)
         {
-            m_data = other.m_data;
+            delete[] m_data;
+
+            m_data = new Byte[other.size()];
+            m_size = other.size();
+
+            std::copy(other.data(), other.data() + other.size(), m_data);
+
+            return *this;
+        }
+
+        ByteBuffer& operator=(ByteBuffer&& other)
+        {
+            delete[] m_data;
+
+            m_data = other.data();
+            m_size = other.size();
+
+            other.m_data = nullptr;
+            other.m_size = 0;
+
             return *this;
         }
 
@@ -60,11 +76,15 @@ namespace DrkCraft
         Byte* data(void)
             { return m_data; }
 
+        const Byte* data(void) const
+            { return m_data; }
+
         uint size(void) const
             { return SIZE; }
 
     private:
         Byte* m_data;
+        uint m_size;
     };
 }
 

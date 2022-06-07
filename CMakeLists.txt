@@ -53,7 +53,7 @@ endif()
 
 #### Configuration info dump ####
 
-message("=======================================")
+message("===========================================")
 message("Configuring DrkCraft v${DRK_VERSION} build:")
 message("- Platform: ${DRK_PLATFORM}")
 message("- Build config: ${DRK_BUILD_CONFIG}")
@@ -73,7 +73,7 @@ endif()
 
 message("- Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 message("- Compiler: ${CMAKE_CXX_COMPILER}")
-message("=======================================")
+message("===========================================")
 
 # C++ Standard - C++20
 set(CMAKE_CXX_STANDARD 20)

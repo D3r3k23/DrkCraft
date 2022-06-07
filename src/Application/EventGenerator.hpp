@@ -13,7 +13,7 @@ namespace DrkCraft
         EventGenerator(Window& window);
         ~EventGenerator(void);
 
-        void register_event_handler(const AbstractEventHandlerFn<Event>& handler);
+        void register_event_handler(AbstractEventHandlerFn<Event> handler);
         void poll_events(void);
 
     private:

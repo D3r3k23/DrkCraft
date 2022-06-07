@@ -3,6 +3,7 @@
 #include "Graphics/Renderer/BlockRenderer.hpp"
 #include "Graphics/Renderer/MeshRenderer.hpp"
 #include "Graphics/Renderer/TextRenderer.hpp"
+#include "Graphics/detail/Buffer.hpp"
 #include "Graphics/detail/Util.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -16,16 +17,16 @@ namespace DrkCraft
     {
         struct RendererData
         {
-            RendererStats lastStats;
+            RendererStats lastFrameStats;
             RendererStats stats;
 
-            SceneData sceneData;
+            Scene scene;
+
+            Ptr<TextureManager> textureManager;
         };
     }
 
     static RendererData s_data;
-
-    Ptr<TextureManager> s_textureManager;
 
     void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
     {
@@ -47,9 +48,9 @@ namespace DrkCraft
         // clear();
         // context.swap_buffers();
 
-        s_textureManager = make_ptr<TextureManager>();
+        s_data.textureManager = make_ptr<TextureManager>();
 
-        BlockRenderer::init(s_textureManager);
+        BlockRenderer::init(s_data.textureManager.get());
         MeshRenderer::init();
         TextRenderer::init();
     }
@@ -62,33 +63,7 @@ namespace DrkCraft
         MeshRenderer::shutdown();
         BlockRenderer::shutdown();
 
-        s_textureManager.reset();
-    }
-
-    void Renderer::begin_frame(void)
-    {
-        clear();
-    }
-
-    void Renderer::end_frame(void)
-    {
-
-    }
-
-    void Renderer::begin_scene(const SceneData& data)
-    {
-        s_data.sceneData = data;
-        reset_stats();
-    }
-
-    void Renderer::end_scene(void)
-    {
-        s_data.lastStats = s_data.stats;
-    }
-
-    const Camera& Renderer::get_camera(void)
-    {
-        return s_data.sceneData.camera;
+        s_data.textureManager.reset();
     }
 
     void Renderer::set_viewport(int x, int y, uint width, uint height)
@@ -101,9 +76,47 @@ namespace DrkCraft
         set_viewport(pos.x, pos.y, size.x, size.y);
     }
 
+    void Renderer::begin_frame(void)
+    {
+        reset_stats();
+        clear();
+
+        BlockRenderer::begin_frame();
+        MeshRenderer::begin_frame();
+        TextRenderer::begin_frame();
+    }
+
+    void Renderer::end_frame(void)
+    {
+        TextRenderer::end_frame();
+        MeshRenderer::end_frame();
+        BlockRenderer::end_frame();
+    }
+
+    void Renderer::begin_scene(const Camera& camera)
+    {
+        s_data.scene.set_camera(camera);
+        begin_scene();
+    }
+
+    void Renderer::begin_scene(void)
+    {
+        s_data.scene.reset_lights();
+    }
+
+    void Renderer::end_scene(void)
+    {
+
+    }
+
+    Scene& Renderer::get_scene(void)
+    {
+        return s_data.scene;
+    }
+
     const RendererStats& Renderer::get_stats(void)
     {
-        return s_data.lastStats;
+        return s_data.lastFrameStats;
     }
 
     void Renderer::draw_indexed(const VertexArray& vao, std::optional<uint> count)
@@ -136,7 +149,7 @@ namespace DrkCraft
 
     void Renderer::reset_stats(void)
     {
-        s_data.lastStats = s_data.stats;
+        s_data.lastFrameStats = s_data.stats;
         s_data.stats = RendererStats{};
     }
 

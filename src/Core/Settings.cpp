@@ -73,41 +73,30 @@ namespace DrkCraft
         return s_instance;
     }
 
-    void RuntimeSettings::load(const fs::path& location)
+    void RuntimeSettings::load(const fs::path& location) // Remove default config files, since config structs already have defaults
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_ASSERT_DEBUG(is_dir(location), "Invalid config directory");
+        DRK_ASSERT_DEBUG(is_dir(location), "Config directory does not exist");
 
         get_instance().m_configFile   = location / "config.yaml";
         get_instance().m_settingsFile = location / "settings.yaml";
         get_instance().m_keybindsFile = location / "keybinds.yaml";
 
-        const auto defaultsLocation = location / "default";
-
-        // For settings, config, & keybinds:
-        // If file not found: Copy default file if it exists
-        const char* settings_config_keybinds[] {
-            "config.yaml",
-            "settings.yaml",
-            "keybinds.yaml",
-        };
-        for (const char* filename : settings_config_keybinds)
-        {
-            if (!is_file(location / filename))
-            {
-                auto defaultFilename = defaultsLocation / filename;
-                if (is_file(defaultFilename))
-                    fs::copy(defaultFilename, filename);
-            }
-        }
-        if (!is_file(get_instance().m_configFile)) // Save defaults, since this is not modified or saved later
-            get_instance().save_config_file();
-        else
+        if (is_file(get_instance().m_configFile))
             get_instance().load_config_file();
+        else
+            get_instance().save_config_file();
 
-        get_instance().load_settings_file();
-        get_instance().load_keybinds_file();
+        if (is_file(get_instance().m_settingsFile))
+            get_instance().load_settings_file();
+        else
+            get_instance().save_settings_file();
+
+        if (is_file(get_instance().m_keybindsFile))
+            get_instance().load_keybinds_file();
+        else
+            get_instance().save_keybinds_file();
     }
 
     void RuntimeSettings::save(void)
@@ -183,8 +172,7 @@ namespace DrkCraft
         }
 
         template <typename T>
-        void load_setting(const YAML::Node& parent, const std::string& key, T& setting,
-            const SettingConstraint<T>& constraint={})
+        void load_setting(const YAML::Node& parent, const std::string& key, T& setting, const SettingConstraint<T>& constraint={})
         {
             if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
             {
@@ -211,8 +199,9 @@ namespace DrkCraft
     void RuntimeSettings::load_config_file(void)
     {
         DRK_PROFILE_FUNCTION();
-
         DRK_LOG_CORE_INFO("Loading config from {}", m_configFile.generic_string());
+        DRK_ASSERT_DEBUG(is_file(m_configFile), "{} does not exist", m_configFile.generic_string());
+
         auto document = Yaml::load(m_configFile);
         if (!document)
             return;
@@ -230,8 +219,9 @@ namespace DrkCraft
     void RuntimeSettings::load_settings_file(void)
     {
         DRK_PROFILE_FUNCTION();
-
         DRK_LOG_CORE_INFO("Loading settings from {}", m_settingsFile.generic_string());
+        DRK_ASSERT_DEBUG(is_file(m_settingsFile), "{} does not exist", m_settingsFile.generic_string());
+
         auto document = Yaml::load(m_settingsFile);
         if (!document)
             return;
@@ -261,8 +251,9 @@ namespace DrkCraft
     void RuntimeSettings::load_keybinds_file(void)
     {
         DRK_PROFILE_FUNCTION();
-
         DRK_LOG_CORE_INFO("Loading keybinds from {}", m_keybindsFile.generic_string());
+        DRK_ASSERT_DEBUG(is_file(m_keybindsFile), "{} does not exist", m_keybindsFile.generic_string());
+
         auto document = Yaml::load(m_keybindsFile);
         if (!document)
             return;

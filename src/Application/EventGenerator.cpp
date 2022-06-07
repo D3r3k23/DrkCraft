@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <utility>
+
 namespace DrkCraft
 {
     namespace
@@ -59,9 +61,10 @@ namespace DrkCraft
         glfwSetWindowUserPointer(window, nullptr);
     }
 
-    void EventGenerator::register_event_handler(const AbstractEventHandlerFn<Event>& handler)
+    void EventGenerator::register_event_handler(AbstractEventHandlerFn<Event> handler)
     {
-        m_handler = handler;
+        m_handler = std::move(handler);
+
         glfwSetWindowUserPointer(m_window.get_raw_window(), static_cast<void*>(&m_handler));
         set_window_callbacks();
     }

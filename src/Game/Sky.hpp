@@ -2,7 +2,7 @@
 #define DRK_GAME_SKY_HPP
 
 #include "Core/Base.hpp"
-#include "Core/Timestep.hpp"
+#include "Util/Timestep.hpp"
 
 namespace DrkCraft
 {

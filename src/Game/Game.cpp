@@ -61,9 +61,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        Renderer::begin_scene({
-            m_playerController.get_camera()
-        });
+        Renderer::begin_scene(m_playerController.get_camera());
 
         m_sky.render();
 

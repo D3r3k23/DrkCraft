@@ -1,5 +1,5 @@
 mypy
 PyInstaller
 glad
-strip_markdown
+-r drkcraft/build/requirements.txt
 -r drkcraft/tools/requirements.txt

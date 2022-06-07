@@ -4,15 +4,15 @@
 #include "Core/Base.hpp"
 #include "Graphics/OpenGlContext.hpp"
 #include "Graphics/detail/VertexArray.hpp"
-#include "Graphics/detail/Buffer.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/Texture.hpp"
+#include "Graphics/Scene.hpp"
 #include "Graphics/Camera.hpp"
 
 #include "lib/glm/vec.hpp"
 
-#include <vector>
 #include <optional>
+#include <span>
 
 namespace DrkCraft
 {
@@ -24,35 +24,23 @@ namespace DrkCraft
         uint triangles = 0;
     };
 
-    struct LightSource // Somewhere else
-    {
-        vec3 position;
-        vec3 direction;
-        vec4 color;
-    };
-
-    struct SceneData
-    {
-        Camera camera;
-        std::vector<LightSource> lights;
-    };
-
     class Renderer
     {
     public:
         static void init(OpenGlContext& context, const uvec2& viewportSize);
         static void shutdown(void);
 
+        static void set_viewport(int x, int y, uint width, uint height);
+        static void set_viewport(const ivec2& pos, const uvec2& size);
+
         static void begin_frame(void);
         static void end_frame(void);
 
-        static void begin_scene(const SceneData& data);
+        static void begin_scene(const Camera& camera);
+        static void begin_scene(void);
         static void end_scene(void);
 
-        static const Camera& get_camera(void);
-
-        static void set_viewport(int x, int y, uint width, uint height);
-        static void set_viewport(const ivec2& pos, const uvec2& size);
+        static Scene& get_scene(void);
 
         static const RendererStats& get_stats(void);
 

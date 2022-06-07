@@ -14,10 +14,6 @@ namespace DrkCraft
     using DirIterator    = fs::directory_iterator;
     using RecDirIterator = fs::recursive_directory_iterator;
 
-    #if 0
-    for (const DirEntry& entry : DirIterator{dirname})
-    #endif
-
     enum class PathType
     {
         Unknown = 0,

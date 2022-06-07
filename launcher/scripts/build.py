@@ -6,7 +6,7 @@ import platform
 from pathlib import Path
 
 import PyInstaller.__main__
-
+import venv
 PLATFORM = platform.system()
 
 def main() -> Optional[int]:
@@ -23,8 +23,8 @@ def main() -> Optional[int]:
     lib_path = os.path.join(os.environ['VIRTUAL_ENV'], 'Lib' if PLATFORM == 'Windows' else 'lib', 'site-packages')
 
     PyInstaller.__main__.run([
-        os.path.join('drkcraft_launcher', 'main.py'),
-        '--name', 'DrkCraft Launcher',
+        os.path.join('src', 'main.py'),
+        '--name', 'drkcraft-launcher',
         '--onefile',
         '--paths', lib_path,
         '--specpath', 'install',
@@ -33,7 +33,7 @@ def main() -> Optional[int]:
         '--noconfirm'
     ])
 
-    exe_name = 'DrkCraft Launcher' + '.exe' if PLATFORM == 'Windows' else ''
+    exe_name = 'drkcraft-launcher' + '.exe' if PLATFORM == 'Windows' else ''
     exe_src = os.path.join('install', 'dist', exe_name)
 
     bin_dir = os.path.join('install', 'bin')

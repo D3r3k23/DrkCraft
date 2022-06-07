@@ -3,8 +3,7 @@
 #include "Core/Debug/Profiler.hpp"
 #include "Application/Application.hpp"
 #include "Application/Layers/MainMenu.hpp"
-
-#include <thread>
+#include "System/Thread.hpp"
 
 using namespace DrkCraft;
 

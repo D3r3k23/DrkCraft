@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
-#include "Core/Timestep.hpp"
+#include "Util/Timestep.hpp"
 
 #include "Game/Game.hpp"
 #include "Game/World/WorldGenerator.hpp"

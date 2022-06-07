@@ -12,7 +12,6 @@
 /build/*
 
 /config/*
-!/config/default/
 
 /data/imgui.ini
 /data/logs/*

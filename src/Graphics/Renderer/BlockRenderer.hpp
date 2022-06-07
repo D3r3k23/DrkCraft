@@ -18,13 +18,16 @@ namespace DrkCraft
         uint blockFaces = 0;
     };
 
-    class BlockRenderer : public Renderer
+    class BlockRenderer : private Renderer
     {
     public:
-        static void init(const Ptr<TextureManager>& textureSlots);
+        static void init(TextureManager* textureManager);
         static void shutdown(void);
 
         static void set_texture_atlas(const Ref<Texture>& atlasTexture);
+
+        static void begin_frame(void);
+        static void end_frame(void);
 
         static void begin_scene(void);
         static void end_scene(void);

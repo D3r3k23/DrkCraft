@@ -1,8 +1,10 @@
 target_sources(DrkCraft
   PRIVATE
     Camera.cpp
+    LightSource.cpp
     Mesh.cpp
     OpenGlContext.cpp
+    Scene.cpp
     Shader.cpp
     Texture.cpp
     Transform.cpp

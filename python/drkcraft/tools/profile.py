@@ -99,6 +99,7 @@ def analyze_profile(profile_json: Mapping):
     # Averate time per call
     # Events - frame time
     # Separate startup, shutdonw, runtime
+    # Separate main thread?
 
 def add_durations(events: list[DurationEvent]) -> dict[str, float]:
     result: dict[str, float] = {}

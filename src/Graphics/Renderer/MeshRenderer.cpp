@@ -23,6 +23,16 @@ namespace DrkCraft
 
     }
 
+    void MeshRenderer::begin_frame(void)
+    {
+
+    }
+
+    void MeshRenderer::end_frame(void)
+    {
+
+    }
+
     void MeshRenderer::begin_scene(void)
     {
 

@@ -25,7 +25,7 @@ namespace DrkCraft
     {
         friend class MonitorManager;
     private:
-        Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>& eventHandler);
+        Monitor(GLFWmonitor* monitor, uint number, AbstractEventHandlerFn<MonitorEvent>* eventHandler);
 
     public:
         ~Monitor(void);
@@ -63,7 +63,7 @@ namespace DrkCraft
         MonitorManager(void);
         ~MonitorManager(void);
 
-        void register_event_handler(const AbstractEventHandlerFn<MonitorEvent>& eventHandler);
+        void register_event_handler(AbstractEventHandlerFn<MonitorEvent> handler);
         void load_monitors(void);
         void refresh_monitors(void);
 
