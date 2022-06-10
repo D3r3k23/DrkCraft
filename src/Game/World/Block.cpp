@@ -1,6 +1,6 @@
 #include "Block.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     Ref<Texture> Block::get_texture(BlockID bid)
     {

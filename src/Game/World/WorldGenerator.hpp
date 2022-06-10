@@ -3,9 +3,9 @@
 
 #include "Core/Base.hpp"
 #include "Game/World/World.hpp"
-#include "Util/Noise.hpp"
+#include "Game/Util/Noise.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     struct WorldGeneratorSpec
     {

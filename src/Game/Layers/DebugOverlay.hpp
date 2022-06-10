@@ -15,7 +15,7 @@
 #include "Graphics/Renderer/MeshRenderer.hpp"
 #include "Util/PeriodicUpdate.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class FpsCounter
     {

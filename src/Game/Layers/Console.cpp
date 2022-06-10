@@ -1,6 +1,6 @@
 #include "Console.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     Console::Console(bool activate)
       : Layer("DebugLayer", activate)

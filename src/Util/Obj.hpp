@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM__OBJ_HPP
-#define DRK_SYSTEM__OBJ_HPP
+#ifndef DRK_UTIL_OBJ_HPP
+#define DRK_UTIL_OBJ_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/Mesh.hpp"
@@ -11,4 +11,4 @@ namespace DrkCraft::Obj
     Ptr<MeshData> load_file(const fs::path& filename);
 }
 
-#endif // DRK_SYSTEM_OBJ_HPP
+#endif // DRK_UTIL_OBJ_HPP

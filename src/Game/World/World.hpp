@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     struct World
     {

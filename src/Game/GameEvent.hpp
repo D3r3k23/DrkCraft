@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <functional>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     struct GameEvent
     {

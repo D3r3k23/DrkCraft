@@ -3,6 +3,7 @@
 #include "Graphics/Renderer/BlockRenderer.hpp"
 #include "Graphics/Renderer/MeshRenderer.hpp"
 #include "Graphics/Renderer/TextRenderer.hpp"
+#include "Graphics/Texture.hpp"
 #include "Graphics/detail/Buffer.hpp"
 #include "Graphics/detail/Util.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -13,6 +14,8 @@
 
 namespace DrkCraft
 {
+    static Ref<Texture> create_white_texture(void);
+
     namespace
     {
         struct RendererData
@@ -34,22 +37,30 @@ namespace DrkCraft
         DRK_LOG_CORE_INFO("Initializing Renderer");
 
         DRK_LOG_CORE_INFO("Renderer hardware: {}", context.get_renderer_info());
+        {
+            DRK_PROFILE_SCOPE("Configure OpenGL");
+            set_viewport({0, 0}, viewportSize);
 
-        set_viewport({0, 0}, viewportSize);
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LESS);
 
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            // clear();
+            // context.swap_buffers();
+        }{
+            DRK_PROFILE_SCOPE("Initialize TextureManager");
+            s_data.textureManager = make_ptr<TextureManager>();
 
-        // clear();
-        // context.swap_buffers();
+            uint slot = s_data.textureManager->reserve();
+            DRK_ASSERT_DEBUG(slot == WHITE_TEXTURE_SLOT, "White texture slot is not 0");
 
-        s_data.textureManager = make_ptr<TextureManager>();
-
+            DRK_LOG_CORE_TRACE("Creating white texture");
+            s_data.textureManager->attach(create_white_texture(), slot);
+        }
         BlockRenderer::init(s_data.textureManager.get());
         MeshRenderer::init();
         TextRenderer::init();
@@ -160,7 +171,7 @@ namespace DrkCraft
 
     void Renderer::update_stats_on_draw_call(PrimitiveType primitive, uint indices)
     {
-        s_data.stats.drawCalls++;
+        s_data.stats.drawCalls += 1;
         s_data.stats.indices += indices;
 
         using enum PrimitiveType;
@@ -174,5 +185,13 @@ namespace DrkCraft
             case TriangleStrip : s_data.stats.triangles += indices - 2; break;
             case TriangleFan   : s_data.stats.triangles += 0;           break;
         }
+    }
+
+    static Ref<Texture> create_white_texture(void)
+    {
+        static const uint32 WHITE_TEXTURE_DATA = 0xFFFFFFFF;
+        static const uint8* whiteTextureDataPtr = reinterpret_cast<const uint8*>(&WHITE_TEXTURE_DATA);
+
+        return Texture::from_data(whiteTextureDataPtr, {1, 1}, TextureFormat::RGBA);
     }
 }

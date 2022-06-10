@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     ///////////////////////////////////
     //         GameEvent.hpp         //

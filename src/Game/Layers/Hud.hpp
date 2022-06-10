@@ -9,7 +9,7 @@
 #include <functional>
 #include <concepts>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class Hud : public Layer
     {

@@ -2,7 +2,7 @@
 
 #include "Game/Entity/Entity.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     EntityScene::EntityScene(void)
     {

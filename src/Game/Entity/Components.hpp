@@ -7,7 +7,7 @@
 #include "Graphics/Texture.hpp"
 #include "Game/GameEvents.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     struct Component
     {

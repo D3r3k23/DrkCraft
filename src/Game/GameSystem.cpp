@@ -1,6 +1,6 @@
 #include "GameSystem.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     GameSystem::GameSystem(World& world, EntityScene& entityScene)
       : m_world(world),

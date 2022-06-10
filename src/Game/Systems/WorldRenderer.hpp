@@ -7,7 +7,7 @@
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityScene.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class WorldRendererSystem : public GameSystem
     {

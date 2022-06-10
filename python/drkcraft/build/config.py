@@ -45,8 +45,7 @@ class BuildConfig(enum.Enum):
             case _: return 'Debug'
 
 def parse_args(argv: Sequence[str], options: Sequence[Option], description: Optional[str]=None) -> argparse.Namespace:
-    prog = argv[0]
-    args = argv[1:]
+    prog, args = argv[0], argv[1:]
     options = rm_duplicates_from_list(options)
 
     usage = f'{prog} [-h]'
@@ -56,9 +55,10 @@ def parse_args(argv: Sequence[str], options: Sequence[Option], description: Opti
     if Option.en_trace_log in options: usage += ' [--trace]'
     if Option.skip_build   in options: usage += ' [--skip-build]'
 
-    cfg_choices = [ c for c in BuildConfig ]
-    cfg_help = drkcraft.make_options_str([ str(c) for c in cfg_choices if c != BuildConfig.Unknown ])
-    cfg_help += ' Dist overrides all other options'
+    if Option.build_config in options:
+        cfg_choices = [ c for c in BuildConfig ]
+        cfg_choices_str = drkcraft.make_options_str([ str(c) for c in cfg_choices if c != BuildConfig.Unknown ])
+        cfg_help = f'{cfg_choices_str} Dist overrides all other options'
 
     parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
     if Option.build_config in options: parser.add_argument(

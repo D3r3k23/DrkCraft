@@ -27,7 +27,7 @@ namespace DrkCraft
     {
         uint value = 0;
         uint multiplier = 1;
-        for (auto c = str.rbegin(); c != str.rend(); c++)
+        for (auto c = str.rbegin(); c != str.rend(); ++c)
         {
             if (!is_digit(*c))
                 return value;

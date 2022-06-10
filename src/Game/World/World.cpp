@@ -1,6 +1,6 @@
 #include "World.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     const std::vector<Chunk>& World::get_chunks(void) const
     {

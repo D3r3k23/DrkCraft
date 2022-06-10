@@ -5,14 +5,12 @@
 #include "Graphics/OpenGlContext.hpp"
 #include "Graphics/detail/VertexArray.hpp"
 #include "Graphics/Shader.hpp"
-#include "Graphics/Texture.hpp"
 #include "Graphics/Scene.hpp"
 #include "Graphics/Camera.hpp"
 
 #include "lib/glm/vec.hpp"
 
 #include <optional>
-#include <span>
 
 namespace DrkCraft
 {
@@ -23,6 +21,8 @@ namespace DrkCraft
         uint lines     = 0;
         uint triangles = 0;
     };
+
+    static constexpr uint WHITE_TEXTURE_SLOT = 0;
 
     class Renderer
     {

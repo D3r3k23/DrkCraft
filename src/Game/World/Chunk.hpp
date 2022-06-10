@@ -6,7 +6,7 @@
 
 #include "lib/glm/vec3.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     inline constexpr uint CHUNK_WIDTH  = 64;
     inline constexpr uint CHUNK_HEIGHT = 128;

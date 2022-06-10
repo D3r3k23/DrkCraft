@@ -7,8 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    prog = argv[0]
-    args = argv[1:]
+    prog, args = argv[0], argv[1:]
 
     description = 'Cleans log directory'
     usage = f'{prog} [log_dir] [--max_age MAX_AGE]'

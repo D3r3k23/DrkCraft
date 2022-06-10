@@ -52,7 +52,7 @@ namespace DrkCraft
 
         std::vector<fs::path> m_saves;
 
-        std::variant<std::monostate, fs::path, WorldGeneratorSpec> m_gameLoadSource;
+        std::variant<std::monostate, fs::path, Game::WorldGeneratorSpec> m_gameLoadSource;
 
         bool m_show;
     };

@@ -93,11 +93,11 @@ namespace DrkCraft
             if (is_matrix(type))
             {
                 const uint count = get_shader_data_type_attribute_count(type);
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < count; ++i)
                 {
                     glEnableVertexAttribArray(index);
                     glVertexAttribPointer(index, count, glType, norm, m_stride, ptr);
-                    index++;
+                    ++index;
                 }
             }
             else
@@ -106,11 +106,10 @@ namespace DrkCraft
                 glEnableVertexAttribArray(index);
 
                 if (to_shader_data_base_type(type) == ShaderDataBaseType::Float)
-                    glVertexAttribPointer(index++, count, glType, norm, m_stride, ptr);
+                    glVertexAttribPointer(index, count, glType, norm, m_stride, ptr);
                 else
-                    glVertexAttribIPointer(index++, count, glType, m_stride, ptr);
-
-                index++;
+                    glVertexAttribIPointer(index, count, glType, m_stride, ptr);
+                ++index;
             }
         }
     }

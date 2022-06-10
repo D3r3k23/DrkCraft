@@ -112,8 +112,8 @@ namespace DrkCraft
                     4, 5, 0,  5, 1, 0  // Bottom
                 };
                 std::vector<Index> blockIndexBufferData(MAX_BLOCK_INDICES);
-                for (uint c = 0; c < MAX_BLOCKS; c++)
-                    for (uint i = 0; i < NUM_INDICES_IN_BLOCK; i++)
+                for (uint c = 0; c < MAX_BLOCKS; ++c)
+                    for (uint i = 0; i < NUM_INDICES_IN_BLOCK; ++i)
                         blockIndexBufferData.push_back(BLOCK_INDICES[i]);
 
                 s_data.indexBuffer->update(blockIndexBufferData);
@@ -186,9 +186,9 @@ namespace DrkCraft
 
         const uint texIndex = s_data.blockAtlasTextureIndex;
 
-        for (uint i = 0; i < NUM_VERTICES_IN_BLOCK; i++)
+        for (const vec3& vertex : BLOCK_VERTEX_POSITIONS)
         {
-            const vec3 vertexPosition = BLOCK_VERTEX_POSITIONS[i] * vec3(position);
+            const vec3 vertexPosition = vertex * vec3(position);
 
             ivec2 subtextureCoordinates = { 0, 0 }; // s, t
 
@@ -201,7 +201,7 @@ namespace DrkCraft
             });
         }
 
-        s_data.stats.blocks++;
+        s_data.stats.blocks += 1;
         s_data.stats.blockFaces += 6;
     }
 

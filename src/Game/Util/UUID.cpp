@@ -2,7 +2,7 @@
 
 #include "Util/Random.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     UUID::UUID(void)
     {

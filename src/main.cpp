@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     if (CommandLineOptions::get_options().en_trace_log)
         DRK_LOG_CORE_INFO("Trace logging enabled");
 
-    DRK_LOG_CORE_INFO("{} threads supported by hardware", std::thread::hardware_concurrency());
+    DRK_LOG_CORE_INFO("{} threads supported by hardware", Thread<>::count());
 
     DRK_LOG_CORE_INFO("Loading settings");
     RuntimeSettings::load("config");

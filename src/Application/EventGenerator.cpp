@@ -161,7 +161,7 @@ namespace DrkCraft
             }
             else
             {
-                WindowRestoredEvent event;
+                WindowRestoredEvent event(WindowRestoredEvent::FromMaximized);
                 handle_event(window, event);
             }
         }
@@ -175,7 +175,7 @@ namespace DrkCraft
             }
             else
             {
-                WindowRestoredEvent event;
+                WindowRestoredEvent event(WindowRestoredEvent::FromMinimized);
                 handle_event(window, event);
             }
         }

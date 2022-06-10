@@ -3,15 +3,14 @@
 #include "System/GlfwTools.hpp"
 #include "Graphics/Renderer/Renderer.hpp"
 #include "Audio/Audio.hpp"
-#include "System/Icon.hpp"
 #include "System/Input.hpp"
 #include "Core/Settings.hpp"
-#include "Application/Layers/MainMenu.hpp"
 #include "Game/Layers/GameLayer.hpp"
+#include "System/Thread.hpp"
+#include "Util/Icon.hpp"
 #include "Util/Time.hpp"
+#include "Application/Layers/MainMenu.hpp"
 #include "Core/Debug/Profiler.hpp"
-
-#include <thread>
 
 namespace DrkCraft
 {
@@ -139,12 +138,10 @@ namespace DrkCraft
         const auto& settings = RuntimeSettings::get_settings();
         {
             DRK_LOG_CORE_INFO("Loading monitors");
-            DRK_PROFILE_THREAD_CREATE("monitor_load");
             // Probably should eventually do this on the main thread,
             // since GLFW calls may not be thread safe
-            std::jthread monitorLoadThread([this]
+            Thread<> monitorLoadThread("monitor_load_thread", [this]
             {
-                DRK_PROFILE_THREAD("monitor_load");
                 m_monitorManager.load_monitors();
             });
 
@@ -157,9 +154,6 @@ namespace DrkCraft
             DRK_LOG_CORE_INFO("Initializing Renderer");
             Renderer::init(m_context, m_window.get_framebuffer_size());
 
-            DRK_LOG_CORE_INFO("Initializing ImGui");
-            m_imGuiController.emplace(m_window);
-
             m_window.set_vsync(settings.video.vsync);
 
             DRK_LOG_CORE_INFO("Loading assets");
@@ -171,6 +165,9 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Registering Application event handler");
         m_eventGenerator.register_event_handler(DRK_BIND_FN(handle_event));
         m_monitorManager.register_event_handler(DRK_BIND_FN(handle_event));
+
+        DRK_LOG_CORE_INFO("Initializing ImGui");
+        m_imGuiController.emplace(m_window);
 
         DRK_LOG_CORE_INFO("Application initialized");
     }
@@ -201,25 +198,26 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        TimestepGenerator timestepGen;
+        TimestepGenerator tsGenerator;
         m_running = true;
 
         while (m_running)
         {
             DRK_PROFILE_EVENT_LOCAL("New frame");
-            Timestep timestep = timestepGen.get_timestep();
+            Timestep timestep = tsGenerator.get_timestep();
 
             m_frameLayerStack = LayerStack::copy_active(m_layerStack);
             {
                 DRK_PROFILE_SCOPE("Application core loop");
-                m_eventGenerator.poll_events();
 
-                if (m_running && !m_minimized)
+                m_eventGenerator.poll_events();
+                update(timestep);
+
+                if (!is_minimized())
                 {
-                    update(timestep);
                     render();
+                    m_context.swap_buffers();
                 }
-                m_context.swap_buffers();
             }
             m_layerStack.refresh();
 
@@ -235,12 +233,12 @@ namespace DrkCraft
                 m_layerStack.activate_back();
             }
         }
+        DRK_LOG_CORE_TRACE("Exiting Application");
     }
 
     void Application::exit_internal(int status)
     {
-        if (!m_running)
-            DRK_LOG_CORE_WARN("Application is not running!");
+        DRK_ASSERT_DEBUG(m_running, "Application is not running!");
 
         m_running  = false;
         m_exitCode = status;
@@ -277,6 +275,8 @@ namespace DrkCraft
         ed.dispatch<KeyPressedEvent>(DRK_BIND_FN(on_key_pressed));
         ed.dispatch<WindowClosedEvent>(DRK_BIND_FN(on_window_closed));
         ed.dispatch<FramebufferResizedEvent>(DRK_BIND_FN(on_framebuffer_resized));
+        ed.dispatch<WindowMinimizedEvent>(DRK_BIND_FN(on_window_minimized));
+        ed.dispatch<WindowRestoredEvent>(DRK_BIND_FN(on_window_restored));
         ed.dispatch<MonitorEvent>(DRK_BIND_FN(on_monitor_event));
         ed.dispatch<MonitorDisconnectedEvent>(DRK_BIND_FN(on_monitor_disconnected));
 
@@ -321,6 +321,23 @@ namespace DrkCraft
         return true;
     }
 
+    bool Application::on_window_minimized(const WindowMinimizedEvent& event)
+    {
+        m_minimized = true;
+        return true;
+    }
+
+    bool Application::on_window_restored(const WindowRestoredEvent& event)
+    {
+        if (is_minimized() && event.source == WindowRestoredEvent::FromMinimized)
+        {
+            m_minimized = false;
+            return true;
+        }
+        else
+            return false;
+    }
+
     bool Application::on_monitor_event(const MonitorEvent& event)
     {
         m_monitorManager.refresh_monitors(); // Will this work?
@@ -342,7 +359,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         m_assetLibrary.load_list(MainMenu::get_asset_list());
-        m_assetLibrary.load_list(Game::get_asset_list());
+        m_assetLibrary.load_list(Game::Game::get_asset_list());
     }
 
     void Application::set_fullscreen(int monitor)
@@ -371,5 +388,10 @@ namespace DrkCraft
     bool Application::is_windowed(void) const
     {
         return !m_monitorManager.fullscreen_activated();
+    }
+
+    bool Application::is_minimized(void) const
+    {
+        return m_minimized;
     }
 }

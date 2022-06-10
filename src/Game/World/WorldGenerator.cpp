@@ -4,7 +4,7 @@
 
 #include <FastNoiseLite.h>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     WorldGenerator::WorldGenerator(const WorldGeneratorSpec& spec)
       : m_spec(spec)

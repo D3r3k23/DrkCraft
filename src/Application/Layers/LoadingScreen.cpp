@@ -52,7 +52,7 @@ namespace DrkCraft
     {
         if (m_updateTimer.on_interval<250>())
         {
-            m_numPeriods++;
+            ++m_numPeriods;
             if (m_numPeriods > MAX_PERIODS)
                 m_numPeriods = 0;
         }

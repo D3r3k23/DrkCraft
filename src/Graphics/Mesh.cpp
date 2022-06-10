@@ -1,6 +1,6 @@
 #include "Mesh.hpp"
 
-#include "System/Obj.hpp"
+#include "Util/Obj.hpp"
 
 namespace DrkCraft
 {

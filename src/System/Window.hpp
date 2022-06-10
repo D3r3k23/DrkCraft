@@ -2,7 +2,7 @@
 #define DRK_SYSTEM_SYSTEM_WINDOW_HPP
 
 #include "Core/Base.hpp"
-#include "System/Icon.hpp"
+#include "Util/Icon.hpp"
 
 #include "lib/glm/vec2.hpp"
 

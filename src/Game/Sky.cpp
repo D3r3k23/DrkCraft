@@ -1,6 +1,6 @@
 #include "Sky.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     ////////////////////////
     //       Skybox       //

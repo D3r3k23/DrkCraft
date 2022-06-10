@@ -25,8 +25,7 @@ class InstantEvent:
         return InstantEvent(jobj['name'], jobj['ts'])
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    prog = argv[0]
-    args = argv[1:]
+    prog, args = argv[0], argv[1:]
 
     description = 'Analyzes profiler results'
     usage = f'{prog} [profile]'

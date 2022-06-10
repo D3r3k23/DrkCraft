@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Graphics/Texture.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     using BlockID = uint8;
     using ChunkIndex = uint32; // chunk.x + (chunk.z + chunk.y * CHUNK_WIDTH) * CHUNK_WIDTH;

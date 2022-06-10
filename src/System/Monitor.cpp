@@ -102,7 +102,7 @@ namespace DrkCraft
 
     #if 0
         DRK_LOG_CORE_DEBUG("Monitor: {}", get_name());
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; ++i)
             DRK_LOG_CORE_DEBUG("vidMode[{}]: W={} H={} R={} G={} B={} RR={}", i,
                 vidModesPtr[i].width,
                 vidModesPtr[i].height,
@@ -122,7 +122,7 @@ namespace DrkCraft
                 return v1.refreshRate > v2.refreshRate;
         });
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; ++i)
             DRK_LOG_CORE_DEBUG("vidMode[{}]: W={} H={} R={} G={} B={} RR={}", i,
                 vidModes[i].width,
                 vidModes[i].height,
@@ -181,7 +181,7 @@ namespace DrkCraft
         DRK_ASSERT_CORE(count > 0, "glfwGetMonitors error");
 
         std::vector<std::pair<uint, GLFWmonitor*>> glfwMonitors;
-        for (uint i = 0; i < count; i++)
+        for (uint i = 0; i < count; ++i)
             glfwMonitors.emplace_back(i, glfwMonitorsPtr[i]);
 
         std::mutex mutex;

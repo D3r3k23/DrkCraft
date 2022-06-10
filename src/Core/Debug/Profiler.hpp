@@ -101,21 +101,13 @@
     #define DRK_PROFILE_EVENT_GLOBAL(name) \
         Profiler::get_instance().create_event_profile(name, 'g')
 
-    // Begin flow event
-    #define DRK_PROFILE_FLOW_BEGIN(cat, name) \
-        Profiler::get_instance().create_flow_profile(cat, name, 's')
-
-    // End flow event
-    #define DRK_PROFILE_FLOW_END(cat, name) \
-        Profiler::get_instance().create_flow_profile(cat, name, 'f')
-
     // Call immediately before creating a new thread
     #define DRK_PROFILE_THREAD_CREATE(name) \
-        Profiler::get_instance().create_flow_profile("thread", DRK_CONCAT(name, "_thread_flow"), 's')
+        Profiler::get_instance().create_flow_profile("thread", name, 's')
 
     // Call it beginning of thread
     #define DRK_PROFILE_THREAD(name) \
-        Profiler::get_instance().create_flow_profile("thread", DRK_CONCAT(name, "_thread_flow"), 'f'); \
+        Profiler::get_instance().create_flow_profile("thread", name, 'f'); \
         ProfileTimer thread_profile_timer{name, "thread"}
 
 #else

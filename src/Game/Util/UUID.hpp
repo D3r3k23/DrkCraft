@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class UUID
     {
@@ -20,7 +20,6 @@ namespace DrkCraft
         {
             return uuid1.m_uuid == uuid2.m_uuid;
         }
-
 
     private:
         uint64 m_uuid;

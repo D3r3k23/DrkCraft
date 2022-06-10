@@ -1,13 +1,13 @@
 #include "GameLayer.hpp"
 
 #include "Application/Application.hpp"
-#include "Game/SavedGameLoader.hpp"
+#include "Game/SaveLoader.hpp"
 #include "Game/Layers/PauseMenu.hpp"
 #include "System/Input.hpp"
 #include "Util/File.hpp"
 #include "Core/Debug/Profiler.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     GameLayer::GameLayer(Ref<LoadingScreen> loadingScreen)
       : Layer("GameLayer", true),
@@ -33,12 +33,10 @@ namespace DrkCraft
         DRK_LOG_GAME_INFO("Loading saved game from directory: {}", saveDir.generic_string());
 
         loadingScreen->set_message("Loading Save");
-        auto saveLoader = make_ptr<SavedGameLoader>(saveDir);
+        auto saveLoader = make_ptr<SaveLoader>(saveDir);
 
-        DRK_PROFILE_THREAD_CREATE("saved_game_load");
-        m_gameLoadThread = std::jthread([this, loader=std::move(saveLoader)]
+        m_gameLoadThread = Thread<>("saved_game_load_thread", [this, loader=std::move(saveLoader)]
         {
-            DRK_PROFILE_THREAD("saved_game_load");
             m_loadedWorld = loader->load();
             m_worldLoaded = true;
         });
@@ -54,10 +52,8 @@ namespace DrkCraft
         loadingScreen->set_message("Generating world");
         auto worldGenerator = make_ptr<WorldGenerator>(worldGeneratorSpec);
 
-        DRK_PROFILE_THREAD_CREATE("world_generation");
-        m_gameLoadThread = std::jthread([this, generator=std::move(worldGenerator)]
+        m_gameLoadThread = Thread<>("world_generation_thread", [this, generator=std::move(worldGenerator)]
         {
-            DRK_PROFILE_THREAD("world_generation");
             m_loadedWorld = generator->generate();
             m_worldLoaded = true;
         });

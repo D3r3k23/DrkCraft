@@ -4,7 +4,7 @@
 #include "Application/ImGuiController.hpp"
 #include "Util/ImGui.hpp"
 #include "Core/Settings.hpp"
-#include "Game/SavedGameLoader.hpp"
+#include "Game/SaveLoader.hpp"
 #include "Game/Layers/GameLayer.hpp"
 #include "Util/Fn.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -17,6 +17,8 @@
 
 namespace DrkCraft
 {
+    using namespace DrkCraft::Game;
+
     static const AssetList s_REQUIRED_ASSETS
     {
 
@@ -31,7 +33,7 @@ namespace DrkCraft
       : Layer("MainMenuLayer", true),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_loadingScreen(Layer::create<LoadingScreen>("Loading Assets")),
-        m_saves(SavedGameLoader::get_saves("saves")),
+        m_saves(SaveLoader::get_saves("saves")),
         m_show(true)
     {
         DRK_PROFILE_FUNCTION();
@@ -189,7 +191,7 @@ namespace DrkCraft
                         std::string name;
                         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
                         {
-                            if (SavedGameLoader::rename_save(savesDir, saveName, name) == Result::Success)
+                            if (SaveLoader::rename_save(savesDir, saveName, name) == Result::Success)
                                 save = savesDir / name;
                         }
                         ImGui::EndPopup();
@@ -205,7 +207,7 @@ namespace DrkCraft
                         ImGui::Text("Are you sure you want to delete saved game \"%s\"?", saveName);
                         if (ImGui::Button("YES"))
                         {
-                            SavedGameLoader::delete_save(save);
+                            SaveLoader::delete_save(save);
                             ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::Button("CANCEL"))

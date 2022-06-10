@@ -2,7 +2,7 @@
 
 #include "Core/Debug/Profiler.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     LightingSystem::LightingSystem(World& world, EntityScene& entityScene)
       : GameSystem(world, entityScene)

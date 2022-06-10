@@ -5,8 +5,7 @@
 #include "Audio/AudioSource.hpp"
 #include "Graphics/Texture.hpp"
 #include "Graphics/Mesh.hpp"
-
-#include "System/Image.hpp"
+#include "System/Thread.hpp"
 
 #include "lib/fs.hpp"
 
@@ -15,7 +14,6 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
-#include <thread>
 #include <mutex>
 #include <atomic>
 
@@ -78,7 +76,7 @@ namespace DrkCraft
         ~AssetLibrary(void);
 
     private:
-        void load_worker(std::stop_token st);
+        void load_worker(StopToken st);
 
     public:
         void stop_loading(void);
@@ -116,7 +114,7 @@ namespace DrkCraft
 
     private:
         AssetLoadQueue m_loadQueue;
-        std::jthread m_loadThread;
+        Thread<StopToken> m_loadThread;
 
         std::atomic<bool> m_loading;
         std::string m_recentlyLoadedAsset;

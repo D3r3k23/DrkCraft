@@ -56,6 +56,9 @@ namespace DrkCraft
         bool on_window_closed(const WindowClosedEvent& event);
         bool on_framebuffer_resized(const FramebufferResizedEvent& event);
 
+        bool on_window_minimized(const WindowMinimizedEvent& event);
+        bool on_window_restored(const WindowRestoredEvent& event);
+
         bool on_monitor_event(const MonitorEvent& event);
         bool on_monitor_disconnected(const MonitorDisconnectedEvent& event);
 
@@ -66,6 +69,7 @@ namespace DrkCraft
         void set_windowed(void);
         bool is_fullscreen(void) const;
         bool is_windowed(void) const;
+        bool is_minimized(void) const;
 
     private:
         static std::optional<Application> s_instance;

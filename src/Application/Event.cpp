@@ -3,6 +3,7 @@
 #include "Events.hpp"
 
 #include <fmt/format.h>
+#include <magic_enum.hpp>
 
 namespace DrkCraft
 {
@@ -75,6 +76,11 @@ namespace DrkCraft
     std::string WindowMovedEvent::get_details(void) const
     {
         return fmt::format("xPos={} yPos={}", xPos, yPos);
+    }
+
+    std::string WindowRestoredEvent::get_details(void) const
+    {
+        return fmt::format("{}", magic_enum::enum_name(source));
     }
 
     std::string WindowScaledEvent::get_details(void) const

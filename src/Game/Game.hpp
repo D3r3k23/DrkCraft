@@ -20,7 +20,7 @@
 
 #include "lib/fs.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class Game
     {

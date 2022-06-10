@@ -102,12 +102,23 @@ namespace DrkCraft
         WindowMinimizedEvent(void) = default;
     };
 
-    // Could add param to say if it was restored from maximized of minimized
     struct WindowRestoredEvent final : WindowEvent
     {
         DRK_EVENT_TYPE_INFO(WindowRestored)
 
-        WindowRestoredEvent(void) = default;
+        enum Source
+        {
+            FromMaximized,
+            FromMinimized
+        };
+
+        WindowRestoredEvent(Source source)
+          : source(source)
+        { }
+
+        virtual std::string get_details(void) const override;
+
+        const Source source;
     };
 
     struct WindowScaledEvent final : WindowEvent
@@ -121,8 +132,8 @@ namespace DrkCraft
 
         virtual std::string get_details(void) const override;
 
-        float xScale;
-        float yScale;
+        const float xScale;
+        const float yScale;
     };
 
     struct WindowRefreshedEvent final : WindowEvent

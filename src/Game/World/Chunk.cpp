@@ -1,6 +1,6 @@
 #include "Chunk.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     const Block& Chunk::block_at(const uvec3& coord) const
     {

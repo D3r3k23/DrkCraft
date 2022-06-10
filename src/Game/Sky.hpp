@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Util/Timestep.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class Skybox
     {

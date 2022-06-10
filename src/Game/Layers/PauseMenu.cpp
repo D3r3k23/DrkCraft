@@ -9,7 +9,7 @@
 
 #include <imgui/imgui.h>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     PauseMenu::PauseMenu(bool activate)
       : Layer("PauseMenuLayer", activate),

@@ -17,6 +17,8 @@ namespace DrkCraft
 
     using uint = unsigned int;
     using Byte = uint8;
+
+    class NoneType {};
 }
 
 #endif // DRK_CORE_TYPE_HPP

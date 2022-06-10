@@ -6,7 +6,7 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class Console : public Layer
     {

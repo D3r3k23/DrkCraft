@@ -1,6 +1,6 @@
 #include "Hud.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     Hud::Hud(bool activate)
       : Layer("HudLayer", activate)

@@ -10,7 +10,7 @@
 #include "Game/World/World.hpp"
 #include "Game/Player.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class PhysicsSystem : public GameSystem
     {

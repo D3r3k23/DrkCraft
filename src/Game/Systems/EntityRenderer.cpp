@@ -4,7 +4,7 @@
 #include "Game/Entity/Components.hpp"
 #include "Core/Debug/Profiler.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     EntityRendererSystem::EntityRendererSystem(World& world, EntityScene& entityScene)
       : GameSystem(world, entityScene)

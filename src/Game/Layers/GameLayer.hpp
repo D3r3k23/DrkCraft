@@ -10,14 +10,14 @@
 #include "Game/World/WorldGenerator.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 #include "Game/Layers/DebugOverlay.hpp"
+#include "System/Thread.hpp"
 
 #include "lib/fs.hpp"
 
 #include <optional>
-#include <thread>
 #include <atomic>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class GameLayer : public Layer
     {
@@ -59,7 +59,7 @@ namespace DrkCraft
         Ref<LoadingScreen> m_loadingScreen;
         Ref<DebugOverlay> m_debugOverlay;
 
-        std::jthread m_gameLoadThread;
+        Thread<> m_gameLoadThread;
         Ptr<World> m_loadedWorld;
         std::atomic<bool> m_worldLoaded;
 

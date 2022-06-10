@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM_IMAGE_HPP
-#define DRK_SYSTEM_IMAGE_HPP
+#ifndef DRK_UTIL_IMAGE_HPP
+#define DRK_UTIL_IMAGE_HPP
 
 #include "Core/Base.hpp"
 
@@ -27,4 +27,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_IMAGE_HPP
+#endif // DRK_UTIL_IMAGE_HPP

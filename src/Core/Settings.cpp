@@ -28,7 +28,7 @@ namespace DrkCraft
         get_instance().argc = argc;
         get_instance().argv = argv;
 
-        for (uint i = 0; i < argc; i++)
+        for (uint i = 0; i < argc; ++i)
         {
             std::string_view arg = argv[i];
             if (i == 0)

@@ -38,7 +38,7 @@ namespace DrkCraft::Obj
 
             for (const auto& nVertices : vFaceVertices)
             {
-                for (uint v = 0; v < nVertices; v++)
+                for (uint v = 0; v < nVertices; ++v)
                 {
                     const auto index = mesh.indices[indexOffset + v];
                     const auto vx = vertices[3 * index.vertex_index];

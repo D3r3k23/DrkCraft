@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
 
     class PauseMenu : public Layer

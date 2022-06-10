@@ -68,7 +68,7 @@ namespace DrkCraft
                 const auto& rRate = monitor.get_refresh_rate();
                 const auto& name  = monitor.get_name();
                 monitorStrings.push_back(fmt::format("{}: {}x{} {}hz ({})", i, res.x, res.y, rRate, name));
-                i++;
+                ++i;
             }
             if (ImGui::BeginCombo("Fullscreen Monitor", monitorStrings[m_settings.video.fs_monitor].c_str()))
             {
@@ -84,7 +84,7 @@ namespace DrkCraft
                         make_dirty(Setting::FsMonitor);
                         ImGui::SetItemDefaultFocus();
                     }
-                    i++;
+                    ++i;
                 }
                 ImGui::EndCombo();
             }
@@ -167,7 +167,7 @@ namespace DrkCraft
             apply();
             RuntimeSettings::set_settings(m_settings);
 
-            for (uint i = 0; i < m_dirty.size(); i++)
+            for (uint i = 0; i < m_dirty.size(); ++i)
                 m_dirty[i] = false;
         }
         if (m_keybindsDirty)

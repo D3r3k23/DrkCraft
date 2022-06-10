@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 #include "Graphics/detail/GlObject.hpp"
-#include "System/Image.hpp"
+#include "Util/Image.hpp"
 
 #include "lib/glm/vec2.hpp"
 

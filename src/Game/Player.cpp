@@ -9,7 +9,7 @@
 
 #include <glm/geometric.hpp>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     static constexpr float PLAYER_BASE_SPEED = 1.0f;
     static constexpr float SPRINT_SPEED_MULT = 1.5f;

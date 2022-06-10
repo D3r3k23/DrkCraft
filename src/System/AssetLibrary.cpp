@@ -1,8 +1,8 @@
 #include "AssetLibrary.hpp"
 
 #include "Audio/Audio.hpp"
-#include "System/Image.hpp"
-#include "System/Obj.hpp"
+#include "Util/Image.hpp"
+#include "Util/Obj.hpp"
 #include "Util/Time.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -89,8 +89,7 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        DRK_PROFILE_THREAD_CREATE("asset_load");
-        m_loadThread = std::jthread(DRK_BIND_FN(load_worker));
+        m_loadThread = Thread<StopToken>("asset_load_thread", DRK_BIND_FN(load_worker));
     }
 
     AssetLibrary::~AssetLibrary(void)
@@ -98,9 +97,8 @@ namespace DrkCraft
 
     }
 
-    void AssetLibrary::load_worker(std::stop_token st)
+    void AssetLibrary::load_worker(StopToken st)
     {
-        DRK_PROFILE_THREAD("asset_load");
         DRK_PROFILE_FUNCTION();
 
         while (!st.stop_requested())
@@ -124,7 +122,7 @@ namespace DrkCraft
 
     void AssetLibrary::stop_loading(void)
     {
-        m_loadThread.request_stop();
+        m_loadThread.stop();
     }
 
     void AssetLibrary::unload_all(void)

@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     class Inventory
     {

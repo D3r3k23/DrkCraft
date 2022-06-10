@@ -13,7 +13,7 @@
 #include <array>
 #include <glad/glad.h>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     static const AssetList s_REQUIRED_ASSETS
     {
@@ -167,7 +167,7 @@ namespace DrkCraft
         m_gameTimeSeconds += timestep * 1000;
         if (m_gameTimeSeconds > 3600) // 1 hour
         {
-            m_gameTime++;
+            ++m_gameTime;
             m_gameTimeSeconds = 0.0f;
         }
     }

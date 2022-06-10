@@ -2,7 +2,7 @@
 
 #include "Util/Json.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
 
 }

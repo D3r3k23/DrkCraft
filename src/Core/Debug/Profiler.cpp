@@ -3,6 +3,7 @@
 #if DRK_PROFILING_ENABLED
 
     #include "Util/File.hpp"
+    #include "System/Thread.hpp"
     #include "System/Pid.hpp"
 
     #include "lib/fs.hpp"
@@ -12,7 +13,6 @@
 
     #include <string>
     #include <sstream>
-    #include <thread>
 
     const bool FLUSH_ON_WRITE = false;
 
@@ -142,7 +142,7 @@
                 profile << fmt::format("\"ts\":{:.2f},",   start);
                 profile << fmt::format("\"dur\":{:.2f},", duration);
                 profile << fmt::format("\"pid\":{},",   DRK_GET_PID());
-                profile <<             "\"tid\":" <<  std::this_thread::get_id();
+                profile <<             "\"tid\":" <<  Thread<>::This::id();
                 profile << "}";
 
                 std::lock_guard lock(m_mutex);

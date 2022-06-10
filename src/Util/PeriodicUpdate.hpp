@@ -21,7 +21,7 @@ namespace DrkCraft
             }
             else
             {
-                m_count++;
+                ++m_count;
                 return false;
             }
         }

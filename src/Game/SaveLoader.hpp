@@ -1,5 +1,5 @@
-#ifndef DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP
-#define DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP
+#ifndef DRK_GAME_WORLD_SAVE_LOADER_HPP
+#define DRK_GAME_WORLD_SAVE_LOADER_HPP
 
 #include "Core/Base.hpp"
 #include "Game/World/World.hpp"
@@ -9,16 +9,16 @@
 #include <vector>
 #include <string>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
-    class SavedGameLoader
+    class SaveLoader
     {
     public:
         static std::vector<fs::path> get_saves(const fs::path& savesDir);
         static Result rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName);
         static Result delete_save(const fs::path& save);
 
-        SavedGameLoader(const fs::path& dir);
+        SaveLoader(const fs::path& dir);
         Ptr<World> load(void);
 
     private:
@@ -27,4 +27,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GAME_WORLD_SAVED_GAME_LOADER_HPP
+#endif // DRK_GAME_WORLD_SAVE_LOADER_HPP

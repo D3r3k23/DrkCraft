@@ -41,7 +41,7 @@ namespace DrkCraft
         {
             DRK_LOG_CORE_TRACE("Pushing overlay Layer: {}", layer->get_layer_name());
             m_layers.push_front(layer);
-            m_nOverlays++;
+            ++m_nOverlays;
         }
         else
         {
@@ -60,7 +60,7 @@ namespace DrkCraft
             if (it - m_layers.begin() < m_nOverlays)
             {
                 DRK_LOG_CORE_TRACE("Popping overlay Layer: {}", layer->get_layer_name());
-                m_nOverlays--;
+                --m_nOverlays;
             }
             else
                 DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());

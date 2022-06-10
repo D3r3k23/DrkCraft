@@ -3,7 +3,7 @@
 #include "Graphics/Renderer/BlockRenderer.hpp"
 #include "Core/Debug/Profiler.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     WorldRendererSystem::WorldRendererSystem(World& world, EntityScene& entityScene)
       : GameSystem(world, entityScene)
@@ -30,9 +30,9 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        for (uint x = 0; x < CHUNK_WIDTH; x++)
-            for (uint z = 0; z < CHUNK_WIDTH; z++)
-                for (uint y = 0; y < CHUNK_HEIGHT; y++)
+        for (uint x = 0; x < CHUNK_WIDTH; ++x)
+            for (uint z = 0; z < CHUNK_WIDTH; ++z)
+                for (uint y = 0; y < CHUNK_HEIGHT; ++y)
                 {
                     const auto& block = chunk.block_at(x, y, z);
                     const uint tid = 1; // get_block_tid(block);

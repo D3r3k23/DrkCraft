@@ -1,6 +1,6 @@
 #include "Components.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     GameEventSubscriberComponent::GameEventSubscriberComponent(const GameEventHandlerFn<GameEvent>& eventHandler)
       : m_eventHandler(eventHandler)

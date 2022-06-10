@@ -130,14 +130,19 @@ namespace DrkCraft
     ////////////////////////////////
 
     TextureManager::TextureManager(void)
-      : m_maxTextures(get_max_textures())
+      : m_maxTextures(get_max_textures()),
+        m_numReserved(0)
     {
+        DRK_LOG_CORE_TRACE("Max textures: {}", m_maxTextures);
         m_textures.reserve(m_maxTextures);
     }
 
     uint TextureManager::reserve(void)
     {
-        DRK_ASSERT_DEBUG(empty(), "Texture slots are not empty");
+        DRK_ASSERT_DEBUG(m_numReserved == count(), "Can only reserve texture slot before adding additional textures");
+        DRK_ASSERT_DEBUG(m_numReserved < m_maxTextures, "{} texture slots already reserved", m_numReserved);
+
+        m_textures.push_back({});
         return m_numReserved++;
     }
 
@@ -151,6 +156,7 @@ namespace DrkCraft
 
     void TextureManager::attach(Ref<Texture> texture, uint slot)
     {
+        DRK_ASSERT_CORE(count() > slot, "Invalid slot: {}", slot);
         texture->attach(slot);
         m_textures[slot] = std::move(texture);
     }

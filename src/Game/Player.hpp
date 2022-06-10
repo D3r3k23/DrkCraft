@@ -11,7 +11,7 @@
 
 #include "lib/glm/vec3.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     Entity create_player(EntityScene& entityScene);
 

@@ -1,4 +1,4 @@
-#include "SavedGameLoader.hpp"
+#include "SaveLoader.hpp"
 
 #include "Util/Json.hpp"
 #include "Util/File.hpp"
@@ -6,9 +6,9 @@
 
 #include <rapidjson/document.h>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
-    std::vector<fs::path> SavedGameLoader::get_saves(const fs::path& savesDir)
+    std::vector<fs::path> SaveLoader::get_saves(const fs::path& savesDir)
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG(is_dir(savesDir), "Saves directory \"{}\" is not a directory", savesDir.generic_string());
@@ -26,7 +26,7 @@ namespace DrkCraft
         return saves;
     }
 
-    Result SavedGameLoader::rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName)
+    Result SaveLoader::rename_save(const fs::path& savesDir, const std::string& oldName, const std::string& newName)
     {
         const fs::path oldSaveJson = savesDir / oldName / "save.json";
 
@@ -43,17 +43,17 @@ namespace DrkCraft
         return Result::Success;
     }
 
-    Result SavedGameLoader::delete_save(const fs::path& save)
+    Result SaveLoader::delete_save(const fs::path& save)
     {
         fs::remove_all(save);
         return Result::Success;
     }
 
-    SavedGameLoader::SavedGameLoader(const fs::path& dir)
+    SaveLoader::SaveLoader(const fs::path& dir)
       : m_dir(dir)
     { }
 
-    Ptr<World> SavedGameLoader::load(void)
+    Ptr<World> SaveLoader::load(void)
     {
         DRK_PROFILE_FUNCTION();
 

@@ -12,7 +12,7 @@
 #define DRK_GAME_EVENT_CATEGORY_INFO(name) \
     static constexpr GameEventCategory static_type(void) { return GameEventCategory::name; }
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     struct PlayerEvent : GameEvent
     {

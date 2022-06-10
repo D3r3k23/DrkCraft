@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM_FONT_HPP
-#define DRK_SYSTEM_FONT_HPP
+#ifndef DRK_UTIL_FONT_HPP
+#define DRK_UTIL_FONT_HPP
 
 #include "Core/Base.hpp"
 
@@ -15,4 +15,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_FONT_HPP
+#endif // DRK_UTIL_FONT_HPP

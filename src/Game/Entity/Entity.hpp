@@ -5,7 +5,7 @@
 
 #include <entt/entity/registry.hpp>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     using EntityID = uint32; // 16 <--
 

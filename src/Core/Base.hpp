@@ -4,17 +4,12 @@
 #include "Core/Type.hpp"
 #include "Core/Build.hpp"
 #include "Core/Bind.hpp"
-#include "Core/SmartPointer.hpp"
+#include "Core/Macro.hpp"
 #include "Core/Result.hpp"
+#include "Core/SmartPointer.hpp"
 
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"
-
-#define DRK_EXPAND(x) x
-#define DRK_STRINGIFY(x) #x
-#define DRK_CONCAT_IMPL(a, b) a##b
-#define DRK_CONCAT(a, b) DRK_CONCAT_IMPL(a, b)
-#define DRK_VA_ARGS(...) ,##__VA_ARGS__
 
 #ifndef APIENTRY
 #   if DRK_WINDOWS_ENABLED

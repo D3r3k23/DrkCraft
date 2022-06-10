@@ -104,7 +104,7 @@ namespace DrkCraft
             m_stats.indices   = drawData->TotalIdxCount;
             m_stats.vertices = drawData->TotalVtxCount;
 
-            for (uint i = 0; i < drawData->CmdListsCount; i++)
+            for (uint i = 0; i < drawData->CmdListsCount; ++i)
             {
                 const auto& drawList = *drawData->CmdLists[i];
                 m_stats.drawCmds += drawList.CmdBuffer.size();
@@ -117,23 +117,18 @@ namespace DrkCraft
 
     void ImGuiController::on_event(InputEvent& event)
     {
-        if (m_enabled)
+        if (m_enabled && m_blockEvents)
         {
-            if (should_capture_event(event))DRK_LOG_CORE_DEBUG("ImGui capturing event: {}", event.get_string());
+            if (should_capture_event(event))
                 event.set_handled();
         }
     }
 
     bool ImGuiController::should_capture_event(const InputEvent& event) const
     {
-        if (m_enabled && m_blockEvents)
-        {
-            ImGuiIO& io = ImGui::GetIO();
-            return (event == EventCategory::Mouse    && io.WantCaptureMouse)
-                || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
-        }
-        else
-            return false;
+        ImGuiIO& io = ImGui::GetIO();
+        return (event == EventCategory::Mouse    && io.WantCaptureMouse)
+            || (event == EventCategory::Keyboard && io.WantCaptureKeyboard);
     }
 
     void ImGuiController::block_events(bool block)

@@ -34,8 +34,7 @@ ATLAS_MAX_WIDTH    = 16
 NUM_TEXTURES_PER_BLOCK = 3
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    prog = argv[0]
-    args = argv[1:]
+    prog, args = argv[0], argv[1:]
 
     description = 'Generates textures atlas image for all blocks'
     usage = f'{prog} [atlas] [--blocks BLOCKS] [--textures TEXTURES]'

@@ -1,10 +1,13 @@
 target_sources(DrkCraft
   PRIVATE
     File.cpp
+    Font.cpp
+    Icon.cpp
+    Image.cpp
     ImGui.cpp
     Json.cpp
     Math.cpp
-    Noise.cpp
+    Obj.cpp
     PeriodicUpdate.cpp
     Random.cpp
     String.cpp

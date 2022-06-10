@@ -1,8 +1,8 @@
-#ifndef DRK_SYSTEM_ICON_HPP
-#define DRK_SYSTEM_ICON_HPP
+#ifndef DRK_UTIL_ICON_HPP
+#define DRK_UTIL_ICON_HPP
 
 #include "Core/Base.hpp"
-#include "System/Image.hpp"
+#include "Util/Image.hpp"
 
 #include "lib/fs.hpp"
 #include "lib/glm/vec2.hpp"
@@ -24,4 +24,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_SYSTEM_ICON_HPP
+#endif // DRK_UTIL_ICON_HPP

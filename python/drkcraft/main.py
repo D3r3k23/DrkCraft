@@ -4,15 +4,8 @@ import sys
 
 import drkcraft
 
-from drkcraft.build import config
-from drkcraft.build import build
-from drkcraft.build import run
-from drkcraft.build import clean
-from drkcraft.build import package
-
-from drkcraft.tools import profile
-from drkcraft.tools import clean_logs
-from drkcraft.tools import gen_block_texture_atlas
+from drkcraft.build import *
+from drkcraft.tools import *
 
 CMD: dict[str, Callable] = {
       'build' : build.main,
@@ -32,15 +25,15 @@ HELP_OPTIONS = ( '-h', '--help' )
 VERSION_OPTIONS = ( '-V', '--version' )
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
-    prog = argv[0]
-    args = argv[1:]
+    prog, args = argv[0], argv[1:]
+
+    description = 'Python utilities for DrkCraft'
+    usage = f'{prog} [-h] [-V] cmd [-h] [cmd options]'
+
     cmd = args[0] if len(args) > 0 else None
 
     opt_help:    bool = cmd is not None and any(cmd == o for o in HELP_OPTIONS)
     opt_version: bool = cmd is not None and any(cmd == o for o in VERSION_OPTIONS)
-
-    description = 'Python utilities for DrkCraft'
-    usage = f'{prog} [-h] [-V] cmd [-h] [cmd options]'
 
     parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage, add_help=False)
     parser.add_argument(*HELP_OPTIONS,    action='store_true', help='show this help message and exit')

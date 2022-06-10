@@ -1,6 +1,6 @@
 #include "Inventory.hpp"
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
 
 }

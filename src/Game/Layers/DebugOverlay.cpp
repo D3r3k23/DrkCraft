@@ -8,7 +8,7 @@
 
 #include <imgui/imgui.h>
 
-namespace DrkCraft
+namespace DrkCraft::Game
 {
     ////////////////////////////
     //       FpsCounter       //
