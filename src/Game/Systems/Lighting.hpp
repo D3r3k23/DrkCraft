@@ -5,14 +5,14 @@
 #include "Game/GameSystem.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
 
 namespace DrkCraft::Game
 {
     class LightingSystem : public GameSystem
     {
     public:
-        LightingSystem(World& world, EntityScene& scene);
+        LightingSystem(GameSystemData data);
         virtual ~LightingSystem(void) = default;
 
         virtual void render(void) override;

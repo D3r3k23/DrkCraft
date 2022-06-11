@@ -17,9 +17,9 @@ namespace DrkCraft::Game
     static constexpr float FLYING_SPEED_MULT = 2.0f;
     static constexpr float FLYING_SPEED_VERT = 1.5f;
 
-    Entity create_player(EntityScene& entityScene)
+    Entity create_player(EntityManager& entityManager)
     {
-        Entity entity = entityScene.create();
+        Entity entity = entityManager.create();
         entity.add_component<PlayerComponent>();
         entity.add_component<TransformComponent>();
         entity.add_component<HealthComponent>();

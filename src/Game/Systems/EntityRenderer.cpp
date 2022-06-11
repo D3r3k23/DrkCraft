@@ -6,8 +6,8 @@
 
 namespace DrkCraft::Game
 {
-    EntityRendererSystem::EntityRendererSystem(World& world, EntityScene& entityScene)
-      : GameSystem(world, entityScene)
+    EntityRendererSystem::EntityRendererSystem(GameSystemData data)
+      : GameSystem(data)
     { }
 
     void EntityRendererSystem::render(void)
@@ -16,7 +16,7 @@ namespace DrkCraft::Game
 
         MeshRenderer::begin_scene();
 
-        const auto view = m_entityScene.view<TransformComponent, MeshComponent>();
+        const auto view = m_data.entityManager.view<TransformComponent, MeshComponent>();
         view.each([](const auto& tc, const auto& mc)
         {
             MeshRenderer::submit(*(mc.mesh), tc.transform);

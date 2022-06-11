@@ -5,14 +5,14 @@
 #include "Game/GameSystem.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
 
 namespace DrkCraft::Game
 {
     class WorldRendererSystem : public GameSystem
     {
     public:
-        WorldRendererSystem(World& world, EntityScene& entityScene);
+        WorldRendererSystem(GameSystemData data);
         virtual ~WorldRendererSystem(void) = default;
 
         virtual void render(void) override;

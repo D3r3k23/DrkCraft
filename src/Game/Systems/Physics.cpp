@@ -4,8 +4,8 @@
 
 namespace DrkCraft::Game
 {
-    PhysicsSystem::PhysicsSystem(World& world, EntityScene& entityScene)
-      : GameSystem(world, entityScene)
+    PhysicsSystem::PhysicsSystem(GameSystemData data)
+      : GameSystem(data)
     { }
 
     void PhysicsSystem::render(void)

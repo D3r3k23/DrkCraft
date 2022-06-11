@@ -1,20 +1,20 @@
-#include "EntityScene.hpp"
+#include "EntityManager.hpp"
 
 #include "Game/Entity/Entity.hpp"
 
 namespace DrkCraft::Game
 {
-    EntityScene::EntityScene(void)
+    EntityManager::EntityManager(void)
     {
 
     }
 
-    Entity EntityScene::create(void)
+    Entity EntityManager::create(void)
     {
         return Entity(m_registry);
     }
 
-    void EntityScene::destroy(Entity entity)
+    void EntityManager::destroy(Entity entity)
     {
         entity.destroy();
     }

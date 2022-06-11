@@ -4,22 +4,38 @@
 #include "Core/Base.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
+#include "Game/GameEvent.hpp"
 
 namespace DrkCraft::Game
 {
+    struct GameSystemData
+    {
+        World& world;
+        EntityManager& entityManager;
+        GameEventQueue& gameEventQueue;
+
+        GameSystemData(World& world, EntityManager& entityManager, GameEventQueue& gameEventQueue)
+          : world(world),
+            entityManager(entityManager),
+            gameEventQueue(gameEventQueue)
+        { }
+    };
+
     class GameSystem
     {
     public:
-        GameSystem(World& world, EntityScene& entityScene);
+        GameSystem(GameSystemData data)
+          : m_data(data)
+        { }
+
         virtual ~GameSystem(void) = default;
 
         virtual void render(void) = 0;
         virtual void update(Timestep timestep) = 0;
 
     protected:
-        World& m_world;
-        EntityScene& m_entityScene;
+        GameSystemData m_data;
     };
 }
 

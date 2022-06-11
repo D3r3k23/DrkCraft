@@ -7,6 +7,7 @@
 #include "Game/GameEventTypes.hpp"
 
 #include <deque>
+#include <queue>
 #include <concepts>
 #include <type_traits>
 #include <functional>
@@ -50,6 +51,23 @@ namespace DrkCraft::Game
         ~GameEventSubscriber(void);
 
         virtual void on_game_event(const GameEvent& event) = 0;
+    };
+
+    class GameEventQueue
+    {
+    public:
+        GameEventQueue(void) = default;
+
+        void poll(void);
+
+        void push(Ptr<GameEvent> event);
+        Ptr<GameEvent> pop(void);
+
+        uint count(void) const;
+        bool empty(void) const;
+
+    private:
+        std::queue<Ptr<GameEvent>> m_events;
     };
 
     template <typename E>

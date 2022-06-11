@@ -6,7 +6,9 @@
 #include "Util/Timestep.hpp"
 #include "System/AssetLibrary.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
+#include "Game/GameEvent.hpp"
+#include "Game/GameSystem.hpp"
 #include "Game/Systems/EntityRenderer.hpp"
 #include "Game/Systems/Lighting.hpp"
 #include "Game/Systems/Physics.hpp"
@@ -51,7 +53,11 @@ namespace DrkCraft::Game
         AssetLibrary& m_assets;
 
         World m_world;
-        EntityScene m_entityScene;
+        EntityManager m_entityManager;
+
+        GameEventQueue m_gameEventQueue;
+
+        GameSystemData m_systemData;
 
         WorldRendererSystem m_worldRenderer;
         EntityRendererSystem m_entityRenderer;

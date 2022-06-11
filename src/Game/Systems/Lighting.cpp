@@ -4,8 +4,8 @@
 
 namespace DrkCraft::Game
 {
-    LightingSystem::LightingSystem(World& world, EntityScene& entityScene)
-      : GameSystem(world, entityScene)
+    LightingSystem::LightingSystem(GameSystemData data)
+      : GameSystem(data)
     { }
 
     void LightingSystem::render(void)

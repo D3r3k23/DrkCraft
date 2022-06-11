@@ -5,8 +5,8 @@
 
 namespace DrkCraft::Game
 {
-    WorldRendererSystem::WorldRendererSystem(World& world, EntityScene& entityScene)
-      : GameSystem(world, entityScene)
+    WorldRendererSystem::WorldRendererSystem(GameSystemData data)
+      : GameSystem(data)
     { }
 
     void WorldRendererSystem::render(void)
@@ -15,7 +15,7 @@ namespace DrkCraft::Game
 
         BlockRenderer::begin_scene();
 
-        for (const auto& chunks = m_world.get_chunks(); const auto& chunk : chunks)
+        for (const auto& chunks = m_data.world.get_chunks(); const auto& chunk : chunks)
         {
             render_chunk(chunk);
         }

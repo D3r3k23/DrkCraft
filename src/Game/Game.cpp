@@ -31,11 +31,12 @@ namespace DrkCraft::Game
     Game::Game(AssetLibrary& assets)
       : m_assets(assets),
         m_world(),
-        m_worldRenderer(m_world, m_entityScene),
-        m_entityRenderer(m_world, m_entityScene),
-        m_lightingSystem(m_world, m_entityScene),
-        m_physicsSystem(m_world, m_entityScene),
-        m_playerController(create_player(m_entityScene)),
+        m_systemData({m_world, m_entityManager, m_gameEventQueue}),
+        m_worldRenderer(m_systemData),
+        m_entityRenderer(m_systemData),
+        m_lightingSystem(m_systemData),
+        m_physicsSystem(m_systemData),
+        m_playerController(create_player(m_entityManager)),
         m_hud(Layer::create<Hud>(true)),
         m_running(true),
         m_paused(false),
@@ -86,6 +87,8 @@ namespace DrkCraft::Game
         m_entityRenderer.update(timestep);
         m_lightingSystem.update(timestep);
         m_physicsSystem.update(timestep);
+
+        m_gameEventQueue.poll();
     }
 
     void Game::on_event(InputEvent& event)

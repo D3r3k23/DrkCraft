@@ -10,6 +10,8 @@ namespace DrkCraft::Game
     //         GameEvent.hpp         //
     ///////////////////////////////////
 
+    ////// GameEvent //////
+
     std::deque<GameEventSubscriber*> GameEvent::s_subscribers;
 
     void GameEvent::post(const GameEvent& event)
@@ -32,6 +34,8 @@ namespace DrkCraft::Game
             s_subscribers.erase(it);
     }
 
+    ////// GameEventSubscriber //////
+
     GameEventSubscriber::GameEventSubscriber(void)
     {
         GameEvent::subscribe(this);
@@ -40,6 +44,44 @@ namespace DrkCraft::Game
     GameEventSubscriber::~GameEventSubscriber(void)
     {
         GameEvent::unsubscribe(this);
+    }
+
+    ////// GameEventQueue //////
+
+    void GameEventQueue::poll(void)
+    {
+        while (!empty())
+        {
+            Ptr<GameEvent> event = pop();
+            GameEvent::post(*event);
+        }
+    }
+
+    void GameEventQueue::push(Ptr<GameEvent> event)
+    {
+        m_events.push(std::move(event));
+    }
+
+    Ptr<GameEvent> GameEventQueue::pop(void)
+    {
+        if (!empty())
+        {
+            Ptr<GameEvent> event = std::move(m_events.front());
+            m_events.pop();
+            return event;
+        }
+        else
+            return {};
+    }
+
+    uint GameEventQueue::count(void) const
+    {
+        return m_events.size();
+    }
+
+    bool GameEventQueue::empty(void) const
+    {
+        return m_events.empty();
     }
 
     ////////////////////////////////////

@@ -5,7 +5,7 @@
 #include "Game/GameSystem.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
 
 #include "Game/World/World.hpp"
 #include "Game/Player.hpp"
@@ -15,7 +15,7 @@ namespace DrkCraft::Game
     class PhysicsSystem : public GameSystem
     {
     public:
-        PhysicsSystem(World& world, EntityScene& scene);
+        PhysicsSystem(GameSystemData data);
         virtual ~PhysicsSystem(void) = default;
 
         virtual void render(void) override;

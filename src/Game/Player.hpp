@@ -5,7 +5,7 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/Entity/Entity.hpp"
-#include "Game/Entity/EntityScene.hpp"
+#include "Game/Entity/EntityManager.hpp"
 #include "Graphics/Camera.hpp"
 #include "Game/Items/Inventory.hpp"
 
@@ -13,7 +13,7 @@
 
 namespace DrkCraft::Game
 {
-    Entity create_player(EntityScene& entityScene);
+    Entity create_player(EntityManager& entityManager);
 
     enum class PlayerState
     {

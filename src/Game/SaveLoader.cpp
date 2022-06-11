@@ -5,6 +5,7 @@
 #include "Core/Debug/Profiler.hpp"
 
 #include <rapidjson/document.h>
+#include <fmt/ranges.h>
 
 namespace DrkCraft::Game
 {
@@ -13,6 +14,7 @@ namespace DrkCraft::Game
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG(is_dir(savesDir), "Saves directory \"{}\" is not a directory", savesDir.generic_string());
 
+        DRK_LOG_CORE_INFO("Loading saves from: \"{}\"", savesDir.generic_string());
         std::vector<fs::path> saves;
         for (const DirEntry& item : DirIterator{savesDir})
         {
@@ -23,6 +25,7 @@ namespace DrkCraft::Game
                     saves.push_back(path);
             }
         }
+        DRK_LOG_CORE_DEBUG("Saves: {}", saves);
         return saves;
     }
 
