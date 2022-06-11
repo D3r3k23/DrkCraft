@@ -10,7 +10,6 @@
 #include "lib/fs.hpp"
 
 #include <string>
-#include <optional>
 #include <vector>
 #include <queue>
 #include <unordered_map>
@@ -102,7 +101,7 @@ namespace DrkCraft
         Ref<Mesh> get_mesh(const fs::path& filename) const;
 
         bool loading(void) const;
-        std::optional<std::string> currently_loading(void) const;
+        Optional<std::string> currently_loading(void) const;
 
     private:
         void load_texture(const fs::path& filename);

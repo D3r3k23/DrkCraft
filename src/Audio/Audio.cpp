@@ -49,7 +49,7 @@ namespace DrkCraft
     //       Audio       //
     ///////////////////////
 
-    static std::optional<AudioEngine> s_audioEngine;
+    static Optional<AudioEngine> s_audioEngine;
 
     static AudioEngine& get_audio_engine(void)
     {

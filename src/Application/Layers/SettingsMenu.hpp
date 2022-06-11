@@ -15,6 +15,12 @@
 
 namespace DrkCraft
 {
+    enum class SettingModificationState
+    {
+        Clean = 0,
+        Dirty
+    };
+
     class SettingsMenu : public Layer
     {
         using CloseCallbackFn = std::function<void(void)>;
@@ -24,6 +30,8 @@ namespace DrkCraft
         virtual ~SettingsMenu(void);
 
         void set_close_callback_fn(const CloseCallbackFn& fn);
+
+        void open(void);
 
         virtual void on_attach(void) override;
         virtual void on_detach(void) override;
@@ -39,15 +47,18 @@ namespace DrkCraft
         void apply(void);
         void close(void);
 
+        void load_settings(void);
+
         void make_dirty(Setting setting);
         bool dirty(Setting setting) const;
+        bool keybinds_dirty(void) const;
 
     private:
         SettingsData m_settings;
-        std::vector<bool> m_dirty;
+        std::vector<SettingModificationState> m_dirty;
 
         KeyBinds m_keybinds;
-        bool m_keybindsDirty;
+        SettingModificationState m_keybindsDirty;
 
         CloseCallbackFn m_onClose;
     };

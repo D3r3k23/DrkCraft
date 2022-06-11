@@ -8,7 +8,6 @@
 #include "lib/glm/vec2.hpp"
 
 #include <vector>
-#include <optional>
 
 namespace DrkCraft
 {
@@ -40,7 +39,7 @@ namespace DrkCraft
         uvec2 get_coordinates(uint s, uint t);
 
     private:
-        mutable std::optional<uint> m_slot;
+        mutable Optional<uint> m_slot;
 
         uvec2 m_size;
         TextureFormat m_format;

@@ -20,15 +20,24 @@ namespace DrkCraft
 
     class AudioSource : public AlObject
     {
-        friend class AudioEngine;
-        friend class Mp3Decoder;
-        friend class OggDecoder;
+    public:
+        class Passkey
+        {
+            friend class AudioEngine;
+        private:
+            Passkey(void) = default;
+        };
 
-    private:
         AudioSource(AudioSourceFormat format, const void* data, uint size, uint sampleRate, float length);
 
-    public:
         virtual ~AudioSource(void);
+
+        void play(Passkey);
+        void pause(Passkey);
+        void stop(Passkey);
+        void rewind(Passkey);
+
+        AudioSourceState get_state(void) const;
 
         bool is_playing(void) const;
         bool is_paused(void) const;
@@ -52,13 +61,6 @@ namespace DrkCraft
     private:
         void attach_buffer(void);
         void detach_buffer(void);
-
-        AudioSourceState get_state(void) const;
-
-        void play(void);
-        void pause(void);
-        void stop(void);
-        void rewind(void);
 
     private:
         AlBuffer m_buffer;

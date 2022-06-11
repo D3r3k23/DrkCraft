@@ -5,7 +5,7 @@
 
 namespace DrkCraft::Yaml
 {
-    std::optional<YAML::Node> load(const fs::path& filename)
+    Optional<YAML::Node> load(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG(is_file(filename), "YAML file \"{}\" not found", filename.generic_string());
@@ -43,7 +43,7 @@ namespace DrkCraft::Yaml
         return node[key] && node[key].IsScalar();
     }
 
-    std::optional<YAML::Node> get_map(const YAML::Node& node, const std::string& key)
+    Optional<YAML::Node> get_map(const YAML::Node& node, const std::string& key)
     {
         if (check_map(node, key))
             return node[key];
@@ -51,7 +51,7 @@ namespace DrkCraft::Yaml
             return {};
     }
 
-    std::optional<YAML::Node> get_scalar(const YAML::Node& node, const std::string& key)
+    Optional<YAML::Node> get_scalar(const YAML::Node& node, const std::string& key)
     {
         if (check_scalar(node, key))
             return node[key];

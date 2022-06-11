@@ -6,6 +6,7 @@
 #include "Core/Bind.hpp"
 #include "Core/Macro.hpp"
 #include "Core/Result.hpp"
+#include "Core/Optional.hpp"
 #include "Core/SmartPointer.hpp"
 
 #include "Core/Debug/Log.hpp"

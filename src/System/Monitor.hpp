@@ -12,7 +12,6 @@
 #include <vector>
 #include <string>
 #include <string_view>
-#include <optional>
 
 // Should restructure this - each monitor should have a list of video mode
 // options - default is highest res -> highest refresh rate -> color
@@ -89,9 +88,9 @@ namespace DrkCraft
         AbstractEventHandlerFn<MonitorEvent> m_eventHandler;
 
         bool m_fullscreen;
-        std::optional<uint> m_fullscreenMonitor;
-        std::optional<uvec2> m_savedWindowedSize;
-        std::optional<ivec2> m_savedWindowedPos;
+        Optional<uint> m_fullscreenMonitor;
+        Optional<uvec2> m_savedWindowedSize;
+        Optional<ivec2> m_savedWindowedPos;
     };
 }
 

@@ -14,7 +14,6 @@
 #include "Util/Timestep.hpp"
 
 #include <string_view>
-#include <optional>
 
 namespace DrkCraft
 {
@@ -72,7 +71,7 @@ namespace DrkCraft
         bool is_minimized(void) const;
 
     private:
-        static std::optional<Application> s_instance;
+        static Optional<Application> s_instance;
 
         Window m_window;
         OpenGlContext m_context;
@@ -80,7 +79,7 @@ namespace DrkCraft
         MonitorManager m_monitorManager;
         AssetLibrary  m_assetLibrary;
 
-        std::optional<ImGuiController> m_imGuiController;
+        Optional<ImGuiController> m_imGuiController;
         EventGenerator m_eventGenerator;
 
         LayerStack m_layerStack;

@@ -102,7 +102,7 @@ namespace DrkCraft
             }
             if (ImGui::BeginPopupModal("Start Game", &showStartGameMenu))
             {
-                show_saved_games_table();
+                // show_saved_games_table();
 
                 if (ImGui::Button("Create New World"))
                 {
@@ -251,9 +251,8 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
         DRK_ASSERT_DEBUG(!std::holds_alternative<std::monostate>(m_gameLoadSource), "Game has not been selected");
 
-        std::visit(Overload
+        Visitor
         {
-            [](std::monostate){ DRK_ASSERT_DEBUG(false, "Invalid variant"); },
             [this](const fs::path& save)
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), save));
@@ -261,8 +260,9 @@ namespace DrkCraft
             [this](const WorldGeneratorSpec& worldGeneratorSpec)
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), worldGeneratorSpec));
-            }
-        }, m_gameLoadSource);
+            },
+            [](std::monostate){ DRK_ASSERT_DEBUG(false, "Invalid variant"); }
+        }.visit(m_gameLoadSource);
 
         detach_layer();
     }
@@ -270,7 +270,7 @@ namespace DrkCraft
     void MainMenu::open_settings(void)
     {
         DRK_LOG_CORE_TRACE("MainMenu: Opening Settings");
-        m_settingsMenu->activate_layer();
+        m_settingsMenu->open();
         hide_menu();
     }
 

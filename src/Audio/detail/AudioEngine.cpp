@@ -71,7 +71,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         refresh();
-        source->play();
+        source->play(AudioSource::Passkey{});
         m_playingSources.push_back(source);
     }
 
@@ -80,7 +80,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_ASSERT_DEBUG(source->is_paused(), "Source is not paused");
-        source->play();
+        source->play(AudioSource::Passkey{});
     }
 
     void AudioEngine::unpause_all(void)
@@ -95,7 +95,7 @@ namespace DrkCraft
     void AudioEngine::pause_source(const Ref<AudioSource>& source)
     {
         DRK_PROFILE_FUNCTION();
-        source->pause();
+        source->pause(AudioSource::Passkey{});
     }
 
     void AudioEngine::pause_all(void)
@@ -112,7 +112,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         if (!source->is_stopped())
-            source->stop();
+            source->stop(AudioSource::Passkey{});
 
         auto it = std::ranges::find(m_playingSources, source);
         DRK_ASSERT_DEBUG(it != m_playingSources.end(), "Source is not playing");

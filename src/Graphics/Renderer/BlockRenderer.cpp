@@ -10,8 +10,6 @@
 
 #include <glad/glad.h>
 
-#include <optional>
-
 namespace DrkCraft
 {
     static constexpr float BLOCK_SIZE = 0.5f;
@@ -38,8 +36,8 @@ namespace DrkCraft
             BlockRendererStats lastFrameStats;
             BlockRendererStats stats;
 
-            std::optional<ShaderProgram> shader;
-            std::optional<VertexArray> vertexArray;
+            Optional<ShaderProgram> shader;
+            Optional<VertexArray> vertexArray;
 
             Ref<VertexBuffer> vertexBuffer;
             Ref<IndexBuffer>  indexBuffer;
@@ -48,7 +46,7 @@ namespace DrkCraft
             uint indices = 0;
 
             TextureManager* textureManager;
-            std::optional<TextureAtlas> blockTextureAtlas;
+            Optional<TextureAtlas> blockTextureAtlas;
             uint blockAtlasTextureIndex;
         };
     }

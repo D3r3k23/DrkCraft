@@ -7,7 +7,6 @@
 
 #include <string>
 #include <string_view>
-#include <optional>
 #include <initializer_list>
 #include <vector>
 #include <span>

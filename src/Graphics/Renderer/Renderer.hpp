@@ -10,8 +10,6 @@
 
 #include "lib/glm/vec.hpp"
 
-#include <optional>
-
 namespace DrkCraft
 {
     struct RendererStats
@@ -48,7 +46,7 @@ namespace DrkCraft
         static void bind_shader(const ShaderProgram& shader);
         static void unbind_shader(const ShaderProgram& shader);
 
-        static void draw_indexed(const VertexArray& vao, std::optional<uint> count={});
+        static void draw_indexed(const VertexArray& vao, Optional<uint> count={});
 
     private:
         static void reset_stats(void);

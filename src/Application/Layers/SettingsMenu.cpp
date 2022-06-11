@@ -21,9 +21,9 @@ namespace DrkCraft
     SettingsMenu::SettingsMenu(bool activate)
       : Layer("SettingsMenuLayer", activate),
         m_settings(RuntimeSettings::get_settings()),
-        m_dirty(NUM_SETTINGS, false),
+        m_dirty(NUM_SETTINGS, SettingModificationState::Clean),
         m_keybinds(RuntimeSettings::get_keybinds()),
-        m_keybindsDirty(false)
+        m_keybindsDirty(SettingModificationState::Clean)
     { }
 
     SettingsMenu::~SettingsMenu(void)
@@ -34,6 +34,12 @@ namespace DrkCraft
     void SettingsMenu::set_close_callback_fn(const CloseCallbackFn& fn)
     {
         m_onClose = fn;
+    }
+
+    void SettingsMenu::open(void)
+    {
+        load_settings();
+        activate_layer();
     }
 
     void SettingsMenu::on_attach(void)
@@ -93,6 +99,8 @@ namespace DrkCraft
 
             if (ImGui::DragInt("Field of View", &m_settings.video.fov, 1.0f, 0, 100))
                 make_dirty(Setting::Fov);
+
+            ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Audio"))
@@ -102,12 +110,16 @@ namespace DrkCraft
 
             if (ImGui::Checkbox("Music", &m_settings.audio.music))
                 make_dirty(Setting::Music);
+
+            ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Controls"))
         {
             if (ImGui::DragInt("Mouse Sensitivity", &m_settings.controls.sensitivity, 1.0f, 0, 100))
                 make_dirty(Setting::Sensitivity);
+
+            ImGui::TreePop();
         }
 
         ImGui::EndGroup();
@@ -162,15 +174,16 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        if (std::ranges::any_of(m_dirty, [](bool dirty) { return dirty; }));
+        if (std::ranges::any_of(m_dirty, [](SettingModificationState dirty)
+            {
+                return dirty == SettingModificationState::Dirty;
+            }));
         {
             apply();
             RuntimeSettings::set_settings(m_settings);
 
-            for (uint i = 0; i < m_dirty.size(); ++i)
-                m_dirty[i] = false;
         }
-        if (m_keybindsDirty)
+        if (keybinds_dirty())
         {
             RuntimeSettings::set_keybinds(m_keybinds);
         }
@@ -223,13 +236,29 @@ namespace DrkCraft
         deactivate_layer();
     }
 
+    void SettingsMenu::load_settings(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        m_settings = RuntimeSettings::get_settings();
+        m_keybinds = RuntimeSettings::get_keybinds();
+
+        std::ranges::fill(m_dirty, SettingModificationState::Clean);
+        m_keybindsDirty = SettingModificationState::Clean;
+    }
+
     void SettingsMenu::make_dirty(Setting setting)
     {
-        m_dirty[magic_enum::enum_integer(setting)] = true;
+        m_dirty[magic_enum::enum_integer(setting)] = SettingModificationState::Dirty;
     }
 
     bool SettingsMenu::dirty(Setting setting) const
     {
-        return m_dirty[magic_enum::enum_integer(setting)];
+        return m_dirty[magic_enum::enum_integer(setting)] == SettingModificationState::Dirty;
+    }
+
+    bool SettingsMenu::keybinds_dirty(void) const
+    {
+        return m_keybindsDirty == SettingModificationState::Dirty;
     }
 }

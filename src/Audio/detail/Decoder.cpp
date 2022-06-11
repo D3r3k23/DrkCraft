@@ -57,9 +57,9 @@ namespace DrkCraft
         const auto format = get_audio_source_format(channels);
         void* data      = static_cast<void*>(info.buffer);
 
-        auto source = new AudioSource(format, data, size, sampleRate, length);
+        auto source = make_ref<AudioSource>(format, data, size, sampleRate, length);
         std::free(data);
-        return Ref<AudioSource>(source);
+        return source;
     }
 
     ////////////////////////////
@@ -156,7 +156,7 @@ namespace DrkCraft
             const auto format   = get_audio_source_format(channels);
             const void* data   = static_cast<const void*>(readBuffer.get());
 
-            return Ref<AudioSource>(new AudioSource(format, data, size, sampleRate, length));
+            return make_ref<AudioSource>(format, data, size, sampleRate, length);
         }
         else
         {

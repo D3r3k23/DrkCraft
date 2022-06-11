@@ -35,6 +35,47 @@ namespace DrkCraft
         alDeleteSources(1, &m_id);
     }
 
+    void AudioSource::play(Passkey)
+    {
+        DRK_PROFILE_FUNCTION();
+        alSourcePlay(m_id);
+    }
+
+    void AudioSource::pause(Passkey)
+    {
+        DRK_PROFILE_FUNCTION();
+        if (is_playing())
+            alSourcePause(m_id);
+    }
+
+    void AudioSource::stop(Passkey)
+    {
+        DRK_PROFILE_FUNCTION();
+        alSourceStop(m_id);
+    }
+
+    void AudioSource::rewind(Passkey)
+    {
+        DRK_PROFILE_FUNCTION();
+        alSourceRewind(m_id);
+    }
+
+    AudioSourceState AudioSource::get_state(void) const
+    {
+        ALenum state;
+        alGetSourcei(m_id, AL_SOURCE_STATE, &state);
+        switch (state)
+        {
+            case AL_INITIAL : return AudioSourceState::Initial;
+            case AL_PLAYING : return AudioSourceState::Playing;
+            case AL_PAUSED  : return AudioSourceState::Paused;
+            case AL_STOPPED : return AudioSourceState::Stopped;
+            default:
+                DRK_ASSERT_DEBUG(false, "Unknown AudioSourceState");
+                return AudioSourceState::Initial;
+        }
+    }
+
     bool AudioSource::is_playing(void) const
     {
         return get_state() == AudioSourceState::Playing;
@@ -119,46 +160,5 @@ namespace DrkCraft
     void AudioSource::detach_buffer(void)
     {
         alSourcei(m_id, AL_BUFFER, 0);
-    }
-
-    AudioSourceState AudioSource::get_state(void) const
-    {
-        ALenum state;
-        alGetSourcei(m_id, AL_SOURCE_STATE, &state);
-        switch (state)
-        {
-            case AL_INITIAL : return AudioSourceState::Initial;
-            case AL_PLAYING : return AudioSourceState::Playing;
-            case AL_PAUSED  : return AudioSourceState::Paused;
-            case AL_STOPPED : return AudioSourceState::Stopped;
-            default:
-                DRK_ASSERT_DEBUG(false, "Unknown AudioSourceState");
-                return AudioSourceState::Initial;
-        }
-    }
-
-    void AudioSource::play(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        alSourcePlay(m_id);
-    }
-
-    void AudioSource::pause(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        if (is_playing())
-            alSourcePause(m_id);
-    }
-
-    void AudioSource::stop(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        alSourceStop(m_id);
-    }
-
-    void AudioSource::rewind(void)
-    {
-        DRK_PROFILE_FUNCTION();
-        alSourceRewind(m_id);
     }
 }

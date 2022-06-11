@@ -3,6 +3,7 @@
 #include "MouseCodes.hpp"
 
 #include "Application/Application.hpp"
+#include "Util/Fn.hpp"
 
 #include <GLFW/glfw3.h>
 #include <magic_enum.hpp>
@@ -13,20 +14,20 @@ namespace DrkCraft
     //         InputCode         //
     ///////////////////////////////
 
-    namespace
-    {
-        struct InputCodeNameVisitor
-        {
-            std::string_view operator()(std::monostate)
-                { return ""; }
+    // namespace
+    // {
+    //     struct InputCodeNameVisitor
+    //     {
+    //         std::string_view operator()(std::monostate)
+    //             { return ""; }
 
-            std::string_view operator()(KeyCode key)
-                { return key_code_name(key); }
+    //         std::string_view operator()(KeyCode key)
+    //             { return key_code_name(key); }
 
-            std::string_view operator()(MouseCode button)
-                { return mouse_code_name(button); }
-        };
-    }
+    //         std::string_view operator()(MouseCode button)
+    //             { return mouse_code_name(button); }
+    //     };
+    // }
 
     InputCode to_input_code(std::string_view str)
     {
@@ -41,7 +42,22 @@ namespace DrkCraft
 
     std::string_view input_code_name(InputCode code)
     {
-        return std::visit(InputCodeNameVisitor{}, code);
+        static auto visitor = Visitor
+        {
+            [](KeyCode key) -> std::string_view
+            {
+                return key_code_name(key);
+            },
+            [](MouseCode button) -> std::string_view
+            {
+                return mouse_code_name(button);
+            },
+            [](std::monostate) -> std::string_view
+            {
+                return "";
+            }
+        };
+        return visitor.visit(code);
     }
 
     ///////////////////////////////////
@@ -62,24 +78,30 @@ namespace DrkCraft
         return status == GLFW_PRESS;
     }
 
-    namespace
-    {
-        struct IsInputPressedVisitor
-        {
-            bool operator()(std::monostate)
-                { return false; }
+    // namespace
+    // {
+    //     struct IsInputPressedVisitor
+    //     {
+    //         bool operator()(std::monostate)
+    //             { return false; }
 
-            bool operator()(KeyCode key)
-                { return is_key_pressed(key); }
+    //         bool operator()(KeyCode key)
+    //             { return is_key_pressed(key); }
 
-            bool operator()(MouseCode button)
-                { return is_mouse_button_pressed(button); }
-        };
-    }
+    //         bool operator()(MouseCode button)
+    //             { return is_mouse_button_pressed(button); }
+    //     };
+    // }
 
     bool is_pressed(InputCode code)
     {
-        return std::visit(IsInputPressedVisitor{}, code);
+        static auto visitor = Visitor
+        {
+            [](KeyCode key)      { return is_key_pressed(key); },
+            [](MouseCode button) { return is_mouse_button_pressed(button); },
+            [](std::monostate)   { return false; }
+        };
+        return visitor.visit(code);
     }
 
     vec2 get_mouse_position(void)

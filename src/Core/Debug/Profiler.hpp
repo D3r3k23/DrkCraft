@@ -122,9 +122,6 @@
     #define DRK_PROFILE_EVENT_LOCAL(name)
     #define DRK_PROFILE_EVENT_GLOBAL(name)
 
-    #define DRK_PROFILE_FLOW_BEGIN(cat, name)
-    #define DRK_PROFILE_FLOW_END(cat, name)
-
     #define DRK_PROFILE_THREAD_CREATE(name)
     #define DRK_PROFILE_THREAD(name)
 #endif

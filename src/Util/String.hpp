@@ -5,7 +5,6 @@
 
 #include <string>
 #include <string_view>
-#include <optional>
 
 namespace DrkCraft
 {
@@ -23,7 +22,7 @@ namespace DrkCraft
         return is_digit(c) ? c - '0' : 0;
     }
 
-    constexpr std::optional<uint> to_uint(const std::string_view str)
+    constexpr Optional<uint> to_uint(const std::string_view str)
     {
         uint value = 0;
         uint multiplier = 1;
@@ -38,7 +37,7 @@ namespace DrkCraft
         return value;
     }
 
-    constexpr std::optional<int> to_int(const std::string_view str)
+    constexpr Optional<int> to_int(const std::string_view str)
     {
         if (str.length() <= 0)
             return {};

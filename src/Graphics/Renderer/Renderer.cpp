@@ -130,7 +130,7 @@ namespace DrkCraft
         return s_data.lastFrameStats;
     }
 
-    void Renderer::draw_indexed(const VertexArray& vao, std::optional<uint> count)
+    void Renderer::draw_indexed(const VertexArray& vao, Optional<uint> count)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -146,7 +146,7 @@ namespace DrkCraft
         update_stats_on_draw_call(primitiveType, indexCount);
     }
 
-    // void Renderer::draw_triangles(const IndexBuffer& indexBuffer, std::optional<uint> count)
+    // void Renderer::draw_triangles(const IndexBuffer& indexBuffer, Optional<uint> count)
     // {
     //     DRK_PROFILE_FUNCTION();
 

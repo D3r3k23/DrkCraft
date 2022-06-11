@@ -5,21 +5,25 @@
 
 #include <functional>
 #include <concepts>
-#include <optional>
 #include <variant>
 #include <utility>
 
 namespace DrkCraft
 {
-    // For std::visit
     template <typename ... T>
-    struct Overload : T ...
+    struct Visitor : T ...
     {
         using T::operator()...;
+
+        template <typename V>
+        auto visit(V&& var)
+        {
+            return std::visit(*this, std::forward<V>(var));
+        }
     };
 
     template <typename T>
-    T lazy_value_or(const std::optional<T>& opt, std::invocable auto fn)
+    T lazy_value_or(const Optional<T>& opt, std::invocable auto fn)
     {
         if (opt.has_value())
             return opt.value();

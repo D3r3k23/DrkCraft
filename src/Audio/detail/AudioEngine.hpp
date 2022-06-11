@@ -15,13 +15,10 @@ namespace DrkCraft
     // Loading is thread safe, playing/control is not
     class AudioEngine
     {
-        friend class Audio;
-
     public:
         AudioEngine(void);
         ~AudioEngine(void);
 
-    private:
         Ref<AudioSource> load_source(const fs::path& filename, AudioFileFormat format=AudioFileFormat::None);
 
         void play_source(const Ref<AudioSource>& source);

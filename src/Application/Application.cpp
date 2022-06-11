@@ -18,7 +18,7 @@ namespace DrkCraft
     //       Static       //
     ////////////////////////
 
-    std::optional<Application> Application::s_instance;
+    Optional<Application> Application::s_instance;
 
     void Application::init(std::string_view title)
     {

@@ -5,7 +5,6 @@
 #include "Core/Debug/Profiler.hpp"
 
 #include <thread>
-#include <optional>
 #include <functional>
 #include <concepts>
 #include <utility>
@@ -163,8 +162,8 @@ namespace DrkCraft
 
     private:
         ThreadType m_handle;
-        std::optional<StopToken> m_stopToken;
-        std::optional<StopCallback> m_stopCallback;
+        Optional<StopToken> m_stopToken;
+        Optional<StopCallback> m_stopCallback;
         StopCallbackFn m_stopCallbackFn;
     };
 }

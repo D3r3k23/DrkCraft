@@ -14,7 +14,6 @@
 
 #include "lib/fs.hpp"
 
-#include <optional>
 #include <atomic>
 
 namespace DrkCraft::Game
@@ -54,7 +53,7 @@ namespace DrkCraft::Game
         void toggle_debug_overlay(void);
 
     private:
-        std::optional<Game> m_game;
+        Optional<Game> m_game;
 
         Ref<LoadingScreen> m_loadingScreen;
         Ref<DebugOverlay> m_debugOverlay;
