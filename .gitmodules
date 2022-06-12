@@ -46,3 +46,6 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "lib/backward/backward"]
+	path = lib/backward/backward
+	url = https://github.com/bombela/backward-cpp.git
