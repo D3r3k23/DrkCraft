@@ -51,7 +51,7 @@ namespace DrkCraft
         }
     }
 
-    Result LayerStack::pop(const Ref<Layer>& layer)
+    Error<> LayerStack::pop(const Ref<Layer>& layer)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -66,10 +66,10 @@ namespace DrkCraft
                 DRK_LOG_CORE_TRACE("Popping Layer: {}", layer->get_layer_name());
 
             m_layers.erase(it);
-            return Result::Success;
+            return Error<>::Success;
         }
         else
-            return Result::Failure;
+            return Error<>::Failure;
     }
 
     void LayerStack::refresh(void)

@@ -16,9 +16,14 @@ namespace DrkCraft
             case TriangleStrip : return GL_TRIANGLE_STRIP;
             case TriangleFan   : return GL_TRIANGLE_FAN;
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown PrimitiveType");
+                DRK_ASSERT_DEBUG_FALSE("Unknown PrimitiveType");
                 return 0;
         }
+    }
+
+    PrimitiveCategory get_category(PrimitiveType type)
+    {
+        return static_cast<PrimitiveCategory>(static_cast<int>(type) & 0xF0);
     }
 
     ShaderDataBaseType to_shader_data_base_type(ShaderDataType type)
@@ -38,7 +43,7 @@ namespace DrkCraft
             case ShaderDataBaseType::Uint  : return GL_UNSIGNED_INT;
             case ShaderDataBaseType::Bool  : return GL_INT;
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown ShaderDataBaseType");
+                DRK_ASSERT_DEBUG_FALSE("Unknown ShaderDataBaseType");
                 return 0;
         }
     }
@@ -69,7 +74,7 @@ namespace DrkCraft
             case ShaderDataBaseType::Uint  : return count * sizeof(uint32);
             case ShaderDataBaseType::Bool  : return count * sizeof(int32);
             default:
-                DRK_ASSERT_DEBUG(false, "Invalid ShaderDataBaseType");
+                DRK_ASSERT_DEBUG_FALSE("Invalid ShaderDataBaseType");
                 return 0;
         }
     }

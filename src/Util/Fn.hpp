@@ -31,6 +31,24 @@ namespace DrkCraft
             return fn();
     }
 
+    template <typename T, typename R>
+    Optional<R> transform(const Optional<T>& opt, const std::function<R(const T&)>& fn)
+    {
+        if (opt.has_value())
+            return fn(opt.value());
+        else
+            return {};
+    }
+
+    template <typename T>
+    auto transform_or(const Optional<T>& opt, const auto& fn, auto defaultValue)
+    {
+        if (opt.has_value())
+            return transform(opt, fn);
+        else
+            return std::move(defaultValue);
+    }
+
     template <typename R, typename ... Args>
     std::function<R(Args...)> add_prefix(std::function<R(Args...)> fn, std::function<void(void)> prefix)
     {

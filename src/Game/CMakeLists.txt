@@ -4,7 +4,7 @@ target_sources(DrkCraft
     GameEvent.cpp
     GameSystem.cpp
     Player.cpp
-    SaveLoader.cpp
+    Save.cpp
     Sky.cpp
 )
 

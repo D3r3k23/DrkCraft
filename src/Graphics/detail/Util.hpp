@@ -7,20 +7,28 @@
 
 namespace DrkCraft
 {
+    enum class PrimitiveCategory
+    {
+        None      = 0x00,
+        Lines     = 0x10,
+        Triangles = 0x20
+    };
+
     enum class PrimitiveType
     {
         None = 0,
 
-        Lines,
-        LineStrip,
-        LineLoop,
+        Lines     = 0x11,
+        LineStrip = 0x12,
+        LineLoop  = 0x13,
 
-        Triangles,
-        TriangleStrip,
-        TriangleFan
+        Triangles     = 0x21,
+        TriangleStrip = 0x22,
+        TriangleFan   = 0x23
     };
 
     uint to_gl_primitive_type(PrimitiveType type);
+    PrimitiveCategory get_category(PrimitiveType type);
 
     enum class ShaderDataBaseType
     {

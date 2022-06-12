@@ -97,7 +97,7 @@ def package(build_config: BuildConfig, en_profiling: bool=False, en_dev_mode: bo
             shutil.copy(os.path.join(tools_src_dir, 'profile.py'), tools_dir)
         shutil.copy(os.path.join(tools_src_dir, 'clean_logs.py'), tools_dir)
         shutil.copy(os.path.join(tools_src_dir, 'gen_block_texture_atlas.py'), tools_dir)
-        shutil.copy(os.path.join('data', 'blocks.yaml'), tools_dir)
+        shutil.copy(os.path.join('data', 'blocks.yaml'), data_dir)
 
         print('Writing tools README')
         write_tools_readme_file(os.path.join(tools_dir, 'README.txt'), en_profiling)
@@ -207,20 +207,20 @@ def write_tools_readme_file(filename: str, en_profiling: bool=False):
     if en_profiling:
         lines += [
             '****** profile.py ******',
-            f'usage: python {os.path.join("tools", "profile.py")} [profile]',
+            f'usage: python {os.path.join("tools", "profile.py")} [-h] [profile]',
             'Analyzes profiler results',
             f'- Default profile: {os.path.join("data", "profile", "results.json")}',
             '',
         ]
     lines += [
         '****** clean_logs.py ******',
-        f'usage: python {os.path.join("tools", "clean_logs.py")} [log_dir] [--max_age]',
+        f'usage: python {os.path.join("tools", "clean_logs.py")} [-h] [log_dir] [--max_age]',
         '- Cleans log directory',
         ''
     ]
     lines += [
         '****** gen_block_texture_atlas.py ******',
-        f'usage: python {os.path.join("tools", "gen_block_texture_atlas.py")} [atlas] [--blocks] [--textures]',
+        f'usage: python {os.path.join("tools", "gen_block_texture_atlas.py")} [-h] [atlas] [--blocks] [--textures]',
         '- Generates textures atlas image for all blocks',
     ]
 

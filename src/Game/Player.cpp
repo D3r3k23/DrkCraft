@@ -85,7 +85,7 @@ namespace DrkCraft::Game
                 break;
             }
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown PlayerState");
+                DRK_ASSERT_DEBUG_FALSE("Unknown PlayerState");
                 m_state = Normal;
         }
 

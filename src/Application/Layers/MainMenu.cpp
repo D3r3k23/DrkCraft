@@ -4,7 +4,6 @@
 #include "Application/ImGuiController.hpp"
 #include "Util/ImGui.hpp"
 #include "Core/Settings.hpp"
-#include "Game/SaveLoader.hpp"
 #include "Game/Layers/GameLayer.hpp"
 #include "Util/Fn.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -33,19 +32,13 @@ namespace DrkCraft
       : Layer("MainMenuLayer", true),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_loadingScreen(Layer::create<LoadingScreen>("Loading Assets")),
-        m_saves(SaveLoader::get_saves("saves")),
+        m_saveManager("saves"),
         m_show(true)
     {
         DRK_PROFILE_FUNCTION();
 
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show_menu));
-        {
-            DRK_PROFILE_SCOPE("Sort saves");
-            std::ranges::sort(m_saves, [](const auto& s1, const auto& s2)
-            {
-                return fs::last_write_time(s1 / "save.json") < fs::last_write_time(s2 / "save.json");
-            });
-        }
+        load_saves();
     }
 
     MainMenu::~MainMenu(void)
@@ -56,6 +49,7 @@ namespace DrkCraft
     void MainMenu::show_menu(void)
     {
         m_show = true;
+        load_saves();
     }
 
     void MainMenu::hide_menu(void)
@@ -169,16 +163,15 @@ namespace DrkCraft
                 for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
                 {
                     auto& save = m_saves[row];
-                    auto saveName = save.filename().string();
                     ImGui::TableNextRow();
 
                     ImGui::TableNextColumn();
-                    ImGui::TextUnformatted(saveName.c_str());
+                    ImGui::TextUnformatted(save->name.c_str());
 
                     ImGui::TableNextColumn();
                     if (ImGui::SmallButton("Start"))
                     {
-                        m_gameLoadSource = save;
+                        m_gameLoadSource = m_saveManager.get_loader(save->name);
                     }
 
                     ImGui::TableNextColumn();
@@ -191,8 +184,8 @@ namespace DrkCraft
                         std::string name;
                         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
                         {
-                            if (SaveLoader::rename_save(savesDir, saveName, name) == Result::Success)
-                                save = savesDir / name;
+                            if (m_saveManager.rename_save(save->name, name))
+                                save->name = name;
                         }
                         ImGui::EndPopup();
                     }
@@ -204,10 +197,10 @@ namespace DrkCraft
                     }
                     if (ImGui::BeginPopupModal("Delete Save"))
                     {
-                        ImGui::Text("Are you sure you want to delete saved game \"%s\"?", saveName);
+                        ImGui::Text("Are you sure you want to delete saved game \"%s\"?", save->name);
                         if (ImGui::Button("YES"))
                         {
-                            SaveLoader::delete_save(save);
+                            m_saveManager.delete_save(save->name);
                             ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::Button("CANCEL"))
@@ -226,6 +219,21 @@ namespace DrkCraft
         WorldGeneratorSpec worldGeneratorSpec;
 
         m_gameLoadSource = worldGeneratorSpec;
+    }
+
+    void MainMenu::load_saves(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        m_saveManager.load_save_info();
+        m_saves = m_saveManager.get_saves();
+        {
+            DRK_PROFILE_SCOPE("Sort saves");
+            std::ranges::sort(m_saves, [](const auto& s1, const auto& s2)
+            {
+                return s1->lastSave < s2->lastSave;
+            });
+        }
     }
 
     void MainMenu::attempt_to_start_game(void)
@@ -261,7 +269,7 @@ namespace DrkCraft
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), worldGeneratorSpec));
             },
-            [](std::monostate){ DRK_ASSERT_DEBUG(false, "Invalid variant"); }
+            [](std::monostate){ DRK_ASSERT_DEBUG_FALSE("Invalid variant"); }
         }.visit(m_gameLoadSource);
 
         detach_layer();

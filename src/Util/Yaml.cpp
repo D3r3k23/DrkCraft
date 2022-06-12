@@ -26,7 +26,7 @@ namespace DrkCraft::Yaml
 
         if (error)
         {
-            DRK_ASSERT_CORE(false, "Could not load YAML file \"{}\"", filename.generic_string());
+            DRK_ASSERT_CORE_FALSE("Could not load YAML file \"{}\"", filename.generic_string());
             return {};
         }
         else

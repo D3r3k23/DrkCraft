@@ -1,38 +1,40 @@
 #include "Json.hpp"
 
-#include "Util/File.hpp"
 #include "Core/Debug/Profiler.hpp"
-
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/stringbuffer.h>
 
 #include <string>
 
 namespace DrkCraft::Json
 {
-    Result parse(const fs::path& filename, rapidjson::Document& document)
+    Result<Document> parse(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
+        Document document;
 
         const std::string text = read_file(filename);
         document.Parse(text);
         if (document.HasParseError())
         {
-            DRK_ASSERT_DEBUG(false, "Could not parse json file \"{}\"", filename.generic_string());
-            return Result::Failure;
+            DRK_ASSERT_DEBUG_FALSE("Could not parse json file \"{}\"", filename.generic_string());
+            return {};
         }
         else
-            return Result::Success;
+            return { std::move(document) };
     }
 
-    void write(const fs::path& filename, const rapidjson::Document& document)
+    void write(const Document& document, const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
-        rapidjson::StringBuffer stringBuffer;
-        rapidjson::Writer writer(stringBuffer);
+        FileWriter<Writer> writer(filename);
+        document.Accept(writer.get_writer());
+    }
 
-        document.Accept(writer);
-        write_file(filename, stringBuffer.GetString());
+    void pretty_write(const Document& document, const fs::path& filename)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        FileWriter<PrettyWriter> writer(filename);
+        document.Accept(writer.get_writer());
     }
 }

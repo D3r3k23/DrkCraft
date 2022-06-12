@@ -25,6 +25,11 @@ namespace DrkCraft
     private:
         VertexArray m_vertexArray;
     };
+
+    class MultiMesh
+    {
+
+    };
 }
 
 #endif // DRK_GRAPHICS_MESH_HPP

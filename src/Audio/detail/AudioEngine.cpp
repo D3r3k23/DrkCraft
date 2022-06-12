@@ -61,7 +61,7 @@ namespace DrkCraft
             case AudioFileFormat::Mp3: return m_mp3Decoder.decode(filename);
             case AudioFileFormat::Ogg: return OggDecoder::decode(filename);
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown audio file format \"{}\"", filename.extension().string());
+                DRK_ASSERT_DEBUG_FALSE("Unknown audio file format \"{}\"", filename.extension().string());
                 return {};
         }
     }

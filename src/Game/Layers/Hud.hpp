@@ -5,6 +5,7 @@
 #include "Application/Layer.hpp"
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
+#include "Game/Player.hpp"
 
 #include <functional>
 #include <concepts>
@@ -14,7 +15,7 @@ namespace DrkCraft::Game
     class Hud : public Layer
     {
     public:
-        Hud(bool activate);
+        Hud(const PlayerController& player, bool activate);
         virtual ~Hud(void);
 
         virtual void on_attach(void) override;
@@ -25,9 +26,7 @@ namespace DrkCraft::Game
         virtual void on_event(Event& event) override;
 
     private:
-
-    private:
-
+        const PlayerController& m_player;
     };
 }
 

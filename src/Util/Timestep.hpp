@@ -17,6 +17,7 @@ namespace DrkCraft
         float ts(void)   const { return m_delta; }
         float delta(void)  const { return m_delta; }
         operator float(void) const { return m_delta; }
+        Time::Seconds<float> seconds(void) const { return Time::Seconds<float>(m_delta); }
 
     private:
         const float m_delta; // Seconds

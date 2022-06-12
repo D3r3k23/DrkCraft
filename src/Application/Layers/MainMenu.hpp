@@ -9,11 +9,11 @@
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 #include "System/AssetLibrary.hpp"
+#include "Game/Save.hpp"
 #include "Game/World/WorldGenerator.hpp"
 
 #include "lib/fs.hpp"
 
-#include <vector>
 #include <variant>
 
 namespace DrkCraft
@@ -40,6 +40,8 @@ namespace DrkCraft
         void show_saved_games_table(void);
         void show_create_world_menu(void);
 
+        void load_saves(void);
+
         void attempt_to_start_game(void);
         void start_game(void);
 
@@ -50,9 +52,10 @@ namespace DrkCraft
         Ref<SettingsMenu> m_settingsMenu;
         Ref<LoadingScreen> m_loadingScreen;
 
-        std::vector<fs::path> m_saves;
+        Game::SaveManager m_saveManager;
+        std::vector<Game::SaveInfo*> m_saves;
 
-        std::variant<std::monostate, fs::path, Game::WorldGeneratorSpec> m_gameLoadSource;
+        std::variant<std::monostate, Ptr<Game::SaveLoader>, Game::WorldGeneratorSpec> m_gameLoadSource;
 
         bool m_show;
     };

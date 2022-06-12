@@ -217,7 +217,7 @@ namespace DrkCraft
             if (rawMonitor == monitor.get_raw_monitor())
                 return monitor.get_number();
 
-        DRK_ASSERT_DEBUG(false, "Monitor not found");
+        DRK_ASSERT_DEBUG_FALSE("Monitor not found");
         return 0;
     }
 
@@ -245,7 +245,7 @@ namespace DrkCraft
         if (monitor >= num_monitors())
         {
             DRK_LOG_CORE_ERROR("Monitor {} not found", monitor);
-            DRK_ASSERT_DEBUG_NO_MSG(false);
+            DRK_ASSERT_DEBUG_FALSE_NO_MSG();
             return;
         }
         if (!fullscreen_activated())
@@ -317,7 +317,7 @@ namespace DrkCraft
                 break;
             }
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown Monitor event");
+                DRK_ASSERT_DEBUG_FALSE("Unknown Monitor event");
         }
     }
 }

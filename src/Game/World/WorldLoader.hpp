@@ -1,7 +1,7 @@
 #ifndef DRK_GAME_WORLD_WORLD_LOADER_HPP
 #define DRK_GAME_WORLD_WORLD_LOADER_HPP
 
-#include "Game/SaveLoader.hpp"
+#include "Game/Save.hpp"
 
 namespace DrkCraft::Game
 {

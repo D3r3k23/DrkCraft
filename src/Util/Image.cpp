@@ -44,7 +44,7 @@ namespace DrkCraft
         }
         if (!data)
         {
-            DRK_ASSERT_DEBUG(false, "Failed to load image file \"{}\"", filename.generic_string());
+            DRK_ASSERT_DEBUG_FALSE("Failed to load image file \"{}\"", filename.generic_string());
             return {};
         }
         return make_ptr<Image>(static_cast<uint8*>(data), size, channels);

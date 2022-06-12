@@ -11,10 +11,7 @@
 
 // Version
 
-namespace DrkCraft
-{
-    inline const DrkCraft::Version BUILD_VERSION(DRK_VERSION_STRING);
-}
+inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 
 // Platform
 

@@ -137,7 +137,7 @@ namespace DrkCraft
             case KeyMod::CapsLock : return is_key_pressed(KeyCode::CapsLock); // Or get a key and check its mods
             case KeyMod::NumLock  : return is_key_pressed(KeyCode::NumLock);
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown KeyMod");
+                DRK_ASSERT_DEBUG_FALSE("Unknown KeyMod");
                 return false;
         }
     }

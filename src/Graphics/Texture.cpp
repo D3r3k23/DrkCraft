@@ -21,7 +21,7 @@ namespace DrkCraft
                 case TextureFormat::RGB  : return GL_RGB8;
                 case TextureFormat::RGBA : return GL_RGBA8;
                 default:
-                    DRK_ASSERT_DEBUG(false, "Unknown TextureFormat");
+                    DRK_ASSERT_DEBUG_FALSE("Unknown TextureFormat");
                     return 0;
             }
         }
@@ -33,7 +33,7 @@ namespace DrkCraft
                 case TextureFormat::RGB  : return GL_RGB;
                 case TextureFormat::RGBA : return GL_RGBA;
                 default:
-                    DRK_ASSERT_DEBUG(false, "Unknown TextureFormat");
+                    DRK_ASSERT_DEBUG_FALSE("Unknown TextureFormat");
                     return 0;
             }
         }
@@ -48,7 +48,7 @@ namespace DrkCraft
                 case 3: return TextureFormat::RGB;
                 case 4: return TextureFormat::RGBA;
                 default:
-                    DRK_ASSERT_CORE(false, "{} channels in image", image.channels());
+                    DRK_ASSERT_CORE_FALSE("{} channels in image", image.channels());
                     return TextureFormat::None;
             }
         }();
@@ -165,7 +165,7 @@ namespace DrkCraft
     {
         if (full())
         {
-            DRK_ASSERT_DEBUG(false, "All texture slots are full");
+            DRK_ASSERT_DEBUG_FALSE("All texture slots are full");
             DRK_LOG_CORE_ERROR("All texture slots are full");
         }
         else

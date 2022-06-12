@@ -160,6 +160,14 @@ namespace DrkCraft::Game
 
         // World loading status
 
+        // Time
+        ImGui::BeginGroup();
+        {
+            const auto& time = m_game.get_time();
+            ImGui::Text("D: {} H: {}", time.day(), time.time());
+        }
+        ImGui::EndGroup();
+
         // Player info
         ImGui::BeginGroup();
         {

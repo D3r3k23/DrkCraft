@@ -217,7 +217,7 @@ namespace DrkCraft
                     break;
                 }
                 default:
-                    DRK_ASSERT_DEBUG(false, "Unknown key action in callback");
+                    DRK_ASSERT_DEBUG_FALSE("Unknown key action in callback");
             }
         }
 
@@ -252,7 +252,7 @@ namespace DrkCraft
                     break;
                 }
                 default:
-                    DRK_ASSERT_DEBUG(false, "Unknown mouse button action in callback");
+                    DRK_ASSERT_DEBUG_FALSE("Unknown mouse button action in callback");
             }
         }
 

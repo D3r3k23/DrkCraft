@@ -19,7 +19,7 @@ namespace DrkCraft
             case ShaderType::TesselationControl   : return GL_TESS_CONTROL_SHADER;
             case ShaderType::TesselationEvaluation: return GL_TESS_EVALUATION_SHADER;
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown shader type");
+                DRK_ASSERT_DEBUG_FALSE("Unknown shader type");
                 return 0;
         }
     }
@@ -34,7 +34,7 @@ namespace DrkCraft
             case ShaderType::TesselationControl   : return "tesselation control shader";
             case ShaderType::TesselationEvaluation: return "tesselation evaluation shader";
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown shader type");
+                DRK_ASSERT_DEBUG_FALSE("Unknown shader type");
                 return "";
         }
     }
@@ -67,14 +67,14 @@ namespace DrkCraft
 
             Ref<Shader> shader(new Shader(type));
 
-            if (shader->compile(source))
+            if (shader->compile(source).has_error())
+                return {};
+            else
             {
                 DRK_LOG_CORE_INFO("Adding Shader to cache");
                 s_shaderCache[path.string()] = shader;
                 return shader;
             }
-            else
-                return {};
         }
     }
 
@@ -96,7 +96,7 @@ namespace DrkCraft
         return m_type;
     }
 
-    Result Shader::compile(std::string_view source)
+    ErrorMsg Shader::compile(std::string_view source)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -111,7 +111,7 @@ namespace DrkCraft
         GLint success = 0;
         glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
         if (success)
-            return Result::Success;
+            return Result<>::Success;
         else
         {
             GLint shaderLogLength = 0;
@@ -122,7 +122,7 @@ namespace DrkCraft
             shaderLog[shaderLogLength - 1] = '\0';
 
             DRK_LOG_CORE_ERROR("{} compilation failed: {}", shaderType, shaderLog.data());
-            return Result::Failure;
+            return { shaderLog.data() };
         }
     }
 
@@ -167,7 +167,7 @@ namespace DrkCraft
             attach(shader);
     }
 
-    Result ShaderProgram::link(void)
+    ErrorMsg ShaderProgram::link(void)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Linking ShaderProgram: {}", get_name());
@@ -176,7 +176,7 @@ namespace DrkCraft
         GLint success = 0;
         glGetProgramiv(m_id, GL_LINK_STATUS, &success);
         if (success)
-            return Result::Success;
+            return Result<>::Success;
         else
         {
             GLint programLogLength = 0;
@@ -187,7 +187,7 @@ namespace DrkCraft
             programLog[programLogLength - 1] = '\0';
 
             DRK_LOG_CORE_ERROR("Shader program \"{}\" linkage failed: {}", m_name, programLog.data());
-            return Result::Failure;
+            return { programLog.data() };
         }
     }
 

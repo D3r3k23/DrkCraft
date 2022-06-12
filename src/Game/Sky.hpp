@@ -2,7 +2,7 @@
 #define DRK_GAME_SKY_HPP
 
 #include "Core/Base.hpp"
-#include "Util/Timestep.hpp"
+#include "Game/Util/GameTime.hpp"
 
 namespace DrkCraft::Game
 {
@@ -30,14 +30,14 @@ namespace DrkCraft::Game
         Sky(void);
 
         void render(void);
-        void update(uint gameTime);
+        void update(const GameTime& gameTime);
 
     private:
         Skybox m_skybox;
         // Sun m_sun;
         // Moon m_moon;
 
-        uint m_gameTime;
+        uint m_hour;
     };
 }
 

@@ -62,7 +62,7 @@ namespace DrkCraft
             DRK_LOG_CORE_TRACE("Initializing BlockRenderer textures");
             s_data.textureManager = textureManager;
 
-            s_data.blockAtlasTextureIndex = s_data.textureManager->reserve();
+            s_data.blockAtlasTextureIndex = 0; // s_data.textureManager->reserve();
         }{
             DRK_PROFILE_SCOPE("BlockShader initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockShader");
@@ -76,8 +76,8 @@ namespace DrkCraft
             s_data.shader->attach(frag);
             s_data.shader->link();
         }
-        const uint vbSize = MAX_BLOCK_VERTICES * sizeof(BlockVertex);
-        const uint ibSize = MAX_BLOCK_VERTICES * sizeof(Index);
+        const uint vertexBufferSize = MAX_BLOCK_VERTICES * sizeof(BlockVertex);
+        const uint indexBufferSize = MAX_BLOCK_VERTICES * sizeof(Index);
         {
             DRK_PROFILE_SCOPE("BlockRenderer VertexArray initialization");
             DRK_LOG_CORE_TRACE("Initializing BlockRenderer VertexArray");
@@ -85,7 +85,7 @@ namespace DrkCraft
             {
                 DRK_PROFILE_SCOPE("BlockRenderer VertexBuffer initialization");
                 DRK_LOG_CORE_TRACE("Initializing BlockRenderer VertexBuffer");
-                s_data.vertexBuffer = make_ref<VertexBuffer>(vbSize, PrimitiveType::Triangles);
+                s_data.vertexBuffer = make_ref<VertexBuffer>(vertexBufferSize, PrimitiveType::Triangles);
 
                 s_data.vertexBufferData.resize(MAX_BLOCK_VERTICES);
 
@@ -99,7 +99,7 @@ namespace DrkCraft
             }{
                 DRK_PROFILE_SCOPE("BlockRenderer IndexBuffer initialization");
                 DRK_LOG_CORE_TRACE("Initializing BlockRenderer IndexBuffer");
-                s_data.indexBuffer = make_ref<IndexBuffer>(ibSize);
+                s_data.indexBuffer = make_ref<IndexBuffer>(indexBufferSize);
 
                 Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
                     0, 1, 3,  1, 2, 3, // Front

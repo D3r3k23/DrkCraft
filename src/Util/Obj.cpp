@@ -19,7 +19,7 @@ namespace DrkCraft::Obj
         {
             if (!reader.Error().empty())
                 DRK_LOG_CORE_ERROR("tinyobjloader error: {}", reader.Error());
-            DRK_ASSERT_CORE(false, "Failed to read .obj file: {}", filename.generic_string());
+            DRK_ASSERT_CORE_FALSE("Failed to read .obj file: {}", filename.generic_string());
         }
     #if defined(DRK_CONFIG_DEBUG)
         if (!reader.Warning().empty())

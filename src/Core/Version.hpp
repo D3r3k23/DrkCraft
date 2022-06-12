@@ -43,12 +43,6 @@ namespace DrkCraft
                 return v1.m_major <=> v2.m_minor;
         }
 
-        friend constexpr std::strong_ordering operator<=>(const Version& ver, std::string_view str)
-            { return ver <=> Version(str); }
-
-        friend constexpr std::strong_ordering operator<=>(std::string_view str, const Version& ver)
-            { return ver <=> str; }
-
     private:
         static std::string make_string(uint major, uint minor)
         {

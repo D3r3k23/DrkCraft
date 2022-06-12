@@ -121,7 +121,7 @@ namespace DrkCraft
                 }
                 if (error)
                 {
-                    DRK_ASSERT_DEBUG(false, "Error while reading Vorbis file");
+                    DRK_ASSERT_DEBUG_FALSE("Error while reading Vorbis file");
                     buffer.reset();
                 }
                 return std::move(buffer);

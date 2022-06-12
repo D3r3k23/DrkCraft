@@ -71,7 +71,7 @@ namespace DrkCraft
             case AL_PAUSED  : return AudioSourceState::Paused;
             case AL_STOPPED : return AudioSourceState::Stopped;
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown AudioSourceState");
+                DRK_ASSERT_DEBUG_FALSE("Unknown AudioSourceState");
                 return AudioSourceState::Initial;
         }
     }

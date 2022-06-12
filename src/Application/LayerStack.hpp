@@ -25,7 +25,7 @@ namespace DrkCraft
         LayerStack& operator=(const LayerStack&) = delete;
 
         void push(const Ref<Layer>& layer, bool overlay=false);
-        Result pop(const Ref<Layer>& layer);
+        Error<> pop(const Ref<Layer>& layer);
 
         void refresh(void); // Pops detached Layers
         void clear(void);

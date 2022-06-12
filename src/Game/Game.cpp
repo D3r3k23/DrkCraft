@@ -37,10 +37,9 @@ namespace DrkCraft::Game
         m_lightingSystem(m_systemData),
         m_physicsSystem(m_systemData),
         m_playerController(create_player(m_entityManager)),
-        m_hud(Layer::create<Hud>(true)),
+        m_hud(m_playerController, Layer::create<Hud>(true)),
         m_running(true),
-        m_paused(false),
-        m_gameTimeSeconds(0.0f)
+        m_paused(false)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_GAME_INFO("Starting game");
@@ -78,7 +77,7 @@ namespace DrkCraft::Game
     {
         DRK_PROFILE_FUNCTION();
 
-        update_game_time(timestep); // class GameTime?
+        m_gameTime.update(timestep);
 
         m_sky.update(m_gameTime);
         m_playerController.update(timestep);
@@ -160,18 +159,13 @@ namespace DrkCraft::Game
         return m_playerController;
     }
 
+    const GameTime& Game::get_time(void) const
+    {
+        return m_gameTime;
+    }
+
     void Game::save(void)
     {
         DRK_LOG_GAME_INFO("Saving Game");
-    }
-
-    void Game::update_game_time(Timestep timestep)
-    {
-        m_gameTimeSeconds += timestep * 1000;
-        if (m_gameTimeSeconds > 3600) // 1 hour
-        {
-            ++m_gameTime;
-            m_gameTimeSeconds = 0.0f;
-        }
     }
 }

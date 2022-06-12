@@ -43,7 +43,7 @@ namespace DrkCraft
         virtual ~Shader(void);
 
         ShaderType get_type(void) const;
-        Result compile(std::string_view source);
+        ErrorMsg compile(std::string_view source);
 
     private:
         ShaderType m_type = ShaderType::None;
@@ -60,7 +60,7 @@ namespace DrkCraft
 
         void attach(Ref<Shader> shader);
         void attach(std::span<Ref<Shader>> shaders);
-        Result link(void);
+        ErrorMsg link(void);
 
         std::string_view get_name(void) const;
 

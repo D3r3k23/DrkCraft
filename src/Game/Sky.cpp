@@ -18,7 +18,7 @@ namespace DrkCraft::Game
 
     Sky::Sky(void)
       : m_skybox(),
-        m_gameTime(0)
+        m_hour(0)
     {
 
     }
@@ -28,10 +28,12 @@ namespace DrkCraft::Game
         m_skybox.render();
     }
 
-    void Sky::update(uint gameTime)
+    void Sky::update(const GameTime& gameTime)
     {
-        if (gameTime != m_gameTime)
+        uint hour = gameTime.time();
+        if (hour != m_hour)
         {
+            m_hour = hour;
             // Update position of sun/moon
         }
     }

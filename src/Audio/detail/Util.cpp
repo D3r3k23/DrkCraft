@@ -35,7 +35,7 @@ namespace DrkCraft
             case AudioSourceFormat::Stereo8  :  return AL_FORMAT_STEREO8;
             case AudioSourceFormat::Stereo16 : return AL_FORMAT_STEREO16;
             default:
-                DRK_ASSERT_DEBUG(false, "Unknown OpenAL format");
+                DRK_ASSERT_DEBUG_FALSE("Unknown OpenAL format");
                 return 0;
         }
     }

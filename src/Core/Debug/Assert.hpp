@@ -6,6 +6,7 @@
 #if DRK_ASSERTS_ENABLED
 
     #include "Core/Type.hpp"
+    #include "Core/Optional.hpp"
 
     #include <fmt/format.h>
 
@@ -14,7 +15,7 @@
 
     namespace DrkCraft
     {
-        void on_assert_failure(std::string_view cond, const std::source_location& src, std::string_view msg="");
+        void on_assert_failure(const std::source_location& src, Optional<std::string_view> cond, Optional<std::string_view> msg);
     }
 
     #if DRK_DEBUG_ENABLED
@@ -30,35 +31,60 @@
     #   define DRK_DEBUG_BREAK()
     #endif
 
-    #define DRK_ASSERT_IMPL(cond, ...)                                \
-        do { if (!(cond)) {                                           \
-            on_assert_failure(#cond, std::source_location::current(), \
-              fmt::format(__VA_ARGS__));                              \
-            DRK_DEBUG_BREAK();                                        \
-        } } while (false)
+    #define DRK_ASSERT_FAILURE(cond, ...)                       \
+        do {                                                    \
+            on_assert_failure(std::source_location::current(),  \
+                cond, fmt::format(__VA_ARGS__));                \
+            DRK_DEBUG_BREAK();                                  \
+        } while (false)
 
-    #define DRK_ASSERT_IMPL_NO_MSG(cond)                               \
-        do { if (!(cond)) {                                            \
-            on_assert_failure(#cond, std::source_location::current()); \
-            DRK_DEBUG_BREAK();                                         \
-        } } while (false)
+    #define DRK_ASSERT_FAILURE_NO_MSG(cond)                    \
+        do {                                                   \
+            on_assert_failure(std::source_location::current(), \
+                cond, {});                                     \
+            DRK_DEBUG_BREAK();                                 \
+        } while (false)
 
-    #define DRK_ASSERT_CORE(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
+    #define DRK_ASSERT_IMPL(cond, ...)                  \
+        do {                                            \
+            if (!(cond)) {                              \
+                DRK_ASSERT_FAILURE(#cond, __VA_ARGS__); \
+            }                                           \
+        } while (false)
+
+    #define DRK_ASSERT_IMPL_NO_MSG(cond)          \
+        do {                                      \
+            if (!(cond)) {                        \
+                DRK_ASSERT_FAILURE_NO_MSG(#cond); \
+            }                                     \
+        } while (false)
+
+    #define DRK_ASSERT_CORE(cond, ...)  DRK_ASSERT_IMPL(cond, __VA_ARGS__)
     #define DRK_ASSERT_CORE_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
+    #define DRK_ASSERT_CORE_FALSE(...)    DRK_ASSERT_FAILURE({}, __VA_ARGS__)
+    #define DRK_ASSERT_CORE_FALSE_NO_MSG() DRK_ASSERT_FAILURE_NO_MSG({})
 
     #if DRK_DEBUG_ENABLED
-    #   define DRK_ASSERT_DEBUG(cond, ...)   DRK_ASSERT_IMPL(cond, __VA_ARGS__)
+    #   define DRK_ASSERT_DEBUG(cond, ...)  DRK_ASSERT_IMPL(cond, __VA_ARGS__)
     #   define DRK_ASSERT_DEBUG_NO_MSG(cond) DRK_ASSERT_IMPL_NO_MSG(cond)
+    #   define DRK_ASSERT_DEBUG_FALSE(...)    DRK_ASSERT_FAILURE({}, __VA_ARGS__)
+    #   define DRK_ASSERT_DEBUG_FALSE_NO_MSG() DRK_ASSERT_FAILURE_NO_MSG({})
     #else
     #   define DRK_ASSERT_DEBUG(cond, ...)
     #   define DRK_ASSERT_DEBUG_NO_MSG(cond)
+    #   define DRK_ASSERT_DEBUG_FALSE(...)
+    #   define DRK_ASSERT_DEBUG_FALSE_NO_MSG()
     #endif
 
 #else
     #define DRK_ASSERT_CORE(cond, ...)
     #define DRK_ASSERT_DEBUG(cond, ...)
+    #define DRK_ASSERT_CORE_FALSE(...)
+    #define DRK_ASSERT_DEBUG_FALSE(...)
     #define DRK_ASSERT_CORE_NO_MSG(cond)
     #define DRK_ASSERT_DEBUG_NO_MSG(cond)
+    #define DRK_ASSERT_CORE_FALSE_NO_MSG()
+    #define DRK_ASSERT_DEBUG_FALSE_NO_MSG()
 #endif
 
 #endif // DRK_CORE_DEBUG_ASSERT_HPP

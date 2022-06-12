@@ -14,8 +14,6 @@
 
 namespace DrkCraft
 {
-    static Ref<Texture> create_white_texture(void);
-
     namespace
     {
         struct RendererData
@@ -30,6 +28,14 @@ namespace DrkCraft
     }
 
     static RendererData s_data;
+
+    namespace
+    {
+        Ref<Texture> create_white_texture(void);
+
+        void reset_stats(void);
+        void update_stats_on_draw_call(const VertexBuffer& vertexBuffer, uint indices);
+    }
 
     void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
     {
@@ -87,6 +93,11 @@ namespace DrkCraft
         set_viewport(pos.x, pos.y, size.x, size.y);
     }
 
+    void Renderer::clear(void)
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
     void Renderer::begin_frame(void)
     {
         reset_stats();
@@ -134,64 +145,70 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
-        const auto indexBuffer = vao.get_index_buffer();
-        uint indexCount = std::min(count.value_or(indexBuffer->get_count()), indexBuffer->get_count());
+        const auto& vertexBuffer = *vao.get_vertex_buffer();
+        const auto& indexBuffer = *vao.get_index_buffer();
+        uint indexCount = std::min(count.value_or(indexBuffer.get_count()), indexBuffer.get_count());
 
-        const auto primitiveType = vao.get_vertex_buffer()->get_primitive_type();
+        const auto primitiveType = vertexBuffer.get_primitive_type();
         const auto glPrimitiveType = to_gl_primitive_type(primitiveType);
 
         vao.bind();
         glDrawElements(glPrimitiveType, indexCount, GL_UNSIGNED_INT, nullptr);
 
-        update_stats_on_draw_call(primitiveType, indexCount);
+        update_stats_on_draw_call(vertexBuffer, indexCount);
     }
 
-    // void Renderer::draw_triangles(const IndexBuffer& indexBuffer, Optional<uint> count)
-    // {
-    //     DRK_PROFILE_FUNCTION();
-
-    //     uint indexCount = (!count || *count > indexBuffer.get_count()) ? indexBuffer.get_count() : *count;
-
-    //     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
-
-    //     s_data.stats.indices += indexCount;
-    //     s_data.stats.drawCalls++;
-    // }
-
-    void Renderer::reset_stats(void)
+    namespace
     {
-        s_data.lastFrameStats = s_data.stats;
-        s_data.stats = RendererStats{};
-    }
-
-    void Renderer::clear(void)
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    void Renderer::update_stats_on_draw_call(PrimitiveType primitive, uint indices)
-    {
-        s_data.stats.drawCalls += 1;
-        s_data.stats.indices += indices;
-
-        using enum PrimitiveType;
-        switch (primitive)
+        static Ref<Texture> create_white_texture(void)
         {
-            case Lines     : s_data.stats.lines += indices / 2; break;
-            case LineStrip : s_data.stats.lines += indices - 1; break;
-            case LineLoop  : s_data.stats.lines += indices;     break;
+            static const uint32 WHITE_TEXTURE_DATA = 0xFFFFFFFF;
+            static const uint8* whiteTextureDataPtr = reinterpret_cast<const uint8*>(&WHITE_TEXTURE_DATA);
 
-            case Triangles     : s_data.stats.triangles += indices / 3; break;
-            case TriangleStrip : s_data.stats.triangles += indices - 2; break;
-            case TriangleFan   : s_data.stats.triangles += 0;           break;
+            return Texture::from_data(whiteTextureDataPtr, {1, 1}, TextureFormat::RGBA);
         }
-    }
 
-    static Ref<Texture> create_white_texture(void)
-    {
-        static const uint32 WHITE_TEXTURE_DATA = 0xFFFFFFFF;
-        static const uint8* whiteTextureDataPtr = reinterpret_cast<const uint8*>(&WHITE_TEXTURE_DATA);
+        void reset_stats(void)
+        {
+            s_data.lastFrameStats = s_data.stats;
+            s_data.stats = RendererStats{};
+        }
 
-        return Texture::from_data(whiteTextureDataPtr, {1, 1}, TextureFormat::RGBA);
+        void update_stats_on_draw_call(const VertexBuffer& vertexBuffer, uint indices)
+        {
+            s_data.stats.drawCalls += 1;
+            s_data.stats.vertices += vertexBuffer.get_count();
+            s_data.stats.indices += indices;
+
+            const auto primitive = vertexBuffer.get_primitive_type();
+            const auto category = get_category(primitive);
+            if (category == PrimitiveCategory::Lines)
+            {
+                if (indices < 2)
+                    return;
+                else
+                    switch (primitive)
+                    {
+                        case PrimitiveType::Lines     : s_data.stats.lines += indices / 2; return;
+                        case PrimitiveType::LineStrip : s_data.stats.lines += indices - 1; return;
+                        case PrimitiveType::LineLoop  : s_data.stats.lines += indices;     return;
+                    }
+            }
+            else if (category == PrimitiveCategory::Triangles)
+            {
+                if (indices < 3)
+                    return;
+                else
+                {
+                    switch (primitive)
+                    {
+                        case PrimitiveType::Triangles     : s_data.stats.triangles += indices / 3; return;
+                        case PrimitiveType::TriangleStrip : s_data.stats.triangles += indices - 2; return;
+                        case PrimitiveType::TriangleFan   : s_data.stats.triangles += indices - 2; return;
+                    }
+                }
+            }
+            DRK_ASSERT_DEBUG_FALSE("Unknown PrimitiveType");
+        }
     }
 }

@@ -5,6 +5,7 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 #include "System/AssetLibrary.hpp"
+
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityManager.hpp"
 #include "Game/GameEvent.hpp"
@@ -17,6 +18,7 @@
 #include "Game/Player.hpp"
 #include "Game/Sky.hpp"
 #include "Game/Layers/Hud.hpp"
+#include "Game/Util/GameTime.hpp"
 
 #include "Audio/AudioSource.hpp"
 
@@ -43,11 +45,11 @@ namespace DrkCraft::Game
         bool is_paused(void) const;
 
         const PlayerController& get_player(void) const;
+        const GameTime& get_time(void) const;
 
         void save(void);
 
     private:
-        void update_game_time(Timestep timestep);
 
     private:
         AssetLibrary& m_assets;
@@ -72,8 +74,7 @@ namespace DrkCraft::Game
         bool m_running;
         bool m_paused;
 
-        float m_gameTimeSeconds;
-        uint m_gameTime;
+        GameTime m_gameTime;
 
         Ref<AudioSource> song;
     };

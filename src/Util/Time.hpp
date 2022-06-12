@@ -14,14 +14,27 @@ namespace DrkCraft
         using Duration = std::chrono::duration<double, std::nano>; // micro?
         using Time     = std::chrono::time_point<Clock, Duration>;
 
+        using MinutePeriod    = std::ratio<60>;
+        using HourPeriod   = std::ratio<60*60>;
+        using DayPeriod = std::ratio<24*60*60>;
+
         template <typename Rep=double>
-        using Seconds = std::chrono::duration<Rep>;
+        using Micro = std::chrono::duration<Rep, std::micro>;
 
         template <typename Rep=double>
         using Milli = std::chrono::duration<Rep, std::milli>;
 
         template <typename Rep=double>
-        using Micro = std::chrono::duration<Rep, std::micro>;
+        using Seconds = std::chrono::duration<Rep>;
+
+        template <typename Rep=double>
+        using Minutes = std::chrono::duration<Rep, MinutePeriod>;
+
+        template <typename Rep=double>
+        using Hours = std::chrono::duration<Rep, HourPeriod>;
+
+        template <typename Rep=double>
+        using Days = std::chrono::duration<Rep, DayPeriod>;
 
         using std::chrono::duration_cast;
         using std::chrono::time_point_cast;

@@ -168,7 +168,7 @@ namespace DrkCraft
             case AssetType::Sound : load_audio_source(sound_asset_path(filename)); break;
             case AssetType::Mesh : load_mesh(mesh_asset_path(filename));          break;
             default:
-                DRK_ASSERT_DEBUG(false, "Invalid AssetType");
+                DRK_ASSERT_DEBUG_FALSE("Invalid AssetType");
                 return;
         }
     }
@@ -185,7 +185,7 @@ namespace DrkCraft
             case AssetType::Sound : unload_audio_source(sound_asset_path(filename)); break;
             case AssetType::Mesh : unload_mesh(mesh_asset_path(filename));          break;
             default:
-                DRK_ASSERT_DEBUG(false, "Invalid AssetType");
+                DRK_ASSERT_DEBUG_FALSE("Invalid AssetType");
                 return;
         }
         DRK_LOG_CORE_INFO("Asset \"{}\" unloaded", filename.generic_string());

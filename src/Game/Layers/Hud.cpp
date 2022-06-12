@@ -2,8 +2,9 @@
 
 namespace DrkCraft::Game
 {
-    Hud::Hud(bool activate)
-      : Layer("HudLayer", activate)
+    Hud::Hud(const PlayerController& player, bool activate)
+      : Layer("HudLayer", activate),
+        m_player(player)
     {
 
     }

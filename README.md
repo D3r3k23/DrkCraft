@@ -28,6 +28,7 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 * C++ 20
 * CMake
 * Python 3.10
+* [Backward](https://github.com/bombela/backward-cpp)
 * [Dear ImGui](https://github.com/ocornut/imgui)
 * [EnTT](https://github.com/skypjack/entt)
 * [FastNoiseLite](https://github.com/Auburn/FastNoiseLite)
