@@ -1,10 +1,7 @@
-/.venv/*
 /install/*
-
-/DrkCraft Launcher
 
 /Installations/*
 /Screenshots/*
 
-/Launcher/logs/*
-/Launcher/LICENSE.txt
+/Launcher/*
+!/Launcher/resources/*
