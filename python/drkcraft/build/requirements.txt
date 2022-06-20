@@ -1,2 +1,2 @@
-ruamel.yaml
+toml
 strip_markdown

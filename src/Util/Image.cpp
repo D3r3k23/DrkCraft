@@ -61,6 +61,11 @@ namespace DrkCraft
         stbi_image_free(m_data);
     }
 
+    uint8* Image::data(void)
+    {
+        return m_data;
+    }
+
     const uint8* Image::data(void) const
     {
         return m_data;

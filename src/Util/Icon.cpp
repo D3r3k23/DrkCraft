@@ -8,10 +8,10 @@ namespace DrkCraft
 
     bool Icon::valid(void) const
     {
-        return static_cast<bool>(m_image);
+        return (bool)m_image;
     }
 
-    const uint8* Icon::get_data(void) const
+    const uint8* Icon::get_image_data(void) const
     {
         return m_image->data();
     }

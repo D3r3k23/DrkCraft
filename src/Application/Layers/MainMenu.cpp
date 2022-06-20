@@ -2,6 +2,8 @@
 
 #include "Application/Application.hpp"
 #include "Application/ImGuiController.hpp"
+#include "System/AssetLibrary.hpp"
+#include "System/Thread.hpp"
 #include "Util/ImGui.hpp"
 #include "Core/Settings.hpp"
 #include "Game/Layers/GameLayer.hpp"
@@ -23,13 +25,9 @@ namespace DrkCraft
 
     };
 
-    const AssetList& MainMenu::get_asset_list(void)
-    {
-        return s_REQUIRED_ASSETS;
-    }
-
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer", true),
+        m_state(State::Init),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_loadingScreen(Layer::create<LoadingScreen>("Loading Assets")),
         m_saveManager("saves"),
@@ -37,8 +35,15 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
 
+        auto& assets = Application::get_asset_library();
+
+        assets.load_list(s_REQUIRED_ASSETS);
+        Thread<> saveLoadThread("save_load_thread", DRK_BIND_FN(load_saves()));
+
         m_settingsMenu->set_close_callback_fn(DRK_BIND_FN(show_menu));
-        load_saves();
+
+        while (assets.loading());
+        assets.load_list(GameLayer::asset_preload_list());
     }
 
     MainMenu::~MainMenu(void)
@@ -132,11 +137,32 @@ namespace DrkCraft
         // Animate background
 
         attempt_to_start_game();
+
+        switch (m_state)
+        {
+            case State::Init:
+                m_state = State::MainMenu;
+                break;
+            case State::MainMenu:
+                break;
+            case State::WaitingToStartGame:
+                if (ready_to_start_game())
+                    start_game();
+                break;
+        }
     }
 
     void MainMenu::on_event(Event& event)
     {
         EventDispatcher ed(event);
+    }
+
+    bool MainMenu::ready_to_start_game(void) const
+    {
+        if (!Application::get_asset_library().loading())
+        {
+
+        }
     }
 
     void MainMenu::show_saved_games_table(void)
@@ -238,7 +264,7 @@ namespace DrkCraft
 
     void MainMenu::attempt_to_start_game(void)
     {
-        if (!std::holds_alternative<std::monostate>(m_gameLoadSource))
+        if (!m_gameLoadSource.has<std::monostate>())
         {
             if (!Application::get_asset_library().loading())
             {
@@ -257,10 +283,9 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         DRK_LOG_CORE_TRACE("MainMenu: Starting Game");
-        DRK_ASSERT_DEBUG(!std::holds_alternative<std::monostate>(m_gameLoadSource), "Game has not been selected");
 
-        Visitor
-        {
+        match(m_gameLoadSource)
+        (
             [this](const fs::path& save)
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), save));
@@ -269,8 +294,8 @@ namespace DrkCraft
             {
                 Application::add_layer(Layer::create<GameLayer>(std::move(m_loadingScreen), worldGeneratorSpec));
             },
-            [](std::monostate){ DRK_ASSERT_DEBUG_FALSE("Invalid variant"); }
-        }.visit(m_gameLoadSource);
+            [](MonoState){ DRK_ASSERT_DEBUG_FALSE("Invalid variant"); }
+        );
 
         detach_layer();
     }

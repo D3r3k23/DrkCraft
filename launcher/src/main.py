@@ -1,49 +1,52 @@
 from typing import *
+from pathlib import Path
 import argparse
 import logging
-import os
 import sys
-from enum import Enum
-from pathlib import Path
+from enum import Enum, auto
 from datetime import datetime
 
 import dearpygui.dearpygui as dpg
-
-from drkcraft.tools import clean_logs
 
 from config import *
 import installer
 import launcher
 
-class Mode(Enum):
-    Install = 0
-    Launch = 1
+FONT_PATH = Path('Launcher/resources/fonts/Kanit-Medium.ttf')
 
-def main() -> Optional[int]:
+class Mode(Enum):
+    Install = auto()
+    Launch = auto()
+    UpdateLauncher = auto()
+
+def main(argv: list[str]=sys.argv) -> Optional[int]:
+    prog = Path(argv[0]).name
+    args = argv[1:]
+
     default_install_dir = installer.get_base_installation_dir()
 
-    parser = argparse.ArgumentParser(prog='DrkCraft Launcher')
+    parser = argparse.ArgumentParser(prog=prog)
     parser.add_argument('-V', '--version', action='version', version=VERSION)
     parser.add_argument('-l', '--launch', action='store_true', help='Forces Launch mode')
     parser.add_argument('-d', '--debug', action='store_true', help='Enables debug logging')
-    parser.add_argument('-i', '--install', dest='install_dir', help='Overrides base installation directory', default=default_install_dir)
-    args = parser.parse_args()
+    parser.add_argument('-i', '--install', dest='install_dir', type=Path,
+        help='Overrides base installation directory', default=default_install_dir)
+    parsed_args = parser.parse_args(args)
 
-    en_debug = args.debug
+    en_debug = parsed_args.debug
+    force_launch = parsed_args.launch
 
-    install_dir = Path(args.install_dir)
-    cwd = Path(os.getcwd())
+    install_dir = parsed_args.install_dir
+    in_install_dir = install_dir == Path.cwd()
 
-    in_install_dir = install_dir == cwd
-
-    if args.launch or in_install_dir:
+    if force_launch or in_install_dir:
         mode = Mode.Launch
         app_name = 'DrkCraft Launcher'
-        win_w, win_h = launcher.get_window_size()
+        win_w, win_h = launcher.window_size
     else:
         mode = Mode.Install
         app_name = 'DrkCraft Installer'
-        win_w, win_h = installer.get_window_size()
+        win_w, win_h = installer.window_size
 
     setup_logger(mode == Mode.Launch, not en_debug)
 
@@ -54,19 +57,37 @@ def main() -> Optional[int]:
     dpg.create_viewport(title=app_name, width=win_w, height=win_h)
     dpg.setup_dearpygui()
 
-    match mode:
-        case Mode.Install: installer.run()
-        case Mode.Launch: launcher.run()
-        case _: logging.error(f'Unknown action: {mode}')
+    logging.debug('Setting up font')
+    setup_font(FONT_PATH)
+
+    logging.debug('Creating DPG window')
+    with dpg.window(tag='Primary Window'):
+        match mode:
+            case Mode.UpdateLauncher: installer.create_gui(update_launcher=True)
+            case Mode.Install: installer.create_gui(install_dir)
+            case Mode.Launch: launcher.create_gui()
+            case _: logging.error(f'Unknown action: {mode}')
+
+    dpg.set_primary_window('Primary Window', True)
+
+    logging.info('Running DPG')
+    dpg.show_viewport()
+    dpg.start_dearpygui()
 
     logging.info('Closing DPG')
     dpg.destroy_context()
 
+def setup_font(font: Path):
+    with dpg.font_registry():
+        with dpg.font(font, 20, tag="DrkCraft Font"):
+            dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
+        dpg.bind_font(dpg.last_container())
+
 def setup_logger(en_file: bool=False, en_console: bool=False):
-    if os.path.isdir(LOG_DIR):
-        clean_logs.clean_logs(LOG_DIR, 6)
+    if LOG_DIR.is_dir():
+        pass # clean_logs.clean_logs(LOG_DIR, 6)
     else:
-        os.makedirs(LOG_DIR)
+        LOG_DIR.mkdir(parents=True)
 
     log_name = f'DrkCraft_Launcher_{datetime.now().strftime("%Y-%m-%d_%H.%M.%S")}.log'
 
@@ -76,7 +97,7 @@ def setup_logger(en_file: bool=False, en_console: bool=False):
     handlers: list[logging.Handler] = []
 
     if en_file:
-        file_handler = logging.FileHandler(os.path.join(LOG_DIR, log_name))
+        file_handler = logging.FileHandler(LOG_DIR / log_name)
         file_handler.setLevel(file_level)
         handlers.append(file_handler)
 

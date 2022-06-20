@@ -2,7 +2,6 @@
 #define DRK_CORE_RESULT_HPP
 
 #include "Core/Type.hpp"
-#include "Core/Optional.hpp"
 
 #include <concepts>
 #include <utility>
@@ -16,7 +15,7 @@ namespace DrkCraft
         Success = 1
     };
 
-    template <typename T=NoneType>
+    template <typename T=None>
     class Result
     {
     public:
@@ -56,12 +55,12 @@ namespace DrkCraft
 
         const T& operator*(void) const
         {
-            return get_value();
+            return *m_value;
         }
 
         const T* operator->(void) const
         {
-            return &get_value();
+            return m_value.operator->();;
         }
 
         bool has_value(void) const
@@ -84,11 +83,16 @@ namespace DrkCraft
             return has_error() ? ResultStatus::Failure : ResultStatus::Success;
         }
 
+        bool operator==(ResultStatus s) const
+        {
+            return status() == s;
+        }
+
     private:
         Optional<T> m_value;
     };
 
-    template <typename E=NoneType>
+    template <typename E=None>
     class Error : public Result<E>
     {
     public:

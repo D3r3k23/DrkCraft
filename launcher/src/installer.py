@@ -1,32 +1,21 @@
 from typing import *
+from pathlib import Path
 import logging
-import os.path
 
 from config import *
-import _license as LICENSE
 
-def run():
-    ...
+window_size = (window_width, window_height) = (600, 480)
 
-def get_window_size() -> tuple[int, int]:
-    return ( 600, 480 )
+def create_gui(install_dir: Optional[Path]=None, update_launcher: bool=False):
+    logging.info('Starting DrkCraft Installer')
 
-def get_base_installation_dir() -> str:
+    if install_dir is None:
+        install_dir = get_base_installation_dir()
+
+def get_base_installation_dir() -> Path:
     match PLATFORM:
-        case 'Windows': return os.path.expanduser('~\\AppData\\Local\\Programs\\DrkCraft')
-        case 'Linux': return os.path.expanduser('~/DrkCraft')
+        case 'Windows': return Path.home() / 'AppData' / 'Local' / 'Programs' / 'DrkCraft'
+        case 'Linux': return Path.home() / 'DrkCraft'
         case _:
             logging.error(f'Unknown platform: {PLATFORM}')
-            return ''
-
-def write_launcher_license():
-    lines = [
-        '========== pyimgui =============================================================',
-        LICENSE.pyimgui,
-        '================================================================================',
-        '',
-        '========== semver ==============================================================',
-        LICENSE.semver,
-        '================================================================================',
-        ''
-    ]
+            return Path()

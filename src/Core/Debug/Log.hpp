@@ -2,12 +2,9 @@
 #define DRK_CORE_DEBUG_LOG_HPP
 
 #include "Core/Build.hpp"
+#include "Core/Type.hpp"
 
 #if DRK_LOGGING_ENABLED
-
-    #include "Core/Type.hpp"
-    #include "Core/SmartPointer.hpp"
-
     #include "lib/fs.hpp"
 
     #include <spdlog/logger.h>

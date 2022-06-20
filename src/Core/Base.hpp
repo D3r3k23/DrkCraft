@@ -1,13 +1,11 @@
 #ifndef DRK_CORE_BASE_HPP
 #define DRK_CORE_BASE_HPP
 
-#include "Core/Type.hpp"
 #include "Core/Build.hpp"
+#include "Core/Type.hpp"
 #include "Core/Bind.hpp"
 #include "Core/Macro.hpp"
 #include "Core/Result.hpp"
-#include "Core/Optional.hpp"
-#include "Core/SmartPointer.hpp"
 
 #include "Core/Debug/Log.hpp"
 #include "Core/Debug/Assert.hpp"

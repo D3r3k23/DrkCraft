@@ -1,5 +1,5 @@
 from typing import *
-from contextlib import contextmanager
+from pathlib import Path
 import os
 import time
 import errno
@@ -35,33 +35,15 @@ class Timer:
     def now() -> float:
         return time.perf_counter()
 
-def get_file_size(filename: str) -> Optional[int]:
+def get_file_size(filename: Path) -> Optional[int]:
     try:
         return os.path.getsize(filename)
     except FileNotFoundError:
         return None
 
-def get_file_size_mb(filename: str) -> Optional[float]:
+def get_file_size_mb(filename: Path) -> Optional[float]:
     bytes = get_file_size(filename)
     return bytes / 10**6 if bytes else None
-
-class DirNotFoundError(Exception):
-    def __init__(self, dir: str):
-        super().__init__(f'Directory "{dir}" does not exist')
-
-@contextmanager
-def cd(dir: str):
-    prev = os.getcwd()
-
-    try:
-        os.chdir(os.path.expanduser(dir))
-    except FileNotFoundError:
-        raise DirNotFoundError(dir)
-
-    try:
-        yield
-    finally:
-        os.chdir(prev)
 
 def make_options_str(lst: list[str]) -> str:
     return f'[{"".join(f"{c}|" for c in lst[:-1])}{lst[-1]}]'

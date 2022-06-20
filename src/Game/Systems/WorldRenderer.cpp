@@ -5,7 +5,7 @@
 
 namespace DrkCraft::Game
 {
-    WorldRendererSystem::WorldRendererSystem(GameSystemData data)
+    WorldRendererSystem::WorldRendererSystem(const GameSystemData& data)
       : GameSystem(data)
     { }
 

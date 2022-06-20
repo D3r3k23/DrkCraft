@@ -15,7 +15,7 @@ namespace DrkCraft::Game
     class PhysicsSystem : public GameSystem
     {
     public:
-        PhysicsSystem(GameSystemData data);
+        PhysicsSystem(const GameSystemData& data);
         virtual ~PhysicsSystem(void) = default;
 
         virtual void render(void) override;

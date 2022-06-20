@@ -2,14 +2,12 @@
 
 #include "System/GlfwTools.hpp"
 #include "Graphics/Renderer/Renderer.hpp"
+#include "Core/Settings.hpp"
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
-#include "Core/Settings.hpp"
-#include "Game/Layers/GameLayer.hpp"
 #include "System/Thread.hpp"
 #include "Util/Icon.hpp"
 #include "Util/Time.hpp"
-#include "Application/Layers/MainMenu.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft
@@ -111,7 +109,7 @@ namespace DrkCraft
 
     ImGuiController& Application::get_imgui(void)
     {
-        return *(get_instance().m_imGuiController);
+        return get_instance().m_imGuiController;
     }
 
     OpenGlContext& Application::get_gl_context(void)
@@ -126,6 +124,7 @@ namespace DrkCraft
     Application::Application(std::string_view title)
       : m_window(title),
         m_context(m_window),
+        m_imGuiController(m_window),
         m_eventGenerator(m_window),
         m_layerStackForwardView(m_frameLayerStack),
         m_layerStackReverseView(m_frameLayerStack),
@@ -156,6 +155,9 @@ namespace DrkCraft
 
             m_window.set_vsync(settings.video.vsync);
 
+            DRK_LOG_CORE_INFO("Initializing ImGui impl");
+            m_imGuiController.init_impl(true);
+
             DRK_LOG_CORE_INFO("Loading assets");
             load_assets();
         }
@@ -166,8 +168,9 @@ namespace DrkCraft
         m_eventGenerator.register_event_handler(DRK_BIND_FN(handle_event));
         m_monitorManager.register_event_handler(DRK_BIND_FN(handle_event));
 
-        DRK_LOG_CORE_INFO("Initializing ImGui");
-        m_imGuiController.emplace(m_window);
+        DRK_LOG_CORE_TRACE("Initializing ImGui impl");
+        // This installs ImGui GLFW event callbacks, so it needs to be done after
+        // installing our our callbacks
 
         DRK_LOG_CORE_INFO("Application initialized");
     }
@@ -185,10 +188,10 @@ namespace DrkCraft
         DRK_LOG_CORE_TRACE("Saving Settings");
         RuntimeSettings::save();
 
+        m_imGuiController.shutdown_impl();
+
         DRK_LOG_CORE_TRACE("Shutting down Renderer");
         Renderer::shutdown();
-
-        m_imGuiController.reset();
 
         DRK_LOG_CORE_TRACE("Shutting down Audio system");
         Audio::shutdown();
@@ -249,13 +252,13 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         Renderer::begin_frame();
-        m_imGuiController->begin_frame();
+        m_imGuiController.begin_frame();
         {
             DRK_PROFILE_SCOPE("Render Layers");
             for (auto& layer : m_layerStackReverseView)
                 layer->on_render();
         }
-        m_imGuiController->end_frame();
+        m_imGuiController.end_frame();
         Renderer::end_frame();
     }
 
@@ -284,7 +287,7 @@ namespace DrkCraft
         // Or only do this for imgui rendering, and always pause the game
 
         if (event == EventCategory::Input)
-            m_imGuiController->on_event(event_cast<InputEvent>(event));
+            m_imGuiController.on_event(event_cast<InputEvent>(event));
 
         for (auto& layer : m_layerStackForwardView)
             layer->on_event(event);
@@ -298,7 +301,7 @@ namespace DrkCraft
             {
                 if constexpr (DRK_DEBUG_ENABLED)
                 {
-                    m_imGuiController->toggle_demo_window();
+                    m_imGuiController.toggle_demo_window();
                     return true;
                 }
                 else
@@ -352,14 +355,6 @@ namespace DrkCraft
             set_fullscreen(0);
 
         return false;
-    }
-
-    void Application::load_assets(void)
-    {
-        DRK_PROFILE_FUNCTION();
-
-        m_assetLibrary.load_list(MainMenu::get_asset_list());
-        m_assetLibrary.load_list(Game::Game::get_asset_list());
     }
 
     void Application::set_fullscreen(int monitor)

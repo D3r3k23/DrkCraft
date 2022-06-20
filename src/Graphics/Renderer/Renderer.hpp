@@ -26,7 +26,7 @@ namespace DrkCraft
     class Renderer
     {
     public:
-        static void init(OpenGlContext& context, const uvec2& viewportSize);
+        static void init(const OpenGlContext& context, const uvec2& viewportSize);
         static void shutdown(void);
 
         static void set_viewport(int x, int y, uint width, uint height);

@@ -6,7 +6,7 @@
 
 namespace DrkCraft::Game
 {
-    EntityRendererSystem::EntityRendererSystem(GameSystemData data)
+    EntityRendererSystem::EntityRendererSystem(const GameSystemData& data)
       : GameSystem(data)
     { }
 

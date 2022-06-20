@@ -43,6 +43,11 @@ namespace DrkCraft
                 return v1.m_major <=> v2.m_minor;
         }
 
+        friend constexpr bool operator==(const Version& v1, const Version& v2)
+        {
+            return v1.m_major == v2.m_major && v1.m_minor == v2.m_minor;
+        }
+
     private:
         static std::string make_string(uint major, uint minor)
         {

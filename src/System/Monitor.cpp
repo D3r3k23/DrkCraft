@@ -221,14 +221,32 @@ namespace DrkCraft
         return 0;
     }
 
-    Monitor& MonitorManager::get_monitor(uint number)
+    bool MonitorManager::check_monitor_number(uint number) const
     {
         if (number >= num_monitors())
+            return false;
+        else
+            DRK_ASSERT_DEBUG_NO_MSG(m_monitors[number].get_number() == number);
+            return true;
+    }
+
+    Monitor& MonitorManager::get_monitor(uint number)
+    {
+        if (!check_monitor_number(number))
         {
             DRK_LOG_CORE_WARN("Invalid monitor selected. Defaulting to primary");
             number = 0;
         }
-        DRK_ASSERT_DEBUG_NO_MSG(m_monitors[number].get_number() == number);
+        return m_monitors[number];
+    }
+
+    const Monitor& MonitorManager::get_monitor(uint number) const
+    {
+        if (!check_monitor_number(number))
+        {
+            DRK_LOG_CORE_WARN("Invalid monitor selected. Defaulting to primary");
+            number = 0;
+        }
         return m_monitors[number];
     }
 

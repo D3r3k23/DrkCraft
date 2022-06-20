@@ -2,7 +2,6 @@
 #define DRK_UTIL_IMGUI_CONTROLLER_HPP
 
 #include "Core/Base.hpp"
-#include "System/Window.hpp"
 #include "Application/Events.hpp"
 
 #include <imgui/imgui.h>
@@ -11,6 +10,8 @@
 
 namespace DrkCraft
 {
+    class Window;
+
     enum class ImGuiFont
     {
         Regular = 0,
@@ -36,8 +37,10 @@ namespace DrkCraft
         ImGuiController(Window& window, bool enable=true);
         ~ImGuiController(void);
 
-        void init_impl(Window& window);
+        void init_impl(bool installEventCallbacks=true);
         void shutdown_impl(void);
+
+        void install_event_callbacks(void);
 
         void begin_frame(void);
         void end_frame(void);
@@ -65,7 +68,10 @@ namespace DrkCraft
         void reset_stats(void);
 
     private:
+        Window& m_window;
+
         ImGuiContext* m_context;
+        bool m_running;
         bool m_enabled; // What happens if this is false and we still try and use ImGui?
         bool m_blockEvents;
 

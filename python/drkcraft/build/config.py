@@ -1,23 +1,23 @@
 from typing import *
+from pathlib import Path
+from enum import Enum, auto
 import argparse
-import os.path
-import enum
 
 import drkcraft
 
-class Option(enum.Enum):
-    build_config = 0
-    en_profiling = 1
-    en_dev_mode  = 2
-    en_trace_log = 3
-    skip_build   = 4
+class Option(Enum):
+    build_config = auto()
+    en_profiling = auto()
+    en_dev_mode = auto()
+    en_trace_log = auto()
+    skip_build = auto()
 
-class BuildConfig(enum.Enum):
-    Unknown        = 0
-    Debug          = 1
-    Release        = 2
-    RelWithDebInfo = 3
-    Dist           = 4
+class BuildConfig(Enum):
+    Unknown = auto()
+    Debug     = auto()
+    Release     = auto()
+    RelWithDebInfo = auto()
+    Dist = auto()
 
     @classmethod
     def from_str(cls, s: str):
@@ -89,19 +89,19 @@ def parse_args(argv: Sequence[str], options: Sequence[Option], description: Opti
 
     return parsed_args
 
-def get_build_dir() -> str:
-    return 'build'
+def get_build_dir() -> Path:
+    return Path('build')
 
-def get_exe(build_config: BuildConfig):
+def get_exe(build_config: BuildConfig) -> Path:
     if build_config == BuildConfig.Dist:
         config_str = str(BuildConfig.Release)
     else:
         config_str = str(build_config)
 
-    return os.path.join(get_build_dir(), 'bin', config_str, drkcraft.get_exe_name())
+    return get_build_dir() / 'bin' / config_str / drkcraft.get_exe_name()
 
 def get_version() -> str:
     return drkcraft.read_version_file('VERSION.txt')
 
-def rm_duplicates_from_list(lst: Sequence[Any]):
+def rm_duplicates_from_list(lst: Sequence[Any]) -> list[Any]:
     return [ item for i, item in enumerate(lst) if item not in lst[:i] ]

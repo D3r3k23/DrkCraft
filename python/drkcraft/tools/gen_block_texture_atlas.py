@@ -1,10 +1,9 @@
 from typing import *
+from pathlib import Path
 import argparse
 import sys
-import os.path
-import dataclasses
-import enum
 import math
+from dataclasses import dataclass
 
 import PIL
 import PIL.Image
@@ -13,16 +12,17 @@ from PIL.Image import Image as Texture
 from ruamel.yaml import YAML
 yaml = YAML(typ='safe')
 
-@dataclasses.dataclass
+@dataclass
 class Vec2:
     x: int = 0
     y: int = 0
 
-@dataclasses.dataclass
+@dataclass
 class Box:
     upperleft: Vec2
     bottomright: Vec2
 
+    @property
     def tup(self) -> tuple[int, int, int, int]:
         return ( self.upperleft.x, self.upperleft.y, self.bottomright.x, self.bottomright.y )
 
@@ -41,37 +41,33 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
     parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
     parser.add_argument(
-        'atlas', type=str, nargs='?', default=os.path.join('assets', 'images', 'textures', 'block_atlas.png'),
+        'atlas', type=str, nargs='?', default='block_atlas.png',
         help='Output texture .png filename'
     )
     parser.add_argument(
-        '--blocks', type=str, default=os.path.join('data', 'blocks.yaml'),
+        '--blocks', type=Path, default=Path('data/blocks.yaml'),
         help='blocks.yaml filename'
     )
     parser.add_argument(
-        '--textures', type=str, default=os.path.join('assets', 'images', 'textures', 'blocks'),
+        '--textures', type=Path, default=Path('assets/images/textures/blocks'),
         help='Block textures directory'
     )
     parsed_args = parser.parse_args(args)
+    atlas:  str  = parsed_args.atlas
+    blocks:  Path = parsed_args.blocks
+    textures: Path = parsed_args.textures
 
-    class PathType(enum.Enum):
-        File = 0
-        Dir = 1
-
-    files: list[tuple[str, str, PathType]] = [
-        ( parsed_args.atlas, 'texture atlas', PathType.File ),
-        ( parsed_args.blocks, 'blocks YAML', PathType.File ),
-        ( parsed_args.textures, 'textures', PathType.Dir )
-    ]
-    for (path, description, type) in files:
-        if not (os.path.isfile(path) if type == PathType.File else os.path.isdir(path)):
-            print(f'Error: {description} {type} "{path}" not found')
-            return 1
-
-    if not gen_block_texture_atlas(parsed_args.blocks, parsed_args.textures, parsed_args.atlas):
+    if not blocks.is_file():
+        print(f'Error: Blocks YAML file not found: "{blocks}"')
+        return 1
+    if not textures.is_dir():
+        print(f'Error: Textures dir not found: "{textures}"')
         return 1
 
-def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: str) -> bool:
+    if not gen_block_texture_atlas(blocks, textures, atlas):
+        return 1
+
+def gen_block_texture_atlas(blocks_yaml_fn: Path, texture_dir: Path, atlas_name: str) -> bool:
     print(f'Loading "{blocks_yaml_fn}"')
     blocks = load_yaml(blocks_yaml_fn)
     if blocks is None:
@@ -80,19 +76,20 @@ def gen_block_texture_atlas(blocks_yaml_fn: str, texture_dir: str, atlas_name: s
 
     print('Loading textures')
     texture_names = tuple(blocks.keys())
-    textures = load_textures(texture_dir, texture_names, '.png')
+    textures = load_textures(texture_dir, texture_names)
     print(f'{len(textures)} textures loaded')
 
     print('Generating texture atlas')
     atlas = create_block_texture_atlas_image(textures)
 
-    print(f'Saving texture atlas to "{atlas_name}"')
-    atlas.save(os.path.join(texture_dir, atlas_name))
+    atlas_path = texture_dir / atlas_name
+    print(f'Saving texture atlas to "{atlas_path}"')
+    atlas.save(atlas_path)
 
     return True
 
-def load_textures(texture_dir: str, texture_names: Sequence[str], f_ext: str) -> list[Texture]:
-    texture_files = [ os.path.join(texture_dir, texture) + f_ext for texture in texture_names ]
+def load_textures(texture_dir: Path, texture_names: Sequence[str], f_ext: str='.png') -> list[Texture]:
+    texture_files = [ Path(texture_dir / texture).with_suffix(f_ext) for texture in texture_names ]
     textures: list[Texture] = []
     for filename in texture_files:
         try:
@@ -116,7 +113,7 @@ def get_block_textures(image: Texture) -> list[Texture]:
         bottomright = Vec2(upperleft.x + BLOCK_TEXTURE_SIZE, upperleft.y + BLOCK_TEXTURE_SIZE)
         return Box(upperleft, bottomright)
 
-    return [ image.crop(get_block_face_box(i).tup()) for i in range(NUM_TEXTURES_PER_BLOCK) ]
+    return [ image.crop(get_block_face_box(i).tup) for i in range(NUM_TEXTURES_PER_BLOCK) ]
 
 def create_block_texture_atlas_image(textures: list[Texture]) -> Texture:
     size = find_texture_atlas_size(textures)
@@ -130,7 +127,7 @@ def create_block_texture_atlas_image(textures: list[Texture]) -> Texture:
 
     print('Compositing atlas')
     for i, texture in enumerate(textures):
-        atlas.paste(texture, get_atlas_texture_box(i).tup())
+        atlas.paste(texture, get_atlas_texture_box(i).tup)
 
     return atlas
 
@@ -138,7 +135,7 @@ def find_texture_atlas_size(textures: list[Texture]) -> Vec2:
     count = len(textures)
     return Vec2(max(count, ATLAS_MAX_WIDTH), int(math.ceil(count / ATLAS_MAX_WIDTH)))
 
-def load_yaml(filename: str) -> Optional[Mapping]:
+def load_yaml(filename: Path) -> Optional[Mapping]:
     try:
         with open(filename, 'r') as f:
             return yaml.load(f)

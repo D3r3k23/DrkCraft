@@ -12,7 +12,7 @@ namespace DrkCraft::Game
     class EntityRendererSystem : public GameSystem
     {
     public:
-        EntityRendererSystem(GameSystemData data);
+        EntityRendererSystem(const GameSystemData& data);
         virtual ~EntityRendererSystem(void) = default;
 
         virtual void render(void) override;

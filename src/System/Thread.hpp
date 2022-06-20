@@ -14,7 +14,7 @@ namespace DrkCraft
     using ThreadType = std::jthread;
     using StopToken = std::stop_token;
 
-    template <typename ST=NoneType>
+    template <typename ST=None>
     class Thread
     {
     public:
@@ -75,6 +75,7 @@ namespace DrkCraft
         void start(const char* name, auto fn)
         {
             DRK_ASSERT_DEBUG(!joinable(), "Thread is joinable!");
+            DRK_LOG_CORE_INFO("Creating thread: {}", name);
 
             DRK_PROFILE_THREAD_CREATE(name);
             m_handle = ThreadType([name, fn=std::move(fn)]
@@ -89,6 +90,7 @@ namespace DrkCraft
         void start(const char* name, auto fn)
         {
             DRK_ASSERT_DEBUG(!joinable(), "Thread is joinable!");
+            DRK_LOG_CORE_INFO("Creating thread: {}", name);
 
             DRK_PROFILE_THREAD_CREATE(name);
             m_handle = ThreadType([name, fn=std::move(fn)](ST st)
@@ -103,6 +105,7 @@ namespace DrkCraft
         void start(const char* name, auto fn, Args&& ... args)
         {
             DRK_ASSERT_DEBUG(!joinable(), "Thread is joinable!");
+            DRK_LOG_CORE_INFO("Creating thread: {}", name);
 
             DRK_PROFILE_THREAD_CREATE(name);
             m_handle = ThreadType([name, fn=std::move(fn)](auto&& ... args)

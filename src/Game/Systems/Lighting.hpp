@@ -12,7 +12,7 @@ namespace DrkCraft::Game
     class LightingSystem : public GameSystem
     {
     public:
-        LightingSystem(GameSystemData data);
+        LightingSystem(const GameSystemData& data);
         virtual ~LightingSystem(void) = default;
 
         virtual void render(void) override;

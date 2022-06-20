@@ -93,7 +93,7 @@ namespace DrkCraft
                 ov_clear(&m_vorbisFile);
             }
 
-            Ptr<uint8[]> read(void)
+            Ptr<Byte[]> read(void)
             {
                 DRK_PROFILE_FUNCTION();
 
@@ -146,7 +146,7 @@ namespace DrkCraft
         DRK_PROFILE_FUNCTION();
 
         VorbisFile vorbisFile(filename);
-        if (auto readBuffer = vorbisFile.read(); readBuffer)
+        if (auto buffer = vorbisFile.read(); buffer)
         {
             const uint samples = vorbisFile.samples();
             const uint size     = vorbisFile.size();
@@ -154,7 +154,7 @@ namespace DrkCraft
             const uint sampleRate = vorbisFile.sample_rate();
             const float length   = static_cast<float>(samples) / static_cast<float>(sampleRate);
             const auto format   = get_audio_source_format(channels);
-            const void* data   = static_cast<const void*>(readBuffer.get());
+            const void* data   = static_cast<const void*>(buffer.get());
 
             return make_ref<AudioSource>(format, data, size, sampleRate, length);
         }

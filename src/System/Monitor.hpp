@@ -67,7 +67,11 @@ namespace DrkCraft
         void refresh_monitors(void);
 
         uint get_monitor_number(GLFWmonitor* rawMonitor) const;
+        bool check_monitor_number(uint number) const;
+
         Monitor& get_monitor(uint number);
+        const Monitor& get_monitor(uint number) const;
+
         int get_fullscreen_monitor(void) const;
 
         void activate_fullscreen(Window& window, uint monitor=0);

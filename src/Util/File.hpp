@@ -7,6 +7,7 @@
 
 #include <string>
 #include <string_view>
+#include <cstdio>
 
 namespace DrkCraft
 {

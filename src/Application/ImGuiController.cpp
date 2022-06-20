@@ -1,5 +1,6 @@
 #include "ImGuiController.hpp"
 
+#include "System/Window.hpp"
 #include "System/AssetLibrary.hpp"
 #include "Core/Debug/Profiler.hpp"
 
@@ -10,7 +11,9 @@ namespace DrkCraft
     std::unordered_map<ImGuiFont, ImFont*> ImGuiController::s_fonts;
 
     ImGuiController::ImGuiController(Window& window, bool enable)
-      : m_enabled(enable),
+      : m_window(window),
+        m_running(false),
+        m_enabled(enable),
         m_blockEvents(true),
         m_showDemoWindow(false)
     {
@@ -44,22 +47,25 @@ namespace DrkCraft
             s_fonts[ImGuiFont::Title] = font;
         }
         setup_style();
-        init_impl(window);
     }
 
     ImGuiController::~ImGuiController(void)
     {
-        shutdown_impl();
+        if (m_running)
+            shutdown_impl();
+
         ImGui::DestroyContext(m_context);
     }
 
-    void ImGuiController::init_impl(Window& window)
+    void ImGuiController::init_impl(bool installEventCallbacks)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Initializing ImGui");
 
-        ImGui_ImplGlfw_InitForOpenGL(window.get_raw_window(), true);
+        ImGui_ImplGlfw_InitForOpenGL(m_window.get_raw_window(), installEventCallbacks);
         ImGui_ImplOpenGL3_Init("#version 400");
+
+        m_running = true;
     }
 
     void ImGuiController::shutdown_impl(void)
@@ -69,6 +75,13 @@ namespace DrkCraft
 
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
+
+        m_running = false;
+    }
+
+    void ImGuiController::install_event_callbacks(void)
+    {
+        ImGui_ImplGlfw_InstallCallbacks(m_window.get_raw_window());
     }
 
     void ImGuiController::begin_frame(void)

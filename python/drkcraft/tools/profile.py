@@ -1,11 +1,11 @@
 from typing import *
+from pathlib import Path
 import argparse
 import sys
-import os.path
-import dataclasses
 import json
+from dataclasses import dataclass
 
-@dataclasses.dataclass
+@dataclass
 class DurationEvent:
     name: str
     timestep: float
@@ -15,7 +15,7 @@ class DurationEvent:
     def from_json(jobj: Mapping):
         return DurationEvent(jobj['name'], jobj['ts'], jobj['dur'])
 
-@dataclasses.dataclass
+@dataclass
 class InstantEvent:
     name: str
     timestep: float
@@ -30,19 +30,21 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     description = 'Analyzes profiler results'
     usage = f'{prog} [profile]'
 
-    profile_default = os.path.join('data', 'profile', 'results.json')
+    profile_default = Path('data') / 'profile' / 'results.json'
     profile_help = f'JSON profile data (default={profile_default})'
 
     parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
-    parser.add_argument('profile', nargs='?', type=str, default=profile_default, help=profile_help)
+    parser.add_argument('profile', nargs='?', type=Path, default=profile_default, help=profile_help)
     parsed_args = parser.parse_args(args)
 
-    if not os.path.isfile(parsed_args.profile):
-        print(f'Error: profile file "{parsed_args.profile}" not found')
+    profile_fn = parsed_args.profile
+
+    if not profile_fn.is_file():
+        print(f'Error: profile file "{profile_fn}" not found')
         return 1
 
-    print(f'Loading {parsed_args.profile}')
-    with open(parsed_args.profile, 'r') as f:
+    print(f'Loading {profile_fn}')
+    with open(profile_fn, 'r') as f:
         try:
             profile_json = json.load(f)
         except json.JSONDecodeError as e:
@@ -50,7 +52,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
             return 1
 
     if profile_json['title'] is None or profile_json['time'] is None or profile_json['traceEvents'] is None:
-        print('Invalid profile file:', parsed_args.profile)
+        print('Invalid profile file:', profile_fn)
         return 1
 
     print('Profile:', profile_json['title'])

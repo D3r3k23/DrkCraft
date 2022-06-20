@@ -25,7 +25,7 @@ namespace DrkCraft::Game
     class GameSystem
     {
     public:
-        GameSystem(GameSystemData data)
+        GameSystem(const GameSystemData& data)
           : m_data(data)
         { }
 

@@ -1,51 +1,78 @@
 from typing import *
-import sys
-import os
-import shutil
-import platform
 from pathlib import Path
+import subprocess
+import sys
+import os.path
+import platform
+import shutil
 
-import PyInstaller.__main__
-import venv
 PLATFORM = platform.system()
 
+VENV = Path('.venv.')
+BUILD_DIR = Path('build')
+
+MAIN_SRC = Path('src/main.py')
+EXE_NAME = 'drkcraft-launcher'
+
 def main() -> Optional[int]:
-    if not 'VIRTUAL_ENV' in os.environ:
-        print('Error: Activate .venv')
-        return 2
+    print('======== Building DrkCraft Launcher ========')
 
-    if Path(os.getcwd()).name != 'launcher':
-        if os.path.isdir('launcher'):
-            os.chdir('launcher')
-        else:
-            return 2
+    install_dir = BUILD_DIR / 'install'
+    if not install_dir.is_dir():
+        install_dir.mkdir(parents=True)
 
-    lib_path = os.path.join(os.environ['VIRTUAL_ENV'], 'Lib' if PLATFORM == 'Windows' else 'lib', 'site-packages')
+    work_dir = install_dir / 'build'
+    bin_dir = install_dir / 'bin'
 
-    PyInstaller.__main__.run([
-        os.path.join('src', 'main.py'),
-        '--name', 'drkcraft-launcher',
+    exe_path = bin_dir / Path(EXE_NAME + exe_ext())
+
+    lib_path = VENV / ('Lib' if PLATFORM == 'Windows' else 'lib') / 'site-packages'
+
+    build_cmd = [ 'pyinstaller',
+        str(MAIN_SRC),
+        '--name', EXE_NAME,
         '--onefile',
-        '--paths', lib_path,
-        '--specpath', 'install',
-        '--workpath', os.path.join('install', 'build'),
-        '--distpath', os.path.join('install', 'dist'),
+        '--paths', str(lib_path),
+        '--specpath', str(install_dir),
+        '--workpath', str(work_dir),
+        '--distpath', str(bin_dir),
         '--noconfirm'
-    ])
+    ]
+    print('>>>', ' '.join(build_cmd))
+    try:
+        subprocess.run(build_cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print('======== PyInstaller build failed ========')
+        return e.returncode
+    else:
+        print('======== PyInstaller build completed ========')
 
-    exe_name = 'drkcraft-launcher' + '.exe' if PLATFORM == 'Windows' else ''
-    exe_src = os.path.join('install', 'dist', exe_name)
+    exe_size = os.path.getsize(exe_path)
+    print(f'Executable size: {exe_size / 10**6:.2f}MB')
 
-    bin_dir = os.path.join('install', 'bin')
-    bin_exe = os.path.join(bin_dir, exe_name)
+    build_package(exe_path)
 
-    if not os.path.isdir(bin_dir):
-        os.mkdir(bin_dir)
+def build_package(exe: Path):
+    print('======== Building DrkCraft Launcher package ========')
 
-    if os.path.isfile(bin_exe):
-        os.remove(bin_exe)
+    package_dir = BUILD_DIR / 'package'
+    if package_dir.is_dir():
+        shutil.rmtree(package_dir)
+    package_dir.mkdir()
 
-    shutil.copy(exe_src, bin_exe)
+    installer_path = package_dir / Path('drkcraft-installer' + exe_ext())
+    shutil.copy(exe, installer_path)
+
+    launcher_dir = package_dir / 'Launcher'
+    launcher_dir.mkdir()
+
+    shutil.copy(exe, launcher_dir)
+    shutil.copy('LICENSE.txt', launcher_dir)
+
+    shutil.copytree(Path('Launcher') / 'resources', launcher_dir / 'resources')
+
+def exe_ext():
+    return '.exe' if PLATFORM == 'Windows' else ''
 
 if __name__ == '__main__':
     sys.exit(main())

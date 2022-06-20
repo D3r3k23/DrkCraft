@@ -4,7 +4,7 @@
 
 namespace DrkCraft::Game
 {
-    PhysicsSystem::PhysicsSystem(GameSystemData data)
+    PhysicsSystem::PhysicsSystem(const GameSystemData& data)
       : GameSystem(data)
     { }
 

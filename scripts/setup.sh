@@ -44,7 +44,7 @@ if [ "$update" == "true" ]; then
     install_packages="true"
 elif [ "$no_venv" == "true" ]; then
     install_packages="true"
-elif ! pip list | grep drkcraft-py > /dev/null; then
+elif [ ! -f "$venv/lib/site-packages/drkcraft-py.egg-link" ]; then
     install_packages="true"
 else
     install_packages="false"

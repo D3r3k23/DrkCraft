@@ -1,7 +1,7 @@
 from typing import *
+from pathlib import Path
 import argparse
 import shutil
-import os.path
 import sys
 
 from . import config
@@ -21,16 +21,16 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 def clean(all: bool=False):
     build_dir = config.get_build_dir()
     if all:
-        if os.path.isdir(build_dir):
+        if build_dir.is_dir():
             print('Removing all build files')
             shutil.rmtree(build_dir)
         else:
             print('Nothing to clean')
     else:
-        if os.path.isdir(os.path.join(build_dir, 'bin')):
+        if Path(build_dir / 'bin').is_dir():
             print('Removing DrkCraft build files')
-            shutil.rmtree(os.path.join(build_dir, 'bin'))
-            shutil.rmtree(os.path.join(build_dir, 'DrkCraft.dir'))
+            shutil.rmtree(build_dir / 'bin')
+            shutil.rmtree(build_dir / 'DrkCraft.dir')
         else:
             print('Nothing to clean')
 

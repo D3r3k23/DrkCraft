@@ -1,4 +1,4 @@
-import os.path
+from pathlib import Path
 import platform
 
 from ._version import __version__
@@ -6,5 +6,5 @@ VERSION = __version__
 
 PLATFORM = platform.system()
 
-LOG_DIR = os.path.join('Launcher', 'logs')
-RESOURCE_DIR = os.path.join('Launcher', 'resources')
+LOG_DIR = Path('Launcher/logs')
+RESOURCE_DIR = Path('Launcher/resources')

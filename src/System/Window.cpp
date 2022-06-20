@@ -75,7 +75,7 @@ namespace DrkCraft
         GLFWimage image = {
             .width  = static_cast<int>(icon.get_size().x),
             .height = static_cast<int>(icon.get_size().y),
-            .pixels = const_cast<unsigned char*>(icon.get_data())
+            .pixels = const_cast<unsigned char*>(icon.get_image_data())
         };
         glfwSetWindowIcon(m_window, 1, &image);
     }

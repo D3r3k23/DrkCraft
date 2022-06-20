@@ -37,7 +37,7 @@ namespace DrkCraft
         void update_stats_on_draw_call(const VertexBuffer& vertexBuffer, uint indices);
     }
 
-    void Renderer::init(OpenGlContext& context, const uvec2& viewportSize)
+    void Renderer::init(const OpenGlContext& context, const uvec2& viewportSize)
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_INFO("Initializing Renderer");

@@ -83,15 +83,15 @@
 
     // Call at beginning of function
     #define DRK_PROFILE_FUNCTION() \
-        ProfileTimer function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
+        ProfileTimer DRK_function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
 
     // Call in any scope
     #define DRK_PROFILE_SCOPE(name) \
-        ProfileTimer DRK_CONCAT(scope_profile_timer_, __LINE__){name, "scope"}
+        ProfileTimer DRK_CONCAT(DRK_scope_profile_timer_, __LINE__){name, "scope"}
 
     // Class member declaration
     #define DRK_OBJECT_PROFILER(name) \
-        ProfileTimer object_profile_timer{name, "object"}
+        ProfileTimer DRK_object_profile_timer{name, "object"}
 
     // Local event
     #define DRK_PROFILE_EVENT_LOCAL(name) \
@@ -108,7 +108,11 @@
     // Call it beginning of thread
     #define DRK_PROFILE_THREAD(name) \
         Profiler::get_instance().create_flow_profile("thread", name, 'f'); \
-        ProfileTimer thread_profile_timer{name, "thread"}
+        ProfileTimer DRK_thread_profile_timer{name, "thread"}
+
+    // Call when waiting on a lock
+    #define DRK_PROFILE_LOCK(name) \
+        ProfileTimer DRK_lock_profile_timer{name, "lock"}
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)

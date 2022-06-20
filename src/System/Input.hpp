@@ -8,13 +8,12 @@
 #include "lib/glm/vec2.hpp"
 
 #include <string_view>
-#include <variant>
 
 namespace DrkCraft
 {
     ////// InputCode //////
 
-    using InputCode = std::variant<std::monostate, KeyCode, MouseCode>;
+    using InputCode = Variant<MonoState, KeyCode, MouseCode>;
 
     InputCode to_input_code(std::string_view str);
     std::string_view input_code_name(InputCode code);

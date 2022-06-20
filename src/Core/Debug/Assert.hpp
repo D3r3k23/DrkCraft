@@ -2,12 +2,9 @@
 #define DRK_CORE_DEBUG_ASSERT_HPP
 
 #include "Core/Build.hpp"
+#include "Core/Type.hpp"
 
 #if DRK_ASSERTS_ENABLED
-
-    #include "Core/Type.hpp"
-    #include "Core/Optional.hpp"
-
     #include <fmt/format.h>
 
     #include <string_view>

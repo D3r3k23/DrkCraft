@@ -8,20 +8,24 @@
 
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
-#include "System/AssetLibrary.hpp"
 #include "Game/Save.hpp"
 #include "Game/World/WorldGenerator.hpp"
 
 #include "lib/fs.hpp"
 
-#include <variant>
-
 namespace DrkCraft
 {
+    enum class MainMenuState
+    {
+        Init = 0,
+        MainMenu,
+        WaitingToStartGame
+    };
+
     class MainMenu : public Layer
     {
     public:
-        static const AssetList& get_asset_list(void);
+        using State = MainMenuState;
 
         MainMenu(void);
         virtual ~MainMenu(void);
@@ -36,6 +40,8 @@ namespace DrkCraft
         virtual void on_update(Timestep timestep) override;
         virtual void on_event(Event& event) override;
 
+        bool ready_to_start_game(void) const;
+
     private:
         void show_saved_games_table(void);
         void show_create_world_menu(void);
@@ -49,13 +55,15 @@ namespace DrkCraft
         void exit(void);
 
     private:
+        State m_state;
+
         Ref<SettingsMenu> m_settingsMenu;
         Ref<LoadingScreen> m_loadingScreen;
 
         Game::SaveManager m_saveManager;
         std::vector<Game::SaveInfo*> m_saves;
 
-        std::variant<std::monostate, Ptr<Game::SaveLoader>, Game::WorldGeneratorSpec> m_gameLoadSource;
+        Variant<MonoState, Ptr<Game::SaveLoader>, Game::WorldGeneratorSpec> m_gameLoadSource;
 
         bool m_show;
     };

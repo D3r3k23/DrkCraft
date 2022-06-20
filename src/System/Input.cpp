@@ -3,7 +3,6 @@
 #include "MouseCodes.hpp"
 
 #include "Application/Application.hpp"
-#include "Util/Fn.hpp"
 
 #include <GLFW/glfw3.h>
 #include <magic_enum.hpp>
@@ -42,7 +41,7 @@ namespace DrkCraft
 
     std::string_view input_code_name(InputCode code)
     {
-        static auto visitor = Visitor
+        static const Visitor visitor
         {
             [](KeyCode key) -> std::string_view
             {
@@ -52,7 +51,7 @@ namespace DrkCraft
             {
                 return mouse_code_name(button);
             },
-            [](std::monostate) -> std::string_view
+            [](MonoState) -> std::string_view
             {
                 return "";
             }
@@ -95,11 +94,11 @@ namespace DrkCraft
 
     bool is_pressed(InputCode code)
     {
-        static auto visitor = Visitor
+        static const Visitor visitor
         {
             [](KeyCode key)      { return is_key_pressed(key); },
             [](MouseCode button) { return is_mouse_button_pressed(button); },
-            [](std::monostate)   { return false; }
+            [](MonoState)        { return false; }
         };
         return visitor.visit(code);
     }

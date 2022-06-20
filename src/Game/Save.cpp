@@ -167,7 +167,9 @@ namespace DrkCraft::Game
     ErrorMsg SaveManager::validate_save_info(const SaveInfo& info, std::string_view name, const Version& buildVersion)
     {
         if (info.name != name)
-            return { fmt::format("Invalid save name: \"{}\" (dir name: {})", info.name, name) };
+            return {
+                fmt::format("Invalid save name: \"{}\" (dir name: {})", info.name, name)
+            };
         if (info.version != buildVersion)
             return {
                 fmt::format("Invalid save version: {} (DrkCraft version: {}", info.version.string(), buildVersion.string())

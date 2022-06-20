@@ -1,7 +1,9 @@
-/install/*
+/.vscode/*
+/.venv/*
 
-/Installations/*
+/build/*
+
+/Launcher/logs/*
+
+/Packages/*
 /Screenshots/*
-
-/Launcher/*
-!/Launcher/resources/*

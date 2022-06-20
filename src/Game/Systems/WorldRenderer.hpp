@@ -12,7 +12,7 @@ namespace DrkCraft::Game
     class WorldRendererSystem : public GameSystem
     {
     public:
-        WorldRendererSystem(GameSystemData data);
+        WorldRendererSystem(const GameSystemData& data);
         virtual ~WorldRendererSystem(void) = default;
 
         virtual void render(void) override;

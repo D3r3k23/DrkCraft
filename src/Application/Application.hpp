@@ -79,7 +79,7 @@ namespace DrkCraft
         MonitorManager m_monitorManager;
         AssetLibrary  m_assetLibrary;
 
-        Optional<ImGuiController> m_imGuiController;
+        ImGuiController m_imGuiController;
         EventGenerator m_eventGenerator;
 
         LayerStack m_layerStack;

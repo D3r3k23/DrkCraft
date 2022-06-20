@@ -4,7 +4,7 @@
 
 namespace DrkCraft::Game
 {
-    LightingSystem::LightingSystem(GameSystemData data)
+    LightingSystem::LightingSystem(const GameSystemData& data)
       : GameSystem(data)
     { }
 
