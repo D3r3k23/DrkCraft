@@ -53,22 +53,22 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 1. `$ git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `$ cd DrkCraft`
 3.
-   a. `$ scripts\setup.bat` (Windows)
-   b. `$ source scripts/setup.sh` (Linux)
+   - `$ scripts\setup.bat` (Windows)
+   - `$ source scripts/setup.sh` (Linux)
 5. `(.venv) $ python -m drkcraft build`
 6. `(.venv) $ python -m drkcraft run`
 
 ### Or invoke CMake and run directly:
 
 #### Build
-`$ cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug`
-`$ cmake --build build --config Debug`
+1. `$ cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug`
+2. `$ cmake --build build --config Debug`
 
 #### Run
-`$ build/bin/Debug/DrkCraft` (Linux)
-`$ build\bin\Debug\DrkCraft.exe` (Windows)
+- `$ build/bin/Debug/DrkCraft` (Linux)
+- `$ build\bin\Debug\DrkCraft.exe` (Windows)
 
-### License
+## License
 * LICENSE.txt
 * lib/LICENSE.toml
 * assets/...
