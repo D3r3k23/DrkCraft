@@ -53,8 +53,8 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 1. `$ git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
 2. `$ cd DrkCraft`
 3.
-    a. `$ scripts\setup.bat` (Windows)
-    b. `$ source scripts/setup.sh` (Linux)
+   a. `$ scripts\setup.bat` (Windows)
+   b. `$ source scripts/setup.sh` (Linux)
 5. `(.venv) $ python -m drkcraft build`
 6. `(.venv) $ python -m drkcraft run`
 
