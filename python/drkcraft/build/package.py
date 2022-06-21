@@ -4,7 +4,7 @@ import shutil
 import sys
 import os.path
 # import tomllib
-import toml
+import toml # type: ignore
 
 import strip_markdown
 

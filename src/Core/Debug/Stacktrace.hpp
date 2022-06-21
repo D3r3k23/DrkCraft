@@ -4,15 +4,8 @@
 #include "Core/Build.hpp"
 #include "Core/Type.hpp"
 
-#if DRK_DEBUG_ENABLED
-#   define DRK_STACKTRACE_ENABLED 1
-#else
-#   define DRK_STACKTRACE_ENABLED 0
-#endif
-
 #if DRK_STACKTRACE_ENABLED
     #include "backward/backward.hpp"
-    #include <iostream>
 
     #define DRK_PRINT_STACKTRACE()               \
         Stacktrace DRK_PRINT_STACKTRACE_var_st;   \
@@ -28,17 +21,7 @@ namespace DrkCraft
     using Stacktrace = backward::StackTrace;
     using StacktracePrinter = backward::Printer;
 
-    inline namespace detail
-    {
-        void print(const StackTrace& st)
-        {
-            StacktracePrinter printer;
-            printer.color_mode = backward::ColorMode::automatic;
-            printer.object = true;
-            printer.address = true;
-            printer.print(st, std::cout);
-        }
-    }
+    void print(const Stacktrace& st);
 #endif
 }
 

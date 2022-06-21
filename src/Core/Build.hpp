@@ -89,4 +89,12 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_DEV_MODE_ENABLED 0
 #endif
 
+// Stacktrace
+
+#if defined(DRK_EN_STACKTRACE)
+#   define DRK_STACKTRACE_ENABLED 1
+#else
+#   define DRK_STACKTRACE_ENABLED 0
+#endif
+
 #endif // DRK_CORE_BUILD_HPP

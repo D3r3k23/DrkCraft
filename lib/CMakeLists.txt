@@ -107,9 +107,6 @@ endif()
 ###################################################
 
 message("Configuring Backward")
-if(${DRK_BUILD_CONFIG} STREQUAL Debug)
-    set(ENABLE_BACKWARD_OBJ)
-endif()
 add_subdirectory(backward)
 
 ###################################################

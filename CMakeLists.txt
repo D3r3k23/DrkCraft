@@ -51,6 +51,12 @@ else()
     return()
 endif()
 
+if((${CMAKE_BUILD_TYPE} STREQUAL Debug) OR (${CMAKE_BUILD_TYPE} STREQUAL RelWithDebInfo))
+    set(DRK_DEBUG_SYMBOLS_ENABLED TRUE)
+else()
+    set(DRK_DEBUG_SYMBOLS_ENABLED FALSE)
+endif()
+
 #### Configuration info dump ####
 
 message("===========================================")
@@ -112,6 +118,7 @@ target_compile_definitions(DrkCraft
     $<$<BOOL:DRK_EN_ASSERTS>:"DRK_EN_ASSERTS">
     $<$<BOOL:DRK_EN_PROFILING>:"DRK_EN_PROFILING">
     $<$<BOOL:DRK_EN_DEV_MODE>:"DRK_EN_DEV_MODE">
+    $<$<BOOL:DRK_DEBUG_SYMBOLS_ENABLED>:"DRK_EN_STACKTRACE">
 )
 
 # Output directory
