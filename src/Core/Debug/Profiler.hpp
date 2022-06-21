@@ -128,6 +128,8 @@
 
     #define DRK_PROFILE_THREAD_CREATE(name)
     #define DRK_PROFILE_THREAD(name)
+
+    #define DRK_PROFILE_LOCK(name)
 #endif
 
 #endif // DRK_CORE_DEBUG_PROFILER_HPP
