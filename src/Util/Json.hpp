@@ -21,8 +21,8 @@ namespace DrkCraft::Json
 
     Result<Document> parse(const fs::path& filename);
 
-    void write(const Document& document, const fs::path& filename);
-    void pretty_write(const Document& document, const fs::path& filename);
+    void print(const Document& document, const fs::path& filename);
+    void pprint(const Document& document, const fs::path& filename);
 
     template <typename W=Writer>
     class FileWriter

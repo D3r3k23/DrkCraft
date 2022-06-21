@@ -22,7 +22,7 @@ namespace DrkCraft::Json
             return { std::move(document) };
     }
 
-    void write(const Document& document, const fs::path& filename)
+    void print(const Document& document, const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -30,7 +30,7 @@ namespace DrkCraft::Json
         document.Accept(writer.get_writer());
     }
 
-    void pretty_write(const Document& document, const fs::path& filename)
+    void pprint(const Document& document, const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
