@@ -15,7 +15,7 @@ namespace DrkCraft::Game
         Json::FileWriter<Json::PrettyWriter> writer(std::move(filename));
         {
             auto& w = writer.get_writer();
-            w.Key("drkcraft_version"); w.String(std::string(version.string()));
+            w.Key("drkcraft_version"); w.String(string(version.string()));
             w.Key("name");             w.String(name);
             w.Key("last_save");        w.Int(lastSave.time_since_epoch().count());
             w.Key("day");              w.Uint(day);
@@ -73,7 +73,7 @@ namespace DrkCraft::Game
             if (item.is_directory())
             {
                 const auto& path = item.path();
-                if (std::string name = path.filename().string(); is_dir(name))
+                if (string name = path.filename().string(); is_dir(name))
                 {
                     if (const auto saveJson = path / "save.json"; is_file(saveJson))
                     {
@@ -109,7 +109,7 @@ namespace DrkCraft::Game
         return saves;
     }
 
-    Error<> SaveManager::rename_save(const std::string& oldName, const std::string& newName)
+    Error<> SaveManager::rename_save(const string& oldName, const string& newName)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -131,7 +131,7 @@ namespace DrkCraft::Game
         return Result<>::Success;
     }
 
-    Error<> SaveManager::delete_save(const std::string& name)
+    Error<> SaveManager::delete_save(const string& name)
     {
         DRK_ASSERT_DEBUG(m_saves.contains(name), "Save not found");
 
@@ -144,7 +144,7 @@ namespace DrkCraft::Game
         return Result<>::Success;
     }
 
-    Ptr<SaveLoader> SaveManager::get_loader(const std::string& name)
+    Ptr<SaveLoader> SaveManager::get_loader(const string& name)
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG(m_saves.contains(name), "Save not found");
@@ -156,7 +156,7 @@ namespace DrkCraft::Game
         return loader;
     }
 
-    void SaveManager::update_save_time(const std::string& name, Time::LocalTime time)
+    void SaveManager::update_save_time(const string& name, Time::LocalTime time)
     {
         auto& saveInfo = *m_saves[name];
         saveInfo.lastSave = time;
@@ -164,7 +164,7 @@ namespace DrkCraft::Game
         saveInfo.to_json(m_directory / name / "save.json");
     }
 
-    ErrorMsg SaveManager::validate_save_info(const SaveInfo& info, std::string_view name, const Version& buildVersion)
+    ErrorMsg SaveManager::validate_save_info(const SaveInfo& info, string_view name, const Version& buildVersion)
     {
         if (info.name != name)
             return {

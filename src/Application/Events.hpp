@@ -38,7 +38,7 @@ namespace DrkCraft
             height(height)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const uint width;
         const uint height;
@@ -53,7 +53,7 @@ namespace DrkCraft
             height(height)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const uint width;
         const uint height;
@@ -68,7 +68,7 @@ namespace DrkCraft
             yPos(yPos)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const int xPos;
         const int yPos;
@@ -116,7 +116,7 @@ namespace DrkCraft
           : source(source)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const Source source;
     };
@@ -130,7 +130,7 @@ namespace DrkCraft
             yScale(yScale)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const float xScale;
         const float yScale;
@@ -168,7 +168,7 @@ namespace DrkCraft
             mods(mods)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
         virtual InputCode get_input_code(void) const override;
 
         const KeyCode key;
@@ -210,7 +210,7 @@ namespace DrkCraft
           : ch(ch)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const char ch;
     };
@@ -231,7 +231,7 @@ namespace DrkCraft
             yPos(yPos)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const float xPos;
         const float yPos;
@@ -256,7 +256,7 @@ namespace DrkCraft
             mods(mods)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
         virtual InputCode get_input_code(void) const override;
 
         const MouseCode button;
@@ -290,7 +290,7 @@ namespace DrkCraft
             yOffset(yOffset)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const float xOffset;
         const float yOffset;
@@ -306,7 +306,7 @@ namespace DrkCraft
           : number(number)
         { }
 
-        virtual std::string get_details(void) const override;
+        virtual string get_details(void) const override;
 
         const uint number;
     };

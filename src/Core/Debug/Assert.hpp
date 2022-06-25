@@ -5,14 +5,15 @@
 #include "Core/Type.hpp"
 
 #if DRK_ASSERTS_ENABLED
+    #include "lib/string_view.hpp"
+
     #include <fmt/format.h>
 
-    #include <string_view>
     #include <source_location>
 
     namespace DrkCraft
     {
-        void on_assert_failure(const std::source_location& src, Optional<std::string_view> cond, Optional<std::string_view> msg);
+        void on_assert_failure(const std::source_location& src, Optional<string_view> cond, Optional<string_view> msg);
     }
 
     #if DRK_DEBUG_ENABLED

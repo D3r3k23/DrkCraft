@@ -3,6 +3,9 @@
 
 #include "Core/Type.hpp"
 
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
+
 #include <concepts>
 #include <utility>
 #include <memory>
@@ -124,18 +127,18 @@ namespace DrkCraft
         }
     };
 
-    class ErrorMsg : public Error<std::string>
+    class ErrorMsg : public Error<string>
     {
     public:
-        using Error<std::string>::Error;
+        using Error<string>::Error;
 
-        std::string_view get_msg(void) const
+        string_view get_msg(void) const
         {
             return m_msg;
         }
 
     private:
-        std::string m_msg;
+        string m_msg;
     };
 }
 

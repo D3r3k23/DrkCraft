@@ -7,13 +7,15 @@
 #include <imgui/imgui.h>
 #include <fmt/format.h>
 
+#include <utility>
+
 namespace DrkCraft
 {
     static const uint MAX_PERIODS = 10;
 
-    LoadingScreen::LoadingScreen(std::string_view msg, bool activate)
+    LoadingScreen::LoadingScreen(string msg, bool activate)
       : Layer("LoadingScreenLayer", activate),
-        m_msg(msg),
+        m_msg(std::move(msg)),
         m_numPeriods(0)
     { }
 
@@ -63,7 +65,7 @@ namespace DrkCraft
 
     }
 
-    void LoadingScreen::set_message(std::string_view msg)
+    void LoadingScreen::set_message(:string_view msg)
     {
         m_msg = msg;
     }

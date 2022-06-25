@@ -6,12 +6,11 @@
 #include "Application/Events.hpp"
 
 #include "lib/glm/vec2.hpp"
+#include "string_view.hpp"
 
 #include <GLFW/glfw3.h> // Move to .cpp and use forward declarations
 
 #include <vector>
-#include <string>
-#include <string_view>
 
 // Should restructure this - each monitor should have a list of video mode
 // options - default is highest res -> highest refresh rate -> color
@@ -38,7 +37,7 @@ namespace DrkCraft
         const VidMode& get_vid_mode(void) const;
 
         uint get_number(void) const;
-        std::string_view get_name(void) const;
+        string_view get_name(void) const;
 
         ivec2 get_resolution(void) const;
         uint get_refresh_rate(void) const;

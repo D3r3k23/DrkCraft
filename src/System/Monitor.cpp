@@ -73,7 +73,7 @@ namespace DrkCraft
         return m_number;
     }
 
-    std::string_view Monitor::get_name(void) const
+    string_view Monitor::get_name(void) const
     {
         return glfwGetMonitorName(m_monitor);
     }

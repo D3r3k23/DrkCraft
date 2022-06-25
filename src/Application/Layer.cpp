@@ -2,10 +2,12 @@
 
 #include "Core/Debug/Profiler.hpp"
 
+#include <utility>
+
 namespace DrkCraft
 {
-    Layer::Layer(std::string_view name, bool activate)
-      : m_layerName(name),
+    Layer::Layer(string name, bool activate)
+      : m_layerName(std::move(name)),
         m_layerActive(false),
         m_layerAttached(false)
     {
@@ -64,7 +66,7 @@ namespace DrkCraft
         return !m_layerAttached;
     }
 
-    std::string_view Layer::get_layer_name(void) const
+    string_view Layer::get_layer_name(void) const
     {
         return m_layerName;
     }

@@ -8,11 +8,11 @@
     #include "System/Pid.hpp"
 
     #include "lib/fs.hpp"
+    #include "lib/string.hpp"
 
     #include <fmt/format.h>
     #include <fmt/chrono.h>
 
-    #include <string>
     #include <sstream>
 
     const bool FLUSH_ON_WRITE = false;
@@ -209,7 +209,7 @@
 
         void Profiler::create_flow_profile(const char* cat, const char* name, char ph)
         {
-            int id = std::hash<std::string>{}(name);
+            int id = std::hash<string>{}(name);
             write_flow_profile(cat, name, get_current_timestamp(), id, ph);
         }
 
@@ -230,7 +230,7 @@
 
         void Profiler::write_footer(void)
         {
-            std::string footer =
+            string footer =
                 "\n"
                 "  ]\n"
                 "}\n";

@@ -5,8 +5,7 @@
 #include "Audio/AudioSource.hpp"
 
 #include "lib/fs.hpp"
-
-#include <string_view>
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -55,7 +54,7 @@ namespace DrkCraft
         static void toggle_mute(void);
         static bool is_muted(void);
 
-        static std::string_view get_device_name(void);
+        static string_view get_device_name(void);
 
     private:
         static Volume s_volume;

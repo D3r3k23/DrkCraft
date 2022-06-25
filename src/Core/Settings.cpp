@@ -30,7 +30,7 @@ namespace DrkCraft
 
         for (uint i = 0; i < argc; ++i)
         {
-            std::string_view arg = argv[i];
+            string_view arg = argv[i];
             if (i == 0)
             {
                 get_instance().options.program = fs::path(arg).filename().string();
@@ -50,7 +50,7 @@ namespace DrkCraft
         }
     }
 
-    std::string_view CommandLineOptions::get_arg(uint i)
+    string_view CommandLineOptions::get_arg(uint i)
     {
         DRK_ASSERT_DEBUG(i < get_instance().argc, "arg[{}] does not exist", i);
         return get_instance().argv[i];
@@ -172,7 +172,7 @@ namespace DrkCraft
         }
 
         template <typename T>
-        void load_setting(const YAML::Node& parent, const std::string& key, T& setting, const SettingConstraint<T>& constraint={})
+        void load_setting(const YAML::Node& parent, const string& key, T& setting, const SettingConstraint<T>& constraint={})
         {
             if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
             {
@@ -186,11 +186,11 @@ namespace DrkCraft
             }
         }
 
-        void load_keybind(const YAML::Node& parent, const std::string& key, InputCode& keybind)
+        void load_keybind(const YAML::Node& parent, const string& key, InputCode& keybind)
         {
             if (const auto scalar = Yaml::get_scalar(parent, key); scalar.has_value())
             {
-                if (const auto value = Yaml::get_value<std::string>(*scalar); value)
+                if (const auto value = Yaml::get_value<string>(*scalar); value)
                     keybind = to_input_code(*value);
             }
         }

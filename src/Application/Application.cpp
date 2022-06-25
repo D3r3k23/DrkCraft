@@ -3,6 +3,7 @@
 #include "System/GlfwTools.hpp"
 #include "Graphics/Renderer/Renderer.hpp"
 #include "Core/Settings.hpp"
+
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
 #include "System/Thread.hpp"
@@ -18,7 +19,7 @@ namespace DrkCraft
 
     Optional<Application> Application::s_instance;
 
-    void Application::init(std::string_view title)
+    void Application::init(string_view title)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -121,7 +122,7 @@ namespace DrkCraft
     //       Instance       //
     //////////////////////////
 
-    Application::Application(std::string_view title)
+    Application::Application(string_view title)
       : m_window(title),
         m_context(m_window),
         m_imGuiController(m_window),

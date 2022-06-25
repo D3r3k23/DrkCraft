@@ -259,7 +259,7 @@ namespace DrkCraft
         return m_loading;
     }
 
-    Optional<std::string> AssetLibrary::currently_loading(void) const
+    Optional<string> AssetLibrary::currently_loading(void) const
     {
         if (loading())
         {

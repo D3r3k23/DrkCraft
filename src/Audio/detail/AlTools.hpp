@@ -3,8 +3,8 @@
 
 #include "Core/Base.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
 struct ALCdevice;
 struct ALCcontext;
@@ -21,11 +21,11 @@ namespace DrkCraft
         AlDevice& operator=(const AlDevice&) = delete;
 
         ALCdevice* get_raw_device(void);
-        std::string_view get_name(void) const;
+        string_view get_name(void) const;
 
     private:
         ALCdevice* m_device;
-        std::string m_name;
+        string m_name;
     };
 
     class AlContext

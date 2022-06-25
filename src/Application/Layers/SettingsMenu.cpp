@@ -8,6 +8,7 @@
 #include "Core/Debug/Profiler.hpp"
 
 #include "lib/glm/vec2.hpp"
+#include "lib/string.hpp"
 
 #include <imgui/imgui.h>
 #include <fmt/format.h>
@@ -67,7 +68,7 @@ namespace DrkCraft
                 make_dirty(Setting::Fullscreen);
 
             const auto& monitors = Application::get_monitors().monitors();
-            std::vector<std::string> monitorStrings;
+            std::vector<string> monitorStrings;
             for (int i = 0; const auto& monitor : monitors)
             {
                 const auto& res   = monitor.get_resolution();

@@ -3,15 +3,15 @@
 
 #include "Core/Base.hpp"
 
-#include <imgui/imgui.h>
+#include "lib/string_view.hpp"
 
-#include <string_view>
+#include <imgui/imgui.h>
 
 namespace DrkCraft::DrkImGui
 {
-    void BeginFullscreen(std::string_view name, ImGuiWindowFlags flags=0);
-    void BeginCentered(std::string_view name, const ImVec2& size, ImGuiWindowFlags flags=0);
-    void TextCentered(std::string_view text);
+    void BeginFullscreen(string_view name, ImGuiWindowFlags flags=0);
+    void BeginCentered(string_view name, const ImVec2& size, ImGuiWindowFlags flags=0);
+    void TextCentered(string_view text);
     bool ButtonCentered(const char* text, const ImVec2& size);
 }
 

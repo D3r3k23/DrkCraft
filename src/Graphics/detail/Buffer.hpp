@@ -5,8 +5,8 @@
 #include "Graphics/detail/GlObject.hpp"
 #include "Graphics/detail/Util.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+
 #include <initializer_list>
 #include <vector>
 #include <span>
@@ -33,13 +33,13 @@ namespace DrkCraft
 
     struct VertexAttribute
     {
-        std::string name;
+        string name;
         ShaderDataType type;
         uint size;
         uint offset;
         bool normalized;
 
-        VertexAttribute(ShaderDataType type, std::string_view name, bool normalized=false);
+        VertexAttribute(ShaderDataType type, string name, bool normalized=false);
     };
 
     class VertexBufferLayout

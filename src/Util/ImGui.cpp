@@ -4,7 +4,7 @@
 
 namespace DrkCraft::DrkImGui
 {
-    void BeginFullscreen(std::string_view name, ImGuiWindowFlags flags)
+    void BeginFullscreen(string_view name, ImGuiWindowFlags flags)
     {
         const auto viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->Pos);
@@ -18,7 +18,7 @@ namespace DrkCraft::DrkImGui
         ImGui::PopStyleVar();
     }
 
-    void BeginCentered(std::string_view name, const ImVec2& size, ImGuiWindowFlags flags)
+    void BeginCentered(string_view name, const ImVec2& size, ImGuiWindowFlags flags)
     {
         const auto viewport = ImGui::GetMainViewport();
         float x = (viewport->Pos.x + (viewport->Size.x - size.x) * 0.5f);
@@ -31,7 +31,7 @@ namespace DrkCraft::DrkImGui
         ImGui::Begin(name.data(), nullptr, flags);
     }
 
-    void TextCentered(std::string_view text)
+    void TextCentered(string_view text)
     {
         float width = ImGui::CalcTextSize(text.data()).x;
         ImGui::SetCursorPosX((ImGui::GetWindowWidth() - width) * 0.5f);

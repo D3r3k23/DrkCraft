@@ -3,10 +3,11 @@
 
 #include "Core/Type.hpp"
 
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
+
 #include <fmt/core.h>
 
-#include <string>
-#include <string_view>
 #include <charconv>
 #include <compare>
 
@@ -15,7 +16,7 @@ namespace DrkCraft
     class Version
     {
     public:
-        constexpr Version(std::string_view ver) // ver: "<major>.<minor>"
+        constexpr Version(string_view ver) // ver: "<major>.<minor>"
           : m_str(ver),
             m_major(find_major(ver)),
             m_minor(find_minor(ver)),
@@ -32,7 +33,7 @@ namespace DrkCraft
         Version(const Version&) = default;
         Version& operator=(const Version&) = default;
 
-        constexpr std::string_view string(void) const { return m_str; }
+        constexpr string_view string(void) const { return m_str; }
 
         constexpr uint major(void) const { return m_major; }
         constexpr uint minor(void) const { return m_minor; }
@@ -58,16 +59,16 @@ namespace DrkCraft
         }
 
     private:
-        static std::string make_string(uint major, uint minor, uint patch)
+        static string make_string(uint major, uint minor, uint patch)
         {
             return fmt::format("{}.{}.{}", major, minor, patch);
         }
 
-        static constexpr uint find_major(std::string_view ver)
+        static constexpr uint find_major(string_view ver)
         {
-            if (uint sep = ver.find("."); sep != std::string::npos)
+            if (uint sep = ver.find("."); sep != string::npos)
             {
-                std::string_view str(ver.data(), ver.data() + sep);
+                string_view str(ver.data(), ver.data() + sep);
                 uint major = 0;
                 const auto r = std::from_chars(str.data(), str.data() + str.length(), major);
                 return major;
@@ -76,22 +77,22 @@ namespace DrkCraft
                 return 0;
         }
 
-        static constexpr uint find_minor(std::string_view ver)
+        static constexpr uint find_minor(string_view ver)
         {
-            if (uint sep1 = ver.find("."); sep1 = std::string::npos)
+            if (uint sep1 = ver.find("."); sep1 = string::npos)
                 return 0;
             else
             {
-                std::string_view component2(ver.begin() + sep1 + 1, ver.end());
-                std::string_view str = [&]
+                string_view component2(ver.begin() + sep1 + 1, ver.end());
+                string_view str = [&]
                 {
-                    if (uint sep2 = component2.find("."); sep2 == std::string::npos)
+                    if (uint sep2 = component2.find("."); sep2 == string::npos)
                         return component2;
                     else
                     {
                         const auto begin = ver.begin() + sep1 + 1;
                         const auto end = ver.end() - sep2;
-                        return std::string_view(begin, end);
+                        return string_view(begin, end);
                     }
                 }();
                 uint minor = 0;
@@ -100,18 +101,18 @@ namespace DrkCraft
             }
         }
 
-        static constexpr uint find_patch(std::string_view ver)
+        static constexpr uint find_patch(string_view ver)
         {
-            if (uint sep1 = ver.find("."); sep1 == std::string::npos)
+            if (uint sep1 = ver.find("."); sep1 == string::npos)
                 return 0;
             else
             {
-                std::string_view component2(ver.begin() + sep1 + 1, ver.end());
-                if (uint sep2 = component2.find("."); sep2 == std::string::npos)
+                string_view component2(ver.begin() + sep1 + 1, ver.end());
+                if (uint sep2 = component2.find("."); sep2 == string::npos)
                     return 0;
                 else
                 {
-                    std::string_view str(ver.begin() + sep2 + 1, ver.end());
+                    string_view str(ver.begin() + sep2 + 1, ver.end());
                     uint patch = 0;
                     const auto r = std::from_chars(str.data(), str.data() + str.length(), patch);
                     return patch;
@@ -120,7 +121,7 @@ namespace DrkCraft
         }
 
     private:
-        std::string m_str;
+        string m_str;
         uint m_major;
         uint m_minor;
         uint m_patch;

@@ -6,8 +6,8 @@
 
 #include "lib/fs.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -19,7 +19,7 @@ namespace DrkCraft
 
     struct OptionsData
     {
-        std::string program = "DrkCraft";
+        string program = "DrkCraft";
         bool en_dev_mode = false;
         bool en_trace_log = false;
     };
@@ -32,7 +32,7 @@ namespace DrkCraft
 
     public:
         static void parse_args(int argc, char** argv);
-        static std::string_view get_arg(uint i);
+        static string_view get_arg(uint i);
 
         static const OptionsData& get_options(void);
 
@@ -53,7 +53,7 @@ namespace DrkCraft
             int height = 720;
         } init_window_size;
 
-        std::string screenshots_directory = "data/screenshots";
+        string screenshots_directory = "data/screenshots";
     };
 
     struct SettingsData

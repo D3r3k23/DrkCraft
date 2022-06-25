@@ -6,8 +6,7 @@
 
 #include "lib/glm/vec2.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
 
 struct GLFWwindow;
 
@@ -16,7 +15,7 @@ namespace DrkCraft
     class Window
     {
     public:
-        Window(std::string_view title);
+        Window(string title);
         ~Window(void);
 
         GLFWwindow* get_raw_window(void);
@@ -51,7 +50,7 @@ namespace DrkCraft
 
     private:
         GLFWwindow* m_window;
-        std::string m_title;
+        string m_title;
 
         bool m_vsync;
     };

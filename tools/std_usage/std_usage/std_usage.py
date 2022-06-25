@@ -152,11 +152,10 @@ def parse(srcs: list[Path]) -> Results:
     return results
 
 INCLUDE_PATTERN = re.compile(r'(#include <)(\w*)(>)', re.ASCII)
-SYMBOL_PATTERN = re.compile(r'(std::)([^ \n(<>&\*;]*)(.)', re.ASCII | re.DOTALL)
+SYMBOL_PATTERN = re.compile(r'(std::)([^ \n()<>&\*;]*)(.)', re.ASCII | re.DOTALL)
 
 def find_includes(line: str) -> list[str]:
     return [ match.group(2) for match in INCLUDE_PATTERN.finditer(line) ]
-
 
 def find_symbols(line: str) -> list[str]:
     return [ match.group(2) for match in SYMBOL_PATTERN.finditer(line) ]

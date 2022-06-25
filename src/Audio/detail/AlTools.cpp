@@ -41,7 +41,7 @@ namespace DrkCraft
         return m_device;
     }
 
-    std::string_view AlDevice::get_name(void) const
+    string_view AlDevice::get_name(void) const
     {
         return m_name;
     }

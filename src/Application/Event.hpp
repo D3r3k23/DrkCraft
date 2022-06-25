@@ -6,7 +6,8 @@
 #include "Core/Base.hpp"
 #include "Application/EventTypes.hpp"
 
-#include <string>
+#include "lib/string.hpp"
+
 #include <concepts>
 #include <type_traits>
 #include <functional>
@@ -30,8 +31,8 @@ namespace DrkCraft
 
         static constexpr EventCategory static_type(void) { return EventCategory::Event; }
 
-        virtual std::string get_details(void) const;
-        std::string get_string(void) const;
+        virtual string get_details(void) const;
+        string get_string(void) const;
 
         void log_event(void) const;
 

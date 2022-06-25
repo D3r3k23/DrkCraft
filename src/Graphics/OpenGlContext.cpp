@@ -55,12 +55,12 @@ namespace DrkCraft
         glfwMakeContextCurrent(nullptr);
     }
 
-    std::string_view OpenGlContext::get_gl_version(void) const
+    string_view OpenGlContext::get_gl_version(void) const
     {
         return m_glVersion;
     }
 
-    std::string_view OpenGlContext::get_renderer_info(void) const
+    string_view OpenGlContext::get_renderer_info(void) const
     {
         return m_rendererHardware;
     }

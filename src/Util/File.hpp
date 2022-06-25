@@ -4,9 +4,9 @@
 #include "Core/Base.hpp"
 
 #include "lib/fs.hpp"
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
-#include <string>
-#include <string_view>
 #include <cstdio>
 
 namespace DrkCraft
@@ -22,8 +22,8 @@ namespace DrkCraft
         Dir
     };
 
-    std::string read_file(const fs::path& filename);
-    void write_file(const fs::path& filename, std::string_view text);
+    string read_file(const fs::path& filename);
+    void write_file(const fs::path& filename, string_view text);
 
     void make_dir(const fs::path& dirname);
     void make_dirs(const fs::path& dirname);

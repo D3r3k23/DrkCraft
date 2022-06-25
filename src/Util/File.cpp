@@ -7,7 +7,7 @@
 
 namespace DrkCraft
 {
-    std::string read_file(fs::path filename)
+    string read_file(fs::path filename)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -22,7 +22,7 @@ namespace DrkCraft
             return "";
     }
 
-    void write_file(fs::path filename, std::string_view text)
+    void write_file(fs::path filename, string_view text)
     {
         DRK_PROFILE_FUNCTION();
 

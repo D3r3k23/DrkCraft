@@ -17,18 +17,18 @@ namespace DrkCraft
     // {
     //     struct InputCodeNameVisitor
     //     {
-    //         std::string_view operator()(std::monostate)
+    //         string_view operator()(std::monostate)
     //             { return ""; }
 
-    //         std::string_view operator()(KeyCode key)
+    //         string_view operator()(KeyCode key)
     //             { return key_code_name(key); }
 
-    //         std::string_view operator()(MouseCode button)
+    //         string_view operator()(MouseCode button)
     //             { return mouse_code_name(button); }
     //     };
     // }
 
-    InputCode to_input_code(std::string_view str)
+    InputCode to_input_code(string_view str)
     {
         if (KeyCode key = to_key_code(str); key != KeyCode::None)
             return key;
@@ -39,19 +39,19 @@ namespace DrkCraft
         return {};
     }
 
-    std::string_view input_code_name(InputCode code)
+    string_view input_code_name(InputCode code)
     {
         static const Visitor visitor
         {
-            [](KeyCode key) -> std::string_view
+            [](KeyCode key) -> string_view
             {
                 return key_code_name(key);
             },
-            [](MouseCode button) -> std::string_view
+            [](MouseCode button) -> string_view
             {
                 return mouse_code_name(button);
             },
-            [](MonoState) -> std::string_view
+            [](MonoState) -> string_view
             {
                 return "";
             }
@@ -229,12 +229,12 @@ namespace DrkCraft
         return static_cast<int>(key);
     }
 
-    KeyCode to_key_code(std::string_view str)
+    KeyCode to_key_code(string_view str)
     {
         return magic_enum::enum_cast<KeyCode>(str).value_or(KeyCode::None);
     }
 
-    std::string_view key_code_name(KeyCode key)
+    string_view key_code_name(KeyCode key)
     {
         return magic_enum::enum_name(key);
     }
@@ -253,12 +253,12 @@ namespace DrkCraft
         return static_cast<int>(button);
     }
 
-    MouseCode to_mouse_code(std::string_view str)
+    MouseCode to_mouse_code(string_view str)
     {
         return magic_enum::enum_cast<MouseCode>(str).value_or(MouseCode::None);
     }
 
-    std::string_view mouse_code_name(MouseCode button)
+    string_view mouse_code_name(MouseCode button)
     {
         return magic_enum::enum_name(button);
     }

@@ -5,10 +5,12 @@
 
 #include <GLFW/glfw3.h>
 
+#include <utility>
+
 namespace DrkCraft
 {
-    Window::Window(std::string_view title)
-      : m_title(title)
+    Window::Window(string title)
+      : m_title(std::move(title))
     {
         DRK_PROFILE_FUNCTION();
         DRK_LOG_CORE_TRACE("Creating Window");

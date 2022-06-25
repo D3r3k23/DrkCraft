@@ -12,15 +12,15 @@
 
     namespace DrkCraft
     {
-        void on_assert_failure(const std::source_location& src, Optional<std::string_view> cond, Optional<std::string_view> msg)
+        void on_assert_failure(const std::source_location& src, Optional<string_view> cond, Optional<string_view> msg)
         {
             DRK_PROFILE_EVENT_LOCAL("Assert failure");
 
             const auto filename = fs::path{src.file_name()}.filename().string();
             const auto line = src.line();
 
-            const std::string condition = cond ? fmt::format("({}) ", *cond) : "";
-            const std::string message   = msg  ? fmt::format(": {}",  *msg)  : "";
+            const string condition = cond ? fmt::format("({}) ", *cond) : "";
+            const string message   = msg  ? fmt::format(": {}",  *msg)  : "";
             DRK_LOG_CORE_CRITICAL("[{}:{}] Assert {}failed{}", filename, line, condition, message);
 
         #if DRK_STACKTRACE_ENABLED

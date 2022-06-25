@@ -6,8 +6,7 @@
 #include "System/MouseCodes.hpp"
 
 #include "lib/glm/vec2.hpp"
-
-#include <string_view>
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -15,8 +14,8 @@ namespace DrkCraft
 
     using InputCode = Variant<MonoState, KeyCode, MouseCode>;
 
-    InputCode to_input_code(std::string_view str);
-    std::string_view input_code_name(InputCode code);
+    InputCode to_input_code(string_view str);
+    string_view input_code_name(InputCode code);
 
     ////// Input Queries //////
 

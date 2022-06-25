@@ -6,6 +6,7 @@
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
 #include "System/AssetLibrary.hpp"
+
 #include "Application/ImGuiController.hpp"
 #include "Application/Events.hpp"
 #include "Application/EventGenerator.hpp"
@@ -13,14 +14,14 @@
 #include "Application/LayerStack.hpp"
 #include "Util/Timestep.hpp"
 
-#include <string_view>
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
     class Application
     {
     public:
-        static void init(std::string_view title);
+        static void init(string_view title);
         static int shutdown(void);
 
         static Application& get_instance(void);
@@ -40,7 +41,7 @@ namespace DrkCraft
         static OpenGlContext& get_gl_context(void);
 
     public:
-        Application(std::string_view title);
+        Application(string_view title);
         ~Application(void);
 
     private:

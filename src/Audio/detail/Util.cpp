@@ -9,7 +9,7 @@ namespace DrkCraft
         return ext_to_audio_file_format(filename.extension().string());
     }
 
-    AudioFileFormat ext_to_audio_file_format(std::string_view extension)
+    AudioFileFormat ext_to_audio_file_format(string_view extension)
     {
         if (extension == ".mp3") return AudioFileFormat::Mp3;
         if (extension == ".ogg") return AudioFileFormat::Ogg;

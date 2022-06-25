@@ -33,17 +33,17 @@ namespace DrkCraft::Yaml
             return { std::move(document) };
     }
 
-    bool check_map(const YAML::Node& node, const std::string& key)
+    bool check_map(const YAML::Node& node, const string& key)
     {
         return node[key] && node[key].IsMap();
     }
 
-    bool check_scalar(const YAML::Node& node, const std::string& key)
+    bool check_scalar(const YAML::Node& node, const string& key)
     {
         return node[key] && node[key].IsScalar();
     }
 
-    Optional<YAML::Node> get_map(const YAML::Node& node, const std::string& key)
+    Optional<YAML::Node> get_map(const YAML::Node& node, const string& key)
     {
         if (check_map(node, key))
             return node[key];
@@ -51,7 +51,7 @@ namespace DrkCraft::Yaml
             return {};
     }
 
-    Optional<YAML::Node> get_scalar(const YAML::Node& node, const std::string& key)
+    Optional<YAML::Node> get_scalar(const YAML::Node& node, const string& key)
     {
         if (check_scalar(node, key))
             return node[key];

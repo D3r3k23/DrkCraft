@@ -4,8 +4,7 @@
 #include "Core/Base.hpp"
 
 #include "lib/fs.hpp"
-
-#include <string_view>
+#include "lib/fs.hpp""
 
 namespace DrkCraft
 {
@@ -17,7 +16,7 @@ namespace DrkCraft
     };
 
     AudioFileFormat find_audio_file_format(const fs::path& filename);
-    AudioFileFormat ext_to_audio_file_format(std::string_view extension);
+    AudioFileFormat ext_to_audio_file_format(string_view extension);
 
     enum class AudioSourceFormat
     {

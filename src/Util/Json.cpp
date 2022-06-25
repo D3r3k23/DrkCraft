@@ -2,7 +2,7 @@
 
 #include "Core/Debug/Profiler.hpp"
 
-#include <string>
+#include "lib/string.hpp"
 
 namespace DrkCraft::Json
 {
@@ -11,7 +11,7 @@ namespace DrkCraft::Json
         DRK_PROFILE_FUNCTION();
         Document document;
 
-        const std::string text = read_file(filename);
+        const string text = read_file(filename);
         document.Parse(text);
         if (document.HasParseError())
         {

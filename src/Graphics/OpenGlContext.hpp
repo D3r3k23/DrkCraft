@@ -3,8 +3,8 @@
 
 #include "Core/Base.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -20,8 +20,8 @@ namespace DrkCraft
         void make_current(void);
         static void clear_current(void);
 
-        std::string_view get_gl_version(void) const;
-        std::string_view get_renderer_info(void) const;
+        string_view get_gl_version(void) const;
+        string_view get_renderer_info(void) const;
 
     private:
         void get_context_info(void);
@@ -29,8 +29,8 @@ namespace DrkCraft
     private:
         Window& m_window;
 
-        std::string m_glVersion;
-        std::string m_rendererHardware;
+        string m_glVersion;
+        string m_rendererHardware;
     };
 }
 

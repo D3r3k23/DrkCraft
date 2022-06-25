@@ -5,8 +5,9 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
+
 #include <utility>
 
 namespace DrkCraft
@@ -38,7 +39,7 @@ namespace DrkCraft
         }
 
     protected:
-        Layer(std::string_view name, bool activate=true);
+        Layer(string name, bool activate=true);
 
     public:
         virtual ~Layer(void);
@@ -60,10 +61,10 @@ namespace DrkCraft
         bool is_layer_attached(void) const;
         bool is_layer_detached(void) const;
 
-        std::string_view get_layer_name(void) const;
+        string_view get_layer_name(void) const;
 
     private:
-        const std::string m_layerName;
+        string m_layerName;
 
         bool m_layerActive;
         bool m_layerAttached;

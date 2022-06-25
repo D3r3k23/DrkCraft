@@ -7,12 +7,13 @@
 #include "Util/Time.hpp"
 
 #include "lib/glm/vec3.hpp"
+
 #include "lib/fs.hpp"
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
 #include <vector>
 #include <unordered_map>
-#include <string>
-#include <string_view>
 
 namespace DrkCraft::Game
 {
@@ -21,7 +22,7 @@ namespace DrkCraft::Game
         struct Save
         {
             Version version;
-            std::string name;
+            string name;
             Time::LocalTime lastSave;
             uint day;
             uint time;
@@ -67,19 +68,19 @@ namespace DrkCraft::Game
         void load_save_info(void);
         std::vector<SaveInfo*> get_saves(void) const;
 
-        Error<> rename_save(const std::string& oldName, const std::string& newName);
-        Error<> delete_save(const std::string& name);
+        Error<> rename_save(const string& oldName, const string& newName);
+        Error<> delete_save(const string& name);
 
-        Ptr<SaveLoader> get_loader(const std::string& name);
+        Ptr<SaveLoader> get_loader(const string& name);
 
-        void update_save_time(const std::string& name, Time::LocalTime time=Time::get_local_time());
+        void update_save_time(const string& name, Time::LocalTime time=Time::get_local_time());
 
     private:
-        ErrorMsg validate_save_info(const SaveInfo& info, std::string_view name, const Version& buildVersion);
+        ErrorMsg validate_save_info(const SaveInfo& info, string_view name, const Version& buildVersion);
 
     private:
         fs::path m_directory;
-        std::unordered_map<std::string, Ptr<SaveInfo>> m_saves;
+        std::unordered_map<string, Ptr<SaveInfo>> m_saves;
     };
 }
 

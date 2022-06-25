@@ -1,19 +1,25 @@
 #ifndef DRK_GAME_GAME_HPP
 #define DRK_GAME_GAME_HPP
 
+// Layer
 #include "Core/Base.hpp"
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 #include "System/AssetLibrary.hpp"
 
+// Data
 #include "Game/World/World.hpp"
 #include "Game/Entity/EntityManager.hpp"
 #include "Game/GameEvent.hpp"
+
+// Systems
 #include "Game/GameSystem.hpp"
 #include "Game/Systems/EntityRenderer.hpp"
 #include "Game/Systems/Lighting.hpp"
 #include "Game/Systems/Physics.hpp"
 #include "Game/Systems/WorldRenderer.hpp"
+
+// Game
 #include "Game/World/WorldLoader.hpp"
 #include "Game/Player.hpp"
 #include "Game/Sky.hpp"

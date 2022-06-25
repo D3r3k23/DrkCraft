@@ -9,8 +9,8 @@
 #include "System/Mutex.hpp"
 
 #include "lib/fs.hpp"
+#include "lib/string.hpp"
 
-#include <string>
 #include <vector>
 #include <queue>
 #include <unordered_map>
@@ -49,7 +49,7 @@ namespace DrkCraft
     using AssetList = std::vector<AssetInfo>;
 
     template <typename A>
-    using AssetContainer = std::unordered_map<std::string, A>;
+    using AssetContainer = std::unordered_map<string, A>;
 
     class AssetLibrary
     {
@@ -101,7 +101,7 @@ namespace DrkCraft
         Ref<Mesh> get_mesh(const fs::path& filename) const;
 
         bool loading(void) const;
-        Optional<std::string> currently_loading(void) const;
+        Optional<string> currently_loading(void) const;
 
     private:
         void load_texture(const fs::path& filename);
@@ -116,7 +116,7 @@ namespace DrkCraft
         Thread<StopToken> m_loadThread;
 
         std::atomic<bool> m_loading;
-        std::string m_recentlyLoadedAsset;
+        string m_recentlyLoadedAsset;
 
         AssetContainer<Ref<Texture>> m_textures;
         AssetContainer<Ref<AudioSource>> m_audioSources;

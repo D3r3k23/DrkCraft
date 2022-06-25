@@ -3,14 +3,14 @@
 
 #include "Core/Base.hpp"
 
-#include <string>
-#include <string_view>
+#include "lib/string.hpp"
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
-    std::string capitalize(std::string_view str);
-    std::string to_lower(std::string_view str);
-    std::string to_upper(std::string_view str);
+    string capitalize(string_view str);
+    string to_lower(string_view str);
+    string to_upper(string_view str);
 
     constexpr bool is_digit(const char c)
     {
@@ -22,7 +22,7 @@ namespace DrkCraft
         return is_digit(c) ? c - '0' : 0;
     }
 
-    constexpr Optional<uint> to_uint(const std::string_view str)
+    constexpr Optional<uint> to_uint(const string_view str)
     {
         uint value = 0;
         uint multiplier = 1;
@@ -37,7 +37,7 @@ namespace DrkCraft
         return value;
     }
 
-    constexpr Optional<int> to_int(const std::string_view str)
+    constexpr Optional<int> to_int(const string_view str)
     {
         if (str.length() <= 0)
             return {};

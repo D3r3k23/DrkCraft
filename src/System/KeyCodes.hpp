@@ -1,7 +1,9 @@
 #ifndef DRK_SYSTEM_KEY_CODES_HPP
 #define DRK_SYSTEM_KEY_CODES_HPP
 
-#include <string_view>
+#include "Core/Base.hpp"
+
+#include "lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -10,8 +12,8 @@ namespace DrkCraft
     KeyCode to_key_code(int key);
     int from_key_code(KeyCode key);
 
-    KeyCode to_key_code(std::string_view str);
-    std::string_view key_code_name(KeyCode key);
+    KeyCode to_key_code(string_view str);
+    string_view key_code_name(KeyCode key);
 
     // From glfw3.h
     enum class KeyCode

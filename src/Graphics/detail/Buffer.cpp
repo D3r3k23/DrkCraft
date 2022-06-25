@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 
 #include <algorithm>
+#include <utility>
 
 namespace DrkCraft
 {
@@ -40,8 +41,8 @@ namespace DrkCraft
     //       VertexAttribute       //
     /////////////////////////////////
 
-    VertexAttribute::VertexAttribute(ShaderDataType type, std::string_view name, bool normalized)
-      : name(name),
+    VertexAttribute::VertexAttribute(ShaderDataType type, string name, bool normalized)
+      : name(std::move(name)),
         type(type),
         size(get_shader_data_type_size(type)),
         offset(0),

@@ -12,7 +12,8 @@
 #include <imgui/imgui.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
-#include <string>
+#incldue "lib/string.hpp"
+
 #include <algorithm>
 
 namespace DrkCraft
@@ -206,7 +207,7 @@ namespace DrkCraft
                     }
                     if (ImGui::BeginPopup("Edit Save"))
                     {
-                        std::string name;
+                        string name;
                         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
                         {
                             if (m_saveManager.rename_save(save->name, name))

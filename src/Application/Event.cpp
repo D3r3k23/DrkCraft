@@ -15,14 +15,14 @@ namespace DrkCraft
       : m_handled(false)
     { }
 
-    std::string Event::get_details(void) const
+    string Event::get_details(void) const
     {
         return "";
     }
 
-    std::string Event::get_string(void) const
+    string Event::get_string(void) const
     {
-        if (std::string details = get_details(); details.size() > 0)
+        if (string details = get_details(); details.size() > 0)
             return fmt::format("{}: {}", get_name(), details);
         else
             return get_name();
@@ -63,27 +63,27 @@ namespace DrkCraft
     //         Events.hpp         //
     ////////////////////////////////
 
-    std::string WindowResizedEvent::get_details(void) const
+    string WindowResizedEvent::get_details(void) const
     {
         return fmt::format("width={} height={}", width, height);
     }
 
-    std::string FramebufferResizedEvent::get_details(void) const
+    string FramebufferResizedEvent::get_details(void) const
     {
         return fmt::format("width={} height={}", width, height);
     }
 
-    std::string WindowMovedEvent::get_details(void) const
+    string WindowMovedEvent::get_details(void) const
     {
         return fmt::format("xPos={} yPos={}", xPos, yPos);
     }
 
-    std::string WindowRestoredEvent::get_details(void) const
+    string WindowRestoredEvent::get_details(void) const
     {
         return fmt::format("{}", magic_enum::enum_name(source));
     }
 
-    std::string WindowScaledEvent::get_details(void) const
+    string WindowScaledEvent::get_details(void) const
     {
         return fmt::format("xScale={} yScale={}", xScale, yScale);
     }
@@ -93,7 +93,7 @@ namespace DrkCraft
         return {};
     }
 
-    std::string KeyEvent::get_details(void) const
+    string KeyEvent::get_details(void) const
     {
         return fmt::format("KeyCode={} InputMod={}", from_key_code(key), mods);
     }
@@ -103,17 +103,17 @@ namespace DrkCraft
         return { key };
     }
 
-    std::string CharTypedEvent::get_details(void) const
+    string CharTypedEvent::get_details(void) const
     {
         return fmt::format("char='{}'", ch);
     }
 
-    std::string MousePosEvent::get_details(void) const
+    string MousePosEvent::get_details(void) const
     {
         return fmt::format("xPos={} yPos={}",xPos, yPos);
     }
 
-    std::string MouseButtonEvent::get_details(void) const
+    string MouseButtonEvent::get_details(void) const
     {
         return fmt::format("MouseCode={} xPos={} yPos={} InputMod={}", from_mouse_code(button), xPos, yPos, mods);
     }
@@ -123,12 +123,12 @@ namespace DrkCraft
         return { button };
     }
 
-    std::string ScrollWheelMovedEvent::get_details(void) const
+    string ScrollWheelMovedEvent::get_details(void) const
     {
         return fmt::format("xOffset={} yOffset={}", xOffset, yOffset);
     }
 
-    std::string MonitorEvent::get_details(void) const
+    string MonitorEvent::get_details(void) const
     {
         return fmt::format("number={}", number);
     }

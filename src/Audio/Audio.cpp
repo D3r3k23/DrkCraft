@@ -158,7 +158,7 @@ namespace DrkCraft
         return s_volume.muted();
     }
 
-    std::string_view Audio::get_device_name(void)
+    string_view Audio::get_device_name(void)
     {
         return get_audio_engine().get_device().get_name();
     }
