@@ -6,6 +6,7 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/Mesh.hpp"
 #include "System/Thread.hpp"
+#include "System/Mutex.hpp"
 
 #include "lib/fs.hpp"
 
@@ -13,7 +14,6 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
-#include <mutex>
 #include <atomic>
 
 namespace DrkCraft
@@ -67,7 +67,7 @@ namespace DrkCraft
 
         private:
             std::queue<AssetInfo> m_queue;
-            std::mutex m_queueMutex;
+            Mutex m_queueMutex{"asset_load_queue_mutex"};
         };
 
     public:
@@ -122,11 +122,11 @@ namespace DrkCraft
         AssetContainer<Ref<AudioSource>> m_audioSources;
         AssetContainer<Ref<Mesh>> m_meshes;
 
-        mutable std::mutex m_texturesMutex;
-        mutable std::mutex m_audioSourcesMutex;
-        mutable std::mutex m_meshesMutex;
+        mutable Mutex m_texturesMutex{"texture_asset_mutex"};
+        mutable Mutex m_audioSourcesMutex{"audio_source_asset_mutex"};
+        mutable Mutex m_meshesMutex{"mesh_asset_mutex"};
 
-        mutable std::mutex m_recentlyLoadedAssetMutex;
+        mutable Mutex m_recentlyLoadedAssetMutex{"recently_loaded_asset_mutex"};
     };
 
     class AssetLoader

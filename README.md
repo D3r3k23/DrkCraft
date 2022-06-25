@@ -15,24 +15,50 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 
 * Minecraft<sup>2</sup>??
 
+![Game](/media/game.png)
+
+***
+
 ## Videos
 [Youtube](https://www.youtube.com/playlist?list=PLD41ILT9lDJa0fnwzflIxxq_wivyyBtYb)
 
+## Gallery
+[gallery](/gallery)
+
+## Worlds
+[worlds](/worlds)
+
 ## Manual
-[manual.md](doc/manual.md)
+[manual.md](/doc/manual.md)
 
-## Images
-[Game](media/game.png)
+# Development
 
-## Build Instructions
-0. `$ sudo apt install xorg-dev` (Debian/Ubuntu/Linux Mint)
-1. `$ git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
-2. `$ cd DrkCraft`
-3.
-   - `$ source scripts/setup.sh` (Linux)
-   - `$ scripts\setup.bat` (Windows)
-5. `(.venv) $ python -m drkcraft build`
-6. `(.venv) $ python -m drkcraft run`
+## Install prerequisites and clone repository
+1. `$ sudo apt install xorg-dev` (Debian/Ubuntu/Linux Mint)
+2. `$ git clone --recursive https://github.com/D3r3k23/DrkCraft DrkCraft`
+3. `$ cd DrkCraft`
+
+## Python Tools
+
+### Setup Python environment
+* `$ source scripts/setup.sh` (Linux)
+* `$ scripts\setup.bat` (Windows)
+
+### Usage
+`python -m drkcraft [-h] [-v] cmd [-h] [cmd options]`
+
+### Build
+`(.venv) $ python -m drkcraft build`
+* With no options specified, defaults to a Debug build with profiling and dev mode enabled
+
+### Run
+`(.venv) $ python -m drkcraft run`
+
+### View other commands
+`(.venv) $ python -m drkcraft --help`
+
+### View command options
+`(.venv) $ python -m drkcraft CMD --help`
 
 ### Or invoke CMake and run directly:
 
@@ -63,12 +89,17 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 * [**OpenAL Soft:**](https://github.com/kcat/openal-soft) OpenAL audio API
 * [**RapidJSON:**](https://github.com/Tencent/rapidjson) JSON parser and writer
 * [**spdlog:**](https://github.com/gabime/spdlog) Logging library
-* [**stb:**](https://github.com/nothings/stb) stb_image: stb_image_writer, stb_rect_pack, stb_truetype
+* [**stb:**](https://github.com/nothings/stb)
+  - **stb_image:** Image file loading
+  - **stb_image_write:** Image file saving
+  - **stb_rect_pack:** 2D rectangle packer
+  - **stb_truetype:** TrueType fonts
 * [**tinyobjloader:**](https://github.com/tinyobjloader/tinyobjloader) .obj mesh file loading
 * [**Vorbis:**](https://github.com/xiph/vorbis) .ogg audio file loading
 * [**yaml-cpp:**](https://github.com/jbeder/yaml-cpp) YAML parser and writer
 
 ## License
-* LICENSE.txt
-* lib/LICENSE.toml
-* assets/...
+* [DrkCraft license](/LICENSE.txt)
+* [Library licenses](/lib/LICENSE.toml)
+* [Assets license](/assets/LICENSE.txt)
+* [Launcher license](/launcher/LICENSE.txt)

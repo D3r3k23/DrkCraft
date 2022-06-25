@@ -44,8 +44,8 @@ namespace DrkCraft::Game
         DRK_PROFILE_FUNCTION();
         DRK_LOG_GAME_INFO("Starting game");
 
-        const auto& blockAtlas = assets.get_texture("blockatlas.png");
-        BlockRenderer::set_texture_atlas(blockAtlas);
+        // const auto& blockAtlas = assets.get_texture("blockatlas.png");
+        // BlockRenderer::set_texture_atlas(blockAtlas);
 
         Application::add_layer(m_hud);
 

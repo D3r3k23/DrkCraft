@@ -4,6 +4,7 @@
 #include "Util/Image.hpp"
 #include "Util/Obj.hpp"
 #include "Util/Time.hpp"
+#include "System/Lock.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <magic_enum.hpp>
@@ -40,7 +41,7 @@ namespace DrkCraft
     void AssetLibrary::AssetLoadQueue::push(const AssetInfo& asset)
     {
         DRK_PROFILE_FUNCTION();
-        std::lock_guard lock(m_queueMutex);
+        Lock<> lock(m_queueMutex);
 
         m_queue.push(asset);
     }
@@ -48,7 +49,7 @@ namespace DrkCraft
     void AssetLibrary::AssetLoadQueue::push(const AssetList& assets)
     {
         DRK_PROFILE_FUNCTION();
-        std::lock_guard lock(m_queueMutex);
+        Lock<> lock(m_queueMutex);
 
         for (const auto asset : assets)
             m_queue.push(asset);
@@ -57,7 +58,7 @@ namespace DrkCraft
     AssetInfo AssetLibrary::AssetLoadQueue::pop(void)
     {
         DRK_PROFILE_FUNCTION();
-        std::lock_guard lock(m_queueMutex);
+        Lock<> lock(m_queueMutex);
 
         if (m_queue.empty())
             return {};
@@ -73,7 +74,7 @@ namespace DrkCraft
     bool AssetLibrary::AssetLoadQueue::empty(void)
     {
         DRK_PROFILE_FUNCTION();
-        std::lock_guard lock(m_queueMutex);
+        Lock<> lock(m_queueMutex);
 
         return m_queue.empty();
     }
@@ -115,7 +116,7 @@ namespace DrkCraft
             {
                 m_loading = false;
                 DRK_PROFILE_SCOPE("Sleep");
-                std::this_thread::sleep_for(LOAD_WORKER_SLEEP_TIME);
+                Thread<>::This::sleep_for(LOAD_WORKER_SLEEP_TIME);
             }
         }
     }
@@ -157,7 +158,7 @@ namespace DrkCraft
         const auto assetTypeName  = magic_enum::enum_name(type);
         const auto assetName   = filename.generic_string();
         {
-            std::lock_guard lock(m_recentlyLoadedAssetMutex);
+            Lock<> lock(m_recentlyLoadedAssetMutex);
             m_recentlyLoadedAsset = assetName;
         }
         DRK_LOG_CORE_INFO("Loading {} asset \"{}\"", assetTypeName, assetName);
@@ -199,13 +200,13 @@ namespace DrkCraft
 
     bool AssetLibrary::texture_loaded(const fs::path& filename) const
     {
-        std::lock_guard lock(m_texturesMutex);
+        Lock<> lock(m_texturesMutex);
         return m_textures.contains(filename.string());
     }
 
     Ref<Texture> AssetLibrary::get_texture(const fs::path& filename) const
     {
-        std::lock_guard lock(m_texturesMutex);
+        Lock<> lock(m_texturesMutex);
         if (m_textures.contains(filename.string()))
             return m_textures.at(filename.string());
         else
@@ -214,13 +215,13 @@ namespace DrkCraft
 
     bool AssetLibrary::song_loaded(const fs::path& filename) const
     {
-        std::lock_guard lock(m_audioSourcesMutex);
+        Lock<> lock(m_audioSourcesMutex);
         return m_audioSources.contains(filename.string());
     }
 
     bool AssetLibrary::sound_loaded(const fs::path& filename) const
     {
-        std::lock_guard lock(m_audioSourcesMutex);
+        Lock<> lock(m_audioSourcesMutex);
         return m_audioSources.contains(filename.string());
     }
 
@@ -231,7 +232,7 @@ namespace DrkCraft
 
     Ref<AudioSource> AssetLibrary::get_sound(const fs::path& filename) const
     {
-        std::lock_guard lock(m_audioSourcesMutex);
+        Lock<> lock(m_audioSourcesMutex);
         if (m_audioSources.contains(filename.string()))
             return m_audioSources.at(filename.string());
         else
@@ -240,13 +241,13 @@ namespace DrkCraft
 
     bool AssetLibrary::mesh_loaded(const fs::path& filename) const
     {
-        std::lock_guard lock(m_meshesMutex);
+        Lock<> lock(m_meshesMutex);
         return m_meshes.contains(filename.string());
     }
 
     Ref<Mesh> AssetLibrary::get_mesh(const fs::path& filename) const
     {
-        std::lock_guard lock(m_meshesMutex);
+        Lock<> lock(m_meshesMutex);
         if (m_meshes.contains(filename.string()))
             return m_meshes.at(filename.string());
         else
@@ -262,7 +263,7 @@ namespace DrkCraft
     {
         if (loading())
         {
-            std::lock_guard lock(m_recentlyLoadedAssetMutex);
+            Lock<> lock(m_recentlyLoadedAssetMutex);
             return m_recentlyLoadedAsset;
         }
         else
@@ -276,7 +277,7 @@ namespace DrkCraft
         if (const auto image = Image::load_file(filename); image)
             if (const auto texture = Texture::from_image(*image); texture)
             {
-                std::lock_guard lock(m_texturesMutex);
+                Lock<> lock(m_texturesMutex);
                 m_textures[filename.string()] = std::move(texture);
             }
     }
@@ -287,7 +288,7 @@ namespace DrkCraft
 
         if (const auto source = Audio::load_file(filename); source)
         {
-            std::lock_guard lock(m_audioSourcesMutex);
+            Lock<> lock(m_audioSourcesMutex);
             m_audioSources[filename.string()] = std::move(source);
         }
     }
@@ -299,28 +300,28 @@ namespace DrkCraft
         if (const auto data = Obj::load_file(filename); data)
             if (const auto mesh = Mesh::create(*data); mesh)
             {
-                std::lock_guard lock(m_meshesMutex);
+                Lock<> lock(m_meshesMutex);
                 m_meshes[filename.string()] = std::move(mesh);
             }
     }
 
     void AssetLibrary::unload_texture(const fs::path& filename)
     {
-        std::lock_guard lock(m_texturesMutex);
+        Lock<> lock(m_texturesMutex);
         if (auto it = m_textures.find(filename.string()); it != m_textures.end())
             m_textures.erase(it);
     }
 
     void AssetLibrary::unload_audio_source(const fs::path& filename)
     {
-        std::lock_guard lock(m_audioSourcesMutex);
+        Lock<> lock(m_audioSourcesMutex);
         if (auto it = m_audioSources.find(filename.string()); it != m_audioSources.end())
             m_audioSources.erase(it);
     }
 
     void AssetLibrary::unload_mesh(const fs::path& filename)
     {
-        std::lock_guard lock(m_meshesMutex);
+        Lock<> lock(m_meshesMutex);
         if (auto it = m_meshes.find(filename.string()); it != m_meshes.end())
             m_meshes.erase(it);
     }

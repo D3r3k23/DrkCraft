@@ -1,0 +1,42 @@
+{
+    "statusbar_command.commands": [
+        {
+            "text": "$(notebook-kernel-select) Build",
+            "tooltip": "CMake Build (Debug)",
+            "priority": 15,
+            "alignment": "left",
+            "command": "workbench.action.tasks.runTask",
+            "arguments": ["CMake Build (Debug)"]
+        },
+        {
+            "text": "$(debug) Debug",
+            "tooltip": "Start Debugging",
+            "priority": 10,
+            "alignment": "left",
+            "command": "workbench.action.debug.start"
+        },
+        {
+            "text": "$(run) Run",
+            "tooltip": "Run Without Debugging",
+            "priority": 5,
+            "alignment": "left",
+            "command": "workbench.action.debug.run"
+        }
+    ],
+    "VSCodeCounter.exclude": [
+        "**/lib/*"
+    ],
+    "VSCodeCounter.include": [
+        "**/*.hpp",
+        "**/*.cpp",
+        "**/CMakeLists.txt",
+        "**/*.glsl",
+        "**/*.py",
+        "**/*.sh",
+        "**/*.bat",
+        "**/*.yaml",
+        "**/*.json",
+        "**/*.toml"
+    ],
+    "VSCodeCounter.useGitignore": true
+}

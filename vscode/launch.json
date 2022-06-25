@@ -1,0 +1,45 @@
+{
+    "configurations": [
+        {
+            "name": "Launch (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "build\\bin\\Debug\\DrkCraft.exe",
+            "args": [
+                "--dev",
+                "--trace"
+            ],
+            "environment": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Launch (Release)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "build\\bin\\Release\\DrkCraft.exe",
+            "args": [
+                "--dev"
+            ],
+            "environment": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Launch (RelWithDebInfo)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "build\\bin\\RelWithDebInfo\\DrkCraft.exe",
+            "args": [
+                "--dev"
+            ],
+            "environment": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
+    ],
+    "version": "0.2.0"
+}

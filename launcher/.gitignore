@@ -2,8 +2,12 @@
 /.venv/*
 
 /build/*
+/test_install_dir/*
 
 /Launcher/logs/*
 
 /Packages/*
 /Screenshots/*
+
+/.temp/*
+/.cache/*

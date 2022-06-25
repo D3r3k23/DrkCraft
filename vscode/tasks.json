@@ -1,0 +1,51 @@
+{
+    "tasks": [
+        {
+            "label": "CMake Build (Debug)",
+            "type": "cppbuild",
+            "command": ".venv\\Scripts\\python",
+            "args": [ "-m", "drkcraft", "build",
+                "Debug",
+                "--profile",
+                "--dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Compiler: cl.exe"
+        },
+        {
+            "label": "CMake Build (Release)",
+            "type": "cppbuild",
+            "command": ".venv\\Scripts\\python",
+            "args": [ "-m", "drkcraft", "build",
+                "RelWithDebInfo",
+                "--profile",
+                "--dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build",
+            "detail": "Compiler: cl.exe"
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": ".venv\\Scripts\\python",
+            "args": [ "-m", "drkcraft", "clean" ],
+            "problemMatcher": []
+        }
+    ],
+    "version": "2.0.0"
+}

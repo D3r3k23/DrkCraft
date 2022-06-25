@@ -38,13 +38,21 @@ if "%no_venv%" == "false" (
     )
 )
 
+set "drkcraft_egg_link=%venv%\Lib\site-packages\drkcraft-py.egg-link"
+
+if NOT exist "%drkcraft_egg_link%" (
+    set "build_drkcraft=true"
+) else (
+    set "build_drkcraft=false"
+)
+
 if "%update%" == "true" (
     set "install_packages=true"
 ) else (
     if "%no_venv%" == "true" (
         set "install_packages=true"
     ) else (
-        if NOT exist "%venv%\Lib\site-packages\drkcraft-py.egg-link" (
+        if "%build_drkcraft%" == "true" (
             set "install_packages=true"
         ) else (
             set "install_packages=false"
@@ -52,13 +60,17 @@ if "%update%" == "true" (
     )
 )
 
-if "%install_packages%" == "true" (
+if "%build_drkcraft%" == "true" (
     echo Building drkcraft-py package
     pip install -e python
-
+)
+if "%install_packages%" == "true" (
     echo Installing drkcraft-py packages
     pip install --upgrade -r python\requirements.txt
 
     echo Installing launcher packages
-    pip install --upgrade -r launcher\requirements.txt
+    pip install --upgrade -r launcher\requirements.txt -r launcher\require-types.txt
+
+    echo Installing std_usage packages
+    pip install --upgrade -r tools\std_usage\requirements.txt
 )

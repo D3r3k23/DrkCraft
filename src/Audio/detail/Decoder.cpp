@@ -1,5 +1,7 @@
 #include "Decoder.hpp"
 
+#include "System/Mutex.hpp"
+#include "System/Lock.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <minimp3/minimp3.h>
@@ -8,7 +10,6 @@
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 
-#include <mutex>
 #include <cstdio>
 #include <cstdlib>
 
@@ -24,12 +25,12 @@ namespace DrkCraft
     static_assert(sizeof(int16) == sizeof(SampleBuffer_t));
 
     static mp3dec_t s_mp3Decoder;
-    static std::mutex s_mp3DecoderMutex;
+    static Mutex s_mp3DecoderMutex("mp3_decoder_mutex");
 
     Mp3Decoder::Mp3Decoder(void)
     {
         DRK_LOG_CORE_TRACE("Initializing Mp3Decoder");
-        std::lock_guard lock(s_mp3DecoderMutex);
+        Lock<> lock(s_mp3DecoderMutex);
         mp3dec_init(&s_mp3Decoder);
     }
 
@@ -37,10 +38,11 @@ namespace DrkCraft
     {
         DRK_PROFILE_FUNCTION();
         DRK_ASSERT_DEBUG_NO_MSG(find_audio_file_format(filename) == AudioFileFormat::Mp3);
-        std::lock_guard lock(s_mp3DecoderMutex);
 
         mp3dec_file_info_t info;
         {
+            Lock<> lock(s_mp3DecoderMutex);
+
             DRK_PROFILE_SCOPE("mp3dec_load");
             int result = mp3dec_load(&s_mp3Decoder, filename.string().c_str(), &info, nullptr, nullptr);
             if (result != 0)

@@ -8,7 +8,7 @@ import shutil
 
 PLATFORM = platform.system()
 
-VENV = Path('.venv.')
+VENV = Path('.venv')
 BUILD_DIR = Path('build')
 
 MAIN_SRC = Path('src/main.py')
@@ -17,7 +17,7 @@ EXE_NAME = 'drkcraft-launcher'
 def main() -> Optional[int]:
     print('======== Building DrkCraft Launcher ========')
 
-    install_dir = BUILD_DIR / 'install'
+    install_dir = BUILD_DIR / 'pyinstaller'
     if not install_dir.is_dir():
         install_dir.mkdir(parents=True)
 
@@ -69,7 +69,12 @@ def build_package(exe: Path):
     shutil.copy(exe, launcher_dir)
     shutil.copy('LICENSE.txt', launcher_dir)
 
-    shutil.copytree(Path('Launcher') / 'resources', launcher_dir / 'resources')
+    shutil.copytree('Launcher/resources', launcher_dir / 'resources')
+
+    package_zip = package_dir / 'drkcraft-launcher.zip'
+    if package_zip.is_file():
+        package_zip.unlink()
+    shutil.make_archive(str(package_zip.with_suffix('')), 'zip', package_dir, 'Launcher')
 
 def exe_ext():
     return '.exe' if PLATFORM == 'Windows' else ''

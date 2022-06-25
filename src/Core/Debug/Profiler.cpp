@@ -4,6 +4,7 @@
 
     #include "Util/File.hpp"
     #include "System/Thread.hpp"
+    #include "System/Lock.hpp"
     #include "System/Pid.hpp"
 
     #include "lib/fs.hpp"
@@ -18,6 +19,8 @@
 
     namespace DrkCraft
     {
+        using ProfilerLock = Lock<DISABLE_PROFILE>;
+
         //////////////////////////////
         //       ProfileTimer       //
         //////////////////////////////
@@ -91,7 +94,7 @@
         {
             if (!active())
             {
-                std::lock_guard lock(m_mutex);
+                ProfilerLock lock(m_mutex);
 
                 m_active = true;
                 m_name = name;
@@ -103,7 +106,7 @@
                 const double timestamp = get_timestamp(Time::Clock::now());
                 write_header(m_name, DRK_VERSION_STRING, time_str.c_str(), timestamp);
 
-                m_sessionTimer = make_ptr<ProfileTimer>(m_name, "profiler_session");
+                m_sessionTimer.emplace(m_name, "profiler_session");
             }
         }
 
@@ -114,7 +117,7 @@
                 if (m_sessionTimer && m_sessionTimer->running())
                     m_sessionTimer->stop();
 
-                std::lock_guard lock(m_mutex);
+                ProfilerLock lock(m_mutex);
 
                 write_footer();
 
@@ -145,7 +148,7 @@
                 profile <<             "\"tid\":" <<  Thread<>::This::id();
                 profile << "}";
 
-                std::lock_guard lock(m_mutex);
+                ProfilerLock lock(m_mutex);
                 m_outStream << profile.str();
 
                 if (FLUSH_ON_WRITE)
@@ -168,7 +171,7 @@
                 profile <<             "\"tid\":" <<  std::this_thread::get_id();
                 profile << "}";
 
-                std::lock_guard lock(m_mutex);
+                ProfilerLock lock(m_mutex);
                 m_outStream << profile.str();
 
                 if (FLUSH_ON_WRITE)
@@ -191,7 +194,7 @@
                 profile <<             "\"tid\":" <<  std::this_thread::get_id();
                 profile << "}";
 
-                std::lock_guard lock(m_mutex);
+                ProfilerLock lock(m_mutex);
                 m_outStream << profile.str();
 
                 if (FLUSH_ON_WRITE)

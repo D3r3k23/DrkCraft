@@ -1,5 +1,5 @@
 mypy
-PyInstaller
 glad
+std_usage
 -r drkcraft/build/requirements.txt
 -r drkcraft/tools/requirements.txt

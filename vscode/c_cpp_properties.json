@@ -1,0 +1,92 @@
+{
+    "configurations": [
+        {
+            "name": "Debug",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/lib/backward",
+                "${workspaceFolder}/lib/entt/src",
+                "${workspaceFolder}/lib/FastNoiseLite/Cpp",
+                "${workspaceFolder}/lib/fmt/include",
+                "${workspaceFolder}/lib/glad/include",
+                "${workspaceFolder}/lib/glfw/include",
+                "${workspaceFolder}/lib/glm",
+                "${workspaceFolder}/lib/imgui",
+                "${workspaceFolder}/lib/minimp3",
+                "${workspaceFolder}/lib/magic_enum/include",
+                "${workspaceFolder}/lib/ogg/include",
+                "${workspaceFolder}/lib/openal-soft/include",
+                "${workspaceFolder}/lib/rapidjson/include",
+                "${workspaceFolder}/lib/spdlog/include",
+                "${workspaceFolder}/lib/stb",
+                "${workspaceFolder}/lib/tinyobjloader/tinyobjloader",
+                "${workspaceFolder}/lib/vorbis/include",
+                "${workspaceFolder}/lib/yaml-cpp/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "DRK_VERSION_STRING=\"x.x.x\"",
+                "DRK_PLATFORM_WINDOWS",
+                "DRK_CONFIG_DEBUG",
+                "DRK_EN_LOGGING",
+                "DRK_EN_ASSERTS",
+                "DRK_EN_PROFILING",
+                "DRK_EN_DEV_MODE",
+                "DRK_EN_STACKTRACE",
+                "GLFW_INCLUDE_NONE",
+                "IMGUI_IMPL_OPENGL_LOADER_CUSTOM",
+                "IMGUI_USER_CONFIG=\"drkcraft_imconfig.h\"",
+                "RAPIDJSON_HAS_STDSTRING=1"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "compilerPath": "cl.exe",
+            "intelliSenseMode": "windows-msvc-x64",
+            "windowsSdkVersion": "10.0.18362.0" //////
+        },
+        {
+            "name": "Release",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/lib/backward",
+                "${workspaceFolder}/lib/entt/src",
+                "${workspaceFolder}/lib/FastNoiseLite/Cpp",
+                "${workspaceFolder}/lib/fmt/include",
+                "${workspaceFolder}/lib/glad/include",
+                "${workspaceFolder}/lib/glfw/include",
+                "${workspaceFolder}/lib/glm",
+                "${workspaceFolder}/lib/imgui",
+                "${workspaceFolder}/lib/minimp3",
+                "${workspaceFolder}/lib/magic_enum/include",
+                "${workspaceFolder}/lib/ogg/include",
+                "${workspaceFolder}/lib/openal-soft/include",
+                "${workspaceFolder}/lib/rapidjson/include",
+                "${workspaceFolder}/lib/spdlog/include",
+                "${workspaceFolder}/lib/stb",
+                "${workspaceFolder}/lib/tinyobjloader/tinyobjloader",
+                "${workspaceFolder}/lib/vorbis/include",
+                "${workspaceFolder}/lib/yaml-cpp/include"
+            ],
+            "defines": [
+                "NDEBUG",
+                "DRK_VERSION_STRING=\"x.x.x\"",
+                "DRK_PLATFORM_WINDOWS",
+                "DRK_CONFIG_RELEASE",
+                "DRK_EN_LOGGING",
+                "DRK_EN_ASSERTS",
+                "DRK_EN_STACKTRACE",
+                "GLFW_INCLUDE_NONE",
+                "IMGUI_IMPL_OPENGL_LOADER_CUSTOM",
+                "IMGUI_USER_CONFIG=\"drkcraft_imconfig.h\"",
+                "IMGUI_DISABLE_DEMO_WINDOWS",
+                "RAPIDJSON_HAS_STDSTRING=1"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "compilerPath": "cl.exe",
+            "intelliSenseMode": "windows-msvc-x64",
+            "windowsSdkVersion": "10.0.18362.0" //////
+        }
+    ],
+    "version": 4
+}

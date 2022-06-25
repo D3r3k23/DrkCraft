@@ -1,3 +1,5 @@
+@echo OFF
+
 set "venv=.venv"
 
 python -m venv %venv%

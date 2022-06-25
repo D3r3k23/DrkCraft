@@ -1,16 +1,16 @@
 from typing import *
 from pathlib import Path
+from argparse import ArgumentParser, Namespace
 from enum import Enum, auto
-import argparse
 
 import drkcraft
 
 class Option(Enum):
     build_config = auto()
     en_profiling = auto()
-    en_dev_mode = auto()
+    en_dev_mode  = auto()
     en_trace_log = auto()
-    skip_build = auto()
+    skip_build   = auto()
 
 class BuildConfig(Enum):
     Unknown = auto()
@@ -44,23 +44,18 @@ class BuildConfig(Enum):
             case BuildConfig.Dist           : return 'Release'
             case _: return 'Debug'
 
-def parse_args(argv: Sequence[str], options: Sequence[Option], description: Optional[str]=None) -> argparse.Namespace:
+def parse_args(argv: Sequence[str], options: Sequence[Option], description: Optional[str]=None) -> Namespace:
     prog, args = argv[0], argv[1:]
     options = rm_duplicates_from_list(options)
 
-    usage = f'{prog} [-h]'
-    if Option.build_config in options: usage += ' [config]'
-    if Option.en_profiling in options: usage += ' [--profile]'
-    if Option.en_dev_mode  in options: usage += ' [--dev]'
-    if Option.en_trace_log in options: usage += ' [--trace]'
-    if Option.skip_build   in options: usage += ' [--skip-build]'
+    usage = make_usage_str(prog, options)
 
     if Option.build_config in options:
         cfg_choices = [ c for c in BuildConfig ]
         cfg_choices_str = drkcraft.make_options_str([ str(c) for c in cfg_choices if c != BuildConfig.Unknown ])
         cfg_help = f'{cfg_choices_str} Dist overrides all other options'
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage)
     if Option.build_config in options: parser.add_argument(
         'build_config', metavar='config', type=BuildConfig.from_str, nargs='?', default='', choices=cfg_choices, help=cfg_help
     )
@@ -102,6 +97,15 @@ def get_exe(build_config: BuildConfig) -> Path:
 
 def get_version() -> str:
     return drkcraft.read_version_file('VERSION.txt')
+
+def make_usage_str(prog: str, options: Sequence[Option]):
+    usage = f'{prog} [-h]'
+    if Option.build_config in options: usage += ' [config]'
+    if Option.en_profiling in options: usage += ' [--profile]'
+    if Option.en_dev_mode  in options: usage += ' [--dev]'
+    if Option.en_trace_log in options: usage += ' [--trace]'
+    if Option.skip_build   in options: usage += ' [--skip-build]'
+    return usage
 
 def rm_duplicates_from_list(lst: Sequence[Any]) -> list[Any]:
     return [ item for i, item in enumerate(lst) if item not in lst[:i] ]

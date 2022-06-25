@@ -1,13 +1,13 @@
 #include "Monitor.hpp"
 
 #include "Core/Settings.hpp"
-#include "Util/Fn.hpp"
+#include "System/Mutex.hpp"
+#include "System/Lock.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <vector>
 #include <algorithm>
 #include <execution>
-#include <mutex>
 
 namespace DrkCraft
 {
@@ -184,7 +184,7 @@ namespace DrkCraft
         for (uint i = 0; i < count; ++i)
             glfwMonitors.emplace_back(i, glfwMonitorsPtr[i]);
 
-        std::mutex mutex;
+        Mutex mutex("monitor_load_mutex");
         // For some reason the ranges:: version of these doesnt work
         std::for_each(std::execution::par_unseq, glfwMonitors.begin(), glfwMonitors.end(), [this, &mutex](const auto& monitorPair)
         {
@@ -193,7 +193,7 @@ namespace DrkCraft
             const auto& [number, glfwMonitor] = monitorPair;
             Monitor monitor(glfwMonitor, number, &m_eventHandler);
 
-            std::lock_guard lock(mutex);
+            Lock<> lock(mutex);
             m_monitors.push_back(std::move(monitor));
         });
         {

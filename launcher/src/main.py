@@ -12,8 +12,6 @@ from config import *
 import installer
 import launcher
 
-FONT_PATH = Path('Launcher/resources/fonts/Kanit-Medium.ttf')
-
 class Mode(Enum):
     Install = auto()
     Launch = auto()
@@ -23,7 +21,9 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     prog = Path(argv[0]).name
     args = argv[1:]
 
-    default_install_dir = installer.get_base_installation_dir()
+    default_install_dir = Path.home()
+    if PLATFORM == 'Windows':
+        default_install_dir /= Path('AppData/Local/Programs')
 
     parser = argparse.ArgumentParser(prog=prog)
     parser.add_argument('-V', '--version', action='version', version=VERSION)
@@ -58,12 +58,11 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     dpg.setup_dearpygui()
 
     logging.debug('Setting up font')
-    setup_font(FONT_PATH)
 
     logging.debug('Creating DPG window')
     with dpg.window(tag='Primary Window'):
         match mode:
-            case Mode.UpdateLauncher: installer.create_gui(update_launcher=True)
+            case Mode.UpdateLauncher: installer.create_gui(install_dir, update_launcher=True)
             case Mode.Install: installer.create_gui(install_dir)
             case Mode.Launch: launcher.create_gui()
             case _: logging.error(f'Unknown action: {mode}')
@@ -76,12 +75,6 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
 
     logging.info('Closing DPG')
     dpg.destroy_context()
-
-def setup_font(font: Path):
-    with dpg.font_registry():
-        with dpg.font(font, 20, tag="DrkCraft Font"):
-            dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
-        dpg.bind_font(dpg.last_container())
 
 def setup_logger(en_file: bool=False, en_console: bool=False):
     if LOG_DIR.is_dir():

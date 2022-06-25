@@ -18,3 +18,7 @@
 
 # def find_package_version(package_name) -> str:
 #     return drkcraft.read_version_file(os.path.join(package_name, 'about', 'VERSION.txt'))
+
+class PackageManager:
+    def __init__(self):
+        ...

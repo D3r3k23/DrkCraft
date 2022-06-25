@@ -40,23 +40,35 @@ if [ "$no_venv" == "false" ]; then
     fi
 fi
 
+drkcraft_egg_link="$venv/lib/site-package/drkcraft-py.egg-link"
+
+if [ ! -f $drkcraft_egg_link ]; then
+    build_drkcraft="true"
+else
+    build_drkcraft="false"
+fi
+
 if [ "$update" == "true" ]; then
     install_packages="true"
 elif [ "$no_venv" == "true" ]; then
     install_packages="true"
-elif [ ! -f "$venv/lib/site-packages/drkcraft-py.egg-link" ]; then
+elif [ "$build_drkcraft" == "false" ]; then
     install_packages="true"
 else
     install_packages="false"
 fi
 
-if [ "$install_packages" == "true" ]; then
+if [ "$build_drkcraft" == "true" ]; then
     echo "Building drkcraft-py package"
     pip install -e python
-
+fi
+if [ "$install_packages" == "true" ]; then
     echo "Installing drkcraft-py packages"
     pip install --upgrade -r python/requirements.txt
 
     echo "Installing launcher packages"
-    pip install --upgrade -r launcher/requirements.txt
+    pip install --upgrade -r launcher/requirements.txt -r launcher/require-types.txt
+
+    echo "Installing std_usage packages"
+    pip install --upgrade -r tools/std_usage/requirements.txt
 fi

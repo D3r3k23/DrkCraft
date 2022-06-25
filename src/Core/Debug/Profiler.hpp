@@ -6,9 +6,9 @@
 #if DRK_PROFILING_ENABLED
 
     #include "Util/Time.hpp"
+    #include "System/Mutex.hpp"
 
     #include <fstream>
-    #include <mutex>
 
     namespace DrkCraft
     {
@@ -41,13 +41,12 @@
             Profiler(void);
             ~Profiler(void);
 
-        public:
+        public: // Thread safe
             void begin(const char* name="DrkCraft", const char* file="results.json");
             void end(void);
 
             bool active(void) const;
 
-            // Thread safe
             void write_dur_profile(const char* cat, const char* name, double start, double duration);
             void write_inst_profile(const char* cat, const char* name, double ts, char scope); // scope: g: global, p: process, t: thread
             void write_flow_profile(const char* cat, const char* name, double ts, char ph, int id); // ph: s: start, f: finish
@@ -64,8 +63,8 @@
             const char* m_name;
             bool m_active;
 
-            Ptr<ProfileTimer> m_sessionTimer;
-            std::mutex m_mutex;
+            Optional<ProfileTimer> m_sessionTimer;
+            Mutex m_mutex{"profiler_mutex"};
         };
     }
 
@@ -81,17 +80,25 @@
     #define DRK_PROFILER_END()             Profiler::get_instance().end()
     #define DRK_PROFILER_ACTIVE()          Profiler::get_instance().active()
 
-    // Call at beginning of function
+    // Call at beginning of function (once per function)
     #define DRK_PROFILE_FUNCTION() \
-        ProfileTimer DRK_function_profile_timer{DRK_CLEAN_FUNC_NAME, "function"}
+        ProfileTimer DRK_PROFILE_FUNCTION_timer{DRK_CLEAN_FUNC_NAME, "function"}
 
     // Call in any scope
     #define DRK_PROFILE_SCOPE(name) \
-        ProfileTimer DRK_CONCAT(DRK_scope_profile_timer_, __LINE__){name, "scope"}
+        ProfileTimer DRK_CONCAT(DRK_PROFILE_SCOPE_timer_, __LINE__){name, "scope"}
 
     // Class member declaration
     #define DRK_OBJECT_PROFILER(name) \
         ProfileTimer DRK_object_profile_timer{name, "object"}
+
+    // Class member declaration
+    #define DRK_DEFERRED_OBJECT_PROFILER \
+        Optional<ProfileTimer> DRK_deferred_object_profile_timer
+
+    // Class member initialization
+    #define DRK_DEFERRED_OBJECT_PROFILER_START(name) \
+        DRK_deferred_object_profile_timer.emplace(name, "object")
 
     // Local event
     #define DRK_PROFILE_EVENT_LOCAL(name) \
@@ -108,11 +115,11 @@
     // Call it beginning of thread
     #define DRK_PROFILE_THREAD(name) \
         Profiler::get_instance().create_flow_profile("thread", name, 'f'); \
-        ProfileTimer DRK_thread_profile_timer{name, "thread"}
+        ProfileTimer DRK_PROFILE_THREAD_timer{name, "thread"}
 
-    // Call when waiting on a lock
+    // Call while waiting on lock
     #define DRK_PROFILE_LOCK(name) \
-        ProfileTimer DRK_lock_profile_timer{name, "lock"}
+        Optional<ProfileTimer> DRK_lock_profile_timer{name, "lock"}
 
 #else
     #define DRK_PROFILER_BEGIN(name, file)
@@ -121,7 +128,10 @@
 
     #define DRK_PROFILE_FUNCTION()
     #define DRK_PROFILE_SCOPE(name)
+
     #define DRK_OBJECT_PROFILER(name)
+    #define DRK_DEFERRED_OBJECT_PROFILER
+    #define DRK_DEFERRED_OBJECT_PROFILER_START(name)
 
     #define DRK_PROFILE_EVENT_LOCAL(name)
     #define DRK_PROFILE_EVENT_GLOBAL(name)
@@ -129,7 +139,7 @@
     #define DRK_PROFILE_THREAD_CREATE(name)
     #define DRK_PROFILE_THREAD(name)
 
-    #define DRK_PROFILE_LOCK(name)
+    #define DRK_LOCK_PROFILER(name)
 #endif
 
 #endif // DRK_CORE_DEBUG_PROFILER_HPP

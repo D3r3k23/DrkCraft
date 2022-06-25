@@ -161,6 +161,16 @@ namespace DrkCraft
             {
                 return std::this_thread::get_id();
             }
+
+            static void sleep_for(const auto& duration)
+            {
+                std::this_thread::sleep_for(duration);
+            }
+
+            static void sleep_until(const auto& time)
+            {
+                std::this_thread::sleep_until(time);
+            }
         };
 
     private:
