@@ -9,7 +9,7 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 \_______/ \__|      \__|  \__| \______/ \__|       \_______|\__|         \____/
 ```
 
-[![Build](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml/badge.svg)](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml)
+[![Build](https://img.shields.io/github/workflow/status/D3r3k23/DrkCraft/Build?style=plastic)](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml)
 
 #### Minecraft-based game in C++ created using an OpenGL renderer
 
