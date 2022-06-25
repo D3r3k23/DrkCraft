@@ -12,7 +12,8 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 [![GitHub release](https://img.shields.io/github/v/release/D3r3k23/DrkCraft?sort=semver&style=plastic)](https://github.com/D3r3k23/DrkCraft/releases)
 [![Build](https://img.shields.io/github/workflow/status/D3r3k23/DrkCraft/Build?style=plastic)](https://github.com/D3r3k23/DrkCraft/actions/workflows/build.yaml)
 [![Lines of code](https://img.shields.io/tokei/lines/github/D3r3k23/DrkCraft?style=plastic)](/src)
-[![GitHub issues](https://img.shields.io/github/issues/D3r3k23/DrkCraft)](https://github.com/D3r3k23/DrkCraft/issues)
+[![GitHub issues](https://img.shields.io/github/issues/D3r3k23/DrkCraft?style=plastic)](https://github.com/D3r3k23/DrkCraft/issues)
+[![GitHub](https://img.shields.io/github/license/D3r3k23/DrkCraft?style=plastic)](/LICENSE.txt)
 
 #### Minecraft-based game in C++ created using an OpenGL renderer
 
