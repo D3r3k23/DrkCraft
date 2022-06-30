@@ -49,3 +49,6 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "src/Argv"]
+	path = src/Argv
+	url = https://github.com/D3r3k23/Argv.git
