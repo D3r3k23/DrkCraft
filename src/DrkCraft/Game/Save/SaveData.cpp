@@ -20,7 +20,7 @@ namespace DrkCraft::Game
         {
             auto& w = writer.get_writer();
             w.StartObject();
-                w.Key("drkcraft_version"); w.String(string(version.string()));
+                w.Key("drkcraft_version"); w.String(string(version.str()));
                 w.Key("name");             w.String(name);
                 w.Key("last_save");        w.Int(lastSave.time_since_epoch().count());
                 w.Key("day");              w.Uint(day);

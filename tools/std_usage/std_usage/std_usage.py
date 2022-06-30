@@ -174,9 +174,9 @@ def find_symbols(line: str) -> list[str]:
 def print_results(results: Results, printer: OutputPrinter, max_items: int=50, min_count: int=1):
     def get_alignment(num: int):
         return (
-            1 if 0 <= num_symbols <= 9
-                else 2 if 10 <= num_symbols <= 99
-                    else 3 if 100 <= num_symbols <= 999
+            1 if 0 <= num <= 9
+                else 2 if 10 <= num <= 99
+                    else 3 if 100 <= num <= 999
                         else 4
         )
 

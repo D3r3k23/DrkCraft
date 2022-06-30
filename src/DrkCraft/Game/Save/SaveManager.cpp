@@ -209,7 +209,7 @@ namespace DrkCraft::Game
             };
         if (info.version != buildVersion)
             return {
-                fmt::format("Invalid save version: {} (DrkCraft version: {}", info.version.string(), buildVersion.string())
+                fmt::format("Invalid save version: {} (DrkCraft version: {}", info.version.str(), buildVersion.str())
             };
         return Result<>::Success;
     }

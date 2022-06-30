@@ -10,7 +10,7 @@
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 #include "Game/Layers/GameLayer.hpp"
-#include "Game/Save.hpp"
+#include "Game/Save/SaveViewer.hpp"
 #include "Game/World/WorldGenerator.hpp"
 #include "System/Thread.hpp"
 

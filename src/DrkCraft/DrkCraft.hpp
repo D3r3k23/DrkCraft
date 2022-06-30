@@ -1,7 +1,7 @@
 #ifndef DRK_DRKCRAFT_HPP
 #define DRK_DRKCRAFT_HPP
 
-#include "Argv/Argv.hpp"
+#include <argv/Argv.hpp>
 
 namespace DrkCraft
 {

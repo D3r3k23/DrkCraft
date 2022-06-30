@@ -16,7 +16,7 @@ namespace DrkCraft
     class Version
     {
     public:
-        constexpr Version(string_view ver) // ver: "<major>.<minor>"
+        constexpr Version(string_view ver) // ver: "<major>.<minor>.<patch>"
           : m_str(ver),
             m_major(find_major(ver)),
             m_minor(find_minor(ver)),
@@ -33,7 +33,7 @@ namespace DrkCraft
         Version(const Version&) = default;
         Version& operator=(const Version&) = default;
 
-        constexpr string_view string(void) const { return m_str; }
+        constexpr string_view str()(void) const { return m_str; }
 
         constexpr uint major(void) const { return m_major; }
         constexpr uint minor(void) const { return m_minor; }
@@ -55,7 +55,9 @@ namespace DrkCraft
 
         friend constexpr bool operator==(const Version& v1, const Version& v2)
         {
-            return v1.m_major == v2.m_major && v1.m_minor == v2.m_minor && v1.m_patch == v2.m_patch;
+            return v1.m_major == v2.m_major
+                && v1.m_minor == v2.m_minor
+                && v1.m_patch == v2.m_patch;
         }
 
     private:
