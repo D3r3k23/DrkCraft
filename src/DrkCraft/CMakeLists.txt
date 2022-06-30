@@ -1,6 +1,6 @@
 target_sources(DrkCraft
   PRIVATE
-    DrkCraft.cpp
+    Main.cpp
 )
 
 target_include_directories(DrkCraft

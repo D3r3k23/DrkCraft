@@ -1,5 +1,3 @@
-#include "DrkCraft.hpp"
-
 #include "Core/Base.hpp"
 #include "Core/Settings.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -7,9 +5,11 @@
 #include "Application/Layers/MainMenu.hpp"
 #include "System/Thread.hpp"
 
+#include <Argv/Argv.hpp>
+
 namespace DrkCraft
 {
-    int Main(Argv argv)
+    int Main(Argv::Argv argv)
     {
         CommandLineOptions::parse_args(argv);
 
