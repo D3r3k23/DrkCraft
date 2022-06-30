@@ -3,9 +3,10 @@ target_sources(DrkCraft
     main.cpp
 )
 
-target_include_directories(DrkCraft
-  PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 add_subdirectory(DrkCraft)
+
+add_subdirectory(Argv)
+target_link_libraries(DrkCraft
+  PUBLIC
+    Argv
+)

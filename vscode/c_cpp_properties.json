@@ -3,8 +3,8 @@
         {
             "name": "Debug",
             "includePath": [
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/src/DrkCraft",
+                "${workspaceFolder}/src/Argv/include",
                 "${workspaceFolder}/lib/backward",
                 "${workspaceFolder}/lib/entt/src",
                 "${workspaceFolder}/lib/FastNoiseLite/Cpp",
@@ -50,8 +50,8 @@
         {
             "name": "Release",
             "includePath": [
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/src/DrkCraft",
+                "${workspaceFolder}/src/Argv/include",
                 "${workspaceFolder}/lib/backward",
                 "${workspaceFolder}/lib/entt/src",
                 "${workspaceFolder}/lib/FastNoiseLite/Cpp",

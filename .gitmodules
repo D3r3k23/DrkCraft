@@ -1,3 +1,6 @@
+[submodule "src/Argv"]
+	path = src/Argv
+	url = https://github.com/D3r3k23/Argv.git
 [submodule "lib/backward/backward"]
 	path = lib/backward/backward
 	url = https://github.com/bombela/backward-cpp.git
@@ -49,6 +52,3 @@
 [submodule "lib/yaml-cpp"]
 	path = lib/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "src/Argv"]
-	path = src/Argv
-	url = https://github.com/D3r3k23/Argv.git
