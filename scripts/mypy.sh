@@ -1,1 +1,1 @@
-mypy --config-file python/mypy.ini python/drkcraft launcher/src launcher/scripts tools
+mypy --config-file python/mypy.ini python launcher tools

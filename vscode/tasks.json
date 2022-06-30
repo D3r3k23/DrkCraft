@@ -3,7 +3,8 @@
         {
             "label": "CMake Build (Debug)",
             "type": "cppbuild",
-            "command": ".venv\\Scripts\\python",
+            "command": ".venv/bin/python", // Linux
+            // "command": ".venv\\Scripts\\python", // Windows
             "args": [ "-m", "drkcraft", "build",
                 "Debug",
                 "--profile",
@@ -24,7 +25,8 @@
         {
             "label": "CMake Build (Release)",
             "type": "cppbuild",
-            "command": ".venv\\Scripts\\python",
+            "command": ".venv/bin/python", // Linux
+            // "command": ".venv\\Scripts\\python", // Windows
             "args": [ "-m", "drkcraft", "build",
                 "RelWithDebInfo",
                 "--profile",
@@ -42,7 +44,8 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": ".venv\\Scripts\\python",
+            "command": ".venv/bin/python", // Linux
+            // "command": ".venv\\Scripts\\python", // Windows
             "args": [ "-m", "drkcraft", "clean" ],
             "problemMatcher": []
         }

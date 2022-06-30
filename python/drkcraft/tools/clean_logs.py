@@ -1,10 +1,9 @@
 from typing import *
 from pathlib import Path
-import argparse
+from argparse import ArgumentParser
+from datetime import datetime
 import sys
 import re
-from datetime import datetime
-from pathlib import Path
 
 def main(argv: list[str]=sys.argv) -> Optional[int]:
     prog, args = argv[0], argv[1:]
@@ -12,7 +11,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     description = 'Cleans log directory'
     usage = f'{prog} [log_dir] [--max_age MAX_AGE]'
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage)
     parser.add_argument('log_dir', type=Path, nargs='?', default=Path('data/logs'), help='Log directory')
     parser.add_argument('--max_age', type=int, default=5, help='Max age (days) for log files to keep')
     parsed_args = parser.parse_args(args)

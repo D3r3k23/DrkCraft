@@ -4,7 +4,8 @@
             "name": "Launch (Debug)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "build\\bin\\Debug\\DrkCraft.exe",
+            "program": "build/bin/Debug/DrkCraft", // Linux
+            // "program": "build\\bin\\Debug\\DrkCraft.exe", // Windows
             "args": [
                 "--dev",
                 "--trace"
@@ -18,20 +19,8 @@
             "name": "Launch (Release)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "build\\bin\\Release\\DrkCraft.exe",
-            "args": [
-                "--dev"
-            ],
-            "environment": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Launch (RelWithDebInfo)",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "build\\bin\\RelWithDebInfo\\DrkCraft.exe",
+            "program": "build/bin/RelWithDebInfo/DrkCraft", // Linux
+            // "program": "build\\bin\\RelWithDebInfo\\DrkCraft.exe", // Windows
             "args": [
                 "--dev"
             ],

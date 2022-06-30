@@ -2,8 +2,13 @@ from typing import *
 from pathlib import Path
 from argparse import ArgumentParser
 from dataclasses import dataclass, field
+from enum import Enum, auto
 import sys
 import re
+
+class OutputType(Enum):
+    Console=auto()
+    File=auto()
 
 class OutputPrinter:
     def __init__(self, console: bool=False, filename: Optional[Path]=None):
@@ -30,10 +35,17 @@ class OutputPrinter:
                 print('Error: could not open file:', self.filename)
 
     def print(self, text: str=''):
-        if self.console_enabled():
-            print(text)
-        if self.file_enabled():
-            self.output.append(text)
+        self.print_to(OutputType.Console, text)
+        self.print_to(OutputType.File, text)
+
+    def print_to(self, to: OutputType, text: str=''):
+        match to:
+            case OutputType.Console:
+                if self.console_enabled():
+                    print(text)
+            case OutputType.File:
+                if self.file_enabled():
+                    self.output.append(text)
 
     def console_enabled(self) -> bool:
         return self.console
@@ -78,14 +90,13 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
         print('Completed')
 
     with OutputPrinter(parsed_args.print, parsed_args.outfile) as printer:
-        if printer.console:
-            print()
+        printer.print_to(OutputType.Console, '')
 
         printer.print('~~~~ Results ~~~~')
         printer.print()
         print_results(results, printer, parsed_args.max, parsed_args.min)
 
-        if printer.filename is not None:
+        if printer.file_enabled():
             print()
             print('Results saved to:', printer.filename)
 
@@ -161,6 +172,14 @@ def find_symbols(line: str) -> list[str]:
     return [ match.group(2) for match in SYMBOL_PATTERN.finditer(line) ]
 
 def print_results(results: Results, printer: OutputPrinter, max_items: int=50, min_count: int=1):
+    def get_alignment(num: int):
+        return (
+            1 if 0 <= num_symbols <= 9
+                else 2 if 10 <= num_symbols <= 99
+                    else 3 if 100 <= num_symbols <= 999
+                        else 4
+        )
+
     max_items = min(max_items, 99)
 
     printer.print('Includes:')
@@ -169,24 +188,12 @@ def print_results(results: Results, printer: OutputPrinter, max_items: int=50, m
         key=lambda h: results.includes[h]
     )))
     num_includes = len(includes)
-    align = (
-        1 if 0 <= num_includes <= 9
-            else 2 if 10 <= num_includes <= 99
-                else 3
-    ) + 1
-    console_disabled = False
+    align = get_alignment(num_includes) + 1
+
     for rank, header in enumerate(includes, 1):
         count = results.includes[header]
 
-        if printer.console_enabled():
-            if (rank == max_items and rank < len(includes)) or count < min_count:
-                printer.disable_console()
-                console_disabled = True
-
         printer.print(f'{f"{rank}.":<{align}} {header} ({count})')
-
-    if console_disabled:
-        printer.enable_console()
 
     printer.print()
 
@@ -196,25 +203,12 @@ def print_results(results: Results, printer: OutputPrinter, max_items: int=50, m
         key=lambda s: results.symbols[s]
     )))
     num_symbols = len(symbols)
-    align = (
-        1 if 0 <= num_symbols <= 9
-            else 2 if 10 <= num_symbols <= 99
-                else 3 if 100 <= num_symbols <= 1000
-                    else 4
-    ) + 1
-    console_disabled = False
+    align = get_alignment(num_symbols) + 1
+
     for rank, symbol in enumerate(symbols, 1):
         count = results.symbols[symbol]
 
-        if printer.console_enabled():
-            if rank > max_items or count < min_count:
-                printer.disable_console()
-                console_disabled = True
-
         printer.print(f'{f"{rank}.":<{align}} {symbol} ({count})')
-
-    if console_disabled:
-        printer.enable_console()
 
 CPP_SRC_EXTENSIONS = {
     '.cpp', '.cc', '.cxx', '.c++',
@@ -226,7 +220,7 @@ CPP_SRC_EXTENSIONS = {
 CPP_STD_HEADERS = {
     'string', 'string_view',
     'array', 'vector', 'deque', 'queue',
-    'span',
+    'ranges', 'span', 'iterator',
     'unordered_map', 'map',
     'algorithm', 'execution',
     'memory', 'utility', 'tuple',

@@ -1,9 +1,9 @@
 from typing import *
 from pathlib import Path
-import argparse
-import sys
-import math
+from argparse import ArgumentParser
 from dataclasses import dataclass
+import math
+import sys
 
 import PIL
 import PIL.Image
@@ -39,7 +39,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     description = 'Generates textures atlas image for all blocks'
     usage = f'{prog} [atlas] [--blocks BLOCKS] [--textures TEXTURES]'
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage)
     parser.add_argument(
         'atlas', type=str, nargs='?', default='block_atlas.png',
         help='Output texture .png filename'

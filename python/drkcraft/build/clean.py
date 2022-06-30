@@ -1,6 +1,6 @@
 from typing import *
 from pathlib import Path
-import argparse
+from argparse import ArgumentParser
 import shutil
 import sys
 
@@ -12,7 +12,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     description = 'Removes DrkCraft build files'
     usage = f'{prog} [-h] [--all]'
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage)
     parser.add_argument('--all', action='store_true', help='Remove all build files')
     parsed_args = parser.parse_args(args)
 

@@ -1,9 +1,9 @@
 from typing import *
 from pathlib import Path
-import argparse
-import sys
-import json
+from argparse import ArgumentParser
 from dataclasses import dataclass
+import json
+import sys
 
 @dataclass
 class DurationEvent:
@@ -33,7 +33,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     profile_default = Path('data') / 'profile' / 'results.json'
     profile_help = f'JSON profile data (default={profile_default})'
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage)
     parser.add_argument('profile', nargs='?', type=Path, default=profile_default, help=profile_help)
     parsed_args = parser.parse_args(args)
 

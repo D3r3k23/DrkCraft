@@ -4,6 +4,7 @@
             "name": "Debug",
             "includePath": [
                 "${workspaceFolder}/src",
+                "${workspaceFolder}/src/DrkCraft",
                 "${workspaceFolder}/lib/backward",
                 "${workspaceFolder}/lib/entt/src",
                 "${workspaceFolder}/lib/FastNoiseLite/Cpp",
@@ -40,6 +41,8 @@
             ],
             "cStandard": "c17",
             "cppStandard": "c++20",
+
+            // Windows
             "compilerPath": "cl.exe",
             "intelliSenseMode": "windows-msvc-x64",
             "windowsSdkVersion": "10.0.18362.0" //////
@@ -48,6 +51,7 @@
             "name": "Release",
             "includePath": [
                 "${workspaceFolder}/src",
+                "${workspaceFolder}/src/DrkCraft",
                 "${workspaceFolder}/lib/backward",
                 "${workspaceFolder}/lib/entt/src",
                 "${workspaceFolder}/lib/FastNoiseLite/Cpp",
@@ -83,6 +87,8 @@
             ],
             "cStandard": "c17",
             "cppStandard": "c++20",
+
+            // Windows
             "compilerPath": "cl.exe",
             "intelliSenseMode": "windows-msvc-x64",
             "windowsSdkVersion": "10.0.18362.0" //////

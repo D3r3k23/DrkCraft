@@ -1,5 +1,5 @@
 from typing import *
-import argparse
+from argparse import ArgumentParser
 import sys
 
 import drkcraft
@@ -35,7 +35,7 @@ def main(argv: list[str]=sys.argv) -> Optional[int]:
     opt_help:    bool = cmd is not None and any(cmd == o for o in HELP_OPTIONS)
     opt_version: bool = cmd is not None and any(cmd == o for o in VERSION_OPTIONS)
 
-    parser = argparse.ArgumentParser(prog=prog, description=description, usage=usage, add_help=False)
+    parser = ArgumentParser(prog=prog, description=description, usage=usage, add_help=False)
     parser.add_argument(*HELP_OPTIONS,    action='store_true', help='show this help message and exit')
     parser.add_argument(*VERSION_OPTIONS, action='store_true', help='show DrkCraft version number and exit')
 
