@@ -1,6 +1,6 @@
+set(BUILD_TESTING OFF)
 set(BUILD_SHARED_LIBS OFF)
 set(LIBTYPE STATIC)
-set(BUILD_TESTING OFF)
 
 ###################################################
 
@@ -13,7 +13,7 @@ message("Configuring GLFW")
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(glfw)
-target_compile_definitions(glfw INTERFACE GLFW_INCLUDE_NONE)
+target_compile_definitions(DrkCraft PUBLIC GLFW_INCLUDE_NONE)
 
 ###################################################
 
