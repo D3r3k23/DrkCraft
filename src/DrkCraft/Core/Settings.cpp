@@ -17,27 +17,25 @@ namespace DrkCraft
 
     OptionsData CommandLineOptions::s_options;
 
-    void CommandLineOptions::parse_args(const Argv& argv)
+    void CommandLineOptions::parse_args(const Argv::Argv& argv)
     {
         DRK_PROFILE_FUNCTION();
 
-        if (argv.count() >= 1)
+        DRK_ASSERT_DEBUG_NO_MSG(argv.count() > 0);
+        s_options.program = argv[0];
+
+        if (argv.count() > 1)
         {
-            s_options.program = argv[0];
-
-            if (argv.count() >= 2)
+            if constexpr (DRK_DEV_MODE_ENABLED)
             {
-                if constexpr (DRK_DEV_MODE_ENABLED)
-                {
-                    if (argv.contains("--dev"))
-                        s_options.en_dev_mode = true;
-                }
+                if (argv.contains("--dev"))
+                    s_options.en_dev_mode = true;
+            }
 
-                if constexpr (DRK_LOGGING_ENABLED)
-                {
-                    if (argv.contains("--trace"))
-                        s_options.en_trace_log = true;
-                }
+            if constexpr (DRK_LOGGING_ENABLED)
+            {
+                if (argv.contains("--trace"))
+                    s_options.en_trace_log = true;
             }
         }
     }

@@ -2,12 +2,12 @@
 #define DRK_CORE_SETTINGS_HPP
 
 #include "Core/Base.hpp"
-#include "Util/Argv.hpp"
 #include "System/Input.hpp"
 
 #include "lib/fs.hpp"
-
 #include "lib/string.hpp"
+
+#include <Argv/Argv.hpp>
 
 namespace DrkCraft
 {
@@ -30,7 +30,7 @@ namespace DrkCraft
         CommandLineOptions(void) = default;
 
     public:
-        static void parse_args(const Argv& argv);
+        static void parse_args(const Argv::Argv& argv);
         static const OptionsData& get_options(void);
 
     private:

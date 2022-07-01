@@ -172,14 +172,14 @@ namespace DrkCraft
         };
 
     private:
-        inline constexpr StopCallbackFn s_basic_stop_callback = [this]()
+        void basic_stop_callback(void)
         {
             m_stopped = true;
-        };
+        }
 
         const char* m_name = "";
         ThreadType m_handle;
-        StopCallbackFn m_stopCallbackFn{s_basic_stop_callback};
+        StopCallbackFn m_stopCallbackFn{DRK_BIND_FN(basic_stop_callback)};
         bool m_stopped = false;
     };
 }

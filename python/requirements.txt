@@ -1,5 +1,6 @@
 mypy
 glad
 std_usage
+-r drkcraft/requirements.txt
 -r drkcraft/build/requirements.txt
 -r drkcraft/tools/requirements.txt

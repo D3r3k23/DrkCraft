@@ -1,8 +1,3 @@
-target_sources(DrkCraft
-  PRIVATE
-    main.cpp
-)
-
 add_subdirectory(DrkCraft)
 
 add_subdirectory(Argv)

@@ -69,7 +69,8 @@ if "%install_packages%" == "true" (
     pip install --upgrade -r python\requirements.txt
 
     echo Installing launcher packages
-    pip install --upgrade -r launcher\requirements.txt -r launcher\require-types.txt
+    pip install --upgrade -r launcher\requirements.txt
+    pip install --upgrade -r launcher\require-types.txt
 
     echo Installing std_usage packages
     pip install --upgrade -r tools\std_usage\requirements.txt

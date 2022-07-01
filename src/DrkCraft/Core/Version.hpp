@@ -33,7 +33,7 @@ namespace DrkCraft
         Version(const Version&) = default;
         Version& operator=(const Version&) = default;
 
-        constexpr string_view str()(void) const { return m_str; }
+        constexpr string_view str(void) const { return m_str; }
 
         constexpr uint major(void) const { return m_major; }
         constexpr uint minor(void) const { return m_minor; }
