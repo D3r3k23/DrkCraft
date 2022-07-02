@@ -1,6 +1,7 @@
 #include "Build.hpp"
 
 #include "Core/Debug/Log.hpp"
+#include "System/Thread.hpp"
 
 namespace DrkCraft::Build
 {
@@ -12,5 +13,7 @@ namespace DrkCraft::Build
 
         if constexpr (DRK_PROFILING_ENABLED)
             DRK_LOG_CORE_INFO("Profiler enabled");
+
+        DRK_LOG_CORE_DEBUG("{} threads supported by hardware", Thread<>::count());
     }
 }
