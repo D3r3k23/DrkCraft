@@ -2,13 +2,13 @@
 
 #if DRK_PROFILING_ENABLED
 
-    #include "Util/File.hpp"
+    #include "Disk/File.hpp"
     #include "System/Thread.hpp"
     #include "System/Lock.hpp"
     #include "System/Pid.hpp"
 
-    #include "lib/fs.hpp"
-    #include "lib/string.hpp"
+    #include "Lib/fs.hpp"
+    #include "Lib/string.hpp"
 
     #include <fmt/format.h>
     #include <fmt/chrono.h>

@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Game/World/Block.hpp"
 
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec3.hpp"
 
 namespace DrkCraft::Game
 {

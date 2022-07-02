@@ -3,8 +3,8 @@
 
 #include "Core/Base.hpp"
 
-#include "lib/glm/vec3.hpp"
-#include "lib/glm/mat4.hpp"
+#include "Lib/glm/vec3.hpp"
+#include "Lib/glm/mat4.hpp"
 
 namespace DrkCraft
 {

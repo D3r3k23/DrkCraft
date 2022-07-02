@@ -1,4 +1,4 @@
-#include "MusicPlayer.hpp"
+#include "iPod.hpp"
 
 #include "Audio/Audio.hpp"
 
@@ -6,48 +6,48 @@
 
 namespace DrkCraft
 {
-    MusicPlayer::MusicPlayer(void)
+    iPod::iPod(void)
       : m_playing(false),
         m_currentSong(0)
     { }
 
-    void MusicPlayer::add_song(const Ref<AudioSource>& song)
+    void iPod::add_song(const Ref<AudioSource>& song)
     {
         m_songs.push_back(song);
     }
 
-    void MusicPlayer::remove_song(const Ref<AudioSource>& song)
+    void iPod::remove_song(const Ref<AudioSource>& song)
     {
         if (auto it = std::ranges::find(m_songs, song); it != m_songs.end())
             m_songs.erase(it);
     }
 
-    void MusicPlayer::play(void)
+    void iPod::play(void)
     {
 
     }
 
-    void MusicPlayer::pause(void)
+    void iPod::pause(void)
     {
 
     }
 
-    void MusicPlayer::stop(void)
+    void iPod::stop(void)
     {
 
     }
 
-    void MusicPlayer::next_song(void)
+    void iPod::next_song(void)
     {
 
     }
 
-    void MusicPlayer::shuffle_queue(void)
+    void iPod::shuffle_queue(void)
     {
 
     }
 
-    void MusicPlayer::clear_queue(void)
+    void iPod::clear_queue(void)
     {
         Ref<AudioSource> playingSong;
         if (is_playing())
@@ -61,7 +61,7 @@ namespace DrkCraft
         }
     }
 
-    bool MusicPlayer::is_playing(void) const
+    bool iPod::is_playing(void) const
     {
         return m_playing;
     }

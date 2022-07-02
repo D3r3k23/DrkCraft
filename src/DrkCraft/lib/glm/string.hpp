@@ -1,8 +1,8 @@
 #ifndef DRK_LIB_GLM_STRING_HPP
 #define DRK_LIB_GLM_STRING_HPP
 
-#include "lib/glm/vec.hpp"
-#include "lib/glm/mat.hpp"
+#include "Lib/glm/vec.hpp"
+#include "Lib/glm/mat.hpp"
 
 #include <glm/gtx/string_cast.hpp>
 #include <fmt/format.h>

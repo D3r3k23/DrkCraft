@@ -3,8 +3,8 @@
 
 #include "Core/Base.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/glm/vec2.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/glm/vec2.hpp"
 
 namespace DrkCraft
 {

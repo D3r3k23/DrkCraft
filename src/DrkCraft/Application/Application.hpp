@@ -5,7 +5,7 @@
 #include "Graphics/OpenGlContext.hpp"
 #include "System/Window.hpp"
 #include "System/Monitor.hpp"
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 
 #include "Application/ImGuiController.hpp"
 #include "Application/Events.hpp"
@@ -14,7 +14,7 @@
 #include "Application/LayerStack.hpp"
 #include "Util/Timestep.hpp"
 
-#include "lib/string_view.hpp"
+#include "Lib/string_view.hpp"
 
 namespace DrkCraft
 {
@@ -36,7 +36,7 @@ namespace DrkCraft
 
         static Window& get_window(void);
         static MonitorManager& get_monitor_manager(void);
-        static AssetLibrary& get_asset_library(void);
+        static Library& get_library(void);
         static ImGuiController& get_imgui(void);
         static OpenGlContext& get_gl_context(void);
 
@@ -76,7 +76,7 @@ namespace DrkCraft
         OpenGlContext m_context;
 
         MonitorManager m_monitorManager;
-        AssetLibrary  m_assetLibrary;
+        Library  m_library;
 
         ImGuiController m_imGuiController;
         EventGenerator m_eventGenerator;

@@ -3,11 +3,11 @@
 
 #include "Core/Base.hpp"
 
-#include "lib/string_view.hpp"
+#include "Lib/string_view.hpp"
 
 #include <imgui/imgui.h>
 
-namespace DrkCraft::DrkImGui
+namespace DrkCraft::DrkImGui // Change this
 {
     void BeginFullscreen(string_view name, ImGuiWindowFlags flags=0);
     void BeginCentered(string_view name, const ImVec2& size, ImGuiWindowFlags flags=0);

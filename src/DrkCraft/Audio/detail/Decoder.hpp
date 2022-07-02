@@ -5,7 +5,7 @@
 #include "Audio/AudioSource.hpp"
 #include "Audio/detail/Util.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
 #include <vector>
 

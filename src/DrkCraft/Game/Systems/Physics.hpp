@@ -5,7 +5,7 @@
 #include "Game/GameSystem.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityManager.hpp"
+#include "Game/Entity/Scene.hpp"
 
 #include "Game/World/World.hpp"
 #include "Game/Player.hpp"

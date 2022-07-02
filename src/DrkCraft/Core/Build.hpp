@@ -3,7 +3,7 @@
 
 #include "Core/Version.hpp"
 
-// Required compiler definitions:
+// Required compile definitions:
 //
 // DRK_VERSION_STRING "x.x"
 // DRK_PLATFORM_WINDOWS | DRK_PLATFORM_LINUX

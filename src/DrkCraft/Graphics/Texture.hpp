@@ -3,9 +3,9 @@
 
 #include "Core/Base.hpp"
 #include "Graphics/detail/GlObject.hpp"
-#include "Util/Image.hpp"
+#include "Disk/Image.hpp"
 
-#include "lib/glm/vec2.hpp"
+#include "Lib/glm/vec2.hpp"
 
 #include <vector>
 

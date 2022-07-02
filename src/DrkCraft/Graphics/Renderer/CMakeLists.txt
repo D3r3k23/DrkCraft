@@ -3,5 +3,6 @@ target_sources(DrkCraft
     BlockRenderer.cpp
     MeshRenderer.cpp
     Renderer.cpp
+    Scene.cpp
     TextRenderer.cpp
 )

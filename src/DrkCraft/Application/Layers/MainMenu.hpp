@@ -6,7 +6,7 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 #include "Application/Layers/SettingsMenu.hpp"
 #include "Application/Layers/LoadingScreen.hpp"
 #include "Game/Layers/GameLayer.hpp"
@@ -14,9 +14,9 @@
 #include "Game/World/WorldGenerator.hpp"
 #include "System/Thread.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
+#include "Lib/string_view.hpp"
 
 #include <atomic>
 
@@ -52,7 +52,7 @@ namespace DrkCraft
         void exit(void);
 
     private:
-        AssetLibrary& m_assetLibrary;
+        Library& m_library;
 
         Ref<LoadingScreen> m_loadingScreen;
         Ref<SettingsMenu> m_settingsMenu;

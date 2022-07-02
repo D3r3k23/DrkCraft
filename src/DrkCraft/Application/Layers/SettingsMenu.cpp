@@ -7,8 +7,8 @@
 #include "System/Input.hpp"
 #include "Core/Debug/Profiler.hpp"
 
-#include "lib/glm/vec2.hpp"
-#include "lib/string.hpp"
+#include "Lib/glm/vec2.hpp"
+#include "Lib/string.hpp"
 
 #include <imgui/imgui.h>
 #include <fmt/format.h>

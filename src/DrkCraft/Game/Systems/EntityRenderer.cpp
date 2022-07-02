@@ -16,7 +16,7 @@ namespace DrkCraft::Game
 
         MeshRenderer::begin_scene();
 
-        const auto view = m_data.entityManager.view<TransformComponent, MeshComponent>();
+        const auto view = m_data.scene.view<TransformComponent, MeshComponent>();
         view.each([](const auto& tc, const auto& mc)
         {
             MeshRenderer::submit(*(mc.mesh), tc.transform);

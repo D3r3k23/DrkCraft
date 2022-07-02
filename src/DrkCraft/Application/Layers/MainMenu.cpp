@@ -19,7 +19,7 @@ namespace DrkCraft
 
     MainMenu::MainMenu(void)
       : Layer("MainMenuLayer"),
-        m_assetLibrary(Application::get_asset_library()),
+        m_library(Application::get_library()),
         m_settingsMenu(Layer::create<SettingsMenu>(false)),
         m_saveManager(SAVE_DIRECTORY, false),
         m_assetsLoading(false),
@@ -35,7 +35,7 @@ namespace DrkCraft
         Application::add_overlay(m_loadingScreen);
 
         m_assetsLoading = true;
-        m_assetLoadToken = m_assetLibrary.load_list_and_get_token({});
+        m_assetLoadToken = m_library.load_list_and_get_token({});
 
         m_savesLoading = true;
         m_saveLoadThread = { "save_load_thread", DRK_BIND_FN(load_save_list()) };

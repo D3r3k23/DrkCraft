@@ -2,7 +2,7 @@
 
 #include "Core/Debug/Profiler.hpp"
 
-#include "lib/string.hpp"
+#include "Lib/string.hpp"
 
 namespace DrkCraft::Json
 {

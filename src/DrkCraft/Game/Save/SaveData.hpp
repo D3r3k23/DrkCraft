@@ -6,11 +6,11 @@
 #include "Core/Version.hpp"
 #include "Util/Time.hpp"
 
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec3.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
+#include "Lib/string_view.hpp"
 
 #include <vector>
 #include <unordered_map>

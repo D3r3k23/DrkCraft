@@ -1,10 +1,10 @@
-#ifndef DRK_UTIL_JSON_HPP
-#define DRK_UTIL_JSON_HPP
+#ifndef DRK_DISK_JSON_HPP
+#define DRK_DISK_JSON_HPP
 
 #include "Core/Base.hpp"
-#include "Util/File.hpp"
+#include "Disk/File.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -64,4 +64,4 @@ namespace DrkCraft::Json
     };
 }
 
-#endif // DRK_UTIL_JSON_HPP
+#endif // DRK_DISK_JSON_HPP

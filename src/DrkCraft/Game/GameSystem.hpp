@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityManager.hpp"
+#include "Game/Entity/Scene.hpp"
 #include "Game/GameEvent.hpp"
 
 namespace DrkCraft::Game
@@ -12,12 +12,12 @@ namespace DrkCraft::Game
     struct GameSystemData
     {
         World& world;
-        EntityManager& entityManager;
+        Scene& scene;
         GameEventQueue& gameEventQueue;
 
-        GameSystemData(World& world, EntityManager& entityManager, GameEventQueue& gameEventQueue)
+        GameSystemData(World& world, Scene& scene, GameEventQueue& gameEventQueue)
           : world(world),
-            entityManager(entityManager),
+            scene(scene),
             gameEventQueue(gameEventQueue)
         { }
     };

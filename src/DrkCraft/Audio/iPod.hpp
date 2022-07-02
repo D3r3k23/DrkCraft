@@ -1,5 +1,5 @@
-#ifndef DRK_AUDIO_MUSIC_PLAYER_HPP
-#define DRK_AUDIO_MUSIC_PLAYER_HPP
+#ifndef DRK_AUDIO_IPOD_HPP
+#define DRK_AUDIO_IPOD_HPP
 
 #include "Core/Base.hpp"
 #include "Audio/AudioSource.hpp"
@@ -8,10 +8,10 @@
 
 namespace DrkCraft
 {
-    class MusicPlayer
+    class iPod
     {
     public:
-        MusicPlayer(void);
+        iPod(void);
 
         void add_song(const Ref<AudioSource>& song);
         void remove_song(const Ref<AudioSource>& song);
@@ -34,4 +34,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_AUDIO_MUSIC_PLAYER_HPP
+#endif // DRK_AUDIO_IPOD_HPP

@@ -1,8 +1,8 @@
-#include "AssetLibrary.hpp"
+#include "Library.hpp"
 
 #include "Audio/Audio.hpp"
-#include "Util/Image.hpp"
-#include "Util/Obj.hpp"
+#include "Disk/Image.hpp"
+#include "Disk/Obj.hpp"
 #include "Util/Time.hpp"
 #include "System/Lock.hpp"
 #include "Core/Debug/Profiler.hpp"
@@ -61,7 +61,7 @@ namespace DrkCraft
     //       AssetLoadQueue       //
     ////////////////////////////////
 
-    void AssetLibrary::AssetLoadQueue::add_callback(AssetLoadedCallbackFn fn)
+    void Library::AssetLoadQueue::add_callback(AssetLoadedCallbackFn fn)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -69,7 +69,7 @@ namespace DrkCraft
         m_queue.push(std::move(fn));
     }
 
-    void AssetLibrary::AssetLoadQueue::push(const AssetInfo& asset)
+    void Library::AssetLoadQueue::push(const AssetInfo& asset)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -77,7 +77,7 @@ namespace DrkCraft
         m_queue.push(asset);
     }
 
-    void AssetLibrary::AssetLoadQueue::push(AssetList assets)
+    void Library::AssetLoadQueue::push(AssetList assets)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -86,7 +86,7 @@ namespace DrkCraft
             m_queue.push(asset);
     }
 
-    void AssetLibrary::AssetLoadQueue::push(ItemList items)
+    void Library::AssetLoadQueue::push(ItemList items)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -95,7 +95,7 @@ namespace DrkCraft
             m_queue.push(item);
     }
 
-    AssetInfo AssetLibrary::AssetLoadQueue::pop(void)
+    AssetInfo Library::AssetLoadQueue::pop(void)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -118,7 +118,7 @@ namespace DrkCraft
         }
     }
 
-    bool AssetLibrary::AssetLoadQueue::empty(void)
+    bool Library::AssetLoadQueue::empty(void)
     {
         DRK_PROFILE_FUNCTION();
         Lock<> lock(m_queueMutex);
@@ -127,12 +127,12 @@ namespace DrkCraft
     }
 
     //////////////////////////////
-    //       AssetLibrary       //
+    //       Library       //
     //////////////////////////////
 
     static constexpr auto LOAD_WORKER_SLEEP_TIME = Time::Milli<int>(10);
 
-    AssetLibrary::AssetLibrary(void)
+    Library::Library(void)
       : m_loading(false)
     {
         DRK_PROFILE_FUNCTION();
@@ -140,12 +140,12 @@ namespace DrkCraft
         m_loadThread = Thread<StopToken>("asset_load_thread", DRK_BIND_FN(load_worker));
     }
 
-    AssetLibrary::~AssetLibrary(void)
+    Library::~Library(void)
     {
 
     }
 
-    void AssetLibrary::load_worker(StopToken st)
+    void Library::load_worker(StopToken st)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -168,12 +168,12 @@ namespace DrkCraft
         }
     }
 
-    void AssetLibrary::stop_loading(void)
+    void Library::stop_loading(void)
     {
         m_loadThread.stop();
     }
 
-    void AssetLibrary::unload_all(void)
+    void Library::unload_all(void)
     {
         {
             std::lock_guard lock(m_texturesMutex);
@@ -187,23 +187,23 @@ namespace DrkCraft
         }
     }
 
-    void AssetLibrary::load(const AssetInfo& asset)
+    void Library::load(const AssetInfo& asset)
     {
         m_loadQueue.push(asset);
     }
 
-    void AssetLibrary::load_list(AssetList assets)
+    void Library::load_list(AssetList assets)
     {
         m_loadQueue.push(assets);
     }
 
-    void AssetLibrary::load_list(AssetList assets, AssetLoadedCallbackFn fn)
+    void Library::load_list(AssetList assets, AssetLoadedCallbackFn fn)
     {
         m_loadQueue.push(assets);
         m_loadQueue.add_callback(std::move(fn));
     }
 
-    Ptr<AssetLoadToken> AssetLibrary::load_list_and_get_token(AssetList assets)
+    Ptr<AssetLoadToken> Library::load_list_and_get_token(AssetList assets)
     {
         auto token = make_ptr<AssetLoadToken>(AssetLoadStatus::Loading);
         load_list(assets, [token=token.get()]
@@ -213,7 +213,7 @@ namespace DrkCraft
         return std::move(token);
     }
 
-    void AssetLibrary::load_impl(const AssetInfo& asset)
+    void Library::load_impl(const AssetInfo& asset)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -237,7 +237,7 @@ namespace DrkCraft
         }
     }
 
-    void AssetLibrary::unload(const AssetInfo& asset)
+    void Library::unload(const AssetInfo& asset)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -255,19 +255,19 @@ namespace DrkCraft
         DRK_LOG_CORE_INFO("Asset \"{}\" unloaded", filename.generic_string());
     }
 
-    void AssetLibrary::unload_list(const AssetList& assets)
+    void Library::unload_list(const AssetList& assets)
     {
         for (const auto& asset : assets)
             unload(asset);
     }
 
-    bool AssetLibrary::texture_loaded(const fs::path& filename) const
+    bool Library::texture_loaded(const fs::path& filename) const
     {
         Lock<> lock(m_texturesMutex);
         return m_textures.contains(filename.string());
     }
 
-    Ref<Texture> AssetLibrary::get_texture(const fs::path& filename) const
+    Ref<Texture> Library::get_texture(const fs::path& filename) const
     {
         Lock<> lock(m_texturesMutex);
         if (m_textures.contains(filename.string()))
@@ -276,24 +276,24 @@ namespace DrkCraft
             return {};
     }
 
-    bool AssetLibrary::song_loaded(const fs::path& filename) const
+    bool Library::song_loaded(const fs::path& filename) const
     {
         Lock<> lock(m_audioSourcesMutex);
         return m_audioSources.contains(filename.string());
     }
 
-    bool AssetLibrary::sound_loaded(const fs::path& filename) const
+    bool Library::sound_loaded(const fs::path& filename) const
     {
         Lock<> lock(m_audioSourcesMutex);
         return m_audioSources.contains(filename.string());
     }
 
-    Ref<AudioSource> AssetLibrary::get_song(const fs::path& filename) const
+    Ref<AudioSource> Library::get_song(const fs::path& filename) const
     {
         return get_sound(filename);
     }
 
-    Ref<AudioSource> AssetLibrary::get_sound(const fs::path& filename) const
+    Ref<AudioSource> Library::get_sound(const fs::path& filename) const
     {
         Lock<> lock(m_audioSourcesMutex);
         if (m_audioSources.contains(filename.string()))
@@ -302,13 +302,13 @@ namespace DrkCraft
             return {};
     }
 
-    bool AssetLibrary::mesh_loaded(const fs::path& filename) const
+    bool Library::mesh_loaded(const fs::path& filename) const
     {
         Lock<> lock(m_meshesMutex);
         return m_meshes.contains(filename.string());
     }
 
-    Ref<Mesh> AssetLibrary::get_mesh(const fs::path& filename) const
+    Ref<Mesh> Library::get_mesh(const fs::path& filename) const
     {
         Lock<> lock(m_meshesMutex);
         if (m_meshes.contains(filename.string()))
@@ -317,12 +317,12 @@ namespace DrkCraft
             return {};
     }
 
-    bool AssetLibrary::loading(void) const
+    bool Library::loading(void) const
     {
         return m_loading;
     }
 
-    Optional<string> AssetLibrary::currently_loading(void) const
+    Optional<string> Library::currently_loading(void) const
     {
         if (loading())
         {
@@ -333,7 +333,7 @@ namespace DrkCraft
             return {};
     }
 
-    void AssetLibrary::load_texture(const fs::path& filename)
+    void Library::load_texture(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -345,7 +345,7 @@ namespace DrkCraft
             }
     }
 
-    void AssetLibrary::load_audio_source(const fs::path& filename)
+    void Library::load_audio_source(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -356,7 +356,7 @@ namespace DrkCraft
         }
     }
 
-    void AssetLibrary::load_mesh(const fs::path& filename)
+    void Library::load_mesh(const fs::path& filename)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -368,21 +368,21 @@ namespace DrkCraft
             }
     }
 
-    void AssetLibrary::unload_texture(const fs::path& filename)
+    void Library::unload_texture(const fs::path& filename)
     {
         Lock<> lock(m_texturesMutex);
         if (auto it = m_textures.find(filename.string()); it != m_textures.end())
             m_textures.erase(it);
     }
 
-    void AssetLibrary::unload_audio_source(const fs::path& filename)
+    void Library::unload_audio_source(const fs::path& filename)
     {
         Lock<> lock(m_audioSourcesMutex);
         if (auto it = m_audioSources.find(filename.string()); it != m_audioSources.end())
             m_audioSources.erase(it);
     }
 
-    void AssetLibrary::unload_mesh(const fs::path& filename)
+    void Library::unload_mesh(const fs::path& filename)
     {
         Lock<> lock(m_meshesMutex);
         if (auto it = m_meshes.find(filename.string()); it != m_meshes.end())
@@ -393,7 +393,7 @@ namespace DrkCraft
     //       AssetLoader        //
     //////////////////////////////
 
-    AssetLoader::AssetLoader(AssetLibrary& library, const AssetList& assets)
+    AssetLoader::AssetLoader(Library& library, const AssetList& assets)
       : m_library(library),
         m_assets(assets)
     {

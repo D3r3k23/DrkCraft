@@ -4,11 +4,11 @@
 #include "Core/Base.hpp"
 #include "Graphics/OpenGlContext.hpp"
 #include "Graphics/detail/VertexArray.hpp"
+#include "Graphics/Renderer/Scene.hpp"
 #include "Graphics/Shader.hpp"
-#include "Graphics/Scene.hpp"
 #include "Graphics/Camera.hpp"
 
-#include "lib/glm/vec.hpp"
+#include "Lib/glm/vec.hpp"
 
 namespace DrkCraft
 {
@@ -25,6 +25,9 @@ namespace DrkCraft
 
     class Renderer
     {
+    public:
+        using Scene = RendererScene;
+
     public:
         static void init(const OpenGlContext& context, const uvec2& viewportSize);
         static void shutdown(void);

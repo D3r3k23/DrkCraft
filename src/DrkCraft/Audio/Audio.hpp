@@ -4,8 +4,8 @@
 #include "Core/Base.hpp"
 #include "Audio/AudioSource.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string_view.hpp"
 
 namespace DrkCraft
 {

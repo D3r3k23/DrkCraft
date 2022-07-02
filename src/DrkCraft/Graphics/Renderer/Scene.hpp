@@ -1,5 +1,5 @@
-#ifndef DRK_GRAPHICS_SCENE_HPP
-#define DRK_GRAPHICS_SCENE_HPP
+#ifndef DRK_GRAPHICS_RENDERER_SCENE_HPP
+#define DRK_GRAPHICS_RENDERER_SCENE_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/Camera.hpp"
@@ -10,10 +10,10 @@
 
 namespace DrkCraft
 {
-    class Scene
+    class RendererScene
     {
     public:
-        Scene(void);
+        RendererScene(void);
 
         void set_camera(const Camera& camera);
         const Camera& get_camera(void) const;
@@ -30,4 +30,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_GRAPHICS_SCENE_HPP
+#endif // DRK_GRAPHICS_RENDERER_SCENE_HPP

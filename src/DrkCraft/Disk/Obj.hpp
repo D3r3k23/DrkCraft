@@ -1,14 +1,14 @@
-#ifndef DRK_UTIL_OBJ_HPP
-#define DRK_UTIL_OBJ_HPP
+#ifndef DRK_DISK_OBJ_HPP
+#define DRK_DISK_OBJ_HPP
 
 #include "Core/Base.hpp"
 #include "Graphics/Mesh.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
 namespace DrkCraft::Obj
 {
     Ptr<MeshData> load_file(const fs::path& filename);
 }
 
-#endif // DRK_UTIL_OBJ_HPP
+#endif // DRK_DISK_OBJ_HPP

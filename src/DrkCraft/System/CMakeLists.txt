@@ -1,7 +1,8 @@
 target_sources(DrkCraft
   PRIVATE
-    AssetLibrary.cpp
+    Library.cpp
     GlfwTools.cpp
+    Icon.cpp
     Input.cpp
     Monitor.cpp
     Window.cpp

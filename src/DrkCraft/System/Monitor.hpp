@@ -5,8 +5,8 @@
 #include "System/Window.hpp"
 #include "Application/Events.hpp"
 
-#include "lib/glm/vec2.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/glm/vec2.hpp"
+#include "Lib/string_view.hpp"
 
 #include <GLFW/glfw3.h> // Move to .cpp and use forward declarations
 

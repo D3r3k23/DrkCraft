@@ -11,7 +11,7 @@ namespace DrkCraft::Game
 
     class Entity
     {
-        friend class EntityManager;
+        friend class Scene;
 
     private:
         Entity(entt::registry& registry)

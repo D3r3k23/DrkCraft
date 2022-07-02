@@ -5,15 +5,15 @@
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
 #include "Game/Entity/Entity.hpp"
-#include "Game/Entity/EntityManager.hpp"
+#include "Game/Entity/Scene.hpp"
 #include "Graphics/Camera.hpp"
 #include "Game/Items/Inventory.hpp"
 
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec3.hpp"
 
 namespace DrkCraft::Game
 {
-    Entity create_player(EntityManager& entityManager);
+    Entity create_player(Scene& scene);
 
     enum class PlayerState
     {

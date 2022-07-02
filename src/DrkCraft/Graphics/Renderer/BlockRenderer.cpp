@@ -5,7 +5,7 @@
 #include "Graphics/detail/VertexArray.hpp"
 #include "Graphics/detail/Buffer.hpp"
 #include "Graphics/detail/Util.hpp"
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 #include <glad/glad.h>

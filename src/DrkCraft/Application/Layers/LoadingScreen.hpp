@@ -9,7 +9,7 @@
 #include "System/Mutex.hpp"
 #include "Util/PeriodicUpdate.hpp"
 
-#include "lib/string.hpp"
+#include "Lib/string.hpp"
 
 namespace DrkCraft
 {

@@ -1,0 +1,9 @@
+target_sources(DrkCraft
+  PRIVATE
+    File.cpp
+    Font.cpp
+    Image.cpp
+    Json.cpp
+    Obj.cpp
+    Yaml.cpp
+)

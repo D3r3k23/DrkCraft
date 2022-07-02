@@ -5,7 +5,7 @@
 #include "Core/Type.hpp"
 
 #if DRK_LOGGING_ENABLED
-    #include "lib/fs.hpp"
+    #include "Lib/fs.hpp"
 
     #include <spdlog/logger.h>
 

@@ -5,7 +5,7 @@
 #include "Core/Type.hpp"
 
 #if DRK_ASSERTS_ENABLED
-    #include "lib/string_view.hpp"
+    #include "Lib/string_view.hpp"
 
     #include <fmt/format.h>
 

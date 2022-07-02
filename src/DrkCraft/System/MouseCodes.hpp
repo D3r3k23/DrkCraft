@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 
-#include "lib/string_view.hpp"
+#include "Lib/string_view.hpp"
 
 namespace DrkCraft
 {

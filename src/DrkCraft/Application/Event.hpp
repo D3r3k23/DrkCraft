@@ -6,7 +6,7 @@
 #include "Core/Base.hpp"
 #include "Application/EventTypes.hpp"
 
-#include "lib/string.hpp"
+#include "Lib/string.hpp"
 
 #include <concepts>
 #include <type_traits>

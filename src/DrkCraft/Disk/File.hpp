@@ -1,11 +1,11 @@
-#ifndef DRK_UTIL_FILE_HPP
-#define DRK_UTIL_FILE_HPP
+#ifndef DRK_DISK_FILE_HPP
+#define DRK_DISK_FILE_HPP
 
 #include "Core/Base.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
+#include "Lib/string_view.hpp"
 
 #include <cstdio>
 
@@ -36,4 +36,4 @@ namespace DrkCraft
     PathType find_path_type(const fs::path& path);
 }
 
-#endif // DRK_UTIL_FILE_HPP
+#endif // DRK_DISK_FILE_HPP

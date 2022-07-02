@@ -4,7 +4,7 @@
 #include "Game/Save.hpp"
 #include "Game/Layers/PauseMenu.hpp"
 #include "System/Input.hpp"
-#include "Util/File.hpp"
+#include "Disk/File.hpp"
 #include "Core/Debug/Profiler.hpp"
 
 namespace DrkCraft::Game
@@ -12,7 +12,7 @@ namespace DrkCraft::Game
     GameLayer::GameLayer(fs::path saveDir)
       : Layer("GameLayer"),
         m_state(State::Init),
-        m_assetLibrary(Application::get_asset_library()),
+        m_library(Application::get_library()),
         m_saveDir(std::move(saveDir)),
         m_startPaused(false)
     {
@@ -279,7 +279,7 @@ namespace DrkCraft::Game
             m_loadingScreen.reset();
         }
 
-        m_game.emplace(m_assetLibrary);
+        m_game.emplace(m_library);
 
         m_debugOverlay = Layer::create<DebugOverlay>(*m_game);
         Application::add_overlay(m_debugOverlay);

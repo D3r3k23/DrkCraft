@@ -5,11 +5,11 @@
 #include "Core/Base.hpp"
 #include "Application/Events.hpp"
 #include "Util/Timestep.hpp"
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 
 // Data
 #include "Game/World/World.hpp"
-#include "Game/Entity/EntityManager.hpp"
+#include "Game/Entity/Scene.hpp"
 #include "Game/GameEvent.hpp"
 
 // Systems
@@ -28,7 +28,7 @@
 
 #include "Audio/AudioSource.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
 namespace DrkCraft::Game
 {
@@ -37,7 +37,7 @@ namespace DrkCraft::Game
     public:
         static const AssetList& get_asset_list(void);
 
-        Game(AssetLibrary& assets);
+        Game(Library& assets);
         ~Game(void);
 
         void render(void);
@@ -58,10 +58,10 @@ namespace DrkCraft::Game
     private:
 
     private:
-        AssetLibrary& m_assets;
+        Library& m_assets;
 
         World m_world;
-        EntityManager m_entityManager;
+        Scene m_scene;
 
         GameEventQueue m_gameEventQueue;
 

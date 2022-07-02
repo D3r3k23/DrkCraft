@@ -5,8 +5,8 @@
 #include "System/KeyCodes.hpp"
 #include "System/MouseCodes.hpp"
 
-#include "lib/glm/vec2.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/glm/vec2.hpp"
+#include "Lib/string_view.hpp"
 
 namespace DrkCraft
 {

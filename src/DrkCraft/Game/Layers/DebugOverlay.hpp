@@ -7,7 +7,7 @@
 #include "Util/Timestep.hpp"
 
 #include "Game/Game.hpp"
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 #include "Application/ImGuiController.hpp"
 #include "Util/PeriodicUpdate.hpp"
 
@@ -50,7 +50,7 @@ namespace DrkCraft::Game
 
     private:
         const Game& m_game;
-        const AssetLibrary& m_assetLibrary;
+        const Library& m_library;
         const ImGuiController& m_imGuiController;
         const OpenGlContext& m_glContext;
 

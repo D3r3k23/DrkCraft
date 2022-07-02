@@ -1,5 +1,5 @@
-#ifndef DRK_ENTITY_ENTITY_MANAGER_HPP
-#define DRK_ENTITY_ENTITY_MANAGER_HPP
+#ifndef DRK_ENTITY_SCENE_HPP
+#define DRK_ENTITY_SCENE_HPP
 
 #include "Core/Base.hpp"
 
@@ -9,10 +9,10 @@ namespace DrkCraft::Game
 {
     class Entity;
 
-    class EntityManager
+    class Scene
     {
     public:
-        EntityManager(void);
+        Scene(void);
 
         Entity create(void);
         void destroy(Entity entity);
@@ -34,4 +34,4 @@ namespace DrkCraft::Game
     };
 }
 
-#endif // DRK_ENTITY_ENTITY_MANAGER_HPP
+#endif // DRK_ENTITY_SCENE_HPP

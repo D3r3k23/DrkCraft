@@ -103,9 +103,9 @@ namespace DrkCraft
         return get_instance().m_monitorManager;
     }
 
-    AssetLibrary& Application::get_asset_library(void)
+    Library& Application::get_library(void)
     {
-        return get_instance().m_assetLibrary;
+        return get_instance().m_library;
     }
 
     ImGuiController& Application::get_imgui(void)
@@ -181,7 +181,7 @@ namespace DrkCraft
         m_frameLayerStack.clear();
         m_layerStack.clear();
 
-        m_assetLibrary.unload_all();
+        m_library.unload_all();
 
         DRK_LOG_CORE_TRACE("Saving Settings");
         RuntimeSettings::save();

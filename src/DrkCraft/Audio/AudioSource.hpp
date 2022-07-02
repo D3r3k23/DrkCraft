@@ -6,7 +6,7 @@
 #include "Audio/detail/Buffer.hpp"
 #include "Audio/detail/Util.hpp"
 
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec3.hpp"
 
 namespace DrkCraft
 {

@@ -6,7 +6,7 @@
 #include "Audio/detail/AlTools.hpp"
 #include "Audio/detail/Decoder.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
 #include <deque>
 

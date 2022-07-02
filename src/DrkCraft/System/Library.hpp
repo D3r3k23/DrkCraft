@@ -1,5 +1,5 @@
-#ifndef DRK_SYSTEM_ASSET_LIBRARY_HPP
-#define DRK_SYSTEM_ASSET_LIBRARY_HPP
+#ifndef DRK_SYSTEM_LIBRARY_HPP
+#define DRK_SYSTEM_LIBRARY_HPP
 
 #include "Core/Base.hpp"
 #include "Audio/AudioSource.hpp"
@@ -8,8 +8,8 @@
 #include "System/Thread.hpp"
 #include "System/Mutex.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
 
 #include <queue>
 #include <unordered_map>
@@ -59,7 +59,7 @@ namespace DrkCraft
 
     class AssetLoadToken
     {
-        friend class AssetLibrary;
+        friend class Library;
 
     private:
         AssetLoadToken(AssetLoadStatus status=AssetLoadStatus::None);
@@ -76,7 +76,7 @@ namespace DrkCraft
     template <typename A>
     using AssetContainer = std::unordered_map<string, A>;
 
-    class AssetLibrary
+    class Library
     {
     private:
         class AssetLoadQueue // Thread-safe
@@ -103,8 +103,8 @@ namespace DrkCraft
         };
 
     public:
-        AssetLibrary(void);
-        ~AssetLibrary(void);
+        Library(void);
+        ~Library(void);
 
     private:
         void load_worker(StopToken st);
@@ -166,13 +166,13 @@ namespace DrkCraft
     class AssetLoader
     {
     public:
-        AssetLoader(AssetLibrary& library, const AssetList& assets);
+        AssetLoader(Library& library, const AssetList& assets);
         ~AssetLoader(void);
 
     private:
-        AssetLibrary& m_library;
+        Library& m_library;
         AssetList m_assets;
     };
 }
 
-#endif // DRK_SYSTEM_ASSET_LIBRARY_HPP
+#endif // DRK_SYSTEM_LIBRARY_HPP

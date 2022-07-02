@@ -4,8 +4,8 @@
 #include "Core/Base.hpp"
 #include "System/Input.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
 
 #include <Argv/Argv.hpp>
 

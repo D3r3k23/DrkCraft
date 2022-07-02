@@ -3,8 +3,8 @@
 
 #include "Core/Type.hpp"
 
-#include "lib/string.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/string.hpp"
+#include "Lib/string_view.hpp"
 
 #include <fmt/core.h>
 

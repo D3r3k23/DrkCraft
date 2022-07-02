@@ -4,7 +4,6 @@ target_sources(DrkCraft
     LightSource.cpp
     Mesh.cpp
     OpenGlContext.cpp
-    Scene.cpp
     Shader.cpp
     Texture.cpp
     Transform.cpp

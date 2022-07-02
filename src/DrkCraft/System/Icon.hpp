@@ -1,11 +1,11 @@
-#ifndef DRK_UTIL_ICON_HPP
-#define DRK_UTIL_ICON_HPP
+#ifndef DRK_SYSTEM_ICON_HPP
+#define DRK_SYSTEM_ICON_HPP
 
 #include "Core/Base.hpp"
-#include "Util/Image.hpp"
+#include "Disk/Image.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/glm/vec2.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/glm/vec2.hpp"
 
 namespace DrkCraft
 {
@@ -25,4 +25,4 @@ namespace DrkCraft
     };
 }
 
-#endif // DRK_UTIL_ICON_HPP
+#endif // DRK_SYSTEM_ICON_HPP

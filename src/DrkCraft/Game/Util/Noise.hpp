@@ -3,7 +3,7 @@
 
 #include "Core/Base.hpp"
 
-#include "lib/glm/vec2.hpp"
+#include "Lib/glm/vec2.hpp"
 
 namespace DrkCraft::Game
 {

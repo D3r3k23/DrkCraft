@@ -5,7 +5,7 @@
 #include "Graphics/detail/GlObject.hpp"
 #include "Graphics/detail/Util.hpp"
 
-#include "lib/string.hpp"
+#include "Lib/string.hpp"
 
 #include <initializer_list>
 #include <vector>

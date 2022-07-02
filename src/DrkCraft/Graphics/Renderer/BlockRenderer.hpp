@@ -5,8 +5,8 @@
 #include "Graphics/Renderer/Renderer.hpp"
 #include "Graphics/Texture.hpp"
 
-#include "lib/glm/vec2.hpp"
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec2.hpp"
+#include "Lib/glm/vec3.hpp"
 
 #include <vector>
 

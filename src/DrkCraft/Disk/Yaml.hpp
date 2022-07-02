@@ -1,10 +1,10 @@
-#ifndef DRK_UTIL_YAML_HPP
-#define DRK_UTIL_YAML_HPP
+#ifndef DRK_DISK_YAML_HPP
+#define DRK_DISK_YAML_HPP
 
 #include "Core/Base.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -32,4 +32,4 @@ namespace DrkCraft::Yaml
     }
 }
 
-#endif // DRK_UTIL_YAML_HPP
+#endif // DRK_DISK_YAML_HPP

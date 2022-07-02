@@ -5,7 +5,7 @@
 #include "System/Lock.hpp"
 #include "Core/Debug/Profiler.hpp"
 
-#include "lib/string_view.hpp"
+#include "Lib/string_view.hpp"
 
 #include <imgui/imgui.h>
 #include <fmt/format.h>

@@ -43,7 +43,7 @@ namespace DrkCraft::Game
     DebugOverlay::DebugOverlay(const Game& game, bool activate)
       : Layer("DebugOverlayLayer", activate),
         m_game(game),
-        m_assetLibrary(Application::get_asset_library()),
+        m_library(Application::get_library()),
         m_imGuiController(Application::get_imgui()),
         m_glContext(Application::get_gl_context()),
         m_currentFps(0.995f),
@@ -152,7 +152,7 @@ namespace DrkCraft::Game
         ImGui::EndGroup();
 
         // Asset loading status
-        if (const auto asset = m_assetLibrary.currently_loading(); asset)
+        if (const auto asset = m_library.currently_loading(); asset)
         {
             ImGui::BeginGroup();
             ImGui::Text("Loading asset: %s", *asset);

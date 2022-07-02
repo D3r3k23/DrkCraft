@@ -5,13 +5,13 @@
 #include "Graphics/detail/GlObject.hpp"
 #include "Graphics/detail/Util.hpp"
 
-#include "lib/fs.hpp"
+#include "Lib/fs.hpp"
 
-#include "lib/glm/vec.hpp"
-#include "lib/glm/mat.hpp"
+#include "Lib/glm/vec.hpp"
+#include "Lib/glm/mat.hpp"
 
-#include "lib/string.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/string.hpp"
+#include "Lib/string_view.hpp"
 
 #include <unordered_map>
 #include <vector>

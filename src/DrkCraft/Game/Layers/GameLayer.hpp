@@ -7,7 +7,7 @@
 #include "Util/Timestep.hpp"
 
 #include "Game/Game.hpp"
-#include "System/AssetLibrary.hpp"
+#include "System/Library.hpp"
 #include "Game/Save/SaveManager.hpp"
 #include "Game/Save/SaveViewer.hpp"
 #include "Game/World/WorldGenerator.hpp"
@@ -16,8 +16,8 @@
 #include "Application/Layers/LoadingScreen.hpp"
 #include "System/Thread.hpp"
 
-#include "lib/fs.hpp"
-#include "lib/string_view.hpp"
+#include "Lib/fs.hpp"
+#include "Lib/string_view.hpp"
 
 #include <atomic>
 
@@ -91,7 +91,7 @@ namespace DrkCraft::Game
     private:
         std::atomic<State> m_state;
 
-        AssetLibrary& m_assetLibrary;
+        Library& m_library;
         Optional<Game> m_game;
 
         fs::path m_saveDir;

@@ -4,7 +4,7 @@
 #include "Core/Base.hpp"
 #include "Graphics/detail/VertexArray.hpp"
 
-#include "lib/glm/vec3.hpp"
+#include "Lib/glm/vec3.hpp"
 
 #include <vector>
 

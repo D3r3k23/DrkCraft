@@ -1,6 +1,6 @@
 #include "Math.hpp"
 
-#include "lib/glm/vec4.hpp"
+#include "Lib/glm/vec4.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>

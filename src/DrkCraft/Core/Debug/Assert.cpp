@@ -6,7 +6,7 @@
     #include "Core/Debug/Stacktrace.hpp"
     #include "Core/Debug/Profiler.hpp"
 
-    #include "lib/fs.hpp"
+    #include "Lib/fs.hpp"
 
     namespace DrkCraft
     {
