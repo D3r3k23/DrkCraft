@@ -24,7 +24,7 @@ namespace DrkCraft
         static void init(string_view title);
         static int shutdown(void);
 
-        static Application& get_instance(void);
+        static Application& get_instance(void); // I want to make this private
 
         static void run(void);
         static void exit(int status=0);

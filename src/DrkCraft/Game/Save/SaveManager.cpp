@@ -108,7 +108,7 @@ namespace DrkCraft::Game
                     if (const auto saveJson = path / "save.json"; is_file(saveJson))
                     {
                         auto saveData = SaveData::Save::from_json(saveJson);
-                        if (const auto result = validate_save_info(*saveData, name, DRK_BUILD_VERSION); result.has_error())
+                        if (const auto result = validate_save_info(*saveData, name, Build::VERSION); result.has_error())
                         {
                             DRK_LOG_CORE_WARN(result.get_error());
                         }

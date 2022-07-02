@@ -11,24 +11,16 @@ namespace DrkCraft
 {
     int Main(Argv::Argv argv)
     {
-        CommandLineOptions::parse_args(argv);
+        const auto& options = CommandLineOptions::parse_args(argv);
 
         DRK_PROFILER_BEGIN("DrkCraft", "data/profile/results.json");
-        DRK_LOGGER_INIT("DrkCraft", "data/logs");
+        DRK_LOGGER_INIT("DrkCraft", "data/logs", options.en_trace_log);
 
-        DRK_LOG_CORE_INFO("DrkCraft Build:");
-        DRK_LOG_CORE_INFO("Version: v{}",  DRK_VERSION_STRING);
-        DRK_LOG_CORE_INFO("Platform: {}", DRK_PLATFORM_NAME);
-        DRK_LOG_CORE_INFO("Config: {}",  DRK_CONFIG_NAME);
+        DRK_LOG_CORE_INFO("DrkCraft build info:");
+        Build::log_info();
 
-        if constexpr (DRK_PROFILING_ENABLED)
-            DRK_LOG_CORE_INFO("Profiler enabled");
-
-        if (CommandLineOptions::get_options().en_dev_mode)
-            DRK_LOG_CORE_INFO("Dev mode enabled");
-
-        if (CommandLineOptions::get_options().en_trace_log)
-            DRK_LOG_CORE_INFO("Trace logging enabled");
+        DRK_LOG_CORE_INFO("DrkCraft command line options:");
+        CommandLineOptions::log_options();
 
         DRK_LOG_CORE_INFO("{} threads supported by hardware", Thread<>::count());
 

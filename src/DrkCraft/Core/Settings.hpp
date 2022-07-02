@@ -24,14 +24,13 @@ namespace DrkCraft
         bool en_trace_log = false;
     };
 
-    class CommandLineOptions
+    class CommandLineOptions // Global data, just for Argv from Main
     {
-    private:
-        CommandLineOptions(void) = default;
-
     public:
-        static void parse_args(const Argv::Argv& argv);
+        static const OptionsData& parse(const Argv::Argv& argv);
         static const OptionsData& get_options(void);
+
+        static void log_options(void);
 
     private:
         static OptionsData s_options;

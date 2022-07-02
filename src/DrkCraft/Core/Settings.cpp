@@ -17,7 +17,7 @@ namespace DrkCraft
 
     OptionsData CommandLineOptions::s_options;
 
-    void CommandLineOptions::parse_args(const Argv::Argv& argv)
+    const OptionsData& CommandLineOptions::parse(const Argv::Argv& argv)
     {
         DRK_PROFILE_FUNCTION();
 
@@ -43,6 +43,15 @@ namespace DrkCraft
     const OptionsData& CommandLineOptions::get_options(void)
     {
         return s_options;
+    }
+
+    void CommandLineOptions::log_options(void)
+    {
+        if (s_options.en_dev_mode)
+            DRK_LOG_CORE_INFO("Dev mode enabled");
+
+        if (s_options.en_trace_log)
+            DRK_LOG_CORE_INFO("Console trace logging enabled");
     }
 
     /////////////////////////////////

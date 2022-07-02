@@ -3,7 +3,6 @@
 #if DRK_LOGGING_ENABLED
 
     #include "Util/Time.hpp"
-    #include "Core/Settings.hpp"
     #include "Core/Debug/Profiler.hpp"
 
     #include <spdlog/spdlog.h>
@@ -31,7 +30,7 @@
         static Ref<DistSink> create_sink(const fs::path& logFile, LogLevel fileLevel, LogLevel consoleLevel=LogLevel::off);
         static fs::path make_log_filename(const char* logName, const char* dir);
 
-        void Logger::init(const char* name, const char* dir)
+        void Logger::init(const char* name, const char* dir, bool en_trace_log)
         {
             DRK_PROFILE_FUNCTION();
 
@@ -43,7 +42,7 @@
             if constexpr (DRK_DEBUG_ENABLED)
             {
                 fileLevel = LogLevel::trace;
-                if (CommandLineOptions::get_options().en_trace_log)
+                if (en_trace_log)
                     consoleLevel = LogLevel::trace;
                 else
                     consoleLevel = LogLevel::debug;

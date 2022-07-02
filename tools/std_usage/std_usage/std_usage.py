@@ -226,7 +226,7 @@ CPP_STD_HEADERS = {
     'memory', 'utility', 'tuple',
     'thread', 'mutex', 'atomic',
     'fstream', 'sstream', 'iostream', 'iomanip',
-    'functional', 'optional', 'variant',
+    'functional', 'optional', 'variant', 'any',
     'filesystem',
     'chrono', 'ratio',
     'random',

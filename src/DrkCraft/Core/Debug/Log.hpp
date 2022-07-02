@@ -14,7 +14,7 @@
         class Logger
         {
         public:
-            static void init(const char* name, const char* dir);
+            static void init(const char* name, const char* dir, bool en_trace_log=false);
             static void close(void);
             static void flush(void);
 

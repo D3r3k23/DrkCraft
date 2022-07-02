@@ -3,15 +3,18 @@
 
 #include "Core/Version.hpp"
 
-// Required compile definitions:
+// Required compiler definitions:
 //
 // DRK_VERSION_STRING "x.x"
 // DRK_PLATFORM_WINDOWS | DRK_PLATFORM_LINUX
 // DRK_CONFIG_DEBUG | DRK_CONFIG_RELEASE
 
-// Version
+namespace DrkCraft::Build
+{
+    inline const Version VERSION(DRK_VERSION_STRING);
 
-inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
+    void log_info(void);
+}
 
 // Platform
 
@@ -57,6 +60,8 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_RELEASE_ENABLED 0
 #endif
 
+////// Optional features //////
+
 // Logging
 
 #if defined(DRK_EN_LOGGING)
@@ -73,6 +78,14 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_ASSERTS_ENABLED 0
 #endif
 
+// Stacktrace
+
+#if defined(DRK_EN_STACKTRACE)
+#   define DRK_STACKTRACE_ENABLED 1
+#else
+#   define DRK_STACKTRACE_ENABLED 0
+#endif
+
 // Profiling
 
 #if defined(DRK_EN_PROFILING)
@@ -87,14 +100,6 @@ inline const DrkCraft::Version DRK_BUILD_VERSION(DRK_VERSION_STRING);
 #   define DRK_DEV_MODE_ENABLED 1
 #else
 #   define DRK_DEV_MODE_ENABLED 0
-#endif
-
-// Stacktrace
-
-#if defined(DRK_EN_STACKTRACE)
-#   define DRK_STACKTRACE_ENABLED 1
-#else
-#   define DRK_STACKTRACE_ENABLED 0
 #endif
 
 #endif // DRK_CORE_BUILD_HPP
