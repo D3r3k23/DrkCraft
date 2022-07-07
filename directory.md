@@ -1,21 +1,21 @@
 ```
 DrkCraft
-└───assets: Game assets
-└───config: Game settings
-└───data: Game settings
+├── assets: Game assets
+├── config: Game settings
+├── data: Game settings
 │   │   blocks.yaml: DrkCraft blocks information
 │   └───logs
 │   └───profile: Performance profiling results
 │   └───saves: DrkCraft saves
-└───doc: Game instructions
-└───launcher: DrkCraft Launcher Python app
-└───lib: Third party libraries
-└───python: Python tools
+├── doc: Game instructions
+├── launcher: DrkCraft Launcher Python app
+├── lib: Third party libraries
+├── python: Python tools
 │   └───drkcraft
 │      └───build: DrkCraft build scripts
 │      └───tools: Various scripts
-└───scripts: Environment setup and misc. shell scripts
-└───src
+├── scripts: Environment setup and misc. shell scripts
+├── src
 │   └───DrkCraft
 │      │   Main.cpp
 │      └───Application
@@ -38,6 +38,6 @@ DrkCraft
 │      └───Lib
 │      └───System
 │      └───Util
-└───scripts: Misc. tools
-└───vscode: .vscode directory templates
+├── scripts: Misc. tools
+├── vscode: .vscode directory templates
 ```
