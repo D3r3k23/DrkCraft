@@ -3,7 +3,7 @@ DrkCraft
 ├── assets: Game assets
 ├── config: Game settings
 ├── data: Game settings
-│   │   blocks.yaml: DrkCraft blocks information
+│   │   blocks.yaml: DrkCraft block information
 │   ├── logs
 │   ├── profile: Performance profiling results
 │   └── saves: DrkCraft saves
@@ -39,5 +39,6 @@ DrkCraft
 │       ├── System
 │       ├── Util
 ├── scripts: Misc. tools
+│   └── std_usage: Python library to analyze C++ stdlib usage
 └── vscode: .vscode directory templates
 ```
