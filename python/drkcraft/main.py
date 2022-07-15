@@ -18,9 +18,6 @@ CMD: dict[str, Callable] = {
     'gen_block_texture_atlas': gen_block_texture_atlas.main
 }
 
-# analyze_build
-# gen compile_commands
-
 HELP_OPTIONS = ( '-h', '--help' )
 VERSION_OPTIONS = ( '-V', '--version' )
 
