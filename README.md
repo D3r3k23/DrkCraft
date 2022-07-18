@@ -15,11 +15,11 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 [![GitHub issues](https://img.shields.io/github/issues/D3r3k23/DrkCraft?style=plastic)](https://github.com/D3r3k23/DrkCraft/issues)
 [![GitHub](https://img.shields.io/github/license/D3r3k23/DrkCraft?style=plastic)](/LICENSE.txt)
 
-#### Minecraft-based game in C++ created using an OpenGL renderer
+![Game](/media/game.png)
+
+### Minecraft-based game in C++ created using an OpenGL renderer
 
 * Minecraft<sup>2</sup>??
-
-![Game](/media/game.png)
 
 ***
 
@@ -36,6 +36,9 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 [manual.md](/doc/manual.md)
 
 # Development
+
+## Directory structure
+[directory.md](/directory.md)
 
 ## Install prerequisites and clone repository
 1. `$ sudo apt install xorg-dev` (Debian/Ubuntu/Linux Mint)
@@ -64,13 +67,13 @@ $$$$$$$  |$$ |      $$ | \$$\ \$$$$$$  |$$ |      \$$$$$$$ |$$ |        \$$$$  |
 ### View command options
 `(.venv) $ python -m drkcraft CMD --help`
 
-### Or invoke CMake and run directly:
+## Or invoke CMake and run directly:
 
-#### Build
+### Build
 1. `$ cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug`
 2. `$ cmake --build build --config Debug`
 
-#### Run
+### Run
 * `$ build/bin/Debug/DrkCraft` (Linux)
 * `$ build\bin\Debug\DrkCraft.exe` (Windows)
 

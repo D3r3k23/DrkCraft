@@ -1,3 +1,4 @@
+message("Configuring Argv")
 set(ARGV_ENABLE_MAIN)
 add_subdirectory(Argv)
 
@@ -7,4 +8,5 @@ target_compile_definitions(DrkCraft
     ARGV_MAIN_NAMESPACE=DrkCraft
 )
 
+message("Configuring DrkCraft source")
 add_subdirectory(DrkCraft)

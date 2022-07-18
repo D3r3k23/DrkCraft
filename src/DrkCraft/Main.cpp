@@ -31,10 +31,10 @@ namespace DrkCraft
         Application::add_layer(Layer::create<MainMenu>());
 
         DRK_PROFILE_EVENT_GLOBAL("runtime_start");
-
-        DRK_LOG_CORE_INFO("Running Application");
-        Application::run();
-
+        {
+            DRK_LOG_CORE_INFO("Running Application");
+            Application::run();
+        }
         DRK_PROFILE_EVENT_GLOBAL("runtime_end");
 
         DRK_LOG_CORE_INFO("Shutting down Application");

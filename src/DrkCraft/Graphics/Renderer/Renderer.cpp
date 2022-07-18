@@ -21,7 +21,7 @@ namespace DrkCraft
             RendererStats lastFrameStats;
             RendererStats stats;
 
-            Scene scene;
+            RendererScene scene;
 
             Ptr<TextureManager> textureManager;
         };
@@ -131,7 +131,7 @@ namespace DrkCraft
 
     }
 
-    Scene& Renderer::get_scene(void)
+    RendererScene& Renderer::get_scene(void)
     {
         return s_data.scene;
     }

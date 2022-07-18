@@ -10,15 +10,16 @@
 
 #include <glad/glad.h>
 
+#include <vector>
+
 namespace DrkCraft
 {
     static constexpr float BLOCK_SIZE = 0.5f;
 
-    static constexpr uint MAX_BLOCKS = 1000;
-
+    // Per batch
+    static constexpr uint MAX_BLOCKS = 100;
     static constexpr uint NUM_VERTICES_IN_BLOCK = 12;
     static constexpr uint NUM_INDICES_IN_BLOCK  = 36;
-
     static constexpr uint MAX_BLOCK_VERTICES = MAX_BLOCKS * NUM_VERTICES_IN_BLOCK;
     static constexpr uint MAX_BLOCK_INDICES  = MAX_BLOCKS * NUM_INDICES_IN_BLOCK;
 
@@ -43,7 +44,7 @@ namespace DrkCraft
             Ref<IndexBuffer>  indexBuffer;
 
             std::vector<BlockVertex> vertexBufferData;
-            uint indices = 0;
+            uint batchSize = 0;
 
             TextureManager* textureManager;
             Optional<TextureAtlas> blockTextureAtlas;
@@ -87,8 +88,6 @@ namespace DrkCraft
                 DRK_LOG_CORE_TRACE("Initializing BlockRenderer VertexBuffer");
                 s_data.vertexBuffer = make_ref<VertexBuffer>(vertexBufferSize, PrimitiveType::Triangles);
 
-                s_data.vertexBufferData.resize(MAX_BLOCK_VERTICES);
-
                 s_data.vertexBuffer->set_layout({
                     { ShaderDataType::Float3, "a_position" },
                     { ShaderDataType::Float2, "a_texCoord" },
@@ -101,20 +100,6 @@ namespace DrkCraft
                 DRK_LOG_CORE_TRACE("Initializing BlockRenderer IndexBuffer");
                 s_data.indexBuffer = make_ref<IndexBuffer>(indexBufferSize);
 
-                Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
-                    0, 1, 3,  1, 2, 3, // Front
-                    1, 5, 2,  5, 6, 2, // Right
-                    5, 4, 6,  4, 7, 6, // Back
-                    4, 0, 7,  0, 3, 7, // Left
-                    3, 2, 7,  2, 6, 7, // Top
-                    4, 5, 0,  5, 1, 0  // Bottom
-                };
-                std::vector<Index> blockIndexBufferData(MAX_BLOCK_INDICES);
-                for (uint c = 0; c < MAX_BLOCKS; ++c)
-                    for (uint i = 0; i < NUM_INDICES_IN_BLOCK; ++i)
-                        blockIndexBufferData.push_back(BLOCK_INDICES[i]);
-
-                s_data.indexBuffer->update(blockIndexBufferData);
                 s_data.vertexArray->set_index_buffer(s_data.indexBuffer);
             }
         }
@@ -152,11 +137,13 @@ namespace DrkCraft
         s_data.shader->upload_uniform("u_viewProjection", camera.get_view_projection());
 
         s_data.vertexArray->bind();
-        start_batch();
     }
 
     void BlockRenderer::end_scene(void)
     {
+        if (s_data.batchSize > 0)
+            draw();
+
         flush();
 
         s_data.vertexArray->unbind();
@@ -182,6 +169,14 @@ namespace DrkCraft
             {0.0f, 0.0f, 0.0f}  // 11
         };
 
+        if (s_data.batchSize > MAX_BLOCKS)
+        {
+            DRK_LOG_CORE_INFO("Drawing batch");
+
+            draw();
+            flush();
+        }
+
         const uint texIndex = s_data.blockAtlasTextureIndex;
 
         for (const vec3& vertex : BLOCK_VERTEX_POSITIONS)
@@ -192,12 +187,14 @@ namespace DrkCraft
 
             const vec2 texCoord = s_data.blockTextureAtlas->get_coordinates(tid, subtextureCoordinates);
 
-            s_data.vertexBufferData.push_back({
+            s_data.vertexBufferData.push_back(
+            {
                 vertexPosition,
                 texCoord,
                 texIndex
             });
         }
+        s_data.batchSize += 1;
 
         s_data.stats.blocks += 1;
         s_data.stats.blockFaces += 6;
@@ -214,22 +211,49 @@ namespace DrkCraft
         s_data.stats = BlockRendererStats{};
     }
 
-    void BlockRenderer::start_batch(void)
-    {
-        s_data.indices = 0;
-    }
-
-    void BlockRenderer::next_batch(void)
-    {
-        flush();
-        start_batch();
-    }
-
-    void BlockRenderer::flush(void)
+    void BlockRenderer::draw_batch(void)
     {
         DRK_PROFILE_FUNCTION();
 
-        s_data.vertexArray->get_vertex_buffer()->update<BlockVertex>(s_data.vertexBufferData);
+        update_vertex_buffer();
+        update_index_buffer();
+
         Renderer::draw_indexed(*s_data.vertexArray);
+    }
+
+    void BlockRenderer::flush_batch(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        s_data.vertexBufferData.clear();
+        s_data.batchSize = 0;
+    }
+
+    void BlockRenderer::update_vertex_buffer(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        s_data.vertexArray->get_vertex_buffer()->update(s_data.vertexBufferData);
+    }
+
+    void BlockRenderer::update_index_buffer(void)
+    {
+        DRK_PROFILE_FUNCTION();
+
+        static constexpr Index BLOCK_INDICES[NUM_INDICES_IN_BLOCK] = {
+            0, 1, 3,  1, 2, 3, // Front
+            1, 5, 2,  5, 6, 2, // Right
+            5, 4, 6,  4, 7, 6, // Back
+            4, 0, 7,  0, 3, 7, // Left
+            3, 2, 7,  2, 6, 7, // Top
+            4, 5, 0,  5, 1, 0  // Bottom
+        };
+
+        std::vector<Index> indexBufferData(MAX_BLOCK_INDICES);
+        for (uint block = 0; block < s_data.batchSize; ++block)
+            for (Index index : BLOCK_INDICES)
+                indexBufferData.push_back(index + block * NUM_INDICES_IN_BLOCK);
+
+        s_data.indexBuffer->update(indexBufferData);
     }
 }

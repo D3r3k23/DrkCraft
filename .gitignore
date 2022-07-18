@@ -2,22 +2,20 @@
 /.VSCodeCounter/*
 
 /.venv/*
-/.mypy_cache/*
-
 **/__pycache__/**
 
-/build/*
+/.mypy_cache/*
 
+/build/*
 /config/*
 
 /data/imgui.ini
 /data/logs/*
 /data/saves/*
+/data/screenshots/*
 
 /data/profile/*
 !/data/profile/README.md
-
-/screenshots/*
 
 /packages/*
 

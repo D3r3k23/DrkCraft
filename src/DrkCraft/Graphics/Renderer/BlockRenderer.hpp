@@ -8,8 +8,6 @@
 #include "Lib/glm/vec2.hpp"
 #include "Lib/glm/vec3.hpp"
 
-#include <vector>
-
 namespace DrkCraft
 {
     struct BlockRendererStats
@@ -35,13 +33,15 @@ namespace DrkCraft
         static void submit(const ivec3& position, uint tid);
 
         static const BlockRendererStats& get_stats(void);
-        static void reset_stats(void);
 
     private:
-        static void start_batch(void);
-        static void next_batch(void);
+        static void reset_stats(void);
 
-        static void flush(void);
+        static void draw_batch(void);
+        static void flush_batch(void);
+
+        static void update_vertex_buffer(void);
+        static void update_index_buffer(void);
     };
 }
 

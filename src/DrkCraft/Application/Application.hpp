@@ -76,7 +76,7 @@ namespace DrkCraft
         OpenGlContext m_context;
 
         MonitorManager m_monitorManager;
-        Library  m_library;
+        Library m_library;
 
         ImGuiController m_imGuiController;
         EventGenerator m_eventGenerator;
