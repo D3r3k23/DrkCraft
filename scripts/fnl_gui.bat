@@ -1,9 +1,10 @@
 @echo OFF
 @REM Requires .NET
 
-set "exe=lib\FastNoiseLite\PreviewApp\build\FastNoiseLiteGUI.exe"
+set "build_dir=lib\FastNoiseLite\PreviewApp\build"
+set "exe=%build_dir%\FastNoiseLiteGUI.exe"
 
 if NOT exist %exe% (
-    dotnet publish lib\FastNoiseLite\PreviewApp -c Release -o lib\FastNoiseLite\PreviewApp\build
+    dotnet publish lib\FastNoiseLite\PreviewApp -c Release -o %build_dir%
 )
 %exe%
