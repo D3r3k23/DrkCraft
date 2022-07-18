@@ -7,7 +7,7 @@
 #include "Audio/Audio.hpp"
 #include "System/Input.hpp"
 #include "System/Thread.hpp"
-#include "Util/Icon.hpp"
+#include "System/Icon.hpp"
 #include "Util/Time.hpp"
 #include "Core/Debug/Profiler.hpp"
 
