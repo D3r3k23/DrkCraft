@@ -31,9 +31,10 @@ def clean_logs(logdir: Path, max_age: int=5):
             print(f'Deleting log: {log}')
             Path(logdir / log).unlink()
 
+log_filename_pattern = re.compile('_\d\d\d\d-\d\d-\d\d_')
+    
 def get_date_from_log_name(log: str) -> Optional[datetime]:
-    pattern = re.compile('_\d\d\d\d-\d\d-\d\d_')
-    result  = pattern.search(log)
+    result = log_filename_pattern.search(log)
     if result:
         date_string    = result[0].strip('_')
         date_components = date_string.split('-')
